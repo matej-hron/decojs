@@ -25,7 +25,7 @@ export function createInteractionLockBtn(getChart, container, opts = {}) {
 
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'chart-interaction-lock-btn';
+    btn.className = 'chart-interaction-lock-btn chart-overlay-btn';
     btn.setAttribute('aria-pressed', 'false');
     btn.style.cssText = `
         position: absolute;

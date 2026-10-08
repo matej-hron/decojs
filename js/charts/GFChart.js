@@ -33,6 +33,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { narrowChartPlugin, rankingPlacement, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { translate } from '../i18n.js';
 
@@ -168,6 +169,8 @@ export class GFChart {
      */
     _buildDOM() {
         this.container.innerHTML = '';
+        this.container.classList.add('gfc-host');
+        syncNarrowClass(this.container);
         this.container.tabIndex = 0;
         this.container.style.outline = 'none';
 
@@ -179,7 +182,7 @@ export class GFChart {
         // Compartment selector
         if (this.options.compartmentSelector) {
             this.controlsContainer = document.createElement('div');
-            this.controlsContainer.className = 'gfc-controls';
+            this.controlsContainer.className = 'gfc-controls chart-controls';
             this.controlsContainer.style.cssText = `
                 display: flex; flex-wrap: wrap; gap: 4px; padding: 8px;
                 background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
@@ -191,7 +194,7 @@ export class GFChart {
 
         // Timeline controls
         this.timelineContainer = document.createElement('div');
-        this.timelineContainer.className = 'gfc-timeline';
+        this.timelineContainer.className = 'gfc-timeline chart-timeline';
         this.timelineContainer.style.cssText = `
             display: flex; align-items: center; gap: 8px; padding: 8px;
             background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
@@ -219,7 +222,7 @@ export class GFChart {
         // Fullscreen button
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
-            this.fullscreenBtn.className = 'gfc-fullscreen-btn';
+            this.fullscreenBtn.className = 'gfc-fullscreen-btn chart-overlay-btn';
             this.fullscreenBtn.innerHTML = '⛶';
             this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
@@ -247,7 +250,7 @@ export class GFChart {
 
         // Reset zoom button
         this.resetZoomBtn = document.createElement('button');
-        this.resetZoomBtn.className = 'gfc-reset-zoom-btn';
+        this.resetZoomBtn.className = 'gfc-reset-zoom-btn chart-overlay-btn';
         this.resetZoomBtn.innerHTML = '↺';
         this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
@@ -271,6 +274,7 @@ export class GFChart {
 
         // Mini profile canvas
         this.miniProfileCanvas = document.createElement('canvas');
+        this.miniProfileCanvas.className = 'chart-mini-profile';
         this.miniProfileCanvas.style.cssText = 'width: 100%; height: 100px; margin-top: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
         this.wrapper.appendChild(this.miniProfileCanvas);
 
@@ -278,6 +282,7 @@ export class GFChart {
 
         // Set up ResizeObserver
         this._resizeObserver = new ResizeObserver(() => {
+            syncNarrowClass(this.container);
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
             }
@@ -330,6 +335,7 @@ export class GFChart {
 
         // Quick selection buttons
         const btnGroup = document.createElement('div');
+        btnGroup.className = 'chart-quick-btns';
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px;';
 
         const buttons = [
@@ -354,10 +360,11 @@ export class GFChart {
         // Compartment checkboxes
         COMPARTMENTS.forEach(comp => {
             const label = document.createElement('label');
+            label.className = 'chart-chip';
             label.style.cssText = `
                 display: inline-flex; align-items: center; gap: 2px;
                 padding: 2px 6px; border-radius: 3px; cursor: pointer;
-                border: 2px solid ${comp.color}; font-size: 12px;
+                border: 2px solid ${comp.color}; font-size: 12px; --chip-color: ${comp.color};
             `;
 
             const checkbox = document.createElement('input');
@@ -382,6 +389,7 @@ export class GFChart {
             });
 
             const colorDot = document.createElement('span');
+            colorDot.className = 'chart-chip-dot';
             colorDot.style.cssText = `
                 width: 10px; height: 10px; border-radius: 50%;
                 background: ${comp.color};
@@ -395,6 +403,7 @@ export class GFChart {
 
         // Shortcut legend
         const hint = document.createElement('div');
+        hint.className = 'chart-hint';
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
         hint.textContent = translate('chart.hints.compartments', 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen');
         this.controlsContainer.appendChild(hint);
@@ -414,6 +423,7 @@ export class GFChart {
         // Time slider
         this.timeSlider = document.createElement('input');
         this.timeSlider.type = 'range';
+        this.timeSlider.className = 'chart-timeline-slider';
         this.timeSlider.min = 0;
         this.timeSlider.max = 100;
         this.timeSlider.value = 0;
@@ -428,6 +438,7 @@ export class GFChart {
 
         // Time display
         this.timeDisplay = document.createElement('span');
+        this.timeDisplay.className = 'chart-timeline-time';
         this.timeDisplay.style.cssText = 'font-family: monospace; min-width: 120px; text-align: right;';
         this.timeDisplay.textContent = translate('chart.mvalue.initialDepthLabel', '0.0 min @ 0m');
 
@@ -447,6 +458,7 @@ export class GFChart {
     _createButton(text, title, onClick) {
         const btn = document.createElement('button');
         btn.textContent = text;
+        btn.className = 'chart-timeline-btn';
         btn.title = title;
         btn.style.cssText = `
             padding: 4px 8px; background: #e9ecef; border: 1px solid #ced4da;
@@ -938,16 +950,45 @@ export class GFChart {
     _renderCompartmentRanking(chart, ranking) {
         const panel = this.rankingPanel;
         if (!panel) return;
-        if (chart.width < 800 || ranking.length === 0) {
+        const placement = rankingPlacement(chart.width);
+        if (placement === 'hidden' || ranking.length === 0) {
             panel.style.display = 'none';
             return;
         }
 
+        if (placement === 'below') {
+            if (panel.parentNode !== this.chartContainer.parentNode) this.chartContainer.after(panel);
+            panel.classList.add('gfc-ranking-below');
+        } else {
+            if (panel.parentNode !== this.chartContainer) this.chartContainer.appendChild(panel);
+            panel.classList.remove('gfc-ranking-below');
+        }
+
         const title = translate('chart.gf.rankingTitle', 'Tissue ranking');
-        const rankingKey = `${title}|${ranking
+        const rankingKey = `${placement}|${title}|${ranking
             .map((row) => `${row.id}:${fmtNum(row.gfPercent, 1)}`)
             .join('|')}`;
-        if (panel.dataset.rankingKey !== rankingKey) {
+        if (panel.dataset.rankingKey !== rankingKey && placement === 'below') {
+            // compact list under the plot (phones)
+            const heading = document.createElement('p');
+            heading.className = 'gfc-ranking-title';
+            heading.textContent = title;
+            const list = document.createElement('ol');
+            list.className = 'gfc-ranking-list';
+            for (const row of ranking) {
+                const li = document.createElement('li');
+                const dot = document.createElement('span');
+                dot.className = 'gfc-ranking-dot';
+                dot.style.backgroundColor = row.color;
+                const value = document.createElement('b');
+                value.textContent = `${fmtNum(row.gfPercent, 1)} %`;
+                li.append(dot, ` TC${row.id} `, value);
+                list.appendChild(li);
+            }
+            panel.replaceChildren(heading, list);
+            panel.dataset.rankingKey = rankingKey;
+            panel.setAttribute('aria-label', title);
+        } else if (panel.dataset.rankingKey !== rankingKey) {
             const table = document.createElement('table');
             const caption = document.createElement('caption');
             caption.textContent = title;
@@ -991,6 +1032,15 @@ export class GFChart {
             panel.replaceChildren(table);
             panel.dataset.rankingKey = rankingKey;
             panel.setAttribute('aria-label', title);
+        }
+
+        if (placement === 'below') {
+            panel.style.left = '';
+            panel.style.top = '';
+            panel.style.width = '';
+            panel.style.maxHeight = '';
+            panel.style.display = 'block';
+            return;
         }
 
         const left = chart.chartArea.right + 10;
@@ -1311,6 +1361,7 @@ export class GFChart {
             type: 'scatter',
             data: { datasets },
             plugins: [
+                narrowChartPlugin,
                 {
                     id: 'gf-compartment-ranking',
                     beforeLayout: (chart) => {

@@ -681,12 +681,12 @@ describe('GF chart maximum GF toggle', () => {
     });
 
     test('renders the GF ranking table only when the chart is wide enough', () => {
-        const dom = new JSDOM('<!doctype html><body><aside id="ranking"></aside></body>');
+        const dom = new JSDOM('<!doctype html><body><div id="plot"><aside id="ranking"></aside></div></body>');
         const originalDocument = globalThis.document;
         globalThis.document = dom.window.document;
         try {
             const panel = dom.window.document.getElementById('ranking');
-            const context = { rankingPanel: panel };
+            const context = { rankingPanel: panel, chartContainer: dom.window.document.getElementById('plot') };
             const chart = {
                 width: 1000,
                 chartArea: {
@@ -719,6 +719,28 @@ describe('GF chart maximum GF toggle', () => {
                 ranking
             );
             expect(panel.style.display).toBe('none');
+
+            chart.width = 400;
+            GFChart.prototype._renderCompartmentRanking.call(
+                context,
+                chart,
+                ranking
+            );
+            expect(panel.style.display).toBe('block');
+            expect(panel.classList.contains('gfc-ranking-below')).toBe(true);
+            expect(panel.parentNode).toBe(context.chartContainer.parentNode);
+            expect(panel.querySelectorAll('.gfc-ranking-list li').length).toBe(2);
+            expect(panel.style.left).toBe('');
+
+            chart.width = 1000;
+            GFChart.prototype._renderCompartmentRanking.call(
+                context,
+                chart,
+                ranking
+            );
+            expect(panel.classList.contains('gfc-ranking-below')).toBe(false);
+            expect(panel.parentNode).toBe(context.chartContainer);
+            expect(panel.querySelectorAll('tbody tr').length).toBe(2);
         } finally {
             globalThis.document = originalDocument;
             dom.window.close();
