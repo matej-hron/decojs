@@ -1016,6 +1016,48 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             rda.destroy();
         });
     });
+
+    test('the chart view switch keeps its view across GF changes and shows the gas note only in Gas', async () => {
+        await withDom(async root => {
+            const dive = diveOf('00000100');
+            const store = {
+                listDives: async () => [{ id: 'r1', deviceSerial: 'x', diveNumber: 100, startLocal: dive.start.local, parserVersion: 99, summary: { maxDepth: dive.maxDepth, duration: dive.duration, mode: 'oc' } }],
+                loadDive: async () => dive,
+                reparseOutdated: async () => 0,
+            };
+            const rda = new RecordedDiveAnalysis(root, { store, embedded: true, focusRecordingId: 'r1', entryGases: [] });
+            const calls = [];
+            const fake = { update: (setup, options) => calls.push({ setup, options }), setTimeIndex() {}, currentTimeIndex: 0, destroy() {} };
+            rda.charts = { profile: fake, mvalue: { ...fake, update() {} }, gf: { ...fake, update() {} } };
+            await tick();
+            const buttons = [...root.querySelectorAll('#rda-views button')];
+            assert.deepEqual(buttons.map(b => b.dataset.view), ['profile', 'pressure', 'pp', 'tissue', 'gas']);
+            assert.equal(root.querySelector('#rda-views').getAttribute('aria-label'), 'Chart view');
+            assert.equal(calls.at(-1).options.showCeiling, true);
+            assert.equal(root.querySelector('#rda-gas-note').hidden, true);
+
+            buttons[4].click();
+            assert.equal(root.querySelector('[data-view="gas"]').getAttribute('aria-pressed'), 'true');
+            assert.equal(root.querySelector('[data-view="profile"]').getAttribute('aria-pressed'), 'false');
+            let last = calls.at(-1);
+            assert.equal(last.options.showGasConsumption, true);
+            assert.equal(last.options.referenceCeiling, null);
+            assert.ok(last.setup.gases.every(g => g.sacRate === 20 && g.cylinderVolume === 12 && g.startPressure === 200));
+            const note = root.querySelector('#rda-gas-note');
+            assert.equal(note.hidden, false);
+            assert.match(note.textContent, /assumed SAC 20\u00a0l\/min, 12\u00a0l cylinder filled to 200\u00a0bar/);
+
+            rda._setGf({ gfLow: 30, gfHigh: 70 });
+            last = calls.at(-1);
+            assert.equal(rda.view, 'gas');
+            assert.equal(last.options.showGasConsumption, true);
+
+            root.querySelector('[data-view="tissue"]').click();
+            assert.equal(calls.at(-1).options.showTissueLoading, true);
+            assert.equal(note.hidden, true);
+            rda.destroy();
+        });
+    });
 });
 
 describe('entry form helpers', () => {

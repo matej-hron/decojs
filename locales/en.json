@@ -2886,6 +2886,16 @@
         "nonOcNote": "Analysis currently supports open-circuit dives only (this dive: {0}).",
         "noSamplesNote": "This log has no depth profile to analyse.",
         "deviceCeilingLabel": "Dive computer ceiling, GF {0}/{1} (m)",
+        "view": {
+            "label": "Chart view",
+            "profile": "Profile",
+            "pressure": "Pressure",
+            "pp": "Partial pressure",
+            "tissue": "Tissues",
+            "gas": "Gas"
+        },
+        "gasNoteLogbook": "Cylinder pressures from your logbook entry; the line between them is modelled from the depth profile.",
+        "gasNoteAssumed": "No cylinder data for {0} — assumed SAC {1} l/min, {2} l cylinder filled to {3} bar. Add start and end pressure to the logbook entry to see your own.",
         "helpHeading": "How the ceilings compare",
         "helpText": "The solid ceiling is DecoTheory's, recalculated for the GF you choose. It holds GF Low until the ascent starts and then ramps to GF High. The dashed ceiling is what the dive computer logged with its own GF and its own rule; on deco dives it usually clears faster during the ascent. Changing GF never changes your tissues — only where the limit is drawn.",
         "chainToggle": "Include earlier dives (repetitive diving)",

@@ -13,6 +13,7 @@ import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
+import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, sparklinePath, profileAreaPath, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
@@ -298,6 +299,7 @@ export class LogbookApp {
         }
         this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
             store: this.store, embedded: true, focusRecordingId: entry.recording_id,
+            entryGases: gasesFromEntry(entry),
         });
     }
 

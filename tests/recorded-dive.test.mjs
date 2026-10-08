@@ -11,7 +11,7 @@ import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/impor
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
-import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
+import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze, CHART_VIEWS, chartViewOptions } from '../js/components/RecordedDiveAnalysis.js';
 import { getPressurePerMeter } from '../js/deco/environment.js';
 import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions, normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { matchEntryGases, recordedGasSetup, ASSUMED_SAC_LPM } from '../js/import/recordedGas.js';
@@ -393,5 +393,28 @@ describe('recordedGas', () => {
         const n = normalizeDiveSetup({ gases: [{ ...air, sacRate: 13 }, { ...ean50, sacRate: -1 }], dives: [{ waypoints }] });
         assert.equal(n.gases[0].sacRate, 13);
         assert.equal('sacRate' in n.gases[1], false);
+    });
+});
+
+describe('chart views', () => {
+    test('five views; profile keeps the recorded overlays, others drop them', () => {
+        assert.deepEqual(CHART_VIEWS.map(v => v.id), ['profile', 'pressure', 'pp', 'tissue', 'gas']);
+        const ref = [{ t: 0, depth: 0 }];
+        const p = chartViewOptions('profile', { referenceCeiling: ref, referenceCeilingLabel: 'x' });
+        assert.equal(p.showCeiling, true); assert.equal(p.highlightCeilingViolations, true); assert.equal(p.referenceCeiling, ref);
+        const g = chartViewOptions('gas', { referenceCeiling: ref, referenceCeilingLabel: 'x' });
+        assert.equal(g.showGasConsumption, true); assert.equal(g.referenceCeiling, null); assert.equal(g.highlightCeilingViolations, false);
+        assert.equal(chartViewOptions('tissue', {}).showTissueLoading, true);
+        assert.equal(chartViewOptions('nope', {}).showCeiling, true); // unknown → profile
+    });
+
+    test('every view hides labels and sets all five mode flags explicitly', () => {
+        for (const v of CHART_VIEWS) {
+            const o = chartViewOptions(v.id, {});
+            assert.equal(o.showLabels, false);
+            for (const k of ['showCeiling', 'showAmbientPressure', 'showPartialPressures', 'showTissueLoading', 'showGasConsumption']) {
+                assert.equal(typeof o[k], 'boolean', `${v.id}.${k}`);
+            }
+        }
     });
 });

@@ -37,6 +37,16 @@
         .rda-summary dt { color: var(--text-subtle); }
         .rda-note, .rda-charts, .rda-help { grid-column: 1 / -1; }
         .rda-charts { display: grid; gap: 1rem; }
+        .rda-views { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .rda-seg { min-height: 44px; padding: 0 0.9rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface); color: inherit; font: inherit; cursor: pointer; }
+        .rda-seg:hover { border-color: var(--brand); }
+        .rda-seg[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+        .rda-seg:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+        .rda-gas-note { margin: 0; color: var(--text-subtle); font-size: 0.9rem; }
+        .rda-gas-note[hidden] { display: none; }
+        @media (max-width: 600px) {
+            .rda-seg { flex: 1 1 calc(33.333% - 0.3rem); padding: 0 0.5rem; line-height: 1.15; }
+        }
         .rda-account[hidden], .rda-open[hidden], .rda-list[hidden], .rda-analysis[hidden], .rda-charts[hidden] { display: none; }
         .rda-account { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
         .rda-account-msg { flex-basis: 100%; margin: 0; color: var(--text-subtle); font-size: 0.9rem; }
