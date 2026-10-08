@@ -25,6 +25,7 @@ import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
 import { mapyStaticMapUrl } from '../js/logbook/geo.js';
+import { gasesFromEntry, gasesFromRecording, primaryGas, gasUsage, formRowsFromGases, gasesFromFormRows, newGasRow, cylinderText } from '../js/logbook/gasModel.js';
 import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -75,6 +76,112 @@ describe('entryFromRecording', () => {
 
     test('a clock-reset dive keeps its recorded date', () => {
         assert.equal(entryFromRecording(diveOf('00000099')).dive_date, '2006-07-19');
+    });
+});
+
+describe('gas model', () => {
+    const multi = {
+        gases: [
+            { id: 'g0', o2: 0.21, he: 0, role: 'oc' }, { id: 'g1', o2: 0.5, he: 0, role: 'oc' },
+            { id: 'g2', o2: 1, he: 0, role: 'oc' }, { id: 'g3', o2: 0.21, he: 0, role: 'diluent' },
+        ],
+        events: [{ t: 0, type: 'gasSwitch', gasId: 'g0' }, { t: 1800, type: 'gasSwitch', gasId: 'g1' },
+            { t: 2400, type: 'gasSwitch', gasId: 'g0' }, { t: 2500, type: 'gasSwitch', gasId: 'g1' }],
+    };
+
+    test('gasesFromRecording: bottom = first breathed, deco = later switches, unused and CCR gases left out', () => {
+        const rows = gasesFromRecording(multi);
+        assert.deepEqual(rows.map(r => [r.role, r.o2]), [['bottom', 0.21], ['deco', 0.5]]);
+        assert.equal(rows[0].cylinder, null);
+        assert.equal(rows[0].startBar, null);
+        assert.deepEqual(gasesFromRecording({ gases: [{ id: 'g0', o2: 0.32, he: 0, role: 'oc' }], events: [] }).map(r => r.o2), [0.32]);
+        assert.deepEqual(gasesFromRecording({ gases: [{ id: 'g0', o2: 0.21, he: 0, role: 'diluent' }], events: [] }), []);
+        assert.equal(gasesFromRecording(diveOf('00000100')).length, 1);
+    });
+
+    test('entryFromRecording stores the recording gases in details.gases', () => {
+        const e = entryFromRecording({ ...diveOf('00000100'), gases: multi.gases, events: multi.events });
+        assert.deepEqual(e.details.gases.map(r => r.role), ['bottom', 'deco']);
+        assert.deepEqual(e.gas, { o2: 0.21, he: 0 });
+    });
+
+    test('gasesFromEntry migrates the legacy single cylinder', () => {
+        const legacy = { gas: { o2: 0.32, he: 0 }, details: { cylinderL: 12, cylinderMaterial: 'steel', pressureStartBar: 200, pressureEndBar: 60 } };
+        assert.deepEqual(gasesFromEntry(legacy), [{ role: 'bottom', o2: 0.32, he: 0, cylinder: 's12', volumeL: 12, material: 'steel', startBar: 200, endBar: 60 }]);
+        const odd = gasesFromEntry({ gas: null, details: { cylinderL: 13 } });
+        assert.deepEqual(odd, [{ role: 'bottom', o2: null, he: null, cylinder: 'custom', volumeL: 13, material: null, startBar: null, endBar: null }]);
+        assert.deepEqual(gasesFromEntry({ gas: { o2: 0.21, he: 0 }, details: {} }).map(r => [r.o2, r.cylinder]), [[0.21, null]]);
+        assert.deepEqual(gasesFromEntry({ gas: null, details: {} }), []);
+        const stored = [{ role: 'deco', o2: 0.5, he: 0, cylinder: 'al40', volumeL: 5.7, material: 'aluminium', startBar: 200, endBar: 150 }];
+        assert.deepEqual(gasesFromEntry({ gas: { o2: 0.21, he: 0 }, details: { gases: stored, cylinderL: 12 } }), stored);
+    });
+
+    test('primaryGas is the first bottom mix that is known', () => {
+        assert.deepEqual(primaryGas([{ role: 'deco', o2: 0.5, he: 0 }, { role: 'bottom', o2: 0.18, he: 0.45 }]), { o2: 0.18, he: 0.45 });
+        assert.deepEqual(primaryGas([{ role: 'deco', o2: 0.5, he: 0 }]), { o2: 0.5, he: 0 });
+        assert.equal(primaryGas([{ role: 'bottom', o2: null, he: null }]), null);
+        assert.equal(primaryGas([]), null);
+    });
+
+    test('gasUsage: bar, litres and SAC at mean ambient pressure 1 + avg/10', () => {
+        const rows = [
+            { role: 'bottom', volumeL: 12, startBar: 200, endBar: 80 },
+            { role: 'deco', volumeL: 5.7, startBar: 200, endBar: 160 },
+        ];
+        const u = gasUsage(rows, { durationS: 3000, avgDepthM: 20 });
+        assert.deepEqual(u.rows, [{ usedBar: 120, usedL: 1440 }, { usedBar: 40, usedL: 228 }]);
+        assert.equal(u.totalL, 1668);
+        assert.equal(u.sacLpm, 1668 / (50 * 3));
+        assert.equal(gasUsage(rows, { durationS: 3000, avgDepthM: null }).sacLpm, null);
+        assert.equal(gasUsage(rows, { durationS: 0, avgDepthM: 20 }).sacLpm, null);
+        const noVol = gasUsage([{ volumeL: null, startBar: 200, endBar: 100 }, rows[1]], { durationS: 3000, avgDepthM: 20 });
+        assert.deepEqual(noVol.rows[0], { usedBar: 100, usedL: null });
+        assert.equal(noVol.totalL, null); // a partial sum would understate the gas used
+        assert.equal(noVol.sacLpm, null);
+        const bad = gasUsage([{ volumeL: 12, startBar: 50, endBar: 200 }], { durationS: 3000, avgDepthM: 20 });
+        assert.deepEqual(bad.rows[0], { usedBar: null, usedL: null });
+        assert.equal(bad.totalL, null);
+        assert.deepEqual(gasUsage([{ volumeL: 12, startBar: null, endBar: null }], { durationS: 3000, avgDepthM: 20 }), { rows: [{ usedBar: null, usedL: null }], totalL: null, sacLpm: null });
+    });
+
+    test('form rows round-trip, with a decimal comma', () => {
+        const rows = [
+            { role: 'bottom', o2: 0.32, he: 0, cylinder: 'al80', volumeL: 11.1, material: 'aluminium', startBar: 200, endBar: 70 },
+            { role: 'deco', o2: 0.5, he: 0, cylinder: 'custom', volumeL: 6.5, material: 'steel', startBar: 210, endBar: null },
+            { role: 'bottom', o2: 0.18, he: 0.45, cylinder: null, volumeL: null, material: null, startBar: null, endBar: null },
+            { role: 'bottom', o2: 0.33, he: 0, cylinder: null, volumeL: null, material: null, startBar: null, endBar: null },
+        ];
+        const form = formRowsFromGases(rows, { comma: true });
+        assert.deepEqual(form.map(r => r.mix), ['ean32', 'ean50', 'tx', 'nx']);
+        assert.equal(form[1].volumeL, '6,5');
+        assert.equal(form[2].o2, '18');
+        assert.equal(form[2].he, '45');
+        assert.deepEqual(gasesFromFormRows(form), { gases: rows, errors: [] });
+    });
+
+    test('gasesFromFormRows: preset cylinders fill volume and material; bad input is reported', () => {
+        const { gases } = gasesFromFormRows([{ ...newGasRow('bottom'), startBar: '200', endBar: '50' }]);
+        assert.deepEqual(gases, [{ role: 'bottom', o2: 0.21, he: 0, cylinder: 's12', volumeL: 12, material: 'steel', startBar: 200, endBar: 50 }]);
+        assert.deepEqual(newGasRow('deco').cylinder, 'al40');
+        assert.deepEqual(newGasRow('deco').mix, 'ean50');
+        const bad = gasesFromFormRows([
+            { ...newGasRow('bottom'), mix: 'nx', o2: '' },
+            { ...newGasRow('bottom'), mix: 'tx', o2: '60', he: '50' },
+            { ...newGasRow('bottom'), startBar: '2oo' },
+            { ...newGasRow('bottom'), cylinder: 'custom', volumeL: 'x' },
+        ]);
+        assert.deepEqual(bad.errors, [{ index: 0, field: 'mix' }, { index: 1, field: 'mix' }, { index: 2, field: 'startBar' }, { index: 3, field: 'volumeL' }]);
+        assert.deepEqual(gasesFromFormRows([{ ...newGasRow('bottom'), mix: '' }]).gases[0].o2, null);
+    });
+
+    test('cylinderText names presets and custom cylinders', () => {
+        const opts = { fmt: (v, d) => String(v).replace('.', ','), material: m => ({ steel: 'ocel', aluminium: 'hliník' })[m] };
+        assert.equal(cylinderText({ cylinder: 'al80', volumeL: 11.1 }, opts), 'AL80 (11,1 l)');
+        assert.equal(cylinderText({ cylinder: 'd12', volumeL: 24 }, opts), '2×12 l');
+        assert.equal(cylinderText({ cylinder: 's12', volumeL: 12 }, opts), '12 l, ocel');
+        assert.equal(cylinderText({ cylinder: 'custom', volumeL: 13, material: 'aluminium' }, opts), '13 l, hliník');
+        assert.equal(cylinderText({ cylinder: 'custom', volumeL: 13, material: null }, opts), '13 l');
+        assert.equal(cylinderText({ cylinder: null, volumeL: null }, opts), '');
     });
 });
 
@@ -145,6 +252,7 @@ describe('form normalisation', () => {
     test('detail keys cover the spec groups', () => {
         assert.ok(DETAIL_KEYS.conditions.includes('weather'));
         assert.ok(DETAIL_KEYS.equipment.includes('weightsKg'));
+        assert.ok(!DETAIL_KEYS.equipment.includes('cylinderL'));
         assert.ok(DETAIL_KEYS.dive.includes('rating'));
     });
 });
@@ -1127,13 +1235,13 @@ describe('detail helpers', () => {
 
     test('details are grouped, choices translated, unknown keys ignored', () => {
         const { groups } = detailRows(entry, t);
-        assert.deepEqual(groups.map(g => g.group), ['conditions', 'equipment', 'dive']);
+        // The legacy cylinder volume is shown by the gas cards, not under Equipment.
+        assert.deepEqual(groups.map(g => g.group), ['conditions', 'dive']);
         const dive = groups.find(g => g.group === 'dive').rows;
         assert.deepEqual(dive.map(r => r.key), ['stops', 'tags', 'rating']);
         assert.equal(dive.find(r => r.key === 'stops').value, '<form.choices.stops.deco>');
         assert.equal(dive.find(r => r.key === 'tags').value, '<form.choices.tags.wreck>, custom');
         assert.equal(dive.find(r => r.key === 'rating').value, '4\u00a0/\u00a05');
-        assert.equal(groups.find(g => g.group === 'equipment').rows[0].value, '12\u00a0l');
     });
 
     test('an empty entry has no rows and no groups', () => {

@@ -4,6 +4,7 @@
  */
 
 import { localeTag } from '../format.js';
+import { gasesFromRecording, primaryGas } from './gasModel.js';
 
 /**
  * A `YYYY-MM-DD` dive date shown for the language (cs "27. 9. 2026"). Parsed as a calendar date and
@@ -26,7 +27,7 @@ export function entriesOnDate(entries, date) {
 /** "More details" keys, grouped as in the form. */
 export const DETAIL_KEYS = Object.freeze({
     conditions: ['airTempC', 'weather', 'current', 'waves'],
-    equipment: ['cylinderL', 'cylinderMaterial', 'pressureStartBar', 'pressureEndBar', 'weightsKg', 'suit', 'suitMm', 'computer'],
+    equipment: ['weightsKg', 'suit', 'suitMm', 'computer'],
     dive: ['entry', 'avgDepthM', 'stops', 'tags', 'guide', 'rating'],
 });
 
@@ -89,12 +90,14 @@ export function entryFromRecording(dive) {
     const details = { stops: hasDeco ? 'deco' : hasSafety ? 'safety' : 'none' };
     if (device) details.computer = device;
     Object.assign(details, computerFieldsFromRecording(dive));
+    const gases = gasesFromRecording(dive);
+    if (gases.length) details.gases = gases;
     return {
         dive_date: date,
         entry_time: time ?? null,
         duration_s: dive.duration ?? null,
         max_depth_m: dive.maxDepth ?? null,
-        gas: first ? { o2: first.o2, he: first.he } : null,
+        gas: primaryGas(gases) ?? (first ? { o2: first.o2, he: first.he } : null),
         water_temp_c: dive.minTemp ?? null,
         details,
     };

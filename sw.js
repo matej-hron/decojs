@@ -91,6 +91,7 @@ const STATIC_ASSETS = [
   './js/backend/supabaseStore.js',
   './js/backend/diveStore.js',
   './js/logbook/entryModel.js',
+  './js/logbook/gasModel.js',
   './js/logbook/router.js',
   './js/logbook/listViews.js',
   './js/logbook/feed.js',
