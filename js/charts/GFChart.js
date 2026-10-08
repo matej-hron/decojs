@@ -182,7 +182,7 @@ export class GFChart {
         // Compartment selector
         if (this.options.compartmentSelector) {
             this.controlsContainer = document.createElement('div');
-            this.controlsContainer.className = 'gfc-controls chart-controls';
+            this.controlsContainer.className = 'gfc-controls chart-compartments';
             this.controlsContainer.style.cssText = `
                 display: flex; flex-wrap: wrap; gap: 4px; padding: 8px;
                 background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
@@ -968,7 +968,8 @@ export class GFChart {
         const rankingKey = `${placement}|${title}|${ranking
             .map((row) => `${row.id}:${fmtNum(row.gfPercent, 1)}`)
             .join('|')}`;
-        if (panel.dataset.rankingKey !== rankingKey && placement === 'below') {
+        if (panel.dataset.rankingKey !== rankingKey) {
+          if (placement === 'below') {
             // compact list under the plot (phones)
             const heading = document.createElement('p');
             heading.className = 'gfc-ranking-title';
@@ -981,14 +982,12 @@ export class GFChart {
                 dot.className = 'gfc-ranking-dot';
                 dot.style.backgroundColor = row.color;
                 const value = document.createElement('b');
-                value.textContent = `${fmtNum(row.gfPercent, 1)} %`;
+                value.textContent = `${fmtNum(row.gfPercent, 1)} %`;
                 li.append(dot, ` TC${row.id} `, value);
                 list.appendChild(li);
             }
             panel.replaceChildren(heading, list);
-            panel.dataset.rankingKey = rankingKey;
-            panel.setAttribute('aria-label', title);
-        } else if (panel.dataset.rankingKey !== rankingKey) {
+          } else {
             const table = document.createElement('table');
             const caption = document.createElement('caption');
             caption.textContent = title;
@@ -1030,8 +1029,9 @@ export class GFChart {
             });
             table.appendChild(body);
             panel.replaceChildren(table);
-            panel.dataset.rankingKey = rankingKey;
-            panel.setAttribute('aria-label', title);
+          }
+          panel.dataset.rankingKey = rankingKey;
+          panel.setAttribute('aria-label', title);
         }
 
         if (placement === 'below') {

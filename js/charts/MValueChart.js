@@ -314,7 +314,7 @@ export class MValueChart {
         // Compartment selector
         if (this.options.compartmentSelector) {
             this.controlsContainer = document.createElement('div');
-            this.controlsContainer.className = 'mvc-controls chart-controls';
+            this.controlsContainer.className = 'mvc-controls chart-compartments';
             this.controlsContainer.style.cssText = `
                 display: flex; flex-wrap: wrap; gap: 4px; padding: 8px;
                 background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;

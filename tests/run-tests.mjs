@@ -730,6 +730,7 @@ describe('GF chart maximum GF toggle', () => {
             expect(panel.classList.contains('gfc-ranking-below')).toBe(true);
             expect(panel.parentNode).toBe(context.chartContainer.parentNode);
             expect(panel.querySelectorAll('.gfc-ranking-list li').length).toBe(2);
+            expect(panel.querySelector('.gfc-ranking-list b').textContent).toBe('45.2\u00a0%');
             expect(panel.style.left).toBe('');
 
             chart.width = 1000;

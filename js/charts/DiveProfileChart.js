@@ -178,7 +178,7 @@ export class DiveProfileChart {
         
         // Create tissue controls container (shown only in tissue mode)
         this.tissueControlsContainer = document.createElement('div');
-        this.tissueControlsContainer.className = 'dpc-tissue-controls chart-controls';
+        this.tissueControlsContainer.className = 'dpc-tissue-controls chart-compartments';
         this.tissueControlsContainer.style.cssText = `
             display: none; padding: 8px; background: #f8f9fa;
             border-radius: 4px; margin-bottom: 8px;
