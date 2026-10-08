@@ -9,13 +9,18 @@
 import { normalizeEntry, nextLogNumber, parseDecimal, parseDuration, formatDuration, hasUserDetails, DETAIL_KEYS } from './entryModel.js';
 import { openSitePicker } from './SitePicker.js';
 import { translate } from '../i18n.js';
-import { currentLang, decimalSeparator } from '../format.js';
+import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { gasName } from '../import/recordedDive.js';
+import {
+    MIX_PRESETS, CYLINDER_GROUPS, CYLINDER_PRESETS, MATERIALS, cylinderPreset, cylinderText,
+    gasesFromEntry, gasesFromRecording, primaryGas, gasUsage, formRowsFromGases, gasesFromFormRows, newGasRow,
+} from './gasModel.js';
 
 const NBSP = ' ';
 
 /** Detail keys typed as numbers (the rest are text, choices or the tag list). */
-const NUMERIC_DETAILS = new Set(['surfaceTempC', 'airTempC', 'cylinderL', 'pressureStartBar', 'pressureEndBar', 'weightsKg', 'suitMm', 'avgDepthM']);
+const NUMERIC_DETAILS = new Set(['surfaceTempC', 'airTempC', 'weightsKg', 'suitMm', 'avgDepthM']);
 
 /** Choice lists of the details section. */
 export const CHOICES = Object.freeze({
@@ -31,32 +36,19 @@ export const TAGS = Object.freeze(['night', 'wreck', 'cave', 'ice', 'training', 
 
 /** Unit hints for the detail inputs (the unit is also in the label). */
 const DETAIL_INPUT = Object.freeze({
-    surfaceTempC: 'decimal', airTempC: 'decimal', cylinderL: 'decimal', pressureStartBar: 'decimal',
-    pressureEndBar: 'decimal', weightsKg: 'decimal', suitMm: 'decimal', avgDepthM: 'decimal',
+    surfaceTempC: 'decimal', airTempC: 'decimal', weightsKg: 'decimal', suitMm: 'decimal', avgDepthM: 'decimal',
 });
 
 const tf = key => translate(`diveLog.logbook.form.${key}`, key);
 const tl = (key, fallback = key) => translate(`diveLog.logbook.${key}`, fallback);
 const tb = key => translate(`diveLog.backend.${key}`, key);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
+/** A field label without its unit, for messages ("Start (bar)" → "Start"). */
+const labelOf = key => tf(key).replace(/\u00a0\(.*\)$/, '');
 
 // ---- Pure helpers ----
 
 export { formatDuration };
-
-/**
- * The `{o2, he}` fractions for a gas choice; null when nothing valid is chosen.
- * @param {{kind: 'air'|'ean'|'tx'|'', o2?: string, he?: string}} gas - percentages as typed
- */
-export function gasFromForm({ kind, o2, he }) {
-    if (kind === 'air') return { o2: 0.21, he: 0 };
-    if (kind !== 'ean' && kind !== 'tx') return null;
-    const o2Pct = parseDecimal(o2);
-    const hePct = kind === 'tx' ? (parseDecimal(he) ?? 0) : 0;
-    if (o2Pct === null || o2Pct <= 0 || o2Pct > 100 || hePct < 0 || o2Pct + hePct > 100) return null;
-    const frac = pct => Math.round(pct * 100) / 10000;
-    return { o2: frac(o2Pct), he: frac(hePct) };
-}
 
 /**
  * Label keys of the numeric fields whose non-blank text is not a number.
@@ -71,8 +63,6 @@ export function invalidNumberFields(values) {
     };
     const core = { log_number: 'number', duration_min: 'duration', max_depth_m: 'depth', water_temp_c: 'waterTemp', vis_shallow_m: 'visShallow', vis_deep_m: 'visDeep' };
     for (const [k, label] of Object.entries(core)) check(k, label);
-    if (values.gasKind === 'ean' || values.gasKind === 'tx') check('gasO2', 'gasO2');
-    if (values.gasKind === 'tx') check('gasHe', 'gasHe');
     for (const key of [...NUMERIC_DETAILS, 'rating']) {
         const v = values.details?.[key];
         if (v !== null && v !== undefined && String(v).trim() !== '' && parseDecimal(v) === null) bad.push(key);
@@ -80,28 +70,15 @@ export function invalidNumberFields(values) {
     return bad;
 }
 
-const pct = fraction => String(Math.round(fraction * 10000) / 100);
-
 /**
  * Form values (strings) for an entry or a computer prefill; the reverse of
- * `normalizeEntry` for everything the form shows.
+ * `normalizeEntry` for everything the form shows. `gases` holds one form row per gas card.
  * @param {Object} entry - log_entries row or partial prefill
  * @param {{comma?: boolean}} [options] - show a decimal comma
  */
 export function formValuesFromEntry(entry, { comma = false } = {}) {
     const text = v => (v === null || v === undefined ? '' : String(v));
     const num = v => (v === null || v === undefined ? '' : (comma ? String(v).replace('.', ',') : String(v)));
-    const gas = entry.gas;
-    let gasKind = '';
-    let gasO2 = '';
-    let gasHe = '';
-    if (gas) {
-        const o2 = Math.round(gas.o2 * 100);
-        const he = Math.round(gas.he * 100);
-        if (he > 0) [gasKind, gasO2, gasHe] = ['tx', num(pct(gas.o2)), num(pct(gas.he))];
-        else if (o2 === 21) gasKind = 'air';
-        else [gasKind, gasO2] = ['ean', num(pct(gas.o2))];
-    }
     return {
         log_number: text(entry.log_number),
         dive_date: text(entry.dive_date),
@@ -110,7 +87,7 @@ export function formValuesFromEntry(entry, { comma = false } = {}) {
         max_depth_m: num(entry.max_depth_m),
         site_id: entry.site_id ?? null,
         buddies: [...(entry.buddies ?? [])],
-        gasKind, gasO2, gasHe,
+        gases: formRowsFromGases(gasesFromEntry(entry), { comma }),
         water_temp_c: num(entry.water_temp_c),
         vis_shallow_m: num(entry.vis_shallow_m),
         vis_deep_m: num(entry.vis_deep_m),
@@ -163,8 +140,10 @@ export class EntryForm {
         this.siteId = entry?.site_id ?? prefill.site_id ?? null;
         this.comma = decimalSeparator(currentLang()) === ',';
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
+        this.gasTouched = false; // true once the user edits the gas block
         this.render();
         this._loadSuggestions();
+        if (entry?.recording_id && !Array.isArray(entry.details?.gases)) this._prefillGasesFromRecording();
     }
 
     destroy() {
@@ -247,10 +226,8 @@ export class EntryForm {
     render() {
         const v = this.values;
         const d = v.details;
-        const kind = v.gasKind;
         const tags = Array.isArray(d.tags) ? d.tags : [];
         const otherTags = tags.filter(t => !TAGS.includes(t)).join(', ');
-        const radio = (value, key) => `<label class="lb-radio"><input type="radio" name="gasKind" value="${value}"${kind === value ? ' checked' : ''}><span>${escHtml(tf(key))}</span></label>`;
         const detailText = key => this._input(`d.${key}`, key, d[key] ?? '');
         const detailNum = key => this._input(`d.${key}`, key, this._detailNum(key), { mode: DETAIL_INPUT[key] });
         const title = this.entry ? tf('editTitle') : tf('newTitle');
@@ -288,16 +265,7 @@ export class EntryForm {
                         </div>
                         <datalist id="lb-buddy-names"></datalist>
                     </div>
-                    <fieldset class="lb-field lb-gas">
-                        <legend>${escHtml(tf('gas'))}</legend>
-                        <div class="lb-radios">${radio('air', 'gasAir')}${radio('ean', 'gasEan')}${radio('tx', 'gasTx')}${radio('', 'gasNone')}</div>
-                        <div class="lb-row lb-gas-mix">
-                            <label class="lb-field"${kind === 'ean' || kind === 'tx' ? '' : ' hidden'} data-gas="o2"><span>${escHtml(tf('gasO2'))}</span>
-                                <input type="text" name="gasO2" value="${escHtml(v.gasO2)}" inputmode="decimal" autocomplete="off"></label>
-                            <label class="lb-field"${kind === 'tx' ? '' : ' hidden'} data-gas="he"><span>${escHtml(tf('gasHe'))}</span>
-                                <input type="text" name="gasHe" value="${escHtml(v.gasHe)}" inputmode="decimal" autocomplete="off"></label>
-                        </div>
-                    </fieldset>
+                    ${this._gasesHtml()}
                     <div class="lb-row">
                         ${this._input('vis_shallow_m', 'visShallow', v.vis_shallow_m, { mode: 'decimal' })}
                         ${this._input('vis_deep_m', 'visDeep', v.vis_deep_m, { mode: 'decimal' })}
@@ -317,11 +285,7 @@ export class EntryForm {
                     </div>
                     <h3>${escHtml(tf('equipment'))}</h3>
                     <div class="lb-row">
-                        ${detailNum('cylinderL')}
-                        ${this._select('cylinderMaterial', 'cylinderMaterial', CHOICES.cylinderMaterial, d.cylinderMaterial)}
-                    </div>
-                    <div class="lb-row">
-                        ${detailNum('pressureStartBar')}${detailNum('pressureEndBar')}${detailNum('weightsKg')}
+                        ${detailNum('weightsKg')}
                     </div>
                     <div class="lb-row">
                         ${this._select('suit', 'suit', CHOICES.suit, d.suit)}
@@ -365,13 +329,7 @@ export class EntryForm {
             this._save();
         });
         c.querySelector('#lb-cancel').addEventListener('click', () => this.onCancel?.());
-        for (const radio of c.querySelectorAll('[name="gasKind"]')) {
-            radio.addEventListener('change', () => {
-                const kind = c.querySelector('[name="gasKind"]:checked')?.value ?? '';
-                c.querySelector('[data-gas="o2"]').hidden = !(kind === 'ean' || kind === 'tx');
-                c.querySelector('[data-gas="he"]').hidden = kind !== 'tx';
-            });
-        }
+        this._wireGases();
         const buddyInput = c.querySelector('[name="buddy"]');
         c.querySelector('#lb-add-buddy').addEventListener('click', () => this._addBuddy());
         buddyInput.addEventListener('keydown', e => {
@@ -404,6 +362,181 @@ export class EntryForm {
         this.container.querySelector('[name="buddy"]')?.focus();
     }
 
+    // ---- Gases ----
+
+    _gasesHtml() {
+        const rows = this.values.gases;
+        const add = rows.length ? 'gasAddDeco' : 'gasAdd';
+        return `<fieldset class="lb-field lb-gases">
+                        <legend>${escHtml(tf('gases'))}</legend>
+                        ${rows.length ? rows.map((row, i) => this._gasCardHtml(row, i)).join('') : `<p class="lb-gases-empty">${escHtml(tf('gasesEmpty'))}</p>`}
+                        <p class="lb-gas-summary" aria-live="polite" hidden></p>
+                        <button type="button" class="btn btn-secondary" id="lb-add-gas">${escHtml(tf(add))}</button>
+                    </fieldset>`;
+    }
+
+    _gasCardHtml(row, i) {
+        const opt = (value, label, current) => `<option value="${escHtml(value)}"${value === current ? ' selected' : ''}>${escHtml(label)}</option>`;
+        const field = (labelKey, control) => `<label class="lb-field"><span>${escHtml(tf(labelKey))}</span>${control}</label>`;
+        const text = (name, value) => `<input type="text" name="gas.${name}" value="${escHtml(value ?? '')}" inputmode="decimal" autocomplete="off">`;
+        const roles = ['bottom', 'deco'].map(r => opt(r, tf(r === 'deco' ? 'roleDeco' : 'roleBottom'), row.role)).join('');
+        const mixes = [opt('', tf('choose'), row.mix), ...MIX_PRESETS.map(m => opt(m.id, gasName(m), row.mix)),
+            opt('nx', tf('mixNx'), row.mix), opt('tx', tf('mixTx'), row.mix)].join('');
+        const cylText = p => cylinderText({ cylinder: p.id }, { fmt: n => fmtNum(n), material: m => tf(`choices.cylinderMaterial.${m}`) });
+        const groups = CYLINDER_GROUPS.map(g => `<optgroup label="${escHtml(tf(`cylinderGroups.${g}`))}">${CYLINDER_PRESETS.filter(p => p.group === g).map(p => opt(p.id, cylText(p), row.cylinder)).join('')}</optgroup>`).join('');
+        const cylinders = opt('', tf('choose'), row.cylinder) + groups + opt('custom', tf('cylinderCustom'), row.cylinder);
+        const materials = [opt('', tf('choose'), row.material), ...MATERIALS.map(m => opt(m, tf(`choices.cylinderMaterial.${m}`), row.material))].join('');
+        const blend = row.mix === 'nx' || row.mix === 'tx'
+            ? `<div class="lb-gas-pair">${field('gasO2', text('o2', row.o2))}${row.mix === 'tx' ? field('gasHe', text('he', row.he)) : ''}</div>` : '';
+        const custom = row.cylinder === 'custom'
+            ? `<div class="lb-gas-pair">${field('volumeL', text('volumeL', row.volumeL))}${field('material', `<select name="gas.material">${materials}</select>`)}</div>` : '';
+        return `<div class="lb-gas-card${row.role === 'deco' ? ' lb-gas-card--deco' : ''}" data-gas-index="${i}">
+                            <span class="lb-gas-gauge" aria-hidden="true"></span>
+                            <div class="lb-gas-head">
+                                <select name="gas.role" aria-label="${escHtml(tf('gasRole'))}">${roles}</select>
+                                <strong class="lb-gas-name"></strong>
+                                <button type="button" class="lb-gas-remove" aria-label="${escHtml(fill(tf('gasRemove'), i + 1))}">×</button>
+                            </div>
+                            <div class="lb-gas-pair">${field('gasMix', `<select name="gas.mix">${mixes}</select>`)}${field('cylinder', `<select name="gas.cylinder">${cylinders}</select>`)}</div>
+                            ${blend}${custom}
+                            <div class="lb-gas-pair">${field('startBar', text('startBar', row.startBar))}${field('endBar', text('endBar', row.endBar))}</div>
+                            <p class="lb-gas-use"></p>
+                        </div>`;
+    }
+
+    /** Form rows of the gas cards, in card order. */
+    _gasRowsFromDom() {
+        return [...this.container.querySelectorAll('.lb-gas-card')].map(card => {
+            const get = name => card.querySelector(`[name="gas.${name}"]`)?.value ?? '';
+            const row = {};
+            for (const k of ['role', 'mix', 'o2', 'he', 'cylinder', 'volumeL', 'material', 'startBar', 'endBar']) row[k] = get(k);
+            row.role = row.role === 'deco' ? 'deco' : 'bottom';
+            return row;
+        });
+    }
+
+    _wireGases() {
+        const c = this.container;
+        const block = c.querySelector('.lb-gases');
+        const structural = new Set(['gas.role', 'gas.mix', 'gas.cylinder']);
+        block.addEventListener('input', () => { this.gasTouched = true; });
+        block.addEventListener('change', e => {
+            this.gasTouched = true;
+            const name = e.target.name;
+            if (!structural.has(name)) return;
+            const card = e.target.closest('.lb-gas-card');
+            const i = Number(card.dataset.gasIndex);
+            const before = this.values.gases[i];
+            this._readDom();
+            const row = this.values.gases[i];
+            // Switching from a preset to a custom choice starts from the preset's values.
+            const mixWas = MIX_PRESETS.find(m => m.id === before?.mix);
+            if (name === 'gas.mix' && mixWas && (row.mix === 'nx' || row.mix === 'tx') && !row.o2) {
+                row.o2 = this._num(Math.round(mixWas.o2 * 100));
+                if (row.mix === 'tx' && !row.he) row.he = this._num(Math.round(mixWas.he * 100));
+            }
+            const cylWas = cylinderPreset(before?.cylinder);
+            if (name === 'gas.cylinder' && cylWas && row.cylinder === 'custom' && !row.volumeL) {
+                row.volumeL = this._num(cylWas.volumeL);
+                row.material = cylWas.material;
+            }
+            this.render();
+            this._focusGas(i, name);
+        });
+        c.querySelector('#lb-add-gas').addEventListener('click', () => {
+            this.gasTouched = true;
+            this._readDom();
+            this.values.gases.push(newGasRow(this.values.gases.length ? 'deco' : 'bottom'));
+            this.render();
+            this._focusGas(this.values.gases.length - 1, 'gas.mix');
+        });
+        for (const x of c.querySelectorAll('.lb-gas-remove')) {
+            x.addEventListener('click', () => {
+                this.gasTouched = true;
+                this._readDom();
+                this.values.gases.splice(Number(x.closest('.lb-gas-card').dataset.gasIndex), 1);
+                this.render();
+                this.container.querySelector('#lb-add-gas')?.focus();
+            });
+        }
+        // Gauges, usage lines and the summary follow every keystroke without re-rendering (focus stays).
+        c.querySelector('form').addEventListener('input', () => this._updateGasLive());
+        c.querySelector('form').addEventListener('change', () => this._updateGasLive());
+        this._updateGasLive();
+    }
+
+    _num(value) {
+        return this.comma ? String(value).replace('.', ',') : String(value);
+    }
+
+    _focusGas(index, name) {
+        this.container.querySelectorAll('.lb-gas-card')[index]?.querySelector(`[name="${name}"]`)?.focus();
+    }
+
+    /** Update the gauges, mix names, usage lines and the summary from the inputs. */
+    _updateGasLive() {
+        const c = this.container;
+        const cards = [...c.querySelectorAll('.lb-gas-card')];
+        const summary = c.querySelector('.lb-gas-summary');
+        if (!summary) return;
+        const { gases } = gasesFromFormRows(this._gasRowsFromDom());
+        const durationS = parseDuration(c.querySelector('[name="duration_min"]')?.value);
+        const avgDepthM = parseDecimal(c.querySelector('[name="d.avgDepthM"]')?.value);
+        const usage = gasUsage(gases, { durationS, avgDepthM });
+        cards.forEach((card, i) => {
+            const g = gases[i];
+            const u = usage.rows[i];
+            card.querySelector('.lb-gas-name').textContent = Number.isFinite(g.o2) ? gasName(g) : tf('choose');
+            const known = g.startBar !== null && g.endBar !== null && g.startBar > 0 && g.endBar <= g.startBar;
+            card.style.setProperty('--fill', known ? `${Math.round((g.endBar / g.startBar) * 100)}%` : '100%');
+            card.classList.toggle('lb-gas-card--unknown', !known);
+            const end = card.querySelector('[name="gas.endBar"]');
+            const backwards = g.startBar !== null && g.endBar !== null && g.endBar > g.startBar;
+            if (backwards) end.setAttribute('aria-invalid', 'true'); else end.removeAttribute('aria-invalid');
+            const parts = [];
+            if (u.usedBar !== null) parts.push(`${u.usedBar > 0 ? '−' : ''}${fmtNum(Math.round(u.usedBar * 10) / 10)}${NBSP}bar`);
+            if (u.usedL !== null) parts.push(`${fmtNum(u.usedL, 0)}${NBSP}l`);
+            card.querySelector('.lb-gas-use').textContent = parts.join(' · ');
+        });
+        if (usage.totalL === null) {
+            summary.hidden = true;
+            summary.textContent = '';
+            return;
+        }
+        const used = `${tf('gasUsed')} ${fmtNum(usage.totalL, 0)}${NBSP}l`;
+        summary.innerHTML = usage.sacLpm !== null
+            ? escHtml(`${used} · ${tf('sac')} ${fmtNum(usage.sacLpm, 1)}${NBSP}l/min`)
+            : `${escHtml(used)}<span class="lb-gas-hint">${escHtml(tf('sacNeedsAvg'))}</span>`;
+        summary.hidden = false;
+    }
+
+    /**
+     * Edit of a recording-linked entry saved before gas rows existed: take the gases from the
+     * recording and keep the cylinder and pressures typed earlier on the bottom gas.
+     * Never throws; leaves the form alone once the diver touched the gas block.
+     */
+    async _prefillGasesFromRecording() {
+        try {
+            const record = await this.store.loadDive?.(this.entry.recording_id);
+            if (!record || this.destroyed || this.gasTouched) return;
+            const rows = gasesFromRecording(record);
+            if (!rows.length) return;
+            const legacy = gasesFromEntry(this.entry)[0];
+            if (legacy) {
+                const bottom = rows.find(r => r.role === 'bottom') ?? rows[0];
+                for (const k of ['cylinder', 'volumeL', 'material', 'startBar', 'endBar']) bottom[k] = legacy[k];
+                if (!Number.isFinite(bottom.o2) && Number.isFinite(legacy.o2)) Object.assign(bottom, { o2: legacy.o2, he: legacy.he });
+            }
+            const active = this.container.contains(document.activeElement) ? document.activeElement.name : null;
+            this._readDom();
+            this.values.gases = formRowsFromGases(rows, { comma: this.comma });
+            this.render();
+            if (active) this.container.querySelector(`[name="${active}"]`)?.focus();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // ---- Reading and saving ----
 
     /** Copy the DOM inputs into `this.values`. */
@@ -412,8 +545,8 @@ export class EntryForm {
         const get = name => c.querySelector(`[name="${name}"]`)?.value ?? '';
         const v = this.values;
         for (const k of ['log_number', 'dive_date', 'entry_time', 'duration_min', 'max_depth_m', 'water_temp_c',
-            'vis_shallow_m', 'vis_deep_m', 'notes', 'gasO2', 'gasHe']) v[k] = get(k);
-        v.gasKind = c.querySelector('[name="gasKind"]:checked')?.value ?? '';
+            'vis_shallow_m', 'vis_deep_m', 'notes']) v[k] = get(k);
+        if (c.querySelector('.lb-gases')) v.gases = this._gasRowsFromDom();
         this.siteName = get('site');
         const pending = get('buddy').trim();
         if (pending && !v.buddies.some(b => b.toLocaleLowerCase() === pending.toLocaleLowerCase())) v.buddies.push(pending);
@@ -507,19 +640,26 @@ export class EntryForm {
         }
         const bad = invalidNumberFields(v);
         if (bad.length) {
-            const label = key => tf(key).replace(/\u00a0\(.*\)$/, '');
-            this._setError(fill(tf('invalidNumber'), label(bad[0])));
+            this._setError(fill(tf('invalidNumber'), labelOf(bad[0])));
             return;
         }
         if (this.entry && !String(v.log_number).trim()) {
             this._setError(tf('numberRequired'));
             return;
         }
-        const gas = gasFromForm({ kind: v.gasKind, o2: v.gasO2, he: v.gasHe });
-        if ((v.gasKind === 'ean' || v.gasKind === 'tx') && !gas) {
-            this._setError(tf('gasInvalid'));
+        const { gases, errors } = gasesFromFormRows(v.gases);
+        if (errors.length) {
+            const { field } = errors[0];
+            this._setError(field === 'mix' ? tf('gasInvalid') : fill(tf('invalidNumber'), labelOf(field)));
             return;
         }
+        const gas = primaryGas(gases);
+        const details = {
+            ...this._detailsForSave(),
+            gases: gases.length ? gases : null,
+            // Legacy single-cylinder keys: the gas rows replace them, so they are removed on save.
+            cylinderL: null, cylinderMaterial: null, pressureStartBar: null, pressureEndBar: null,
+        };
         this._setSaving(true);
         let number = null;
         try {
@@ -527,7 +667,7 @@ export class EntryForm {
             this.siteId = siteId;
             const time = this.entry?.entry_time && String(this.entry.entry_time).slice(0, 5) === v.entry_time
                 ? this.entry.entry_time : v.entry_time;
-            const row = normalizeEntry({ ...v, entry_time: time, site_id: siteId, gas, details: this._detailsForSave() }, this.entry?.details);
+            const row = normalizeEntry({ ...v, entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
             if (!this.entry && row.log_number === null) {
                 row.log_number = nextLogNumber(await this.store.listEntries());
                 this.container.querySelector('[name="log_number"]').value = String(row.log_number);

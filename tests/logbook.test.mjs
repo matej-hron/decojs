@@ -26,7 +26,7 @@ import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
 import { mapyStaticMapUrl } from '../js/logbook/geo.js';
 import { gasesFromEntry, gasesFromRecording, primaryGas, gasUsage, formRowsFromGases, gasesFromFormRows, newGasRow, cylinderText } from '../js/logbook/gasModel.js';
-import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
+import { formValuesFromEntry, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -1031,16 +1031,10 @@ describe('entry form helpers', () => {
         assert.equal(parseDuration('-3'), null);
     });
 
-    test('gasFromForm', () => {
-        assert.deepEqual(gasFromForm({ kind: 'air' }), { o2: 0.21, he: 0 });
-        assert.deepEqual(gasFromForm({ kind: 'ean', o2: '32' }), { o2: 0.32, he: 0 });
-        assert.deepEqual(gasFromForm({ kind: 'ean', o2: '32,5' }), { o2: 0.325, he: 0 });
-        assert.deepEqual(gasFromForm({ kind: 'tx', o2: '18', he: '45' }), { o2: 0.18, he: 0.45 });
-        assert.deepEqual(gasFromForm({ kind: 'tx', o2: '18', he: '' }), { o2: 0.18, he: 0 });
-        assert.equal(gasFromForm({ kind: 'ean', o2: '' }), null);
-        assert.equal(gasFromForm({ kind: 'tx', o2: '60', he: '50' }), null);
-        assert.equal(gasFromForm({ kind: 'ean', o2: '0' }), null);
-        assert.equal(gasFromForm({ kind: '' }), null);
+    test('formValuesFromEntry gives gas cards, also for a legacy entry', () => {
+        const v = formValuesFromEntry({ gas: { o2: 0.32, he: 0 }, details: { cylinderL: 12, pressureStartBar: 200 } });
+        assert.deepEqual(v.gases.map(g => [g.role, g.mix, g.cylinder, g.startBar]), [['bottom', 'ean32', 's12', '200']]);
+        assert.deepEqual(formValuesFromEntry({ gas: null }).gases, []);
     });
 
     test('formValuesFromEntry round-trips through normalizeEntry', () => {
@@ -1051,19 +1045,17 @@ describe('entry form helpers', () => {
             details: { weather: 'sun', tags: ['night'], rating: 4, futureKey: 'kept' },
         };
         const form = formValuesFromEntry(entry);
-        assert.equal(form.gasKind, 'ean');
-        assert.equal(form.gasO2, '32');
+        assert.deepEqual(form.gases.map(g => g.mix), ['ean32']);
         assert.equal(form.entry_time, '09:30');
         assert.equal(form.vis_deep_m, '');
-        const back = normalizeEntry({ ...form, gas: gasFromForm({ kind: form.gasKind, o2: form.gasO2, he: form.gasHe }) }, entry.details);
+        const back = normalizeEntry({ ...form, gas: primaryGas(gasesFromFormRows(form.gases).gases) }, entry.details);
         assert.deepEqual({ ...back, entry_time: entry.entry_time }, { ...entry });
     });
 
     test('formValuesFromEntry detects air, trimix and unset gas, and uses a comma on request', () => {
-        assert.equal(formValuesFromEntry({ gas: { o2: 0.21, he: 0 } }).gasKind, 'air');
-        const tx = formValuesFromEntry({ gas: { o2: 0.18, he: 0.45 } });
-        assert.deepEqual([tx.gasKind, tx.gasO2, tx.gasHe], ['tx', '18', '45']);
-        assert.equal(formValuesFromEntry({ gas: null }).gasKind, '');
+        assert.equal(formValuesFromEntry({ gas: { o2: 0.21, he: 0 } }).gases[0].mix, 'air');
+        const tx = formValuesFromEntry({ gas: { o2: 0.185, he: 0.45 } }, { comma: true }).gases[0];
+        assert.deepEqual([tx.mix, tx.o2, tx.he], ['tx', '18,5', '45']);
         assert.equal(formValuesFromEntry({ max_depth_m: 18.4 }, { comma: true }).max_depth_m, '18,4');
     });
 
@@ -1133,8 +1125,72 @@ describe('entry form validation and races (jsdom)', () => {
         assert.deepEqual(invalidNumberFields(base), []);
         assert.deepEqual(invalidNumberFields({ ...base, max_depth_m: '18,4', duration_min: ' ' }), []);
         assert.deepEqual(invalidNumberFields({ ...base, max_depth_m: '18 m', log_number: 'abc' }), ['number', 'depth']);
-        assert.deepEqual(invalidNumberFields({ ...base, details: { cylinderL: '1 234', rating: 'x' } }), ['cylinderL', 'rating']);
-        assert.deepEqual(invalidNumberFields({ ...base, gasKind: 'air', gasO2: 'zz' }), []);
+        assert.deepEqual(invalidNumberFields({ ...base, details: { weightsKg: '1 234', rating: 'x' } }), ['weightsKg', 'rating']);
+    });
+
+    test('gas cards: add, remove, save migrates legacy cylinder keys', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [],
+                saveEntry: async (row, id) => { saves.push(row); return { id, ...row }; } };
+            const legacy = { ...entry, site_id: null, gas: { o2: 0.21, he: 0 }, duration_s: 3000,
+                details: { cylinderL: 12, cylinderMaterial: 'steel', pressureStartBar: 200, pressureEndBar: 80, avgDepthM: 20, weather: 'sun' } };
+            new EntryForm(root, { store, entry: legacy, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(root.querySelectorAll('.lb-gas-card').length, 1);
+            assert.match(root.querySelector('.lb-gas-summary').textContent, /1\s?440/);
+            root.querySelector('#lb-add-gas').click();
+            assert.equal(root.querySelectorAll('.lb-gas-card').length, 2);
+            assert.equal(root.querySelectorAll('[name="gas.role"]')[1].value, 'deco');
+            root.querySelectorAll('[name="gas.startBar"]')[1].value = '200';
+            root.querySelectorAll('[name="gas.endBar"]')[1].value = '150';
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            const row = saves[0];
+            assert.deepEqual(row.gas, { o2: 0.21, he: 0 });
+            assert.deepEqual(row.details.gases.map(g => [g.role, g.cylinder, g.startBar, g.endBar]), [['bottom', 's12', 200, 80], ['deco', 'al40', 200, 150]]);
+            for (const k of ['cylinderL', 'cylinderMaterial', 'pressureStartBar', 'pressureEndBar']) assert.equal(k in row.details, false, k);
+            assert.equal(row.details.weather, 'sun');
+        });
+    });
+
+    test('removing every gas saves no gas; a bad mix blocks the save', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [],
+                saveEntry: async (row, id) => { saves.push(row); return { id, ...row }; } };
+            new EntryForm(root, { store, entry: { ...entry, gas: { o2: 0.32, he: 0 } }, onSaved() {}, onCancel() {} });
+            await tick();
+            const mix = root.querySelector('[name="gas.mix"]');
+            mix.value = 'tx';
+            mix.dispatchEvent(new window.Event('change', { bubbles: true }));
+            root.querySelector('[name="gas.o2"]').value = '60';
+            root.querySelector('[name="gas.he"]').value = '50';
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves.length, 0);
+            assert.ok(!root.querySelector('.lb-form-error').hidden);
+            root.querySelector('.lb-gas-remove').click();
+            assert.equal(root.querySelectorAll('.lb-gas-card').length, 0);
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves[0].gas, null);
+            assert.equal('gases' in saves[0].details, false);
+        });
+    });
+
+    test('editing a linked entry without gases prefills them from the recording, keeping the typed cylinder', async () => {
+        await withDom(async root => {
+            const record = { gases: [{ id: 'g0', o2: 0.21, he: 0, role: 'oc' }, { id: 'g1', o2: 0.5, he: 0, role: 'oc' }],
+                events: [{ t: 0, type: 'gasSwitch', gasId: 'g0' }, { t: 1800, type: 'gasSwitch', gasId: 'g1' }] };
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [], loadDive: async () => record };
+            new EntryForm(root, { store, entry: { ...entry, recording_id: 'r1', gas: { o2: 0.21, he: 0 }, details: { cylinderL: 15, pressureStartBar: 220 } }, onSaved() {}, onCancel() {} });
+            await tick();
+            const roles = [...root.querySelectorAll('[name="gas.role"]')].map(s => s.value);
+            assert.deepEqual(roles, ['bottom', 'deco']);
+            assert.equal(root.querySelector('[name="gas.cylinder"]').value, 's15');
+            assert.equal(root.querySelector('[name="gas.startBar"]').value, '220');
+        });
     });
 
     test('saving an edit before suggestions load keeps the stored site', async () => {
