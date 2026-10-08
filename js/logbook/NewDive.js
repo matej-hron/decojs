@@ -193,8 +193,9 @@ export class NewDive {
         if (this.loading) body = `<p class="lb-muted">${escHtml(tb('loading'))}</p>`;
         else if (!list.length) body = `<p class="lb-muted">${escHtml(tn('noneFound'))}</p>`;
         else {
-            body = `<ul class="lb-picks">${list.map((c, i) => `<li><button type="button" class="btn btn-secondary lb-pick" data-i="${i}"${this.busy ? ' disabled' : ''}>
-                <strong>${escHtml(c.label)}</strong>${c.fromFolder ? `<span class="lb-muted"> · ${escHtml(tn('inFolder'))}</span>` : ''}</button></li>`).join('')}</ul>`;
+            body = `<ul class="lb-picks">${list.map((c, i) => `<li class="lb-found">
+                <p class="lb-found-info"><strong>${escHtml(c.label)}</strong>${c.fromFolder ? `<span class="lb-muted">${escHtml(tn('inFolder'))}</span>` : ''}</p>
+                <button type="button" class="btn btn-primary lb-pick" data-i="${i}"${this.busy ? ' disabled' : ''}>${escHtml(tn('add'))}</button></li>`).join('')}</ul>`;
         }
         const logged = this.loading ? [] : entriesOnDate(this.entries, this.date);
         const loggedHtml = logged.length ? `<h3>${escHtml(tl('alreadyLogged'))}</h3>
@@ -221,7 +222,7 @@ export class NewDive {
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
             <div class="lb-actions">
                 ${folderControl}
-                <button type="button" class="btn btn-primary" id="nd-without"${this.busy ? ' disabled' : ''}>${escHtml(tn('without'))}</button>
+                <button type="button" class="btn ${list.length ? 'btn-secondary' : 'btn-primary'}" id="nd-without"${this.busy ? ' disabled' : ''}>${escHtml(tn('without'))}</button>
                 <a class="btn btn-secondary lb-cancel" href="${routeHref({ name: 'list' })}">${escHtml(translate('diveLog.logbook.form.cancel', 'Cancel'))}</a>
             </div>
         </section>`;
