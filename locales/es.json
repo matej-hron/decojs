@@ -2890,6 +2890,12 @@
             "learnWhy": "Entiende por qué en DecoTheory ↗",
             "diver": "Buceador",
             "you": "Tú",
+            "feed": {
+                "title": "Novedades",
+                "loadMore": "Cargar más",
+                "empty": "Aún no hay inmersiones de los miembros.",
+                "moreFailed": "No se pudieron cargar más inmersiones. Inténtalo de nuevo."
+            },
             "disclaimer": "Solo con fines educativos — no sustituye a tu ordenador de buceo.",
             "footer": "DecoTrail — inmersiones explicadas por"
         },

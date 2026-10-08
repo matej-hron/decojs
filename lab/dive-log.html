@@ -538,6 +538,37 @@
         .tr-avatar { display: inline-block; flex: none; width: var(--size, 40px); height: var(--size, 40px); border-radius: 50%; overflow: hidden; background: var(--surface-sunken); vertical-align: middle; }
         .tr-avatar > svg, .tr-avatar > img { display: block; width: 100%; height: 100%; }
         .tr-avatar > img { object-fit: cover; }
+        /* Feed: own and members' dives; the title link stretches over the card, the author link sits above it */
+        .tr-feed { display: grid; gap: 1rem; width: 100%; max-width: 42rem; margin: 0 auto; }
+        .tr-feed-title { margin: 0; padding: 0; border: 0; color: var(--text); font-size: var(--text-2xl); line-height: var(--leading-tight); }
+        .tr-feed .lb-feed { grid-template-columns: minmax(0, 1fr); }
+        .tr-feed-card { position: relative; }
+        .tr-feed-card .lb-feed-main { gap: 0.6rem; padding-top: 0.75rem; }
+        /* Author row: avatar and name are one link (44 px); the date tucks under the name, outside the link */
+        .tr-author { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+        .tr-author > * { grid-area: 1 / 1; }
+        .tr-author-link { position: relative; z-index: 1; justify-self: start; display: inline-flex; align-items: flex-start; gap: 0.65rem; max-width: 100%; min-height: 44px; min-width: 0;
+            color: var(--text); font-weight: 600; line-height: 1.3; text-decoration: none; }
+        .tr-author-link:hover .tr-author-name { color: var(--tr-accent); text-decoration: underline; text-underline-offset: 0.15em; }
+        .tr-author-link:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+        .tr-author-av { display: inline-flex; flex: none; margin-top: 2px; }
+        .tr-author-name { min-width: 0; padding-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tr-author-when { position: relative; z-index: 2; align-self: end; min-width: 0; margin-left: calc(40px + 0.65rem); padding-bottom: 2px; pointer-events: none;
+            color: var(--text-subtle); font-size: var(--text-sm); line-height: 1.3; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tr-feed-link { color: inherit; text-decoration: none; }
+        .tr-feed-link::after { content: ''; position: absolute; inset: 0; }
+        .tr-feed-link:focus-visible { outline: none; }
+        .tr-feed-card:hover .lb-feed-title { color: var(--brand); }
+        .tr-feed-card:has(.tr-feed-link:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+        .tr-feed-foot { display: grid; justify-items: center; gap: 0.5rem; padding: 0.5rem 0 1rem; }
+        .tr-feed-more { min-height: 44px; min-width: 12rem; justify-content: center; }
+        .tr-feed-more[aria-disabled="true"] { opacity: 0.6; cursor: progress; }
+        .tr-feed-foot .lb-form-error { margin: 0; text-align: center; }
+        @media (max-width: 720px) {
+            .tr-feed-title { font-size: var(--text-xl); }
+            .tr-feed-card:has(.tr-feed-link:focus-visible) { outline-offset: -3px; }
+            .tr-feed-more { width: 100%; }
+        }
         .tr-learn { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: var(--tr-accent); font-size: var(--text-sm); }
         .rda-invite { flex-basis: 100%; margin: 0.25rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--border); color: var(--text-subtle); font-size: var(--text-sm); }
 

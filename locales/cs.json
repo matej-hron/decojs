@@ -2926,6 +2926,12 @@
             "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
             "diver": "Potápěč",
             "you": "Vy",
+            "feed": {
+                "title": "Přehled",
+                "loadMore": "Načíst další",
+                "empty": "Od členů zatím nejsou žádné ponory.",
+                "moreFailed": "Další ponory se nepodařilo načíst. Zkuste to znovu."
+            },
             "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
             "footer": "DecoTrail — ponory vysvětlené pomocí"
         },

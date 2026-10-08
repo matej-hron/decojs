@@ -180,3 +180,157 @@ test('resolveRoute: home and community routes depend on the feature', () => {
     assert.deepEqual(resolveRoute({ name: 'member', id: 'x' }, true), { name: 'member', id: 'x' });
     assert.deepEqual(resolveRoute({ name: 'detail', id: 'x' }, false), { name: 'detail', id: 'x' });
 });
+
+// ---- feedCard.js ----
+
+import { feedCardHtml, statsHtml, visualHtml } from '../js/logbook/feedCard.js';
+
+const ownCard = extra => feedCardHtml({
+    entry: { id: 'e7', log_number: 7 }, href: '#/dive/e7', title: 'Lom Leštinka', whenText: 'Mon, Sep 28, 2026, 10:15',
+    numberLabel: '#7', statsHtml: '<dl class="lb-stats"></dl>', visualHtml: '<div class="lb-visual"></div>', ...extra,
+});
+
+test('feedCardHtml without an author: the My dives card (link, number badge, when line, no author row)', () => {
+    const html = ownCard({ peopleText: 'with Petr', notesText: 'Cold <b>', badgeHtml: '<span class="lb-badge">Add details</span>' });
+    assert.match(html, /^<a class="lb-feed-card" href="#\/dive\/e7">/);
+    assert.match(html, /<\/a>$/);
+    assert.match(html, /<span class="lb-num-badge" aria-hidden="true">7<\/span>/);
+    assert.match(html, /<span class="rda-visually-hidden">#7, <\/span><span class="lb-date">Mon, Sep 28, 2026, 10:15<\/span>/);
+    assert.match(html, /<p class="lb-feed-people">with Petr<\/p>/);
+    assert.match(html, /<p class="lb-feed-notes">Cold &lt;b&gt;<\/p>/);
+    assert.ok(html.includes('<span class="lb-badge">Add details</span>'));
+    assert.ok(!html.includes('tr-author'));
+    assert.ok(html.indexOf('lb-feed-main') < html.indexOf('<div class="lb-visual">'), 'the picture comes last');
+});
+
+test('feedCardHtml without an author: a missing number shows "–"; select mode is a pickable box', () => {
+    assert.match(ownCard({ entry: { id: 'e7', log_number: null } }), /lb-num-badge" aria-hidden="true">–</);
+    const picked = ownCard({ pick: { id: 'e7', selected: true }, selectHtml: '<input class="lb-select-box">' });
+    assert.match(picked, /^<div class="lb-feed-card lb-selectable lb-selected" data-pick="e7">/);
+    assert.match(picked, /<\/div>$/);
+    assert.ok(picked.includes('<div class="lb-feed-head"><input class="lb-select-box">'));
+    assert.ok(!picked.includes('href='));
+});
+
+test('feedCardHtml with an author: author row above the head, title links to the dive', () => {
+    const html = feedCardHtml({
+        entry: { id: 'o1', log_number: null, owner: 'u2' }, href: '#/m/o1', title: 'Blue <Hole>', whenText: 'Sep 30',
+        statsHtml: '', visualHtml: '<div class="lb-visual"></div>',
+        author: { name: 'Jana <script>', avatarHtml: '<span class="tr-avatar"></span>', href: '#/member/u2', own: false },
+    });
+    assert.match(html, /^<article class="lb-feed-card tr-feed-card">/);
+    assert.match(html, /<\/article>$/);
+    for (const part of html.split('</a>')) assert.ok(part.split('<a ').length <= 2, 'no nested links');
+    assert.match(html, /<div class="tr-author"><a class="tr-author-link" href="#\/member\/u2"><span class="tr-avatar"><\/span><span class="tr-author-name">Jana &lt;script&gt;<\/span><\/a>/);
+    assert.match(html, /<\/a><span class="tr-author-when">Sep 30<\/span><\/div>/, 'the date is outside the member link');
+    assert.match(html, /<a class="tr-feed-link" href="#\/m\/o1">Blue &lt;Hole&gt;<\/a>/);
+    assert.ok(html.indexOf('tr-author') < html.indexOf('lb-feed-head'), 'author row comes first');
+    assert.ok(!html.includes('lb-num-badge'), 'no number badge when log_number is null');
+    assert.ok(!html.includes('lb-feed-when'), 'the date lives in the author row');
+});
+
+test('feedCardHtml with an author: own dives keep their number; the own flag marks the card', () => {
+    const html = feedCardHtml({
+        entry: { id: 'e7', log_number: 7, owner: 'u1' }, href: '#/dive/e7', title: 'Dive #7', untitled: true, whenText: 'Sep 28', numberLabel: '#7',
+        author: { name: 'You', avatarHtml: '', href: '#/member/u1', own: true },
+    });
+    assert.match(html, /^<article class="lb-feed-card tr-feed-card tr-feed-own">/);
+    assert.match(html, /<span class="lb-num-badge" aria-hidden="true">7<\/span>/);
+    assert.match(html, /<h4 class="lb-feed-title lb-untitled"><a class="tr-feed-link" href="#\/dive\/e7"><span class="rda-visually-hidden">#7, <\/span>Dive #7<\/a><\/h4>/);
+});
+
+test('statsHtml and visualHtml escape and keep the units apart', () => {
+    assert.equal(statsHtml([], k => k), '');
+    const s = statsHtml([{ key: 'depth', value: '12,5', unit: 'm' }, { key: 'gas', value: 'EAN<32>', unit: '' }], k => `L-${k}`);
+    assert.ok(s.includes(`<dt>L-depth</dt>`));
+    assert.ok(s.includes(`12,5<span class="lb-unit">${NB}m</span>`));
+    assert.ok(s.includes('EAN&lt;32&gt;</dd>'));
+    const photo = visualHtml({ kind: 'photo', entryId: 'x"1', variant: 'feed', photoUrl: 'data:image/jpeg;base64,AA', more: 2, moreText: '2 more photos' });
+    assert.ok(photo.includes('data-entry="x&quot;1"'));
+    assert.ok(photo.includes('+2'));
+    assert.equal(visualHtml({ kind: 'none', entryId: 'x', variant: 'feed' }), '');
+    assert.ok(visualHtml({ kind: 'none', entryId: 'x', variant: 'tile', numberText: '#3' }).includes('<span>#3</span>'));
+    const prof = visualHtml({ kind: 'profile', entryId: 'x', variant: 'feed', recordingId: 'r1', profileAlt: 'Depth profile', depthText: `9,1${NB}m` });
+    assert.ok(prof.includes('data-rec="r1"') && prof.includes('lb-visual-depth'));
+});
+
+// ---- CommunityFeed (jsdom) ----
+
+import { CommunityFeed } from '../js/logbook/CommunityFeed.js';
+
+async function withDom(fn) {
+    const { JSDOM } = await import('jsdom');
+    const dom = new JSDOM('<!doctype html><body><div id="host"></div></body>', { url: 'http://localhost/lab/dive-log.html#/feed' });
+    const saved = {};
+    for (const k of ['window', 'document', 'location']) {
+        saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+        Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+    }
+    try {
+        return await fn(dom.window.document.getElementById('host'));
+    } finally {
+        for (const [k, d] of Object.entries(saved)) {
+            if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+        }
+    }
+}
+
+test('CommunityFeed: author rows, own vs member links, Load more pages by 30', async () => {
+    await withDom(async host => {
+        const rows = Array.from({ length: 35 }, (_, i) => ({
+            id: `d${i}`, owner: i === 0 ? 'me' : i === 1 ? 'ghost' : 'u2', log_number: i === 0 ? 12 : null,
+            dive_date: `2026-0${9 - Math.floor(i / 10)}-${String(28 - (i % 10)).padStart(2, '0')}`, max_depth_m: 20, duration_s: 1800,
+            site_id: i === 2 ? 's1' : null, site_name: i === 2 ? 'Reef <A>' : null, photo_path: null, photo_count: 0, notes: 'never',
+        }));
+        const calls = [];
+        const store = {
+            listMembers: async () => [{ id: 'me', display_name: 'Me' }, { id: 'u2', display_name: 'Jana <i>', avatar_path: 'u2/a.jpg' }],
+            listCommunityEntries: async args => { calls.push(args); return rows.slice(args.offset, args.offset + args.limit); },
+            photoUrls: async () => new Map(),
+            avatarUrls: async paths => new Map(paths.map(p => [p, 'https://example.test/a.jpg'])),
+            loadCommunityRecording: async () => null,
+        };
+        const feed = new CommunityFeed(host, { store, userId: 'me' });
+        await new Promise(r => setTimeout(r, 20));
+        assert.deepEqual(calls[0], { owner: null, limit: 30, offset: 0 });
+        assert.equal(host.querySelectorAll('.tr-feed-card').length, 30);
+        const own = host.querySelector('.tr-feed-own');
+        assert.equal(own.querySelector('.tr-author-name').textContent, 'You');
+        assert.equal(own.querySelector('.tr-feed-link').getAttribute('href'), '#/dive/d0');
+        assert.ok(own.querySelector('.lb-num-badge'));
+        const ghost = host.querySelector('.tr-feed-link[href="#/m/d1"]').closest('.tr-feed-card');
+        assert.equal(ghost.querySelector('.tr-author-name').textContent, 'Diver', 'no profile row → Diver');
+        assert.equal(ghost.querySelector('.lb-num-badge'), null);
+        assert.equal(ghost.querySelector('.lb-feed-title').textContent, 'Dive');
+        assert.equal(ghost.querySelector('.tr-author-link').getAttribute('href'), '#/member/ghost');
+        const site = host.querySelector('.tr-feed-link[href="#/m/d2"]');
+        assert.equal(site.textContent, 'Reef <A>');
+        assert.ok(host.innerHTML.includes('Jana &lt;i&gt;'));
+        assert.ok(host.querySelector('.tr-author-av img[src="https://example.test/a.jpg"]'), 'uploaded avatar signed');
+        assert.ok(!host.textContent.includes('never'), 'no notes');
+        host.querySelector('#tr-feed-more').click();
+        await new Promise(r => setTimeout(r, 20));
+        assert.deepEqual(calls[1], { owner: null, limit: 30, offset: 30 });
+        assert.equal(host.querySelectorAll('.tr-feed-card').length, 35);
+        assert.equal(host.querySelector('#tr-feed-more'), null, 'a short page ends the feed');
+        feed.destroy();
+        assert.equal(host.innerHTML, '');
+    });
+});
+
+test('CommunityFeed: empty state and a first-page failure go to onError', async () => {
+    await withDom(async host => {
+        const empty = new CommunityFeed(host, { store: { listMembers: async () => [], listCommunityEntries: async () => [], photoUrls: async () => new Map() }, userId: 'me' });
+        await new Promise(r => setTimeout(r, 20));
+        assert.match(host.textContent, /No dives from members yet\./);
+        empty.destroy();
+        let reported = null;
+        const failing = new CommunityFeed(host, {
+            store: { listMembers: async () => [], listCommunityEntries: async () => { throw new Error('down'); } },
+            userId: 'me', onError: e => { reported = e; },
+        });
+        await new Promise(r => setTimeout(r, 20));
+        assert.equal(reported?.message, 'down');
+        failing.destroy();
+    });
+});

@@ -16,16 +16,19 @@ import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
-import { groupByMonth, sortEntries, sparklinePath, profileAreaPath, formatWeekdayDate } from './listViews.js';
+import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
+import { feedCardHtml, statsHtml, visualHtml } from './feedCard.js';
+import { SparkLoader } from './sparks.js';
+import { CommunityFeed } from './CommunityFeed.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
 /** Community routes whose views arrive in later steps; until then they show My dives. */
-const PENDING_VIEWS = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
+const PENDING_VIEWS = new Set(['community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
@@ -40,9 +43,6 @@ const tt = key => tl(key, TITLE_FALLBACK[key] ?? key);
 const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
 
 const VIEW_KEY = 'decojs.logbook.view';
-const SPARK_W = 300;
-const SPARK_H = 100;
-const SPARK_CONCURRENCY = 3;
 const TABLE_COLUMNS = [
     ['number', false], ['date', false], ['site', false], ['maxDepth', true], ['duration', true],
     ['avgDepth', true], ['temp', true], ['buddies', false],
@@ -93,9 +93,7 @@ export class LogbookApp {
         this.selecting = false; // select mode of the list
         this.selected = new Set(); // entry ids; survives view switches and sorting
         this.bulk = null; // null | { phase: 'confirm'|'running'|'done', withRecordings, done, total, numbers, result }
-        this.sparks = new Map(); // recording id -> SVG path ('' when none or failed)
-        this._sparkQueue = [];
-        this._sparkActive = 0;
+        this.sparks = new SparkLoader(id => this.store.loadDive(id)); // lazy depth profiles of the list
         this._onHash = () => { this._probeCommunity(); this._renderRoute(); }; // a route change retries an 'unknown' probe
         this._onLanguage = () => this._onLanguageChange();
         this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
@@ -117,6 +115,7 @@ export class LogbookApp {
 
     destroy() {
         this.destroyed = true;
+        this.sparks.destroy();
         this._unsubscribe?.();
         this._leaveLogbook();
         this._unmountAnalysis();
@@ -263,7 +262,7 @@ export class LogbookApp {
     _onLanguageChange() {
         this._renderShell();
         const name = this._route().name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site')) this.form.relabel(); // keep what was typed
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed')) this.form.relabel(); // keep what was typed / loaded
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
     }
@@ -293,6 +292,7 @@ export class LogbookApp {
             case 'new': this._showNew(); break;
             case 'sites': this._showSites(null); break;
             case 'site': this._showSites(route.id); break;
+            case 'feed': this._showFeed(); break;
             default: this._showNotFound();
         }
     }
@@ -335,6 +335,16 @@ export class LogbookApp {
             store: this.store, siteId,
             onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
             onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
+        });
+    }
+
+    // ---- Feed (own and other members' dives) ----
+
+    _showFeed() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new CommunityFeed(this.view.firstChild, {
+            store: this.store, userId: this.user.id,
+            onError: error => this._storeError(error),
         });
     }
 
@@ -635,27 +645,24 @@ export class LogbookApp {
         const photoUrl = this.thumbs.get(entry.id) ?? null;
         const apiKey = this._mapFailed ? '' : MAPY_API_KEY; // after one failed map, stop asking for more
         const { kind } = chooseVisual({ photoUrl, site, apiKey, recordingId: entry.recording_id });
-        const id = ` data-entry="${escHtml(entry.id)}" data-variant="${variant}"`;
-        if (kind === 'photo') {
-            const more = (this.photos.get(entry.id)?.count ?? 1) - 1;
-            return `<div class="lb-visual lb-visual-photo"${id}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
-                ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(fill(tl('feed.morePhotos', '{0} more photos'), more))}</span></span>` : ''}</div>`;
-        }
+        const more = (this.photos.get(entry.id)?.count ?? 1) - 1;
+        let map;
         if (kind === 'map') {
             const [w, h] = variant === 'tile' ? [320, 240] : [640, 280];
-            const src = mapyStaticMapUrl({
-                lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
-                scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
-            });
-            return `<div class="lb-visual lb-visual-map"${id}><img class="lb-visual-img lb-map-img" src="${escHtml(src)}" width="${w}" height="${h}" alt="${escHtml(fill(tl('feed.mapAlt', 'Map of {0}'), site.name))}" loading="lazy"></div>`;
+            map = {
+                width: w, height: h, alt: fill(tl('feed.mapAlt', 'Map of {0}'), site.name),
+                src: mapyStaticMapUrl({
+                    lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
+                    scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
+                }),
+            };
         }
-        if (kind === 'profile') {
-            const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';
-            return `<div class="lb-visual lb-visual-profile"${id}><span class="lb-spark" data-rec="${escHtml(entry.recording_id)}" role="img" aria-label="${escHtml(tl('feed.profileAlt', 'Depth profile'))}"></span>
-                ${depth ? `<span class="lb-visual-depth" aria-hidden="true">${escHtml(depth)}</span>` : ''}</div>`;
-        }
-        if (variant === 'tile') return `<div class="lb-visual lb-visual-none"${id} aria-hidden="true"><span>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</span></div>`;
-        return '';
+        const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';
+        return visualHtml({
+            kind, entryId: entry.id, variant, photoUrl, more, moreText: fill(tl('feed.morePhotos', '{0} more photos'), more), map,
+            recordingId: entry.recording_id, profileAlt: tl('feed.profileAlt', 'Depth profile'), depthText: depth,
+            numberText: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
+        });
     }
 
     /** A map image that failed (key not valid on this site, offline): show the profile instead, or nothing. */
@@ -671,11 +678,8 @@ export class LogbookApp {
         this._watchSparks();
     }
 
-    _stats(entry, keys = null) {
-        const stats = feedStats(entry, fmtNum).filter(s => !keys || keys.includes(s.key));
-        if (!stats.length) return '';
-        return `<dl class="lb-stats">${stats.map(s => `<div class="lb-stat lb-stat-${s.key}"><dt>${escHtml(tl(`feed.stats.${s.key}`, STAT_FALLBACK[s.key]))}</dt>
-            <dd>${escHtml(s.value)}${s.unit ? `<span class="lb-unit">${NB}${escHtml(s.unit)}</span>` : ''}</dd></div>`).join('')}</dl>`;
+    _stats(entry) {
+        return statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key]));
     }
 
     /** A feed card: who/where/when, the stat row, buddies and notes, then the picture. */
@@ -685,20 +689,15 @@ export class LogbookApp {
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
         const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
-        const [open, close] = this._wrap(entry, 'lb-feed-card');
-        return `${open}<div class="lb-feed-main">
-                <div class="lb-feed-head">${this._pick(entry)}
-                    <span class="lb-num-badge" aria-hidden="true">${escHtml(String(entry.log_number ?? '–'))}</span>
-                    <div class="lb-feed-who">
-                        <h4 class="lb-feed-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</h4>
-                        <p class="lb-feed-when"><span class="rda-visually-hidden">${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}, </span><span class="lb-date">${escHtml(this._whenText(entry))}</span></p>
-                    </div>
-                    ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-                </div>
-                ${this._stats(entry)}
-                ${people ? `<p class="lb-feed-people">${escHtml(people)}</p>` : ''}
-                ${notes ? `<p class="lb-feed-notes">${escHtml(notes)}</p>` : ''}
-            </div>${this._visual(entry, 'feed')}${close}`;
+        return feedCardHtml({
+            entry, href: routeHref({ name: 'detail', id: entry.id }),
+            pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),
+            title: diveTitle(entry, site?.name, tt), untitled: !site, whenText: this._whenText(entry),
+            numberLabel: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
+            statsHtml: this._stats(entry), peopleText: people, notesText: notes,
+            badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
+            visualHtml: this._visual(entry, 'feed'),
+        });
     }
 
     _renderFeed() {
@@ -787,61 +786,11 @@ export class LogbookApp {
     // ---- Lazy depth profiles (Feed and Tiles, dives without a photo or map) ----
 
     _stopSparks() {
-        this._sparkObserver?.disconnect();
-        this._sparkObserver = null;
-        this._sparkQueue = [];
+        this.sparks.stop();
     }
 
     _watchSparks() {
-        this._stopSparks();
-        const slots = [...this.view.querySelectorAll('.lb-spark[data-rec]')];
-        for (const el of slots) if (this.sparks.has(el.dataset.rec)) this._paintSpark(el);
-        const pending = slots.filter(el => !this.sparks.has(el.dataset.rec));
-        if (!pending.length) return;
-        if (typeof IntersectionObserver === 'undefined') return; // no lazy loading: skip profiles rather than load every dive
-        this._sparkObserver = new IntersectionObserver(items => {
-            for (const item of items) {
-                if (!item.isIntersecting) continue;
-                this._sparkObserver?.unobserve(item.target);
-                this._enqueueSpark(item.target);
-            }
-        }, { rootMargin: '200px' });
-        pending.forEach(el => this._sparkObserver.observe(el));
-    }
-
-    _enqueueSpark(el) {
-        this._sparkQueue.push(el);
-        this._pumpSparks();
-    }
-
-    _pumpSparks() {
-        while (this._sparkActive < SPARK_CONCURRENCY && this._sparkQueue.length) {
-            const el = this._sparkQueue.shift();
-            if (!el.isConnected) continue;
-            const id = el.dataset.rec;
-            if (this.sparks.has(id)) { this._paintSpark(el); continue; }
-            this._sparkLoads ??= new Map();
-            const inFlight = this._sparkLoads.get(id);
-            if (inFlight) { inFlight.then(() => { if (el.isConnected) this._paintSpark(el); }); continue; } // same dive already loading
-            this._sparkActive++;
-            const load = this.store.loadDive(id)
-                .then(dive => ({ line: sparklinePath(dive?.samples, SPARK_W, SPARK_H, 0), area: profileAreaPath(dive?.samples, SPARK_W, SPARK_H, 0) }), () => null)
-                .catch(() => null)
-                .then(paths => {
-                    this.sparks.set(id, paths);
-                    if (el.isConnected) this._paintSpark(el);
-                })
-                .finally(() => { this._sparkLoads.delete(id); this._sparkActive--; if (!this.destroyed) this._pumpSparks(); });
-            this._sparkLoads.set(id, load);
-        }
-    }
-
-    /** The profile as a "water column": the dived shape hangs from the surface; the bottom 15 % stays free. */
-    _paintSpark(el) {
-        const paths = this.sparks.get(el.dataset.rec);
-        if (!paths?.line || el.firstChild) return;
-        el.innerHTML = `<svg viewBox="0 -3 ${SPARK_W} ${SPARK_H + 18}" preserveAspectRatio="none" focusable="false" aria-hidden="true">
-            <path class="lb-spark-area" d="${paths.area}"/><path class="lb-spark-line" d="${paths.line}" vector-effect="non-scaling-stroke"/></svg>`;
+        this.sparks.watch(this.view);
     }
 
     _renderList() {

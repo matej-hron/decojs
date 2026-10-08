@@ -2926,6 +2926,12 @@
             "learnWhy": "Learn why on DecoTheory ↗",
             "diver": "Diver",
             "you": "You",
+            "feed": {
+                "title": "Feed",
+                "loadMore": "Load more",
+                "empty": "No dives from members yet.",
+                "moreFailed": "Couldn’t load more dives. Try again."
+            },
             "disclaimer": "For education only — not a substitute for your dive computer.",
             "footer": "DecoTrail — dives explained by"
         },
