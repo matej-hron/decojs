@@ -15,7 +15,7 @@ import {
 import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
-import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
+import { detailRows, isHttpsUrl, gasCards } from '../js/logbook/EntryDetail.js';
 import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
 import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang, distanceMeters, duplicateNameCounts, nearbySameNameSite } from '../js/logbook/geo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
@@ -1298,6 +1298,20 @@ describe('detail helpers', () => {
         assert.equal(dive.find(r => r.key === 'stops').value, '<form.choices.stops.deco>');
         assert.equal(dive.find(r => r.key === 'tags').value, '<form.choices.tags.wreck>, custom');
         assert.equal(dive.find(r => r.key === 'rating').value, '4\u00a0/\u00a05');
+    });
+
+    test('gasCards: legacy and multi-gas entries', () => {
+        const t = key => ({ 'detail.roleBottom': 'Bottom', 'detail.roleDeco': 'Deco', 'detail.gasUsed': 'Gas used', 'detail.sac': 'SAC',
+            'detail.mixUnknown': '?', 'form.choices.cylinderMaterial.steel': 'steel', 'form.choices.cylinderMaterial.aluminium': 'alu' })[key] ?? key;
+        const fmt = (v, d) => (d === undefined ? String(v) : v.toFixed(d));
+        const legacy = gasCards({ gas: { o2: 0.32, he: 0 }, duration_s: 3000, details: { cylinderL: 12, pressureStartBar: 200, pressureEndBar: 80, avgDepthM: 20 } }, t, fmt);
+        assert.deepEqual(legacy.cards.map(c => [c.roleLabel, c.mix, c.cylinder, c.pressures, c.used]),
+            [['Bottom', 'EAN32', '12 l, steel', '200 → 80 bar', '−120 bar · 1440 l']]);
+        assert.equal(legacy.summary, 'Gas used 1440 l · SAC 9.6 l/min');
+        assert.deepEqual(gasCards({ gas: null, details: {} }, t, fmt), { cards: [], summary: null });
+        const multi = gasCards({ gas: { o2: 0.21, he: 0 }, details: { gases: [{ role: 'bottom', o2: 0.21, he: 0 }, { role: 'deco', o2: null, he: null, cylinder: 'al40', volumeL: 5.7, material: 'aluminium' }] } }, t, fmt);
+        assert.deepEqual(multi.cards.map(c => [c.role, c.mix, c.cylinder]), [['bottom', 'Air', ''], ['deco', '?', 'AL40 (5.7 l)']]);
+        assert.equal(multi.summary, null);
     });
 
     test('an empty entry has no rows and no groups', () => {

@@ -3004,6 +3004,12 @@
                 "videoCaption": "Pie de foto (opcional)",
                 "videoSave": "Añadir enlace",
                 "videoInvalid": "Introduce un enlace que empiece por https://",
+                "gases": "Gases",
+                "roleBottom": "Gas de fondo",
+                "roleDeco": "Gas de deco",
+                "gasUsed": "Gas usado",
+                "sac": "SAC",
+                "mixUnknown": "Mezcla desconocida",
                 "label": {
                     "duration": "Duración",
                     "depth": "Profundidad máx.",

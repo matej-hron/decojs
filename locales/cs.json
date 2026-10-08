@@ -3040,6 +3040,12 @@
                 "videoCaption": "Popisek (volitelné)",
                 "videoSave": "Přidat odkaz",
                 "videoInvalid": "Zadejte odkaz začínající https://",
+                "gases": "Plyny",
+                "roleBottom": "Hlavní směs",
+                "roleDeco": "Dekompresní směs",
+                "gasUsed": "Spotřeba",
+                "sac": "SAC",
+                "mixUnknown": "Neznámá směs",
                 "label": {
                     "duration": "Doba ponoru",
                     "depth": "Max. hloubka",

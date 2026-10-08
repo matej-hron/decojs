@@ -145,6 +145,21 @@
         .lb-d-media:empty, .lb-d-panel:empty, .lb-d-actions:empty { display: none; }
         .lb-d-head, .lb-d-media h3, .lb-d-more h3 { margin: 0; }
         .lb-d-map, .lb-picker-map { background: var(--surface-sunken); }
+        .lb-d-gases { margin: 1rem 0; }
+        .lb-d-gases h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+        .lb-d-gas-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+        @media (min-width: 700px) { .lb-d-gas-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .lb-d-gas { --gauge: var(--brand); position: relative; min-width: 0; padding: 0.6rem 0.75rem 0.6rem 1.6rem;
+            border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+        .lb-d-gas--deco { --gauge: var(--amber-500); }
+        .lb-d-gas--unknown .lb-gas-gauge::after { opacity: 0.3; }
+        .lb-d-gas .lb-gas-gauge { top: 0.6rem; bottom: 0.6rem; }
+        .lb-d-gas p { margin: 0; }
+        .lb-d-gas-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; }
+        .lb-d-gas-head strong { font-size: 1.05rem; }
+        .lb-d-gas-role, .lb-d-gas-use { font-size: 0.85rem; color: var(--text-subtle); }
+        .lb-d-gas-line, .lb-d-gas-use, .lb-d-gas-summary { font-variant-numeric: tabular-nums; }
+        .lb-d-gas-summary { margin: 0.5rem 0 0; font-size: 0.9rem; }
         .lb-d-map { height: 220px; border-radius: var(--radius-md); z-index: 0; }
         .lb-d-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
         .lb-d-backlink { min-height: 44px; display: inline-flex; align-items: center; color: var(--brand); font-weight: 500; text-decoration: none; }
