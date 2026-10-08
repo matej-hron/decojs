@@ -33,6 +33,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { narrowChartPlugin, rankingPlacement, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { translate } from '../i18n.js';
 
@@ -72,6 +73,8 @@ const DEFAULT_GF_OPTIONS = {
     showTrail: true,
     interactive: true,
     fullscreenButton: true,
+    // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
+    narrowLayout: false,
     compartmentSelector: true,
     playbackSpeed: 100,
     onTimeIndexChange: null,
@@ -168,6 +171,7 @@ export class GFChart {
      */
     _buildDOM() {
         this.container.innerHTML = '';
+        if (this.options.narrowLayout) syncNarrowClass(this.container);
         this.container.tabIndex = 0;
         this.container.style.outline = 'none';
 
@@ -278,6 +282,7 @@ export class GFChart {
 
         // Set up ResizeObserver
         this._resizeObserver = new ResizeObserver(() => {
+            if (this.options.narrowLayout) syncNarrowClass(this.container);
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
             }
@@ -938,6 +943,16 @@ export class GFChart {
     _renderCompartmentRanking(chart, ranking) {
         const panel = this.rankingPanel;
         if (!panel) return;
+        if (this.options?.narrowLayout && ranking.length > 0
+            && rankingPlacement(chart.width) === 'below') {
+            this._renderCompartmentRankingBelow(panel, ranking);
+            return;
+        }
+        if (panel.classList.contains('gfc-ranking-below')) {
+            // Back from the phone layout: the overlay lives inside the chart container again
+            panel.classList.remove('gfc-ranking-below');
+            this.chartContainer.appendChild(panel);
+        }
         if (chart.width < 800 || ranking.length === 0) {
             panel.style.display = 'none';
             return;
@@ -998,6 +1013,44 @@ export class GFChart {
         panel.style.top = `${chart.chartArea.top}px`;
         panel.style.width = `${Math.max(120, chart.width - left - 8)}px`;
         panel.style.maxHeight = `${chart.chartArea.height}px`;
+        panel.style.display = 'block';
+    }
+
+    /**
+     * Phone layout (opt-in `narrowLayout`): the ranking as a compact list under the plot,
+     * so it never covers the data.
+     * @private
+     */
+    _renderCompartmentRankingBelow(panel, ranking) {
+        const title = translate('chart.gf.rankingTitle', 'Tissue ranking');
+        const rankingKey = `below|${title}|${ranking
+            .map((row) => `${row.id}:${fmtNum(row.gfPercent, 1)}`)
+            .join('|')}`;
+        if (!panel.classList.contains('gfc-ranking-below')) {
+            panel.classList.add('gfc-ranking-below');
+            this.chartContainer.after(panel);
+            for (const prop of ['left', 'top', 'width', 'maxHeight']) panel.style[prop] = '';
+        }
+        if (panel.dataset.rankingKey !== rankingKey) {
+            const heading = document.createElement('p');
+            heading.className = 'gfc-ranking-title';
+            heading.textContent = title;
+            const list = document.createElement('ol');
+            list.className = 'gfc-ranking-list';
+            for (const row of ranking) {
+                const item = document.createElement('li');
+                const dot = document.createElement('span');
+                dot.className = 'gfc-ranking-dot';
+                dot.style.backgroundColor = row.color;
+                const value = document.createElement('b');
+                value.textContent = `${fmtNum(row.gfPercent, 1)}\u00a0%`;
+                item.append(dot, ` TC${row.id} `, value);
+                list.appendChild(item);
+            }
+            panel.replaceChildren(heading, list);
+            panel.dataset.rankingKey = rankingKey;
+            panel.setAttribute('aria-label', title);
+        }
         panel.style.display = 'block';
     }
 
@@ -1311,6 +1364,7 @@ export class GFChart {
             type: 'scatter',
             data: { datasets },
             plugins: [
+                ...(this.options.narrowLayout ? [narrowChartPlugin] : []),
                 {
                     id: 'gf-compartment-ranking',
                     beforeLayout: (chart) => {

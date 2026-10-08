@@ -34,6 +34,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { narrowChartPlugin, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { getCurrentLanguage, translate } from '../i18n.js';
 
@@ -200,6 +201,8 @@ const DEFAULT_MVALUE_OPTIONS = {
     showTrail: true,
     interactive: true,
     fullscreenButton: true,
+    // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
+    narrowLayout: false,
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
@@ -300,6 +303,7 @@ export class MValueChart {
      */
     _buildDOM() {
         this.container.innerHTML = '';
+        if (this.options.narrowLayout) syncNarrowClass(this.container);
         this.container.tabIndex = 0; // Make focusable for keyboard events
         this.container.style.outline = 'none';
         
@@ -419,6 +423,7 @@ export class MValueChart {
         
         // Set up ResizeObserver to automatically resize chart when container changes
         this._resizeObserver = new ResizeObserver(() => {
+            if (this.options.narrowLayout) syncNarrowClass(this.container);
             // Debounce resize calls
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
@@ -1789,6 +1794,7 @@ export class MValueChart {
             type: 'scatter',
             data: { datasets },
             plugins: [
+                ...(this.options.narrowLayout ? [narrowChartPlugin] : []),
                 {
                     id: 'mvalue-intersection-ruler',
                     afterDatasetsDraw: (chart) => this._drawRuler(chart)

@@ -30,6 +30,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { narrowChartPlugin, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { translate } from '../i18n.js';
 
@@ -170,6 +171,7 @@ export class DiveProfileChart {
     _buildDOM() {
         // Clear container
         this.container.innerHTML = '';
+        if (this.options.narrowLayout) syncNarrowClass(this.container);
         this.container.tabIndex = 0; // Make focusable for keyboard events
         this.container.style.outline = 'none';
         
@@ -250,6 +252,7 @@ export class DiveProfileChart {
 
         // Set up ResizeObserver to automatically resize chart when container changes
         this._resizeObserver = new ResizeObserver((entries) => {
+            if (this.options.narrowLayout) syncNarrowClass(this.container);
             // Debounce resize calls
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
@@ -1447,6 +1450,7 @@ export class DiveProfileChart {
         const config = {
             type: 'line',
             data: { datasets },
+            ...(this.options.narrowLayout ? { plugins: [narrowChartPlugin] } : {}),
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
