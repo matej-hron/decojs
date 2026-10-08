@@ -320,10 +320,8 @@
            The chart DOM carries inline styles for desktop; !important here only beats those.
            ========================================================================== */
         @media (max-width: 600px) {
-            .rda-root { padding-inline: 0; } /* main already gives the 16px side gutter */
-            /* max-content labels left the values a few px wide (one letter per line): stack them */
-            .rda-root .rda-summary dl { grid-template-columns: minmax(0, 1fr); gap: 0; }
-            .rda-root .rda-summary dd { margin: 0 0 0.6rem; }
+            /* logged out, main already gives the 16px side gutter (logged in, main has none and .rda-root keeps it) */
+            body:not(.lb-in) .rda-root { padding-inline: 0; }
         }
 
         /* Heights: the plot sizes itself instead of being squashed under the controls */
