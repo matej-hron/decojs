@@ -11,9 +11,12 @@ import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/impor
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
-import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
+import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze, CHART_VIEWS, chartViewOptions } from '../js/components/RecordedDiveAnalysis.js';
 import { getPressurePerMeter } from '../js/deco/environment.js';
 import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions, normalizeDiveSetup } from '../js/charts/chartTypes.js';
+import { matchEntryGases, recordedGasSetup, ASSUMED_SAC_LPM } from '../js/import/recordedGas.js';
+import { computeGasConsumption } from '../js/diveSetup.js';
+import { calculateTissueLoading } from '../js/deco/profile.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 
@@ -335,5 +338,116 @@ describe('fetchDemoFiles', () => {
     test('throws on a non-ok response', async () => {
         const fetchStub = async () => ({ ok: false, status: 404 });
         await assert.rejects(() => fetchDemoFiles(['a/X.DLF'], fetchStub), /404/);
+    });
+});
+
+describe('recordedGas', () => {
+    const air = { id: 'g0', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+    const ean50 = { id: 'g1', name: 'EAN50', o2: 0.5, n2: 0.5, he: 0 };
+    const waypoints = [
+        { time: 0, depth: 0 }, { time: 2, depth: 30, gasId: 'g0' }, { time: 20, depth: 30 },
+        { time: 23, depth: 21, gasId: 'g1' }, { time: 30, depth: 6 }, { time: 40, depth: 6 }, { time: 41, depth: 0 },
+    ];
+    const results = calculateTissueLoading(waypoints, 0, { gases: [air, ean50] });
+    const row = (o2, extra) => ({ role: 'bottom', o2, he: o2 === null ? null : 0, cylinder: null, volumeL: null, material: null, startBar: null, endBar: null, ...extra });
+
+    test('matches by mix, then unknown-mix rows in order', () => {
+        const rows = [row(0.5, { role: 'deco' }), row(null)];
+        assert.deepEqual(matchEntryGases([air, ean50], rows), [rows[1], rows[0]]);
+        assert.deepEqual(matchEntryGases([air], []), [null]);
+        assert.deepEqual(matchEntryGases([air], [row(0.32)]), [null]);
+    });
+
+    test('calibrated gases end at the recorded end pressure', () => {
+        const rows = [row(0.21, { volumeL: 12, startBar: 200, endBar: 90 }), row(0.5, { role: 'deco', volumeL: 5.7, startBar: 200, endBar: 160 })];
+        const { gases, assumed } = recordedGasSetup([air, ean50], rows, results);
+        assert.deepEqual(assumed, []);
+        const gc = computeGasConsumption(results, gases, 99, 99, 50);
+        assert.ok(Math.abs(gc.pressureByGasId.g0 - 90) < 1e-6);
+        assert.ok(Math.abs(gc.pressureByGasId.g1 - 160) < 1e-6);
+        assert.equal(gases[0].cylinderVolume, 12);
+    });
+
+    test('missing end pressure or volume falls back to assumed values', () => {
+        const rows = [row(0.21, { volumeL: 15, startBar: 230 }), row(0.5, { role: 'deco', startBar: 200, endBar: 150 })];
+        const { gases, assumed } = recordedGasSetup([air, ean50], rows, results);
+        assert.equal(gases[0].cylinderVolume, 15);
+        assert.equal(gases[0].startPressure, 230);
+        assert.equal(gases[0].sacRate, ASSUMED_SAC_LPM);
+        assert.equal(gases[1].cylinderVolume, 12);
+        assert.deepEqual(assumed, ['Air', 'EAN50']);
+        assert.deepEqual(recordedGasSetup([air, ean50], rows, results).assumedCylinder, ['EAN50']); // Air only lacks the end
+    });
+
+    test('end pressure equal to start is not calibrated; only the SAC is assumed', () => {
+        const rows = [row(0.21, { volumeL: 12, startBar: 200, endBar: 200 }), row(0.5, { volumeL: 7, startBar: 200, endBar: 150 })];
+        const { gases, assumed, assumedCylinder } = recordedGasSetup([air, ean50], rows, results);
+        assert.equal(gases[0].sacRate, ASSUMED_SAC_LPM);
+        assert.equal(gases[0].cylinderVolume, 12);
+        assert.deepEqual(assumed, ['Air']);
+        assert.deepEqual(assumedCylinder, []);
+    });
+
+    const o2 = { id: 'g2', name: 'O2', o2: 1, n2: 0, he: 0 };
+    const airOnly = calculateTissueLoading([{ time: 0, depth: 0, gasId: 'g0' }, { time: 2, depth: 20, gasId: 'g0' }, { time: 30, depth: 20 }, { time: 32, depth: 0 }], 0, { gases: [air, o2] });
+
+    test('a recorded gas never breathed is not reported as assumed', () => {
+        const { assumed, assumedCylinder } = recordedGasSetup([air, o2], [row(0.21, { volumeL: 12, startBar: 200, endBar: 70 })], airOnly);
+        assert.deepEqual(assumed, []);
+        assert.deepEqual(assumedCylinder, []);
+    });
+
+    test('an unknown-mix row goes to the breathed gas, not an unused configured one', () => {
+        // The integrator starts on gases[0], so the unused bottle sits between two breathed gases.
+        const setup = [air, o2, ean50];
+        const twoGas = calculateTissueLoading(waypoints, 0, { gases: setup });
+        const rows = [row(0.21, { volumeL: 12, startBar: 200, endBar: 90 }), row(null, { volumeL: 7, startBar: 200, endBar: 80 })];
+        assert.deepEqual(matchEntryGases(setup, rows, g => g.id !== 'g2'), [rows[0], null, rows[1]]);
+        assert.deepEqual(matchEntryGases(setup, rows), [rows[0], rows[1], null]); // default: setup order
+        const { gases, assumed } = recordedGasSetup(setup, rows, twoGas);
+        assert.deepEqual(assumed, []);
+        const gc = computeGasConsumption(twoGas, gases, 99, 99, 50);
+        assert.ok(Math.abs(gc.pressureByGasId.g1 - 80) < 1e-6);
+        assert.ok(Math.abs(gc.pressureByGasId.g0 - 90) < 1e-6);
+    });
+
+    test('bad pressures never give a negative or infinite SAC', () => {
+        const rows = [row(0.21, { volumeL: 12, startBar: 100, endBar: 150 })];
+        const { gases } = recordedGasSetup([air, ean50], rows, results);
+        assert.equal(gases[0].sacRate, ASSUMED_SAC_LPM);
+        const unused = recordedGasSetup([air, { ...ean50, id: 'g9' }], [row(0.5, { volumeL: 7, startBar: 200, endBar: 150 })], results);
+        assert.ok(Number.isFinite(unused.gases[1].sacRate) && unused.gases[1].sacRate > 0);
+    });
+
+    test('computeGasConsumption without sacRate is unchanged; normalizeDiveSetup keeps sacRate', () => {
+        const plain = computeGasConsumption(results, [air, ean50], 20, 15, 50);
+        const withField = computeGasConsumption(results, [air, { ...ean50, sacRate: undefined }], 20, 15, 50);
+        assert.deepEqual(withField.pressureByGasId, plain.pressureByGasId);
+        const n = normalizeDiveSetup({ gases: [{ ...air, sacRate: 13 }, { ...ean50, sacRate: -1 }], dives: [{ waypoints }] });
+        assert.equal(n.gases[0].sacRate, 13);
+        assert.equal('sacRate' in n.gases[1], false);
+    });
+});
+
+describe('chart views', () => {
+    test('five views; profile keeps the recorded overlays, others drop them', () => {
+        assert.deepEqual(CHART_VIEWS.map(v => v.id), ['profile', 'pressure', 'pp', 'tissue', 'gas']);
+        const ref = [{ t: 0, depth: 0 }];
+        const p = chartViewOptions('profile', { referenceCeiling: ref, referenceCeilingLabel: 'x' });
+        assert.equal(p.showCeiling, true); assert.equal(p.highlightCeilingViolations, true); assert.equal(p.referenceCeiling, ref);
+        const g = chartViewOptions('gas', { referenceCeiling: ref, referenceCeilingLabel: 'x' });
+        assert.equal(g.showGasConsumption, true); assert.equal(g.referenceCeiling, null); assert.equal(g.highlightCeilingViolations, false);
+        assert.equal(chartViewOptions('tissue', {}).showTissueLoading, true);
+        assert.equal(chartViewOptions('nope', {}).showCeiling, true); // unknown → profile
+    });
+
+    test('every view hides labels and sets all five mode flags explicitly', () => {
+        for (const v of CHART_VIEWS) {
+            const o = chartViewOptions(v.id, {});
+            assert.equal(o.showLabels, false);
+            for (const k of ['showCeiling', 'showAmbientPressure', 'showPartialPressures', 'showTissueLoading', 'showGasConsumption']) {
+                assert.equal(typeof o[k], 'boolean', `${v.id}.${k}`);
+            }
+        }
     });
 });

@@ -2850,6 +2850,17 @@
         "nonOcNote": "Por ahora el análisis solo admite inmersiones en circuito abierto (esta: {0}).",
         "noSamplesNote": "Este registro no tiene perfil de profundidad.",
         "deviceCeilingLabel": "Techo del ordenador, GF {0}/{1} (m)",
+        "view": {
+            "label": "Vista del gráfico",
+            "profile": "Perfil",
+            "pressure": "Presión",
+            "pp": "Presión parcial",
+            "tissue": "Tejidos",
+            "gas": "Gas"
+        },
+        "gasNoteLogbook": "Presiones de las botellas tomadas de tu entrada del diario; la línea entre ellas se modela a partir del perfil de profundidad.",
+        "gasNoteAssumed": "Sin datos de botella para {0}: se supone un SAC de {1} l/min y una botella de {2} l llenada a {3} bar. Añade la presión inicial y final a la entrada del diario para ver la tuya.",
+        "gasNoteAssumedSac": "Falta la presión final de {0}: la línea parte de la presión inicial registrada y supone un SAC de {1} l/min. Añade la presión final a la entrada del diario para ver la tuya.",
         "helpHeading": "Cómo se comparan los techos",
         "helpText": "El techo continuo es el de DecoTheory, recalculado para los GF que elijas: mantiene GF Low hasta que empieza el ascenso y luego pasa a GF High. El techo discontinuo es el que registró el ordenador con sus propios GF y su propia regla; en inmersiones con descompresión suele desaparecer antes durante el ascenso. Cambiar los GF nunca cambia tus tejidos, solo dónde se dibuja el límite.",
         "chainToggle": "Incluir inmersiones anteriores (inmersiones sucesivas)",

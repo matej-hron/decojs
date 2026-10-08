@@ -12,6 +12,7 @@ import { parseDivesoftDLF } from '../import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M } from '../import/recordedDiveSummary.js';
 import { startStateFor, CHAIN_MAX_GAP_MIN } from '../import/diveChain.js';
+import { recordedGasSetup, ASSUMED_SAC_LPM, ASSUMED_CYLINDER_L, ASSUMED_START_BAR } from '../import/recordedGas.js';
 import { sha256Hex } from '../backend/sync.js';
 import { uploadDivelog, exportZip } from '../logbook/transfer.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
@@ -125,6 +126,38 @@ export function canAnalyze(dive) {
 
 const t = (key, fallback) => translate(`diveLog.${key}`, fallback);
 
+const viewPreset = (showCeiling, showAmbientPressure, showPartialPressures, showTissueLoading, showGasConsumption) =>
+    ({ showCeiling, showAmbientPressure, showPartialPressures, showTissueLoading, showGasConsumption, showLabels: false });
+
+/**
+ * Profile chart views, the Sandbox's five presets (sandbox/index.html) with labels hidden.
+ * `key`/`fallback`: translation under `diveLog.view.*`.
+ */
+export const CHART_VIEWS = [
+    { id: 'profile', key: 'view.profile', fallback: 'Profile', options: viewPreset(true, false, false, false, false) },
+    { id: 'pressure', key: 'view.pressure', fallback: 'Pressure', options: viewPreset(false, true, false, false, false) },
+    { id: 'pp', key: 'view.pp', fallback: 'Partial pressure', options: viewPreset(false, false, true, false, false) },
+    { id: 'tissue', key: 'view.tissue', fallback: 'Tissues', options: viewPreset(true, true, false, true, false) },
+    { id: 'gas', key: 'view.gas', fallback: 'Gas', options: viewPreset(false, false, false, false, true) },
+];
+
+/**
+ * DiveProfileChart options for a view; unknown ids fall back to Profile. The recorded overlays
+ * (dive computer ceiling, above-ceiling shading) belong to the Profile view only.
+ * @param {string} viewId
+ * @param {{referenceCeiling?: Object[]|null, referenceCeilingLabel?: string}} ref
+ */
+export function chartViewOptions(viewId, { referenceCeiling = null, referenceCeilingLabel } = {}) {
+    const view = CHART_VIEWS.find(v => v.id === viewId) ?? CHART_VIEWS[0];
+    const profile = view.id === 'profile';
+    return {
+        ...view.options,
+        referenceCeiling: profile ? referenceCeiling ?? null : null,
+        referenceCeilingLabel,
+        highlightCeilingViolations: profile,
+    };
+}
+
 /**
  * Translate the `[data-i18n]` elements under `root` (js/i18n.js only does this once at load).
  * The element's first innerHTML is kept as the English fallback.
@@ -159,15 +192,19 @@ const minSec = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart
 export class RecordedDiveAnalysis {
     /**
      * @param {HTMLElement} root - Element the page UI is built in
-     * @param {{demoFiles?: string[], store?: Object|null, embedded?: boolean, focusRecordingId?: string|null}} [config]
+     * @param {{demoFiles?: string[], store?: Object|null, embedded?: boolean, focusRecordingId?: string|null, entryGases?: Object[]}} [config]
      *   URLs of example .DLF files loaded when nothing is picked; the dive store (null without a configured
      *   backend). `embedded` (inside the logbook, user already logged in): no account bar, no pickers, dives
      *   come from the store. `focusRecordingId`: the stored recording selected once loaded (its list is then hidden).
+     *   `entryGases`: the logbook entry's cylinders (gasesFromEntry rows) for the Gas view.
      */
-    constructor(root, { demoFiles = [], store = null, embedded = false, focusRecordingId = null } = {}) {
+    constructor(root, { demoFiles = [], store = null, embedded = false, focusRecordingId = null, entryGases = [] } = {}) {
         this.root = root;
         this.embedded = embedded;
         this.focusRecordingId = focusRecordingId;
+        this.entryGases = entryGases ?? [];
+        this.view = 'profile';
+        this.gasCache = new Map();
         this.destroyed = false;
         this._unsubscribe = null;
         this.demoFiles = demoFiles;
@@ -449,7 +486,9 @@ export class RecordedDiveAnalysis {
                 <div class="rda-summary rda-card" id="rda-summary"></div>
                 <p class="rda-note" id="rda-note" hidden></p>
                 <div class="rda-charts" id="rda-charts">
+                    <div class="rda-views" role="group" id="rda-views"></div>
                     <div class="chart-wrapper" id="rda-profile" style="height: 520px;"></div>
+                    <p class="rda-note rda-gas-note" id="rda-gas-note" hidden></p>
                     <div class="chart-wrapper" id="rda-mvalue" style="height: 640px;"></div>
                     <div class="chart-wrapper" id="rda-gf" style="height: 640px;"></div>
                 </div>
@@ -469,7 +508,16 @@ export class RecordedDiveAnalysis {
             gfLow: $('rda-gf-low'), gfHigh: $('rda-gf-high'), gfLowOut: $('rda-gf-low-out'), gfHighOut: $('rda-gf-high-out'),
             presets: $('rda-presets'), reset: $('rda-reset'), summary: $('rda-summary'), note: $('rda-note'),
             charts: $('rda-charts'), profile: $('rda-profile'), mvalue: $('rda-mvalue'), gfChart: $('rda-gf'),
+            views: $('rda-views'), gasNote: $('rda-gas-note'),
         };
+        this.el.views.addEventListener('click', e => {
+            const btn = e.target.closest('button[data-view]');
+            if (!btn || btn.dataset.view === this.view) return;
+            this.view = btn.dataset.view;
+            this._syncViewButtons();
+            this._renderAnalysis();
+        });
+        this._renderViews();
         const pick = async (input) => {
             const result = await loadDiveFiles(input.files);
             this.isDemo = false;
@@ -571,9 +619,24 @@ export class RecordedDiveAnalysis {
     _renderAll() {
         if (this.destroyed) return;
         translateStatic(this.root);
+        this._renderViews();
         this._renderAccount();
         this._renderList();
         this._renderAnalysis();
+    }
+
+    /** The view switch above the profile chart (re-rendered for a language change). */
+    _renderViews() {
+        this.el.views.setAttribute('aria-label', t('view.label', 'Chart view'));
+        this.el.views.innerHTML = CHART_VIEWS.map(v =>
+            `<button type="button" class="rda-seg" data-view="${v.id}" aria-pressed="${v.id === this.view}">${escHtml(t(v.key, v.fallback))}</button>`).join('');
+    }
+
+    /** Mark the active view on the existing buttons (keeps keyboard focus on the clicked one). */
+    _syncViewButtons() {
+        for (const btn of this.el.views.querySelectorAll('button[data-view]')) {
+            btn.setAttribute('aria-pressed', String(btn.dataset.view === this.view));
+        }
     }
 
     _renderList() {
@@ -637,12 +700,46 @@ export class RecordedDiveAnalysis {
             return;
         }
         this.el.charts.hidden = false;
+        this.el.profile.classList.toggle('rda-view-tissue', this.view === 'tissue'); // room for the tissue controls (lab/dive-log.html)
         const { setup, deviceCeiling } = prepareRecordedSetup(dive, this.gf);
         const start = this.chainEnabled ? this._startState(dive) : null;
         setup.initialTissuePressures = start?.initialTissuePressures ?? null;
         const summary = summarizeRecordedDive(analyzeRecordedDive(setup));
         this._renderSummary(dive, summary, start);
+        if (this.view === 'gas') {
+            const gas = this._gasSetup(dive, setup);
+            setup.gases = gas.gases;
+            this.el.gasNote.textContent = this._gasNote(gas);
+            this.el.gasNote.hidden = false;
+        } else {
+            this.el.gasNote.hidden = true;
+            this.el.gasNote.textContent = '';
+        }
         this._renderCharts(setup, deviceCeiling, dive);
+    }
+
+    /**
+     * Cylinder data for the Gas view. Gas use depends only on the recorded profile and the mixes
+     * (not on GF or the tissue start state), so it is cached per dive.
+     */
+    _gasSetup(dive, setup) {
+        if (!this.gasCache.has(dive)) {
+            const { results } = analyzeRecordedDive({ ...setup, initialTissuePressures: null });
+            this.gasCache.set(dive, recordedGasSetup(setup.gases, this.entryGases, results));
+        }
+        return this.gasCache.get(dive);
+    }
+
+    _gasNote({ assumed, assumedCylinder }) {
+        if (assumedCylinder.length > 0) {
+            return fill(t('gasNoteAssumed', 'No cylinder data for {0} — assumed SAC {1}\u00a0l/min, {2}\u00a0l cylinder filled to {3}\u00a0bar. Add start and end pressure to the logbook entry to see your own.'),
+                assumedCylinder.join(', '), fmtNum(ASSUMED_SAC_LPM, 0), fmtNum(ASSUMED_CYLINDER_L, 0), fmtNum(ASSUMED_START_BAR, 0));
+        }
+        if (assumed.length > 0) {
+            return fill(t('gasNoteAssumedSac', 'No end pressure for {0} — the line assumes SAC {1}\u00a0l/min from the logged start pressure. Add the end pressure to the logbook entry to see your own.'),
+                assumed.join(', '), fmtNum(ASSUMED_SAC_LPM, 0));
+        }
+        return t('gasNoteLogbook', 'Cylinder pressures from your logbook entry; the line between them is modelled from the depth profile.');
     }
 
     /** Start state from earlier loaded dives; independent of GF, so cached per dive. */
@@ -717,10 +814,9 @@ export class RecordedDiveAnalysis {
                 profile: new DiveProfileChart(this.el.profile, {
                     diveSetup: setup,
                     options: {
-                        showCeiling: true, showLabels: false, showDecoStops: false, showGasSwitches: true,
-                        highlightCeilingViolations: true, violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
-                        referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
-                        referenceCeilingLabel: this._deviceCeilingLabel(dive),
+                        ...this._profileOptions(deviceCeiling, dive),
+                        showDecoStops: false, showGasSwitches: true,
+                        violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
                         narrowLayout: true,
                     },
                 }),
@@ -738,10 +834,7 @@ export class RecordedDiveAnalysis {
             this.charts.gf.options.onTimeIndexChange = i => this.charts.mvalue.setTimeIndex(i);
             return;
         }
-        this.charts.profile.update(setup, {
-            referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
-            referenceCeilingLabel: this._deviceCeilingLabel(dive),
-        });
+        this.charts.profile.update(setup, this._profileOptions(deviceCeiling, dive));
         // Keep the timeline position when only GF changed; reset for a different dive.
         const index = this._chartsDive === dive ? this.charts.mvalue.currentTimeIndex : 0;
         this._chartsDive = dive;
@@ -749,6 +842,13 @@ export class RecordedDiveAnalysis {
         this.charts.gf.update(setup);
         this.charts.mvalue.setTimeIndex(index);
         this.charts.gf.setTimeIndex(index);
+    }
+
+    _profileOptions(deviceCeiling, dive) {
+        return chartViewOptions(this.view, {
+            referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
+            referenceCeilingLabel: this._deviceCeilingLabel(dive),
+        });
     }
 
     _deviceCeilingLabel(dive) {

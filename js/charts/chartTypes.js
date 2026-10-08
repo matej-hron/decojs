@@ -478,7 +478,8 @@ export function normalizeDiveSetup(setup) {
             n2: gas.n2,
             he: gas.he || 0,
             cylinderVolume: gas.cylinderVolume || 12,
-            startPressure: gas.startPressure || 200
+            startPressure: gas.startPressure || 200,
+            ...(Number.isFinite(gas.sacRate) && gas.sacRate > 0 ? { sacRate: gas.sacRate } : {})
         })),
         sacRate: setup.sacRate ?? 20,
         decoSacRate: setup.decoSacRate ?? 15,
