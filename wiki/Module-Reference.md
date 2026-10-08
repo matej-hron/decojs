@@ -201,7 +201,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | `calculatePartialPressure(depth, gasFraction)` | 886 | `fraction × (1.01325 + depth/10)` |
 | `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 896, 905 | Litres |
 | `getGasStartPressure(gas)` | 915 | bar |
-| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1393 | Per-gas consumption over the profile |
+| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1612 | Per-gas consumption over the profile; a gas with its own `sacRate` (l/min, set for recorded dives by `js/import/recordedGas.js`) uses it instead of `sacRate`/`decoSacRate` |
 
 #### Oxygen toxicity
 
