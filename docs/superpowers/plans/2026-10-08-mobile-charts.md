@@ -1,5 +1,7 @@
 # Mobile-portrait dive charts — implementation plan
 
+> **Superseded in part:** the user narrowed the scope to the dive log page mid-implementation. See the "Scope change" section of the spec; class hooks and the styles.css block described below were not shipped.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Make DiveProfileChart, MValueChart (P-P) and GFChart readable and usable at 360–430 px portrait, without changing desktop rendering.

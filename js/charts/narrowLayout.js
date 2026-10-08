@@ -1,8 +1,10 @@
 /**
  * Narrow (phone-portrait) layout for the shared charts.
  *
- * A chart is "narrow" when its host is at most NARROW_CHART_MAX_WIDTH wide. Narrow charts:
- *  - get the `chart-narrow` class on their host (CSS in styles.css does the DOM layout),
+ * Opt-in: only charts created with `narrowLayout: true` use it (today the dive log, whose page CSS
+ * in lab/dive-log.html does the DOM layout). A chart is "narrow" when its host is at most
+ * NARROW_CHART_MAX_WIDTH wide. Narrow charts:
+ *  - get the `chart-narrow` class on their host,
  *  - get smaller Chart.js fonts and a top gutter for the overlay buttons (narrowChartPlugin).
  * Desktop options are saved before the first override and restored when the chart widens
  * again (a phone rotated to landscape), so desktop rendering is unchanged.
