@@ -23,6 +23,8 @@ import { NewDive } from '../js/logbook/NewDive.js';
 import { sortSites, parseAltitude, diveCountText } from '../js/logbook/SitesPage.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
+import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
+import { mapyStaticMapUrl } from '../js/logbook/geo.js';
 import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -975,6 +977,14 @@ describe('form strings', () => {
         (v && typeof v === 'object' ? keysOf(v, `${prefix}${k}.`) : [`${prefix}${k}`])).sort();
     const load = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).diveLog.logbook;
 
+    test('the dive list view is called feed, not list, in every language', () => {
+        for (const lang of ['en', 'cs', 'es']) {
+            const { views } = load(lang);
+            assert.ok(views.feed, lang);
+            assert.equal('list' in views, false, lang);
+        }
+    });
+
     test('en, cs and es have the same logbook keys, none empty', () => {
         const en = keysOf(load('en'));
         assert.ok(en.includes('form.choices.weather.sun') && en.includes('duplicateNumber'));
@@ -1267,7 +1277,7 @@ describe('LogbookApp background errors (jsdom)', () => {
             document.documentElement.lang = 'cs';
             const app = new LogbookApp(root, { store: baseStore({ ensureEntries: async () => 0, listEntries: async () => entries }) });
             await tick(80);
-            assert.equal(root.querySelector('.lb-date').textContent, '27. 9. 2026');
+            assert.match(root.querySelector('.lb-date').textContent, /27\. 9\. 2026, 12:01$/);
             app.destroy();
         });
     });
@@ -1297,7 +1307,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 assert.equal(root.querySelector('.lb-select-box'), null);
                 root.querySelector('#lb-select').click();
                 assert.equal(root.querySelectorAll('.lb-select-box').length, 3);
-                assert.equal(root.querySelector('.lb-cards a'), null, 'cards stop being links');
+                assert.equal(root.querySelector('.lb-tiles a'), null, 'tiles stop being links');
                 assert.equal(root.querySelector('#lb-bulk-delete').disabled, true);
                 assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
                 // clicking a card toggles instead of navigating
@@ -1321,8 +1331,9 @@ describe('LogbookApp background errors (jsdom)', () => {
                 root.querySelector('.lb-table tbody tr[data-pick="e3"]').click();
                 assert.equal(window.location.hash, '#/', 'a table row toggles instead of navigating');
                 root.querySelector('[data-pick="e3"]').click();
-                root.querySelector('.lb-seg[data-view="list"]').click();
-                assert.equal(root.querySelectorAll('.lb-dive-row.lb-selected').length, 2);
+                root.querySelector('.lb-seg[data-view="feed"]').click();
+                assert.equal(root.querySelectorAll('.lb-feed-card.lb-selected').length, 2);
+                assert.ok(root.querySelector('.lb-selectdock .lb-bulk'), 'the confirmation opens in the select dock');
                 assert.match(root.querySelector('.lb-count').textContent, /^2 selected$/);
                 // confirmation
                 root.querySelector('#lb-bulk-delete').click();
@@ -1347,7 +1358,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 assert.match(summary, /Deleted 1 dive\./);
                 assert.match(summary, /#2 \(boom\)/);
                 assert.equal(root.querySelector('.lb-select-box'), null, 'select mode is left after deleting');
-                assert.equal(root.querySelectorAll('.lb-dive-row').length, 1, 'the list reloaded');
+                assert.equal(root.querySelectorAll('.lb-feed-card').length, 1, 'the list reloaded');
                 root.querySelector('#lb-bulk-close').click();
                 assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');
                 // cancel leaves select mode and clears
@@ -1362,7 +1373,7 @@ describe('LogbookApp background errors (jsdom)', () => {
         });
     });
 
-    test('list and table views render, remember the choice, load sparklines lazily and sort', async () => {
+    test('feed, table and tiles render, an old list choice opens the feed, profiles load lazily, table sorts', async () => {
         await withDom(async root => {
             globalThis.localStorage = window.localStorage;
             window.localStorage.setItem('decojs.logbook.view', 'list');
@@ -1381,13 +1392,18 @@ describe('LogbookApp background errors (jsdom)', () => {
             try {
                 const app = new LogbookApp(root, { store });
                 await tick(120);
-                assert.equal(root.querySelector('.lb-seg[aria-pressed="true"]').dataset.view, 'list');
+                assert.equal(root.querySelector('.lb-seg[aria-pressed="true"]').dataset.view, 'feed', 'the old list view became the feed');
                 assert.match(root.querySelector('.lb-month-head').textContent, /Září 2026 · 2 /);
-                const row = root.querySelector('.lb-dive-row');
-                assert.ok(row.getAttribute('href').startsWith('#/dive/'));
-                assert.match(root.textContent, /18,5\u00A0m · 42:15 · 9,0\u00A0m · 4,8\u00A0°C · EAN32/);
-                assert.match(root.textContent, /with Eva · night/);
-                assert.ok(root.textContent.includes('First line') && !root.textContent.includes('second'));
+                const card = root.querySelector('.lb-feed-card[href="#/dive/e1"]');
+                assert.ok(card.getAttribute('href').startsWith('#/dive/'));
+                assert.equal(card.querySelector('.lb-feed-title').textContent, 'Hemmoor');
+                assert.deepEqual([...card.querySelectorAll('.lb-stat dd')].map(d => d.textContent),
+                    ['18,5\u00A0m', '42:15\u00A0min', '9,0\u00A0m', '4,8\u00A0°C', 'EAN32']);
+                assert.match(card.querySelector('.lb-feed-people').textContent, /with Eva · night/);
+                assert.match(card.querySelector('.lb-feed-notes').textContent, /^First line/);
+                assert.ok(card.querySelector('.lb-spark[data-rec="r1"]'), 'a dive without photo or map position shows its profile');
+                assert.equal(root.querySelector('.lb-feed-card[href="#/dive/e2"] .lb-visual'), null, 'no recording, no picture');
+                assert.match(root.querySelector('.lb-totals').textContent, /^2 dives0,7\u00A0h underwaterdeepest 30,0\u00A0m$/, 'totals use the decimal comma and NBSP');
                 assert.ok(root.querySelector('.lb-badge'), 'add details marker');
                 if (typeof IntersectionObserver === 'undefined') assert.equal(loads.length, 0, 'no observer: no profile downloads');
                 // table
@@ -1401,10 +1417,48 @@ describe('LogbookApp background errors (jsdom)', () => {
                 root.querySelector('.lb-sort[data-sort="maxDepth"]').click();
                 assert.equal(root.querySelector('th[aria-sort="ascending"] .lb-sort-mark').textContent, '▲');
                 root.querySelector('.lb-seg[data-view="tiles"]').click();
-                assert.equal(root.querySelectorAll('.lb-cards .lb-card').length, 2);
+                assert.equal(root.querySelectorAll('.lb-tiles .lb-tile').length, 2);
+                assert.ok(root.querySelector('.lb-tile .lb-visual-none'), 'a tile without any picture shows its number');
                 assert.ok(root.querySelector('#lb-sites'), 'the Sites link stays');
                 app.destroy();
             } finally { delete globalThis.localStorage; document.documentElement.lang = 'en'; }
+        });
+    });
+
+    test('feed pictures: first photo with a count, else a site map that falls back to the profile when it fails', async () => {
+        await withDom(async root => {
+            window.location.hash = '#/';
+            const entries = [
+                { id: 'e1', log_number: 1, dive_date: '2026-09-02', site_id: 's1', recording_id: 'r1', buddies: [], details: {} },
+                { id: 'e2', log_number: 2, dive_date: '2026-09-03', site_id: 's1', recording_id: null, buddies: [], details: {} },
+                { id: 'e3', log_number: 3, dive_date: '2026-09-04', site_id: 's1', buddies: [], details: {} },
+            ];
+            const store = baseStore({
+                ensureEntries: async () => 0, listEntries: async () => entries,
+                listSites: async () => [{ id: 's1', name: 'Lahošť', lat: 50.62, lon: 13.77 }],
+                listPhotoMedia: async () => [{ entry_id: 'e3', path: 'a.jpg' }, { entry_id: 'e3', path: 'b.jpg' }],
+                photoUrls: async paths => new Map(paths.map(p => [p, `https://example.com/${p}`])),
+                loadDive: async () => ({ samples: [{ t: 0, depth: 0 }, { t: 60, depth: 10 }, { t: 120, depth: 0 }] }),
+            });
+            const app = new LogbookApp(root, { store });
+            await tick(120);
+            const card = id => root.querySelector(`.lb-feed-card[href="#/dive/${id}"]`);
+            assert.equal(card('e3').querySelector('.lb-visual-img').getAttribute('src'), 'https://example.com/a.jpg');
+            assert.equal(card('e3').querySelector('.lb-more-photos [aria-hidden="true"]').textContent, '+1');
+            assert.equal(card('e3').querySelector('.lb-more-photos .rda-visually-hidden').textContent, '1 more photos');
+            const map = card('e1').querySelector('img.lb-map-img');
+            assert.ok(map.getAttribute('src').startsWith('https://api.mapy.com/v1/static/map?'));
+            assert.equal(map.getAttribute('alt'), 'Map of Lahošť');
+            map.dispatchEvent(new window.Event('error'));
+            assert.equal(card('e1').querySelector('img.lb-map-img'), null, 'the failed map is gone');
+            assert.ok(card('e1').querySelector('.lb-spark[data-rec="r1"]'), 'the profile takes its place');
+            card('e2').querySelector('img.lb-map-img').dispatchEvent(new window.Event('error'));
+            assert.equal(card('e2').querySelector('.lb-visual'), null, 'no recording: no picture at all');
+            card('e3').querySelector('.lb-visual-photo img').dispatchEvent(new window.Event('error'));
+            assert.equal(card('e3').querySelector('.lb-visual-photo'), null, 'an expired photo URL is dropped');
+            assert.equal(card('e3').querySelector('img.lb-map-img'), null, 'maps are not asked for again after one failed');
+            app.destroy();
+            assert.equal(document.body.classList.contains('lb-in'), false);
         });
     });
 
@@ -1614,7 +1668,7 @@ describe('SitesPage helpers', () => {
 
 // ---- List and table views ----
 
-import { groupByMonth, sortEntries, gasLabel, sparklinePath, entryFacts, firstLine, formatWeekdayDate } from '../js/logbook/listViews.js';
+import { groupByMonth, sortEntries, gasLabel, sparklinePath, profileAreaPath, formatWeekdayDate } from '../js/logbook/listViews.js';
 
 describe('list views', () => {
     const E = (o) => ({ id: o.id ?? String(o.log_number), buddies: [], details: {}, ...o });
@@ -1679,15 +1733,6 @@ describe('list views', () => {
         assert.ok(sparklinePath(Array.from({ length: 5000 }, (_, i) => ({ t: i, depth: i % 30 })), 120, 48).split(' L').length <= 130);
     });
 
-    test('entryFacts omits missing values and uses the supplied number formatter', () => {
-        const num = (v, d) => v.toFixed(d).replace('.', ',');
-        const f = entryFacts(E({ max_depth_m: 18.5, duration_s: 2535, water_temp_c: 4.8, gas: { o2: 0.32, he: 0 }, details: { avgDepthM: 9.04, surfaceTempC: 18.5 } }), num);
-        assert.deepEqual(f, ['18,5 m', '42:15', '9,0 m', '4,8 / 18,5 °C', 'EAN32']);
-        assert.deepEqual(entryFacts(E({ max_depth_m: 10 }), num), ['10,0 m']);
-        assert.deepEqual(entryFacts(E({ water_temp_c: 5 }), num), ['5,0 °C']);
-        assert.deepEqual(entryFacts(E({}), num), []);
-    });
-
     test('formatWeekdayDate shows the weekday and ignores non-dates', () => {
         assert.match(formatWeekdayDate('2026-09-02', 'en'), /Wed/);
         assert.match(formatWeekdayDate('2026-09-02', 'cs'), /st/);
@@ -1695,8 +1740,82 @@ describe('list views', () => {
         assert.equal(formatWeekdayDate(null, 'en'), '');
     });
 
-    test('firstLine takes the first non-empty line', () => {
-        assert.equal(firstLine('\n  hello\nworld'), 'hello');
-        assert.equal(firstLine(null), '');
+});
+
+
+describe('feed helpers', () => {
+    const NB = '\u00a0';
+    const num = (v, d) => v.toFixed(d).replace('.', ',');
+    test('mapyStaticMapUrl builds a centred marker map; empty without key or position', () => {
+        const u = new URL(mapyStaticMapUrl({ lat: 50.08, lon: 14.4, apiKey: 'k y', width: 600, height: 300, scale: 2, lang: 'cs' }));
+        assert.equal(u.origin + u.pathname, 'https://api.mapy.com/v1/static/map');
+        assert.equal(u.searchParams.get('lon'), '14.4');
+        assert.equal(u.searchParams.get('lat'), '50.08');
+        assert.equal(u.searchParams.get('zoom'), '12');
+        assert.equal(u.searchParams.get('width'), '600');
+        assert.equal(u.searchParams.get('height'), '300');
+        assert.equal(u.searchParams.get('scale'), '2');
+        assert.equal(u.searchParams.get('mapset'), 'outdoor');
+        assert.equal(u.searchParams.get('lang'), 'cs');
+        assert.equal(u.searchParams.get('format'), 'jpg');
+        assert.equal(u.searchParams.get('markers'), 'color:#2980b9;size:normal;14.4,50.08');
+        assert.equal(u.searchParams.get('apikey'), 'k y');
+        assert.equal(mapyStaticMapUrl({ lat: 50, lon: 14, apiKey: '', width: 10, height: 10 }), '');
+        assert.equal(mapyStaticMapUrl({ lat: null, lon: 14, apiKey: 'k', width: 10, height: 10 }), '');
+        assert.equal(new URL(mapyStaticMapUrl({ lat: 1, lon: 2, apiKey: 'k', width: 5000, height: 3, lang: 'de' })).searchParams.get('width'), '1024');
+        assert.equal(new URL(mapyStaticMapUrl({ lat: 1, lon: 2, apiKey: 'k', width: 5000, height: 3, lang: 'xx' })).searchParams.get('lang'), 'en');
+    });
+    test('profileAreaPath closes the profile along the surface', () => {
+        const p = profileAreaPath([{ t: 0, depth: 0 }, { t: 60, depth: 10 }, { t: 120, depth: 0 }], 100, 50);
+        assert.match(p, /^M.* Z$/);
+        assert.equal(profileAreaPath([], 100, 50), '');
+    });
+    test('diveTitle prefers the site name', () => {
+        const t = k => ({ 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' }[k]);
+        assert.equal(diveTitle({ log_number: 7 }, 'Lahošť', t), 'Lahošť');
+        assert.equal(diveTitle({ log_number: 7 }, null, t), 'Dive #7');
+        assert.equal(diveTitle({ log_number: null }, '', t), 'Dive');
+    });
+    test('feedStats formats with the given number formatter and NBSP, skipping missing values', () => {
+        const s = feedStats({ max_depth_m: 18.5, duration_s: 2535, water_temp_c: 4.8, gas: { o2: 0.32, he: 0 }, details: { avgDepthM: 9.04 } }, num);
+        assert.deepEqual(s, [
+            { key: 'depth', value: '18,5', unit: 'm' }, { key: 'duration', value: '42:15', unit: 'min' },
+            { key: 'avgDepth', value: '9,0', unit: 'm' }, { key: 'temp', value: '4,8', unit: '°C' },
+            { key: 'gas', value: 'EAN32', unit: '' },
+        ]);
+        assert.deepEqual(feedStats({ details: {} }, num), []);
+        assert.deepEqual(feedStats({ max_depth_m: 0, details: null }, num), [{ key: 'depth', value: '0,0', unit: 'm' }]);
+    });
+    test('chooseVisual: photo, then map, then profile, then none', () => {
+        const site = { lat: 50, lon: 14 };
+        assert.equal(chooseVisual({ photoUrl: 'x', site, apiKey: 'k', recordingId: 'r' }).kind, 'photo');
+        assert.equal(chooseVisual({ site, apiKey: 'k', recordingId: 'r' }).kind, 'map');
+        assert.equal(chooseVisual({ site, apiKey: '', recordingId: 'r' }).kind, 'profile');
+        assert.equal(chooseVisual({ site: { lat: null, lon: 14 }, apiKey: 'k', recordingId: 'r' }).kind, 'profile');
+        assert.equal(chooseVisual({ site: null, apiKey: 'k', recordingId: null }).kind, 'none');
+    });
+    test('logbookTotals and formatTotalTime', () => {
+        const t = logbookTotals([{ duration_s: 3600, max_depth_m: 20 }, { duration_s: null, max_depth_m: 41.5 }, { duration_s: 1800 }]);
+        assert.deepEqual(t, { count: 3, seconds: 5400, maxDepth: 41.5 });
+        assert.deepEqual(logbookTotals([]), { count: 0, seconds: 0, maxDepth: null });
+        assert.equal(formatTotalTime(5400, num), `1,5${NB}h`);
+        assert.equal(formatTotalTime(0, num), `0${NB}h`);
+        assert.equal(formatTotalTime(41 * 3600 + 1000, num), `41${NB}h`);
+    });
+    test('migrateView maps the old list view to the feed', () => {
+        assert.equal(migrateView('list'), 'feed');
+        assert.equal(migrateView('table'), 'table');
+        assert.equal(migrateView('tiles'), 'tiles');
+        assert.equal(migrateView(null), 'feed');
+        assert.equal(migrateView('bogus'), 'feed');
+        assert.deepEqual(FEED_VIEWS, ['feed', 'tiles', 'table']);
+    });
+    test('photoIndex keeps the first photo with a path and counts them', () => {
+        const idx = photoIndex([
+            { entry_id: 'a', path: null }, { entry_id: 'a', path: 'a1' }, { entry_id: 'a', path: 'a2' }, { entry_id: 'b', path: 'b1' },
+        ]);
+        assert.deepEqual(idx.get('a'), { path: 'a1', count: 2 });
+        assert.deepEqual(idx.get('b'), { path: 'b1', count: 1 });
+        assert.equal(idx.has('c'), false);
     });
 });

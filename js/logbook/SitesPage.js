@@ -6,7 +6,8 @@
 
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { parseDecimal } from './entryModel.js';
-import { duplicateNameCounts, siteNameKey } from './geo.js';
+import { duplicateNameCounts, siteNameKey, mapyStaticMapUrl } from './geo.js';
+import { MAPY_API_KEY } from '../backend/config.js';
 import { routeHref } from './router.js';
 import { openSitePicker } from './SitePicker.js';
 import { translate } from '../i18n.js';
@@ -140,7 +141,12 @@ export class SitesPage {
         const cards = sortSites(this.sites).map(site => {
             const n = this.usage.get(site.id) ?? 0;
             const dup = dupes.get(siteNameKey(site.name));
+            const map = hasPosition(site) ? mapyStaticMapUrl({
+                lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: 120, height: 90, zoom: 11,
+                scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
+            }) : '';
             return `<a class="rda-card lb-card lb-site-card" href="${routeHref({ name: 'site', id: site.id })}">
+                ${map ? `<img class="lb-site-map" src="${escHtml(map)}" width="120" height="90" alt="" loading="lazy">` : ''}
                 <div class="lb-card-body">
                     <div class="lb-card-head"><strong>${escHtml(site.name)}</strong>
                         <span class="lb-date">${escHtml(diveCountText(n))}</span></div>
@@ -152,6 +158,7 @@ export class SitesPage {
             <h2 class="lb-sites-title">${escHtml(ts('title', 'Sites'))}</h2>
             ${cards.length ? `<div class="lb-cards">${cards.join('')}</div>`
                 : `<p class="rda-account-msg">${escHtml(ts('empty', 'No sites yet. Sites are created when you pick a place for a dive.'))}</p>`}`;
+        for (const img of this.container.querySelectorAll('.lb-site-map')) img.addEventListener('error', () => img.remove()); // key not valid here, offline
     }
 
     // ---- Edit ----
@@ -223,6 +230,10 @@ export class SitesPage {
                     </div>
                     <label class="lb-field"><span>${escHtml(ts('notes', 'Notes'))}</span>
                         <textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
+                    ${hasPosition(this.site) && MAPY_API_KEY ? `<img class="lb-site-preview" src="${escHtml(mapyStaticMapUrl({
+                        lat: this.site.lat, lon: this.site.lon, apiKey: MAPY_API_KEY, width: 640, height: 240, zoom: 13,
+                        scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
+                    }))}" width="640" height="240" alt="${escHtml(this.site.name)}">` : ''}
                     <div class="lb-site-position"><span class="${hasPosition(this.site) ? '' : 'lb-muted'}">${escHtml(position)}</span>
                         <button type="button" class="btn btn-secondary" id="lb-move-pin"${disabled}>${escHtml(ts('movePin', 'Move pin'))}</button></div>
                     <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
@@ -236,6 +247,7 @@ export class SitesPage {
             ${mergeBlock ? `<section class="rda-card lb-form">${mergeBlock}</section>` : ''}
             <section class="rda-card lb-form">${deleteBlock}</section>`;
         const q = sel => this.container.querySelector(sel);
+        this.container.querySelector('.lb-site-preview')?.addEventListener('error', e => e.target.remove());
         q('.lb-site-form').addEventListener('submit', e => { e.preventDefault(); this._save(); });
         q('#lb-move-pin').addEventListener('click', () => this._movePin());
         q('#lb-merge')?.addEventListener('click', () => this._askMerge());

@@ -14,7 +14,10 @@ import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
-import { groupByMonth, sortEntries, entryFacts, firstLine, sparklinePath, formatWeekdayDate } from './listViews.js';
+import { groupByMonth, sortEntries, sparklinePath, profileAreaPath, formatWeekdayDate } from './listViews.js';
+import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
+import { mapyStaticMapUrl } from './geo.js';
+import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -23,29 +26,30 @@ const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 
-/** Text for the entry card: depth, duration, buddies. Pure. */
-export function cardFacts(entry) {
-    const facts = [];
-    if (entry.max_depth_m != null) facts.push(`${fmtNum(entry.max_depth_m, 1)} m`);
-    if (entry.duration_s != null) facts.push(`${fmtNum(entry.duration_s / 60, 0)} min`);
-    return facts;
-}
+const NB = '\u00A0';
+const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
+const tt = key => tl(key, TITLE_FALLBACK[key] ?? key);
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
 
 const VIEW_KEY = 'decojs.logbook.view';
-const VIEWS = ['tiles', 'list', 'table'];
-const SPARK_W = 120;
-const SPARK_H = 48;
+const SPARK_W = 300;
+const SPARK_H = 100;
 const SPARK_CONCURRENCY = 3;
 const TABLE_COLUMNS = [
     ['number', false], ['date', false], ['site', false], ['maxDepth', true], ['duration', true],
     ['avgDepth', true], ['temp', true], ['buddies', false],
 ];
+/** Small line icons of the view switch (24×24, stroke = currentColor). */
+const VIEW_ICONS = {
+    feed: '<rect x="4" y="3" width="16" height="8" rx="1.5"/><path d="M4 15h16M4 19h10"/>',
+    tiles: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+    table: '<rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9 4.5v15"/>',
+};
 
 function loadView() {
     try {
-        const v = localStorage.getItem(VIEW_KEY);
-        return VIEWS.includes(v) ? v : 'tiles';
-    } catch { return 'tiles'; }
+        return migrateView(localStorage.getItem(VIEW_KEY));
+    } catch { return FEED_VIEWS[0]; }
 }
 
 export class LogbookApp {
@@ -61,6 +65,7 @@ export class LogbookApp {
         this.entries = null;
         this.sites = new Map();
         this.thumbs = new Map(); // entry id -> signed URL
+        this.photos = new Map(); // entry id -> { path of the first photo, photo count }
         this.msg = [];
         this.working = false;
         this.ensured = null;
@@ -77,6 +82,14 @@ export class LogbookApp {
         this._sparkActive = 0;
         this._onHash = () => this._renderRoute();
         this._onLanguage = () => this._onLanguageChange();
+        this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
+        this._onDocKey = e => {
+            if (e.key !== 'Escape') return;
+            const menu = this.view?.querySelector('.lb-menu[open]');
+            if (menu?.contains(document.activeElement)) menu.querySelector('summary')?.focus(); // focus must not fall to <body>
+            this._closeMenu();
+        };
+        this._onVisualFail = e => this._onVisualError(e);
         if (!store) {
             this._mountAnalysis();
             return;
@@ -133,6 +146,10 @@ export class LogbookApp {
         this.root.appendChild(this.view);
         window.addEventListener('hashchange', this._onHash);
         document.addEventListener('languagechange', this._onLanguage);
+        document.addEventListener('click', this._onDocClick);
+        document.addEventListener('keydown', this._onDocKey);
+        this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
+        document.body.classList.add('lb-in');
         this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
         this._renderRoute();
     }
@@ -140,6 +157,9 @@ export class LogbookApp {
     _leaveLogbook() {
         window.removeEventListener('hashchange', this._onHash);
         document.removeEventListener('languagechange', this._onLanguage);
+        document.removeEventListener('click', this._onDocClick);
+        document.removeEventListener('keydown', this._onDocKey);
+        document.body.classList.remove('lb-in');
         this._viewToken++;
         this._stopSparks();
         this._unmountForm();
@@ -167,6 +187,8 @@ export class LogbookApp {
         this._unmountForm();
         const token = ++this._viewToken;
         const route = parseRoute(location.hash);
+        this.view.classList.toggle('lb-list-view', route.name === 'list'); // list layout: sidebar on wide screens
+        if (route.name !== 'list') this.view.classList.remove('lb-selecting');
         switch (route.name) {
             case 'list': this._showList(token); break;
             case 'analysis': this._showAnalysis(route.id, token); break;
@@ -291,48 +313,49 @@ export class LogbookApp {
             if (token !== this._viewToken) return;
             this.entries = entries;
             this.sites = new Map(sites.map(s => [s.id, s]));
-            const first = new Map();
-            for (const m of photos) if (m.path && !first.has(m.entry_id)) first.set(m.entry_id, m.path);
+            this.photos = photoIndex(photos);
             this._renderList();
-            const urls = await this.store.photoUrls([...first.values()]).catch(error => { console.error(error); return new Map(); });
+            const paths = [...this.photos.values()].map(p => p.path);
+            const urls = await this.store.photoUrls(paths).catch(error => { console.error(error); return new Map(); });
             if (token !== this._viewToken) return;
-            this.thumbs = new Map([...first].filter(([, path]) => urls.has(path)).map(([id, path]) => [id, urls.get(path)]));
+            this.thumbs = new Map([...this.photos].filter(([, p]) => urls.has(p.path)).map(([id, p]) => [id, urls.get(p.path)]));
             this._renderList();
         } catch (error) {
             if (token === this._viewToken) this._storeError(error);
         }
     }
 
+    /** Title, totals, Sites, New dive and the "⋯" menu with the rarely used account actions. */
     _renderBar() {
         const busy = this.working;
-        return `<section class="rda-account rda-card lb-bar">
-            <span class="rda-account-who">${escHtml(fill(tb('loggedInAs', 'Logged in as {0}'), this.user.email))}</span>
-            <label class="btn btn-small btn-secondary rda-upload"><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
-                <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
-            <button type="button" class="btn btn-small btn-secondary" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
-            <a class="btn btn-small btn-secondary" id="lb-sites" href="${routeHref({ name: 'sites' })}">${escHtml(tl('sites.title', 'Sites'))}</a>
-            <button type="button" class="btn btn-small btn-secondary" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
-            <a class="btn btn-small lb-new" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>
-            ${this.msg.length ? `<p class="rda-account-msg">${this.msg.map(m => `<span>${escHtml(m)}</span>`).join('<br>')}</p>` : ''}
+        const totals = logbookTotals(this.entries ?? []);
+        const facts = totals.count ? [
+            diveCountText(totals.count),
+            totals.seconds ? fill(tl('bar.timeUnderwater', '{0} underwater'), formatTotalTime(totals.seconds, fmtNum)) : '',
+            totals.maxDepth !== null ? fill(tl('bar.deepest', 'deepest {0}'), `${fmtNum(totals.maxDepth, 1)}${NB}m`) : '',
+        ].filter(Boolean) : [];
+        const more = tl('bar.more', 'More actions');
+        return `<section class="lb-bar">
+            <div class="lb-bar-head">
+                <h2 class="lb-bar-title">${escHtml(tl('bar.title', 'Your dives'))}</h2>
+                ${facts.length ? `<p class="lb-totals">${facts.map(f => `<span>${escHtml(f)}</span>`).join('')}</p>` : ''}
+            </div>
+            <div class="lb-bar-actions">
+                <a class="btn btn-secondary lb-bar-btn" id="lb-sites" href="${routeHref({ name: 'sites' })}">${escHtml(tl('sites.title', 'Sites'))}</a>
+                <details class="lb-menu">
+                    <summary class="btn btn-secondary lb-bar-btn lb-menu-btn" aria-label="${escHtml(more)}" title="${escHtml(more)}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></summary>
+                    <div class="lb-menu-pop">
+                        <p class="lb-menu-who">${escHtml(fill(tb('loggedInAs', 'Logged in as {0}'), this.user.email))}</p>
+                        <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                            <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
+                        <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
+                        <button type="button" class="lb-menu-item" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
+                    </div>
+                </details>
+                <a class="btn btn-primary lb-new" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>
+            </div>
+            ${this.msg.length ? `<p class="rda-account-msg lb-bar-msg" role="status">${this.msg.map(m => `<span>${escHtml(m)}</span>`).join('<br>')}</p>` : ''}
         </section>`;
-    }
-
-    _card(entry) {
-        const site = entry.site_id ? this.sites.get(entry.site_id)?.name : null;
-        const facts = cardFacts(entry);
-        const buddies = (entry.buddies ?? []).join(', ');
-        const thumb = this.thumbs.get(entry.id);
-        const [open, close] = this._wrap(entry, 'rda-card lb-card');
-        return `${open}${this._pick(entry)}
-            ${thumb ? `<img class="lb-thumb" src="${escHtml(thumb)}" alt="" loading="lazy">` : ''}
-            <div class="lb-card-body">
-                <div class="lb-card-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
-                    <span class="lb-date">${escHtml(formatDiveDate(entry.dive_date, currentLang()))}</span></div>
-                <div class="lb-site${site ? '' : ' lb-muted'}">${escHtml(site || tl('siteNotSet', 'Site not set'))}</div>
-                ${facts.length ? `<div class="lb-facts">${escHtml(facts.join(' · '))}</div>` : ''}
-                ${buddies ? `<div class="lb-buddies lb-muted">${escHtml(buddies)}</div>` : ''}
-                ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-            </div>${close}`;
     }
 
     // ---- Select mode ----
@@ -395,13 +418,14 @@ export class LogbookApp {
     _renderSelectBar() {
         if (!this.entries?.length) return '';
         const busy = this.bulk?.phase === 'running';
-        if (!this.selecting) return `<button type="button" class="btn btn-small btn-secondary" id="lb-select">${escHtml(tl('bulk.select', 'Select'))}</button>`;
-        return `<div class="lb-selectbar" role="group">
+        if (!this.selecting) return `<button type="button" class="btn btn-secondary lb-select-btn" id="lb-select">${escHtml(tl('bulk.select', 'Select'))}</button>`;
+        // On phones the dock is fixed to the bottom of the screen; the confirmation opens right above the buttons.
+        return `<div class="lb-selectdock"><div class="lb-bulk"></div><div class="lb-selectbar" role="group">
             <span class="lb-count" aria-live="polite">${escHtml(fill(tl('bulk.selected', '{0} selected'), this.selected.size))}</span>
             <button type="button" class="btn btn-small btn-secondary" id="lb-select-all"${busy || this.selected.size === this.entries.length ? ' disabled' : ''}>${escHtml(tl('bulk.selectAll', 'Select all'))}</button>
             <button type="button" class="btn btn-small btn-secondary" id="lb-select-none"${busy ? ' disabled' : ''}>${escHtml(tl('bulk.none', 'None'))}</button>
             <button type="button" class="btn btn-small btn-danger" id="lb-bulk-delete"${busy || this.bulk || !this.selected.size ? ' disabled' : ''}>${escHtml(tl('bulk.delete', 'Delete…'))}</button>
-            <button type="button" class="btn btn-small btn-secondary" id="lb-select-cancel"${busy ? ' disabled' : ''}>${escHtml(tl('bulk.cancel', 'Cancel'))}</button></div>`;
+            <button type="button" class="btn btn-small btn-secondary" id="lb-select-cancel"${busy ? ' disabled' : ''}>${escHtml(tl('bulk.cancel', 'Cancel'))}</button></div></div>`;
     }
 
     _numberOf(id) {
@@ -495,36 +519,109 @@ export class LogbookApp {
         return entry.entry_time ? String(entry.entry_time).slice(0, 5) : '';
     }
 
-    _row(entry) {
-        const site = entry.site_id ? this.sites.get(entry.site_id)?.name : null;
-        const facts = entryFacts(entry, fmtNum);
+    _site(entry) {
+        return entry.site_id ? this.sites.get(entry.site_id) ?? null : null;
+    }
+
+    _whenText(entry) {
+        return [formatWeekdayDate(entry.dive_date, currentLang()), this._timeText(entry)].filter(Boolean).join(', ');
+    }
+
+    /**
+     * The picture of a dive: its first photo, else a map of its site, else its depth profile.
+     * A tile without any of them shows the dive number instead; a feed card shows nothing.
+     * @param {'feed'|'tile'} variant
+     */
+    _visual(entry, variant) {
+        const site = this._site(entry);
+        const photoUrl = this.thumbs.get(entry.id) ?? null;
+        const apiKey = this._mapFailed ? '' : MAPY_API_KEY; // after one failed map, stop asking for more
+        const { kind } = chooseVisual({ photoUrl, site, apiKey, recordingId: entry.recording_id });
+        const id = ` data-entry="${escHtml(entry.id)}" data-variant="${variant}"`;
+        if (kind === 'photo') {
+            const more = (this.photos.get(entry.id)?.count ?? 1) - 1;
+            return `<div class="lb-visual lb-visual-photo"${id}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
+                ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(fill(tl('feed.morePhotos', '{0} more photos'), more))}</span></span>` : ''}</div>`;
+        }
+        if (kind === 'map') {
+            const [w, h] = variant === 'tile' ? [320, 240] : [640, 280];
+            const src = mapyStaticMapUrl({
+                lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
+                scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
+            });
+            return `<div class="lb-visual lb-visual-map"${id}><img class="lb-visual-img lb-map-img" src="${escHtml(src)}" width="${w}" height="${h}" alt="${escHtml(fill(tl('feed.mapAlt', 'Map of {0}'), site.name))}" loading="lazy"></div>`;
+        }
+        if (kind === 'profile') {
+            const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';
+            return `<div class="lb-visual lb-visual-profile"${id}><span class="lb-spark" data-rec="${escHtml(entry.recording_id)}" role="img" aria-label="${escHtml(tl('feed.profileAlt', 'Depth profile'))}"></span>
+                ${depth ? `<span class="lb-visual-depth" aria-hidden="true">${escHtml(depth)}</span>` : ''}</div>`;
+        }
+        if (variant === 'tile') return `<div class="lb-visual lb-visual-none"${id} aria-hidden="true"><span>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</span></div>`;
+        return '';
+    }
+
+    /** A map image that failed (key not valid on this site, offline): show the profile instead, or nothing. */
+    _onVisualError(e) {
+        const img = e.target;
+        if (img?.tagName !== 'IMG' || !img.classList.contains('lb-visual-img')) return;
+        const box = img.closest('.lb-visual');
+        const entry = this.entries?.find(en => en.id === box?.dataset.entry);
+        if (!box || !entry) return;
+        if (img.classList.contains('lb-map-img')) this._mapFailed = true;
+        else this.thumbs.delete(entry.id); // signed photo URL expired or failed: show the map or profile instead
+        box.outerHTML = this._visual(entry, box.dataset.variant);
+        this._watchSparks();
+    }
+
+    _stats(entry, keys = null) {
+        const stats = feedStats(entry, fmtNum).filter(s => !keys || keys.includes(s.key));
+        if (!stats.length) return '';
+        return `<dl class="lb-stats">${stats.map(s => `<div class="lb-stat lb-stat-${s.key}"><dt>${escHtml(tl(`feed.stats.${s.key}`, STAT_FALLBACK[s.key]))}</dt>
+            <dd>${escHtml(s.value)}${s.unit ? `<span class="lb-unit">${NB}${escHtml(s.unit)}</span>` : ''}</dd></div>`).join('')}</dl>`;
+    }
+
+    /** A feed card: who/where/when, the stat row, buddies and notes, then the picture. */
+    _feedCard(entry) {
+        const site = this._site(entry);
         const buddies = (entry.buddies ?? []).join(', ');
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
-        const notes = firstLine(entry.notes);
-        const thumb = this.thumbs.get(entry.id);
-        const media = thumb ? `<img class="lb-thumb lb-row-media" src="${escHtml(thumb)}" alt="" loading="lazy">`
-            : entry.recording_id ? `<span class="lb-row-media lb-spark" data-rec="${escHtml(entry.recording_id)}" aria-hidden="true"></span>`
-                : '<span class="lb-row-media" aria-hidden="true"></span>';
-        const head = [formatWeekdayDate(entry.dive_date, currentLang()), this._timeText(entry)].filter(Boolean).join(' · ');
-        const [open, close] = this._wrap(entry, 'rda-card lb-card lb-dive-row');
-        return `${open}${this._pick(entry)}${media}
-            <div class="lb-card-body">
-                <div class="lb-row-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
-                    <span class="lb-date">${escHtml(head)}</span>
-                    <span class="lb-row-site${site ? '' : ' lb-muted'}">${escHtml(site || tl('siteNotSet', 'Site not set'))}</span></div>
-                ${facts.length ? `<div class="lb-facts">${escHtml(facts.join(' · '))}</div>` : ''}
-                ${people ? `<div class="lb-muted">${escHtml(people)}</div>` : ''}
-                ${notes ? `<div class="lb-muted lb-notes">${escHtml(notes)}</div>` : ''}
-                ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-            </div>${close}`;
+        const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
+        const [open, close] = this._wrap(entry, 'lb-feed-card');
+        return `${open}<div class="lb-feed-main">
+                <div class="lb-feed-head">${this._pick(entry)}
+                    <span class="lb-num-badge" aria-hidden="true">${escHtml(String(entry.log_number ?? '–'))}</span>
+                    <div class="lb-feed-who">
+                        <h4 class="lb-feed-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</h4>
+                        <p class="lb-feed-when"><span class="rda-visually-hidden">${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}, </span><span class="lb-date">${escHtml(this._whenText(entry))}</span></p>
+                    </div>
+                    ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
+                </div>
+                ${this._stats(entry)}
+                ${people ? `<p class="lb-feed-people">${escHtml(people)}</p>` : ''}
+                ${notes ? `<p class="lb-feed-notes">${escHtml(notes)}</p>` : ''}
+            </div>${this._visual(entry, 'feed')}${close}`;
     }
 
-    _renderRows() {
+    _renderFeed() {
         const tag = localeTag(currentLang());
         return groupByMonth(this.entries, tag).map(g => `<section class="lb-month">
             <h3 class="lb-month-head">${escHtml(g.label ? fill(tl('views.monthHeader', '{0} · {1}'), g.label, diveCountText(g.entries.length)) : diveCountText(g.entries.length))}</h3>
-            <div class="lb-rows">${g.entries.map(e => this._row(e)).join('')}</div></section>`).join('');
+            <div class="lb-feed">${g.entries.map(e => this._feedCard(e)).join('')}</div></section>`).join('');
+    }
+
+    /** A gallery tile: the picture, then title, date and the two headline stats. */
+    _tile(entry) {
+        const site = this._site(entry);
+        const stats = feedStats(entry, fmtNum).filter(s => s.key === 'depth' || s.key === 'duration')
+            .map(s => `${s.value}${NB}${s.unit}`);
+        const [open, close] = this._wrap(entry, 'lb-tile');
+        return `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
+            <div class="lb-tile-body">
+                <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</strong>
+                <span class="lb-date">${escHtml([fill(tl('number', '#{0}'), entry.log_number ?? '–'), formatDiveDate(entry.dive_date, currentLang())].filter(Boolean).join(', '))}</span>
+                ${stats.length ? `<span class="lb-tile-stats">${stats.map(t => `<span>${escHtml(t)}</span>`).join('')}</span>` : ''}
+            </div>${close}`;
     }
 
     _renderTable() {
@@ -562,13 +659,14 @@ export class LogbookApp {
     }
 
     _renderSwitch() {
-        const buttons = VIEWS.map(v => `<button type="button" class="lb-seg" data-view="${v}" aria-pressed="${v === this.viewMode}">${escHtml(tl(`views.${v}`, v))}</button>`).join('');
+        const buttons = FEED_VIEWS.map(v => `<button type="button" class="lb-seg" data-view="${v}" aria-pressed="${v === this.viewMode}">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">${VIEW_ICONS[v]}</svg><span>${escHtml(tl(`views.${v}`, v))}</span></button>`).join('');
         return `<div class="lb-toolbar"><div class="lb-switch" role="group" aria-label="${escHtml(tl('views.label', 'Dive list view'))}">${buttons}</div>
             ${this._renderSelectBar()}</div>`;
     }
 
     _setViewMode(mode) {
-        if (!VIEWS.includes(mode) || mode === this.viewMode) return;
+        if (!FEED_VIEWS.includes(mode) || mode === this.viewMode) return;
         this.viewMode = mode;
         try { localStorage.setItem(VIEW_KEY, mode); } catch { /* remembered for this visit only */ }
         this._renderList();
@@ -588,7 +686,7 @@ export class LogbookApp {
         this.view.querySelector(`.lb-sort[data-sort="${key}"]`)?.focus();
     }
 
-    // ---- Lazy depth sparklines (List view, rows without a photo) ----
+    // ---- Lazy depth profiles (Feed and Tiles, dives without a photo or map) ----
 
     _stopSparks() {
         this._sparkObserver?.disconnect();
@@ -629,10 +727,10 @@ export class LogbookApp {
             if (inFlight) { inFlight.then(() => { if (el.isConnected) this._paintSpark(el); }); continue; } // same dive already loading
             this._sparkActive++;
             const load = this.store.loadDive(id)
-                .then(dive => sparklinePath(dive?.samples, SPARK_W, SPARK_H), () => '')
-                .catch(() => '')
-                .then(path => {
-                    this.sparks.set(id, path);
+                .then(dive => ({ line: sparklinePath(dive?.samples, SPARK_W, SPARK_H, 0), area: profileAreaPath(dive?.samples, SPARK_W, SPARK_H, 0) }), () => null)
+                .catch(() => null)
+                .then(paths => {
+                    this.sparks.set(id, paths);
                     if (el.isConnected) this._paintSpark(el);
                 })
                 .finally(() => { this._sparkLoads.delete(id); this._sparkActive--; if (!this.destroyed) this._pumpSparks(); });
@@ -640,24 +738,35 @@ export class LogbookApp {
         }
     }
 
+    /** The profile as a "water column": the dived shape hangs from the surface; the bottom 15 % stays free. */
     _paintSpark(el) {
-        const path = this.sparks.get(el.dataset.rec);
-        if (!path || el.firstChild) return;
-        el.innerHTML = `<svg viewBox="0 0 ${SPARK_W} ${SPARK_H}" preserveAspectRatio="none" focusable="false"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
+        const paths = this.sparks.get(el.dataset.rec);
+        if (!paths?.line || el.firstChild) return;
+        el.innerHTML = `<svg viewBox="0 -3 ${SPARK_W} ${SPARK_H + 18}" preserveAspectRatio="none" focusable="false" aria-hidden="true">
+            <path class="lb-spark-area" d="${paths.area}"/><path class="lb-spark-line" d="${paths.line}" vector-effect="non-scaling-stroke"/></svg>`;
     }
 
     _renderList() {
         this._stopSparks();
         let body;
         if (!this.entries) body = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
-        else if (!this.entries.length) body = `<p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>`;
+        else if (!this.entries.length) {
+            // Upload lives in the "⋯" menu; an empty logbook offers it right here.
+            body = `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>
+                <label class="btn btn-primary rda-upload lb-empty-upload${this.working ? ' lb-disabled' : ''}"${this.working ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                    <input type="file" id="lb-upload-empty" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label></div>`;
+        }
         else {
-            const list = this.viewMode === 'list' ? this._renderRows()
-                : this.viewMode === 'table' ? this._renderTable()
-                    : `<div class="lb-cards">${this.entries.map(e => this._card(e)).join('')}</div>`;
+            const list = this.viewMode === 'table' ? this._renderTable()
+                : this.viewMode === 'tiles' ? `<div class="lb-tiles">${this.entries.map(e => this._tile(e)).join('')}</div>`
+                    : this._renderFeed();
             body = this._renderSwitch() + list;
         }
-        this.view.innerHTML = `${this._renderBar()}<div class="lb-bulk"></div>${body}`;
+        const docked = this.selecting && this.entries?.length; // the bulk panel then lives in the select dock
+        this.view.classList.toggle('lb-selecting', !!docked);
+        const menuOpen = !!this.view.querySelector('.lb-menu[open]'); // a re-render (photos arriving) must not close it
+        this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        if (menuOpen) this.view.querySelector('.lb-menu').open = true;
         this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));
         this.view.querySelectorAll('.lb-sort').forEach(b => b.addEventListener('click', () => this._sortBy(b.dataset.sort)));
@@ -671,11 +780,17 @@ export class LogbookApp {
         this.view.querySelector('#lb-select-none')?.addEventListener('click', () => this._setPicked(this.entries.map(en => en.id), false));
         this.view.querySelector('#lb-select-cancel')?.addEventListener('click', () => this._leaveSelect());
         this.view.querySelector('#lb-bulk-delete')?.addEventListener('click', () => this._openConfirm());
-        this.view.querySelectorAll('.lb-cards, .lb-rows, .lb-table tbody').forEach(el => el.addEventListener('click', e => this._onPickClick(e)));
-        if (this.viewMode === 'list' && this.entries?.length) this._watchSparks();
-        this.view.querySelector('#lb-upload').addEventListener('change', e => this._upload(e.target));
-        this.view.querySelector('#lb-export').addEventListener('click', () => this._export());
+        this.view.querySelectorAll('.lb-feed, .lb-tiles, .lb-table tbody').forEach(el => el.addEventListener('click', e => this._onPickClick(e)));
+        if (this.viewMode !== 'table' && this.entries?.length) this._watchSparks();
+        this.view.querySelector('#lb-upload').addEventListener('change', e => { this._closeMenu(); this._upload(e.target); });
+        this.view.querySelector('#lb-upload-empty')?.addEventListener('change', e => this._upload(e.target));
+        this.view.querySelector('#lb-export').addEventListener('click', () => { this._closeMenu(); this._export(); });
         this.view.querySelector('#lb-logout').addEventListener('click', () => this._logout());
+    }
+
+    _closeMenu() {
+        const menu = this.view?.querySelector('.lb-menu[open]');
+        if (menu) menu.open = false;
     }
 
     // ---- Account actions ----

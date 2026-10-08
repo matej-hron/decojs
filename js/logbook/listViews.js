@@ -4,10 +4,8 @@
  */
 
 import { gasName } from '../import/recordedDive.js';
-import { formatDuration } from './entryModel.js';
 import { localeTag } from '../format.js';
 
-const NB = ' ';
 const DATE = /^(\d{4})-(\d{2})-\d{2}$/;
 const has = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
 
@@ -92,32 +90,6 @@ export function gasLabel(gas) {
 }
 
 /**
- * The facts line of a list row: max depth, duration m:ss, average depth, bottom / surface temperature, gas.
- * Missing values are left out. Numbers go through `num(value, decimals)` (decimal comma in Czech).
- * @param {Object} entry
- * @param {(value: number, decimals: number) => string} num
- * @returns {string[]}
- */
-export function entryFacts(entry, num) {
-    const out = [];
-    if (has(entry.max_depth_m)) out.push(`${num(Number(entry.max_depth_m), 1)}${NB}m`);
-    if (has(entry.duration_s)) out.push(formatDuration(entry.duration_s));
-    const avg = entry.details?.avgDepthM;
-    if (has(avg)) out.push(`${num(Number(avg), 1)}${NB}m`);
-    const temps = [entry.water_temp_c, entry.details?.surfaceTempC].filter(has).map(v => num(Number(v), 1));
-    if (temps.length) out.push(`${temps.join(' / ')}${NB}°C`);
-    const gas = gasLabel(entry.gas);
-    if (gas) out.push(gas);
-    return out;
-}
-
-/** The first non-empty line of a text, trimmed; '' for none. */
-export function firstLine(text) {
-    if (typeof text !== 'string') return '';
-    return text.split(/\r?\n/).map(l => l.trim()).find(Boolean) ?? '';
-}
-
-/**
  * SVG path of a depth profile for a sparkline: time left to right, surface at the top, depth downwards.
  * At most ~120 points. '' when there is nothing to draw (fewer than two samples or no elapsed time).
  * @param {Array<{t: number, depth: number}>} samples
@@ -147,4 +119,12 @@ export function formatWeekdayDate(date, lang) {
     if (!m) return String(date);
     const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
     return new Intl.DateTimeFormat(localeTag(lang), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
+}
+
+/** The sparkline path closed along the surface, for a filled "water column". '' when there is nothing to draw. */
+export function profileAreaPath(samples, width, height, pad = 2) {
+    const line = sparklinePath(samples, width, height, pad);
+    if (!line) return '';
+    const r = n => Math.round(n * 10) / 10;
+    return `${line} L${r(width - pad)},${r(pad)} L${r(pad)},${r(pad)} Z`;
 }
