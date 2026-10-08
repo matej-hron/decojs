@@ -187,6 +187,101 @@
         }
         @media (max-width: 900px) { .rda-analysis { grid-template-columns: minmax(0, 1fr); } }
     </style>
+    <style>
+        /* ==========================================================================
+           Phone-portrait charts (dive log only). Kept in its own block on purpose.
+           The charts get `chart-narrow` on their host when it is ≤ 600 px wide, because
+           RecordedDiveAnalysis passes `narrowLayout: true` (js/charts/narrowLayout.js).
+           The chart DOM carries inline styles for desktop; !important here only beats those.
+           ========================================================================== */
+        @media (max-width: 600px) {
+            .rda-root { padding-inline: 0; } /* main already gives the 16px side gutter */
+            /* max-content labels left the values a few px wide (one letter per line): stack them */
+            .rda-root .rda-summary dl { grid-template-columns: minmax(0, 1fr); gap: 0; }
+            .rda-root .rda-summary dd { margin: 0 0 0.6rem; }
+        }
+
+        /* Heights: the plot sizes itself instead of being squashed under the controls */
+        .rda-root #rda-mvalue.chart-narrow,
+        .rda-root #rda-gf.chart-narrow { height: auto !important; }
+        .rda-root #rda-profile.chart-narrow { max-height: 460px; }
+        .rda-root .chart-narrow > :is(.mvc-wrapper:not(.mvc-fullscreen), .gfc-wrapper:not(.gfc-fullscreen)) { height: auto !important; }
+        .rda-root .chart-narrow :is(.mvc-wrapper:not(.mvc-fullscreen) > .mvc-chart-container, .gfc-wrapper:not(.gfc-fullscreen) > .gfc-chart-container) {
+            flex: none !important;
+            height: auto;
+            aspect-ratio: 1;
+            min-height: 280px;
+            max-height: 70vh;
+        }
+        .rda-root .chart-narrow > :is(.mvc-wrapper, .gfc-wrapper) > canvas { height: 64px !important; } /* mini profile */
+
+        /* Lock / reset-zoom / fullscreen: touch-sized, inside the gutter the chart keeps above its legend */
+        .rda-root .chart-narrow :is(.chart-interaction-lock-btn, .dpc-fullscreen-btn, .dpc-reset-zoom-btn,
+            .mvc-fullscreen-btn, .mvc-reset-zoom-btn, .gfc-fullscreen-btn, .gfc-reset-zoom-btn) {
+            width: 34px;
+            height: 34px;
+            padding: 0 !important;
+            line-height: 1;
+        }
+
+        /* Compartment chips: quick buttons first, then all 16 tissues in two rows of 8 */
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) { gap: 4px !important; }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls)::before { content: ""; flex-basis: 100%; order: 1; }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > div:first-child button { min-height: 34px; }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > label:not(.mvc-alveolar-toggle) {
+            order: 2;
+            position: relative;
+            flex: 0 0 calc((100% - 7 * 4px) / 8) !important;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 !important;
+            font-variant-numeric: tabular-nums;
+        }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > :is(.mvc-audit-btn, .mvc-controlling-status) { order: 3; }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > label:not(.mvc-alveolar-toggle) > input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: 0;
+            opacity: 0; /* still in the DOM and focusable: the chip shows its state */
+        }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > label:not(.mvc-alveolar-toggle) > span { display: none; } /* colour dot: the border carries the colour */
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > label:not(.mvc-alveolar-toggle):has(input:checked) {
+            background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+            font-weight: 700;
+        }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > label:not(.mvc-alveolar-toggle):focus-within {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 1px;
+        }
+        .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > div:last-child { display: none; } /* keyboard-shortcut hint */
+
+        /* Playback: buttons fill the first row, slider and time share the second */
+        .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) { flex-wrap: wrap; gap: 6px !important; }
+        .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) > button { flex: 1 0 40px; min-height: 40px; }
+        .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) > input[type="range"] { flex: 1 1 140px !important; min-height: 32px; }
+        .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) > span { margin-left: auto; min-width: 0 !important; font-size: 0.8rem; }
+
+        /* GF tissue ranking under the plot (GFChart renders it there only in the narrow layout) */
+        .rda-root .gfc-ranking-panel.gfc-ranking-below {
+            position: static;
+            margin-top: 6px;
+            box-shadow: none;
+            background: var(--card-background);
+        }
+        .rda-root .gfc-ranking-title { margin: 0 0 0.2rem; font-weight: 700; }
+        .rda-root .gfc-ranking-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.15rem 0.75rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-variant-numeric: tabular-nums;
+        }
+        .rda-root .gfc-ranking-list li { white-space: nowrap; }
+        /* ======================= end phone-portrait charts ======================= */
+    </style>
 </head>
 <body data-i18n-title="diveLog.pageTitle">
     <nav class="main-nav">

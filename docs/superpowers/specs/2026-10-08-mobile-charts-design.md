@@ -81,3 +81,28 @@ Desktop must not change.
   gradient-factors), sandbox/repetitive-dives, the dive log (logged-out demo copy in the scratchpad
   harness). Check: no horizontal page scroll, legend not covered, axis titles whole, playback
   usable, ranking below the GF plot.
+
+## Scope change (2026-10-08, from the user, during implementation)
+
+The work is limited to the **dive log page** (`lab/dive-log.html` / `RecordedDiveAnalysis`). Sandbox and
+Theory pages, and all desktop rendering, must stay pixel-identical. This replaces decisions 1–10 above
+where they conflict:
+
+- The charts get an opt-in option, **`narrowLayout`** (default `false`, documented in each chart's
+  defaults). Only `RecordedDiveAnalysis` passes `true`. Without it, the chart code paths are exactly
+  those on `main`. With it, three things happen: the host gets `chart-narrow` at ≤ 600 px,
+  `narrowChartPlugin` is added (button gutter and smaller fonts, decision 5), and the GF ranking goes
+  below the plot at ≤ 600 px (decision 8, `_renderCompartmentRankingBelow`).
+- **No class hooks are added to the chart DOM** (decision 9 dropped). The phone CSS lives in its own
+  `<style>` block in `lab/dive-log.html`, scoped under `.rda-root`, and targets the charts' existing
+  structure (`.mvc-controls > label`, `.mvc-timeline > button`, …). It is separated so it merges
+  cleanly with parallel logbook work on the same page.
+- Chips: the checked state uses a neutral primary-colour tint, because no per-chip colour variable is
+  exposed. The colour dot is hidden and the coloured border carries the colour.
+- The annotation-label clamp was dropped: the dive-log profile has no label annotations.
+- Also fixed on the dive log at ≤ 600 px: the summary `<dl>` (`max-content` labels squeezed the values
+  to one letter per line) now stacks label above value. The root's side padding is removed, because
+  `main` already provides the 16 px gutter.
+- Verification: canvas pixel hashes and element rects are compared against `main` at 1380 px (dive log,
+  Sandbox, m-values, gradient-factors, pressure, tissue-loading) and at 390 px (Sandbox, m-values,
+  gradient-factors). All are identical.

@@ -84,7 +84,7 @@ function parentOf(root, path, saved = null) {
  * Apply (narrow) or restore (wide) the narrow overrides on a Chart.js options object, in place.
  * @param {object} options - raw Chart.js options (chart.config.options)
  * @param {boolean} narrow
- * @param {Map<string, {had: boolean, value: *}>} saved - originals, kept by the caller per options object
+ * @param {Map<string, {had: boolean, value: *, created?: boolean}>} saved - originals and containers created on narrow (`created`), kept by the caller per options object
  */
 export function applyNarrowOverrides(options, narrow, saved) {
     if (!narrow) {

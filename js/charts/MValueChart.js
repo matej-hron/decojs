@@ -201,6 +201,8 @@ const DEFAULT_MVALUE_OPTIONS = {
     showTrail: true,
     interactive: true,
     fullscreenButton: true,
+    // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
+    narrowLayout: false,
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
@@ -301,8 +303,7 @@ export class MValueChart {
      */
     _buildDOM() {
         this.container.innerHTML = '';
-        this.container.classList.add('mvc-host');
-        syncNarrowClass(this.container);
+        if (this.options.narrowLayout) syncNarrowClass(this.container);
         this.container.tabIndex = 0; // Make focusable for keyboard events
         this.container.style.outline = 'none';
         
@@ -314,7 +315,7 @@ export class MValueChart {
         // Compartment selector
         if (this.options.compartmentSelector) {
             this.controlsContainer = document.createElement('div');
-            this.controlsContainer.className = 'mvc-controls chart-compartments';
+            this.controlsContainer.className = 'mvc-controls';
             this.controlsContainer.style.cssText = `
                 display: flex; flex-wrap: wrap; gap: 4px; padding: 8px;
                 background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
@@ -326,7 +327,7 @@ export class MValueChart {
         
         // Timeline controls
         this.timelineContainer = document.createElement('div');
-        this.timelineContainer.className = 'mvc-timeline chart-timeline';
+        this.timelineContainer.className = 'mvc-timeline';
         this.timelineContainer.style.cssText = `
             display: flex; align-items: center; gap: 8px; padding: 8px;
             background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
@@ -363,7 +364,7 @@ export class MValueChart {
         // Fullscreen button
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
-            this.fullscreenBtn.className = 'mvc-fullscreen-btn chart-overlay-btn';
+            this.fullscreenBtn.className = 'mvc-fullscreen-btn';
             this.fullscreenBtn.innerHTML = '⛶';
             this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
@@ -391,7 +392,7 @@ export class MValueChart {
         
         // Reset zoom button
         this.resetZoomBtn = document.createElement('button');
-        this.resetZoomBtn.className = 'mvc-reset-zoom-btn chart-overlay-btn';
+        this.resetZoomBtn.className = 'mvc-reset-zoom-btn';
         this.resetZoomBtn.innerHTML = '↺';
         this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
@@ -415,7 +416,6 @@ export class MValueChart {
 
         // Mini profile canvas - shows dive profile with current position marker
         this.miniProfileCanvas = document.createElement('canvas');
-        this.miniProfileCanvas.className = 'chart-mini-profile';
         this.miniProfileCanvas.style.cssText = 'width: 100%; height: 100px; margin-top: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
         this.wrapper.appendChild(this.miniProfileCanvas);
 
@@ -423,7 +423,7 @@ export class MValueChart {
         
         // Set up ResizeObserver to automatically resize chart when container changes
         this._resizeObserver = new ResizeObserver(() => {
-            syncNarrowClass(this.container);
+            if (this.options.narrowLayout) syncNarrowClass(this.container);
             // Debounce resize calls
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
@@ -481,7 +481,6 @@ export class MValueChart {
         
         // Quick selection buttons
         const btnGroup = document.createElement('div');
-        btnGroup.className = 'chart-quick-btns';
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px;';
         
         const buttons = [
@@ -534,12 +533,12 @@ export class MValueChart {
         // Compartment checkboxes
         COMPARTMENTS.forEach(comp => {
             const label = document.createElement('label');
-            label.className = 'mvc-compartment-option chart-chip';
+            label.className = 'mvc-compartment-option';
             label.dataset.compartmentId = String(comp.id);
             label.style.cssText = `
                 display: inline-flex; align-items: center; gap: 2px;
                 padding: 2px 6px; border-radius: 3px; cursor: pointer;
-                border: 2px solid ${comp.color}; font-size: 12px; --chip-color: ${comp.color};
+                border: 2px solid ${comp.color}; font-size: 12px;
             `;
             
             const checkbox = document.createElement('input');
@@ -573,7 +572,6 @@ export class MValueChart {
             });
             
             const colorDot = document.createElement('span');
-            colorDot.className = 'chart-chip-dot';
             colorDot.style.cssText = `
                 width: 10px; height: 10px; border-radius: 50%;
                 background: ${comp.color};
@@ -610,7 +608,6 @@ export class MValueChart {
 
         // Shortcut legend
         const hint = document.createElement('div');
-        hint.className = 'chart-hint';
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
         hint.textContent = translate(
             'chart.hints.mvalueCompartments',
@@ -693,7 +690,6 @@ export class MValueChart {
         // Time slider
         this.timeSlider = document.createElement('input');
         this.timeSlider.type = 'range';
-        this.timeSlider.className = 'chart-timeline-slider';
         this.timeSlider.min = 0;
         this.timeSlider.max = 100;
         this.timeSlider.value = 0;
@@ -708,7 +704,6 @@ export class MValueChart {
         
         // Time display
         this.timeDisplay = document.createElement('span');
-        this.timeDisplay.className = 'chart-timeline-time';
         this.timeDisplay.style.cssText = 'font-family: monospace; min-width: 120px; text-align: right;';
         this.timeDisplay.textContent = translate('chart.mvalue.initialDepthLabel', '0.0 min @ 0m');
         
@@ -728,7 +723,6 @@ export class MValueChart {
     _createButton(text, title, onClick) {
         const btn = document.createElement('button');
         btn.textContent = text;
-        btn.className = 'chart-timeline-btn';
         btn.title = title;
         btn.style.cssText = `
             padding: 4px 8px; background: #e9ecef; border: 1px solid #ced4da;
@@ -1800,7 +1794,7 @@ export class MValueChart {
             type: 'scatter',
             data: { datasets },
             plugins: [
-                narrowChartPlugin,
+                ...(this.options.narrowLayout ? [narrowChartPlugin] : []),
                 {
                     id: 'mvalue-intersection-ruler',
                     afterDatasetsDraw: (chart) => this._drawRuler(chart)

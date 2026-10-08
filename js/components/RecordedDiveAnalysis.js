@@ -721,15 +721,16 @@ export class RecordedDiveAnalysis {
                         highlightCeilingViolations: true, violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
                         referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
                         referenceCeilingLabel: this._deviceCeilingLabel(dive),
+                        narrowLayout: true,
                     },
                 }),
                 mvalue: new MValueChart(this.el.mvalue, {
                     diveSetup: setup,
-                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true },
+                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true, narrowLayout: true },
                 }),
                 gf: new GFChart(this.el.gfChart, {
                     diveSetup: setup,
-                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true },
+                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true, narrowLayout: true },
                 }),
             };
             this._chartsDive = dive;

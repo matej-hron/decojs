@@ -103,6 +103,7 @@ import {
  * @property {boolean} [showPartialPressures=false] - Show ppO2/ppN2 traces
  * @property {boolean} [interactive=true] - Enable tooltips and hover
  * @property {boolean} [fullscreenButton=true] - Show fullscreen toggle
+ * @property {boolean} [narrowLayout=false] - Phone-portrait layout when the host is ≤ 600 px wide (opt-in)
  * @property {number} [animationDuration=500] - Chart animation duration in ms
  * @property {Object} [colors] - Custom color overrides
  * @property {string} [colors.depth='#3498db'] - Depth line color
@@ -288,6 +289,8 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     tissueCompartments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     interactive: true,
     fullscreenButton: true,
+    // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
+    narrowLayout: false,
     animationDuration: 500,
     colors: {
         depth: '#3498db',

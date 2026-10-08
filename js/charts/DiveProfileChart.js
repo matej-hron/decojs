@@ -171,14 +171,13 @@ export class DiveProfileChart {
     _buildDOM() {
         // Clear container
         this.container.innerHTML = '';
-        this.container.classList.add('dpc-host');
-        syncNarrowClass(this.container);
+        if (this.options.narrowLayout) syncNarrowClass(this.container);
         this.container.tabIndex = 0; // Make focusable for keyboard events
         this.container.style.outline = 'none';
         
         // Create tissue controls container (shown only in tissue mode)
         this.tissueControlsContainer = document.createElement('div');
-        this.tissueControlsContainer.className = 'dpc-tissue-controls chart-compartments';
+        this.tissueControlsContainer.className = 'dpc-tissue-controls';
         this.tissueControlsContainer.style.cssText = `
             display: none; padding: 8px; background: #f8f9fa;
             border-radius: 4px; margin-bottom: 8px;
@@ -198,7 +197,7 @@ export class DiveProfileChart {
         // Create fullscreen button (if enabled)
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
-            this.fullscreenBtn.className = 'dpc-fullscreen-btn chart-overlay-btn';
+            this.fullscreenBtn.className = 'dpc-fullscreen-btn';
             this.fullscreenBtn.innerHTML = '⛶';
             this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
@@ -227,7 +226,7 @@ export class DiveProfileChart {
         
         // Reset zoom button
         this.resetZoomBtn = document.createElement('button');
-        this.resetZoomBtn.className = 'dpc-reset-zoom-btn chart-overlay-btn';
+        this.resetZoomBtn.className = 'dpc-reset-zoom-btn';
         this.resetZoomBtn.innerHTML = '↺';
         this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
@@ -253,7 +252,7 @@ export class DiveProfileChart {
 
         // Set up ResizeObserver to automatically resize chart when container changes
         this._resizeObserver = new ResizeObserver((entries) => {
-            syncNarrowClass(this.container);
+            if (this.options.narrowLayout) syncNarrowClass(this.container);
             // Debounce resize calls
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
@@ -389,7 +388,6 @@ export class DiveProfileChart {
         
         // Quick selection buttons
         const btnGroup = document.createElement('div');
-        btnGroup.className = 'chart-quick-btns';
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px; flex-wrap: wrap; align-items: center;';
         
         const buttons = [
@@ -412,7 +410,6 @@ export class DiveProfileChart {
 
         // Add keyboard hint
         const hint = document.createElement('span');
-        hint.className = 'chart-hint';
         hint.textContent = translate('chart.hints.arrowShiftArrow', '↑↓ move, Shift+↑↓ expand/shrink');
         hint.style.cssText = 'font-size: 11px; color: #6c757d; margin-left: 8px;';
         btnGroup.appendChild(hint);
@@ -425,11 +422,10 @@ export class DiveProfileChart {
         
         COMPARTMENTS.forEach(comp => {
             const label = document.createElement('label');
-            label.className = 'chart-chip';
             label.style.cssText = `
                 display: inline-flex; align-items: center; gap: 2px;
                 padding: 2px 6px; border-radius: 3px; cursor: pointer;
-                border: 2px solid ${comp.color}; font-size: 12px; --chip-color: ${comp.color};
+                border: 2px solid ${comp.color}; font-size: 12px;
             `;
             
             const checkbox = document.createElement('input');
@@ -446,7 +442,6 @@ export class DiveProfileChart {
             });
             
             const colorDot = document.createElement('span');
-            colorDot.className = 'chart-chip-dot';
             colorDot.style.cssText = `
                 width: 10px; height: 10px; border-radius: 50%;
                 background: ${comp.color};
@@ -1455,7 +1450,7 @@ export class DiveProfileChart {
         const config = {
             type: 'line',
             data: { datasets },
-            plugins: [narrowChartPlugin],
+            ...(this.options.narrowLayout ? { plugins: [narrowChartPlugin] } : {}),
             options: {
                 responsive: true,
                 maintainAspectRatio: false,

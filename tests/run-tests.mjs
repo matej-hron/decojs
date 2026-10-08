@@ -681,12 +681,12 @@ describe('GF chart maximum GF toggle', () => {
     });
 
     test('renders the GF ranking table only when the chart is wide enough', () => {
-        const dom = new JSDOM('<!doctype html><body><div id="plot"><aside id="ranking"></aside></div></body>');
+        const dom = new JSDOM('<!doctype html><body><aside id="ranking"></aside></body>');
         const originalDocument = globalThis.document;
         globalThis.document = dom.window.document;
         try {
             const panel = dom.window.document.getElementById('ranking');
-            const context = { rankingPanel: panel, chartContainer: dom.window.document.getElementById('plot') };
+            const context = { rankingPanel: panel };
             const chart = {
                 width: 1000,
                 chartArea: {
@@ -721,27 +721,54 @@ describe('GF chart maximum GF toggle', () => {
             expect(panel.style.display).toBe('none');
 
             chart.width = 400;
-            GFChart.prototype._renderCompartmentRanking.call(
-                context,
-                chart,
-                ranking
-            );
-            expect(panel.style.display).toBe('block');
+            GFChart.prototype._renderCompartmentRanking.call(context, chart, ranking);
+            expect(panel.style.display).toBe('none'); // phone layout is opt-in
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
+
+    test('opt-in narrowLayout puts the GF ranking below the plot on phones', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="wrap"><div id="plot"><aside id="ranking"></aside></div></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+        try {
+            const doc = dom.window.document;
+            const panel = doc.getElementById('ranking');
+            const plot = doc.getElementById('plot');
+            const context = {
+                rankingPanel: panel,
+                chartContainer: plot,
+                options: { narrowLayout: true },
+                _renderCompartmentRankingBelow: GFChart.prototype._renderCompartmentRankingBelow
+            };
+            const chart = { width: 390, chartArea: { right: 380, top: 40, height: 300 } };
+            const ranking = [
+                { id: 3, color: '#e67e22', gfPercent: 45.2 },
+                { id: 2, color: '#c0392b', gfPercent: 41.7 }
+            ];
+            const render = () => GFChart.prototype._renderCompartmentRanking.call(context, chart, ranking);
+
+            render();
             expect(panel.classList.contains('gfc-ranking-below')).toBe(true);
-            expect(panel.parentNode).toBe(context.chartContainer.parentNode);
+            expect(panel.previousElementSibling).toBe(plot);
+            expect(panel.style.display).toBe('block');
+            expect(panel.style.left).toBe('');
             expect(panel.querySelectorAll('.gfc-ranking-list li').length).toBe(2);
             expect(panel.querySelector('.gfc-ranking-list b').textContent).toBe('45.2\u00a0%');
-            expect(panel.style.left).toBe('');
+
+            chart.width = 700; // between phone and overlay widths: hidden, as without the option
+            render();
+            expect(panel.style.display).toBe('none');
+            expect(panel.parentElement).toBe(plot);
 
             chart.width = 1000;
-            GFChart.prototype._renderCompartmentRanking.call(
-                context,
-                chart,
-                ranking
-            );
+            chart.chartArea = { right: 820, top: 60, height: 500 };
+            render();
             expect(panel.classList.contains('gfc-ranking-below')).toBe(false);
-            expect(panel.parentNode).toBe(context.chartContainer);
             expect(panel.querySelectorAll('tbody tr').length).toBe(2);
+            expect(panel.style.left).toBe('830px');
         } finally {
             globalThis.document = originalDocument;
             dom.window.close();
