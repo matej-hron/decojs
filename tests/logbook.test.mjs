@@ -23,6 +23,8 @@ import { NewDive } from '../js/logbook/NewDive.js';
 import { sortSites, parseAltitude, diveCountText } from '../js/logbook/SitesPage.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
+import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
+import { mapyStaticMapUrl } from '../js/logbook/geo.js';
 import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -1614,7 +1616,7 @@ describe('SitesPage helpers', () => {
 
 // ---- List and table views ----
 
-import { groupByMonth, sortEntries, gasLabel, sparklinePath, entryFacts, firstLine, formatWeekdayDate } from '../js/logbook/listViews.js';
+import { groupByMonth, sortEntries, gasLabel, sparklinePath, profileAreaPath, entryFacts, firstLine, formatWeekdayDate } from '../js/logbook/listViews.js';
 
 describe('list views', () => {
     const E = (o) => ({ id: o.id ?? String(o.log_number), buddies: [], details: {}, ...o });
@@ -1698,5 +1700,83 @@ describe('list views', () => {
     test('firstLine takes the first non-empty line', () => {
         assert.equal(firstLine('\n  hello\nworld'), 'hello');
         assert.equal(firstLine(null), '');
+    });
+});
+
+
+describe('feed helpers', () => {
+    const NB = '\u00a0';
+    const num = (v, d) => v.toFixed(d).replace('.', ',');
+    test('mapyStaticMapUrl builds a centred marker map; empty without key or position', () => {
+        const u = new URL(mapyStaticMapUrl({ lat: 50.08, lon: 14.4, apiKey: 'k y', width: 600, height: 300, scale: 2, lang: 'cs' }));
+        assert.equal(u.origin + u.pathname, 'https://api.mapy.com/v1/static/map');
+        assert.equal(u.searchParams.get('lon'), '14.4');
+        assert.equal(u.searchParams.get('lat'), '50.08');
+        assert.equal(u.searchParams.get('zoom'), '12');
+        assert.equal(u.searchParams.get('width'), '600');
+        assert.equal(u.searchParams.get('height'), '300');
+        assert.equal(u.searchParams.get('scale'), '2');
+        assert.equal(u.searchParams.get('mapset'), 'outdoor');
+        assert.equal(u.searchParams.get('lang'), 'cs');
+        assert.equal(u.searchParams.get('format'), 'jpg');
+        assert.equal(u.searchParams.get('markers'), 'color:#2980b9;size:normal;14.4,50.08');
+        assert.equal(u.searchParams.get('apikey'), 'k y');
+        assert.equal(mapyStaticMapUrl({ lat: 50, lon: 14, apiKey: '', width: 10, height: 10 }), '');
+        assert.equal(mapyStaticMapUrl({ lat: null, lon: 14, apiKey: 'k', width: 10, height: 10 }), '');
+        assert.equal(new URL(mapyStaticMapUrl({ lat: 1, lon: 2, apiKey: 'k', width: 5000, height: 3, lang: 'de' })).searchParams.get('width'), '1024');
+        assert.equal(new URL(mapyStaticMapUrl({ lat: 1, lon: 2, apiKey: 'k', width: 5000, height: 3, lang: 'xx' })).searchParams.get('lang'), 'en');
+    });
+    test('profileAreaPath closes the profile along the surface', () => {
+        const p = profileAreaPath([{ t: 0, depth: 0 }, { t: 60, depth: 10 }, { t: 120, depth: 0 }], 100, 50);
+        assert.match(p, /^M.* Z$/);
+        assert.equal(profileAreaPath([], 100, 50), '');
+    });
+    test('diveTitle prefers the site name', () => {
+        const t = k => ({ 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' }[k]);
+        assert.equal(diveTitle({ log_number: 7 }, 'Lahošť', t), 'Lahošť');
+        assert.equal(diveTitle({ log_number: 7 }, null, t), 'Dive #7');
+        assert.equal(diveTitle({ log_number: null }, '', t), 'Dive');
+    });
+    test('feedStats formats with the given number formatter and NBSP, skipping missing values', () => {
+        const s = feedStats({ max_depth_m: 18.5, duration_s: 2535, water_temp_c: 4.8, gas: { o2: 0.32, he: 0 }, details: { avgDepthM: 9.04 } }, num);
+        assert.deepEqual(s, [
+            { key: 'depth', value: '18,5', unit: 'm' }, { key: 'duration', value: '42:15', unit: 'min' },
+            { key: 'avgDepth', value: '9,0', unit: 'm' }, { key: 'temp', value: '4,8', unit: '°C' },
+            { key: 'gas', value: 'EAN32', unit: '' },
+        ]);
+        assert.deepEqual(feedStats({ details: {} }, num), []);
+        assert.deepEqual(feedStats({ max_depth_m: 0, details: null }, num), [{ key: 'depth', value: '0,0', unit: 'm' }]);
+    });
+    test('chooseVisual: photo, then map, then profile, then none', () => {
+        const site = { lat: 50, lon: 14 };
+        assert.equal(chooseVisual({ photoUrl: 'x', site, apiKey: 'k', recordingId: 'r' }).kind, 'photo');
+        assert.equal(chooseVisual({ site, apiKey: 'k', recordingId: 'r' }).kind, 'map');
+        assert.equal(chooseVisual({ site, apiKey: '', recordingId: 'r' }).kind, 'profile');
+        assert.equal(chooseVisual({ site: { lat: null, lon: 14 }, apiKey: 'k', recordingId: 'r' }).kind, 'profile');
+        assert.equal(chooseVisual({ site: null, apiKey: 'k', recordingId: null }).kind, 'none');
+    });
+    test('logbookTotals and formatTotalTime', () => {
+        const t = logbookTotals([{ duration_s: 3600, max_depth_m: 20 }, { duration_s: null, max_depth_m: 41.5 }, { duration_s: 1800 }]);
+        assert.deepEqual(t, { count: 3, seconds: 5400, maxDepth: 41.5 });
+        assert.deepEqual(logbookTotals([]), { count: 0, seconds: 0, maxDepth: null });
+        assert.equal(formatTotalTime(5400, num), `1,5${NB}h`);
+        assert.equal(formatTotalTime(0, num), `0${NB}h`);
+        assert.equal(formatTotalTime(41 * 3600 + 1000, num), `41${NB}h`);
+    });
+    test('migrateView maps the old list view to the feed', () => {
+        assert.equal(migrateView('list'), 'feed');
+        assert.equal(migrateView('table'), 'table');
+        assert.equal(migrateView('tiles'), 'tiles');
+        assert.equal(migrateView(null), 'feed');
+        assert.equal(migrateView('bogus'), 'feed');
+        assert.deepEqual(FEED_VIEWS, ['feed', 'tiles', 'table']);
+    });
+    test('photoIndex keeps the first photo with a path and counts them', () => {
+        const idx = photoIndex([
+            { entry_id: 'a', path: null }, { entry_id: 'a', path: 'a1' }, { entry_id: 'a', path: 'a2' }, { entry_id: 'b', path: 'b1' },
+        ]);
+        assert.deepEqual(idx.get('a'), { path: 'a1', count: 2 });
+        assert.deepEqual(idx.get('b'), { path: 'b1', count: 1 });
+        assert.equal(idx.has('c'), false);
     });
 });

@@ -148,3 +148,11 @@ export function formatWeekdayDate(date, lang) {
     const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
     return new Intl.DateTimeFormat(localeTag(lang), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 }
+
+/** The sparkline path closed along the surface, for a filled "water column". '' when there is nothing to draw. */
+export function profileAreaPath(samples, width, height, pad = 2) {
+    const line = sparklinePath(samples, width, height, pad);
+    if (!line) return '';
+    const r = n => Math.round(n * 10) / 10;
+    return `${line} L${r(width - pad)},${r(pad)} L${r(pad)},${r(pad)} Z`;
+}
