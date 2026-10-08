@@ -1444,7 +1444,8 @@ describe('LogbookApp background errors (jsdom)', () => {
             await tick(120);
             const card = id => root.querySelector(`.lb-feed-card[href="#/dive/${id}"]`);
             assert.equal(card('e3').querySelector('.lb-visual-img').getAttribute('src'), 'https://example.com/a.jpg');
-            assert.equal(card('e3').querySelector('.lb-more-photos').textContent, '+1');
+            assert.equal(card('e3').querySelector('.lb-more-photos [aria-hidden="true"]').textContent, '+1');
+            assert.equal(card('e3').querySelector('.lb-more-photos .rda-visually-hidden').textContent, '1 more photos');
             const map = card('e1').querySelector('img.lb-map-img');
             assert.ok(map.getAttribute('src').startsWith('https://api.mapy.com/v1/static/map?'));
             assert.equal(map.getAttribute('alt'), 'Map of Lahošť');
@@ -1453,6 +1454,9 @@ describe('LogbookApp background errors (jsdom)', () => {
             assert.ok(card('e1').querySelector('.lb-spark[data-rec="r1"]'), 'the profile takes its place');
             card('e2').querySelector('img.lb-map-img').dispatchEvent(new window.Event('error'));
             assert.equal(card('e2').querySelector('.lb-visual'), null, 'no recording: no picture at all');
+            card('e3').querySelector('.lb-visual-photo img').dispatchEvent(new window.Event('error'));
+            assert.equal(card('e3').querySelector('.lb-visual-photo'), null, 'an expired photo URL is dropped');
+            assert.equal(card('e3').querySelector('img.lb-map-img'), null, 'maps are not asked for again after one failed');
             app.destroy();
             assert.equal(document.body.classList.contains('lb-in'), false);
         });

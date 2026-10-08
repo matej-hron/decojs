@@ -205,6 +205,10 @@ export class EntryDetail {
         const stats = feedStats(e, fmtNum);
         const statKeys = new Set(['duration', 'depth', 'gas', 'waterTemp']); // shown as big stats
         const rest = core.filter(r => !statKeys.has(r.key));
+        // The average depth is in the stat row already; leave it out of "More details".
+        const moreGroups = stats.some(st => st.key === 'avgDepth')
+            ? groups.map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM') })).filter(g => g.rows.length)
+            : groups;
         const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
         this.main.innerHTML = `
             <div class="lb-d-top">
@@ -220,8 +224,8 @@ export class EntryDetail {
             ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
             ${rest.length ? dl(rest) : ''}
             ${notes ? `<p class="lb-d-notes">${escHtml(notes)}</p>` : ''}
-            ${groups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
-                ${groups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
+            ${moreGroups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
+                ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
 `;
         // Below the photos, right above the panel where Delete asks for confirmation.
         this.actionsEl.innerHTML = `

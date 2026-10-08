@@ -149,6 +149,8 @@
         .lb-videos { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
         .lb-videos li { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
         .lb-videos a, .lb-videos span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+        .lb-videos a { color: var(--brand); }
+        :root[data-theme="dark"] .lb-videos a { color: var(--blue-300); }
         .lb-confirm, .lb-video-form { display: grid; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border-color, var(--border)); border-radius: 8px; background: var(--surface-sunken); }
         .lb-confirm p { margin: 0; }
         .lb-actions .btn-danger, .lb-confirm .btn-danger { padding: 0.6rem 1.2rem; font-size: 1rem; }
@@ -198,7 +200,7 @@
         .lb-menu-who { margin: 0 0 0.25rem; padding: 0.5rem 0.75rem; font-size: var(--text-sm); color: var(--text-subtle); overflow-wrap: anywhere; border-bottom: 1px solid var(--border); }
         .lb-menu-item { display: flex; align-items: center; min-height: 44px; padding: 0 0.75rem; border: 0; border-radius: var(--radius-sm); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
         .lb-menu-item:hover, .lb-menu-item:focus-visible, .lb-menu-item.rda-upload:focus-within { background: var(--surface-sunken); outline: none; }
-        .lb-menu-item:disabled { opacity: 0.5; cursor: default; }
+        .lb-menu-item:disabled, .lb-disabled { opacity: 0.5; cursor: default; pointer-events: none; }
         .lb-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; }
         .lb-switch { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--radius-md); overflow: hidden; background: var(--surface-elevated); }
         .lb-seg { min-height: 44px; padding: 0 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
@@ -257,7 +259,7 @@
         }
         @media (min-width: 1000px) {
             .lb-list-view { grid-template-columns: 16rem minmax(0, 1fr); column-gap: 2rem; align-items: start; }
-                        .lb-list-view > .lb-bar { position: sticky; top: 5rem; grid-template-columns: minmax(0, 1fr);
+                        .lb-list-view > .lb-bar { position: sticky; z-index: 10; top: 5rem; grid-template-columns: minmax(0, 1fr);
                 padding: 1.25rem; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); }
             .lb-list-view .lb-totals { flex-direction: column; gap: 0.2rem; margin-top: 0.75rem; }
             .lb-list-view .lb-bar-actions { flex-wrap: wrap; }

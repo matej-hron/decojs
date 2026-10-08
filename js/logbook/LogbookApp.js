@@ -83,7 +83,12 @@ export class LogbookApp {
         this._onHash = () => this._renderRoute();
         this._onLanguage = () => this._onLanguageChange();
         this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
-        this._onDocKey = e => { if (e.key === 'Escape') this._closeMenu(); };
+        this._onDocKey = e => {
+            if (e.key !== 'Escape') return;
+            const menu = this.view?.querySelector('.lb-menu[open]');
+            if (menu?.contains(document.activeElement)) menu.querySelector('summary')?.focus(); // focus must not fall to <body>
+            this._closeMenu();
+        };
         this._onVisualFail = e => this._onVisualError(e);
         if (!store) {
             this._mountAnalysis();
@@ -341,7 +346,7 @@ export class LogbookApp {
                     <summary class="btn btn-secondary lb-bar-btn lb-menu-btn" aria-label="${escHtml(more)}" title="${escHtml(more)}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></summary>
                     <div class="lb-menu-pop">
                         <p class="lb-menu-who">${escHtml(fill(tb('loggedInAs', 'Logged in as {0}'), this.user.email))}</p>
-                        <label class="lb-menu-item rda-upload"><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                        <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                             <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
                         <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
                         <button type="button" class="lb-menu-item" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
@@ -527,15 +532,16 @@ export class LogbookApp {
      * A tile without any of them shows the dive number instead; a feed card shows nothing.
      * @param {'feed'|'tile'} variant
      */
-    _visual(entry, variant, { noMap = false } = {}) {
+    _visual(entry, variant) {
         const site = this._site(entry);
         const photoUrl = this.thumbs.get(entry.id) ?? null;
-        const { kind } = chooseVisual({ photoUrl, site, apiKey: noMap ? '' : MAPY_API_KEY, recordingId: entry.recording_id });
+        const apiKey = this._mapFailed ? '' : MAPY_API_KEY; // after one failed map, stop asking for more
+        const { kind } = chooseVisual({ photoUrl, site, apiKey, recordingId: entry.recording_id });
         const id = ` data-entry="${escHtml(entry.id)}" data-variant="${variant}"`;
         if (kind === 'photo') {
             const more = (this.photos.get(entry.id)?.count ?? 1) - 1;
             return `<div class="lb-visual lb-visual-photo"${id}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
-                ${more > 0 ? `<span class="lb-more-photos" aria-label="${escHtml(fill(tl('feed.morePhotos', '{0} more photos'), more))}">+${more}</span>` : ''}</div>`;
+                ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(fill(tl('feed.morePhotos', '{0} more photos'), more))}</span></span>` : ''}</div>`;
         }
         if (kind === 'map') {
             const [w, h] = variant === 'tile' ? [320, 240] : [640, 280];
@@ -557,11 +563,13 @@ export class LogbookApp {
     /** A map image that failed (key not valid on this site, offline): show the profile instead, or nothing. */
     _onVisualError(e) {
         const img = e.target;
-        if (img?.tagName !== 'IMG' || !img.classList.contains('lb-map-img')) return;
+        if (img?.tagName !== 'IMG' || !img.classList.contains('lb-visual-img')) return;
         const box = img.closest('.lb-visual');
         const entry = this.entries?.find(en => en.id === box?.dataset.entry);
         if (!box || !entry) return;
-        box.outerHTML = this._visual(entry, box.dataset.variant, { noMap: true });
+        if (img.classList.contains('lb-map-img')) this._mapFailed = true;
+        else this.thumbs.delete(entry.id); // signed photo URL expired or failed: show the map or profile instead
+        box.outerHTML = this._visual(entry, box.dataset.variant);
         this._watchSparks();
     }
 
@@ -745,7 +753,7 @@ export class LogbookApp {
         else if (!this.entries.length) {
             // Upload lives in the "⋯" menu; an empty logbook offers it right here.
             body = `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>
-                <label class="btn btn-primary rda-upload lb-empty-upload"><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                <label class="btn btn-primary rda-upload lb-empty-upload${this.working ? ' lb-disabled' : ''}"${this.working ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                     <input type="file" id="lb-upload-empty" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label></div>`;
         }
         else {
@@ -756,7 +764,9 @@ export class LogbookApp {
         }
         const docked = this.selecting && this.entries?.length; // the bulk panel then lives in the select dock
         this.view.classList.toggle('lb-selecting', !!docked);
+        const menuOpen = !!this.view.querySelector('.lb-menu[open]'); // a re-render (photos arriving) must not close it
         this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        if (menuOpen) this.view.querySelector('.lb-menu').open = true;
         this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));
         this.view.querySelectorAll('.lb-sort').forEach(b => b.addEventListener('click', () => this._sortBy(b.dataset.sort)));
