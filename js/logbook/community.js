@@ -40,6 +40,25 @@ export function memberStatsView(member, num) {
     return out;
 }
 
+/**
+ * The summary line of a member card, as parts to join: dive count, deepest dive, last dive date.
+ * Parts without data are left out. Pure: the caller passes the formatters.
+ * @param {Object} member - a `community_members` row
+ * @param {Object} f
+ * @param {(n: number) => string} f.count - "12 dives" in the right plural form
+ * @param {(n: number, digits: number) => string} f.num - localized number
+ * @param {(date: string) => string} f.date - localized date
+ * @param {(key: 'deepest'|'lastDive') => string} f.t - templates with {0}: "deepest {0}", "last dive {0}"
+ * @returns {string[]}
+ */
+export function memberSummaryParts(member, { count, num, date, t }) {
+    const fill = (text, value) => String(text).replace('{0}', value);
+    const parts = [count(Number(member?.dive_count) || 0)];
+    if (finiteNum(member?.deepest_m)) parts.push(fill(t('deepest'), `${num(Number(member.deepest_m), 1)}\u00a0m`));
+    if (member?.last_dive_date) parts.push(fill(t('lastDive'), date(String(member.last_dive_date))));
+    return parts;
+}
+
 /** Localized region name for an ISO 3166-1 alpha-2 code; the code itself when unavailable. */
 export function countryName(code, lang) {
     if (!code) return '';

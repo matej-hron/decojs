@@ -2926,6 +2926,25 @@
             "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
             "diver": "Potápěč",
             "you": "Vy",
+            "community": {
+                "title": "Komunita",
+                "intro": "Všichni tady dostali pozvánku. Vidí vaše ponory, pokud je nenastavíte jako soukromé.",
+                "deepest": "nejhlubší {0}",
+                "lastDive": "poslední ponor {0}"
+            },
+            "member": {
+                "recentDives": "Poslední ponory",
+                "notFound": "Člen nenalezen",
+                "toCommunity": "Zpět do komunity",
+                "editProfile": "Upravit profil",
+                "favouriteSites": "Oblíbené lokality",
+                "noDives": "Zatím tu nejsou žádné ponory.",
+                "stats": {
+                    "dives": "Ponory",
+                    "deepest": "Nejhlubší",
+                    "time": "Celkový čas"
+                }
+            },
             "feed": {
                 "title": "Přehled",
                 "loadMore": "Načíst další",

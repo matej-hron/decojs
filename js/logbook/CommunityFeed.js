@@ -7,7 +7,7 @@ import { routeHref } from './router.js';
 import { feedCardHtml, statsHtml, visualHtml } from './feedCard.js';
 import { SparkLoader } from './sparks.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
-import { avatarHtml } from './avatars.js';
+import { avatarHtml, avatarImgFallback } from './avatars.js';
 import { diveTitle, feedStats } from './feed.js';
 import { groupByMonth, formatWeekdayDate } from './listViews.js';
 import { TAGS } from './EntryForm.js';
@@ -50,6 +50,7 @@ export class CommunityFeed {
         this.members = new Map(); // id -> member row
         this.avatars = new Map(); // avatar path -> signed URL
         this.photos = new Map(); // photo path -> signed URL
+        this.offset = 0; // rows fetched so far (before de-duplication): where the next page starts
         this.more = false; // the last page was full: there may be more
         this.loadingMore = false;
         this.moreFailed = false;
@@ -60,7 +61,8 @@ export class CommunityFeed {
         this.sparks = new SparkLoader(id => this.store.loadCommunityRecording(id));
         this._onVisualFail = e => this._onVisualError(e);
         this.host.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
-        this.host.addEventListener('click', e => { if (e.target.closest('#tr-feed-more')) this._loadMore(); });
+        this._onClick = e => { if (e.target.closest('#tr-feed-more')) this._loadMore(); };
+        this.host.addEventListener('click', this._onClick);
         this._render();
         this._loadFirst();
     }
@@ -70,6 +72,7 @@ export class CommunityFeed {
         this._token++;
         this.sparks.destroy();
         this.host.removeEventListener('error', this._onVisualFail, true);
+        this.host.removeEventListener('click', this._onClick);
         this.host.innerHTML = '';
     }
 
@@ -90,6 +93,7 @@ export class CommunityFeed {
             if (token !== this._token) return;
             this.members = new Map((members ?? []).map(m => [m.id, m]));
             this.rows = rows;
+            this.offset = rows.length;
             this.more = rows.length >= this.pageSize;
             this._render();
             await this._signUrls(rows, members ?? [], token);
@@ -112,8 +116,10 @@ export class CommunityFeed {
         this._render();
         try {
             const known = new Set(this.rows.map(r => r.id));
-            const page = await this._fetchPage(this.rows.length);
+            const page = await this._fetchPage(this.offset);
             if (token !== this._token) return;
+            // Advance by the page, not by the de-duplicated rows: else a shifted page is fetched again forever.
+            this.offset += page.length;
             const fresh = page.filter(r => !known.has(r.id)); // a dive added meanwhile shifts the pages
             this.rows = [...this.rows, ...fresh];
             this.more = page.length >= this.pageSize;
@@ -209,6 +215,11 @@ export class CommunityFeed {
 
     /** A card picture that failed: a photo falls back to the map or profile; one failed map stops all maps. */
     _onVisualError(e) {
+        const failedAvatar = avatarImgFallback(e);
+        if (failedAvatar) {
+            for (const [k, v] of this.avatars) if (v === failedAvatar) this.avatars.set(k, null); // re-renders keep the preset, no re-signing
+            return;
+        }
         const img = e.target;
         if (img?.tagName !== 'IMG' || !img.classList.contains('lb-visual-img')) return;
         const box = img.closest('.lb-visual');
@@ -227,7 +238,7 @@ export class CommunityFeed {
         if (this.failed) return `<p class="rda-account-msg" role="alert">${escHtml(tb('genericError', 'Something went wrong. Please try again.'))}</p>`;
         if (!this.rows) return `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         if (!this.rows.length) {
-            return `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tt('feed.empty', 'No dives from members yet.'))}</p>
+            return `<div class="lb-empty"><p class="rda-account-msg">${escHtml(this.owner ? tt('member.noDives', 'No dives to show yet.') : tt('feed.empty', 'No dives from members yet.'))}</p>
                 ${this.owner ? '' : `<a class="btn btn-primary lb-empty-upload" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>`}</div>`;
         }
         // Month heads carry no count: with paging the count of a month is only what is loaded so far.

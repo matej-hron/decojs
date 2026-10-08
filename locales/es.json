@@ -2890,6 +2890,25 @@
             "learnWhy": "Entiende por qué en DecoTheory ↗",
             "diver": "Buceador",
             "you": "Tú",
+            "community": {
+                "title": "Comunidad",
+                "intro": "Todos aquí fueron invitados. Ven tus inmersiones salvo que las hagas privadas.",
+                "deepest": "máx. {0}",
+                "lastDive": "última inmersión {0}"
+            },
+            "member": {
+                "recentDives": "Inmersiones recientes",
+                "notFound": "Miembro no encontrado",
+                "toCommunity": "Volver a Comunidad",
+                "editProfile": "Editar perfil",
+                "favouriteSites": "Sitios favoritos",
+                "noDives": "Aún no hay inmersiones que mostrar.",
+                "stats": {
+                    "dives": "Inmersiones",
+                    "deepest": "Máx. profundidad",
+                    "time": "Tiempo total"
+                }
+            },
             "feed": {
                 "title": "Novedades",
                 "loadMore": "Cargar más",

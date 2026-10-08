@@ -131,7 +131,7 @@ test('avatars: 12 unique keys, safe SVG, deterministic fallback', () => {
 
 test('avatarHtml escapes the name and prefers the uploaded url', () => {
     const preset = avatarHtml({ preset: 'reef-03', name: '<b>', size: 32 });
-    assert.match(preset, /^<span class="tr-avatar" style="--size:32px" role="img" aria-label="&lt;b&gt;">/);
+    assert.match(preset, /^<span class="tr-avatar" style="--size:32px" role="img" aria-label="&lt;b&gt;" data-avatar="reef-03">/);
     assert.ok(preset.includes(AVATARS['reef-03'].svg));
     assert.doesNotMatch(preset, /<b>/);
     const photo = avatarHtml({ preset: 'reef-03', url: 'https://x/a.jpg?a=1&b="2"', name: 'Petr' });
@@ -332,5 +332,148 @@ test('CommunityFeed: empty state and a first-page failure go to onError', async 
         await new Promise(r => setTimeout(r, 20));
         assert.equal(reported?.message, 'down');
         failing.destroy();
+    });
+});
+
+test('CommunityFeed: destroy removes the click listener; Load more advances by the fetched page, not the de-duplicated rows', async () => {
+    await withDom(async host => {
+        // Every page repeats a dive of the previous one (a dive added meanwhile shifts the pages).
+        const page = offset => Array.from({ length: 3 }, (_, i) => ({ id: `d${offset + i - (offset ? 1 : 0)}`, owner: 'u2', dive_date: '2026-09-01' }));
+        const calls = [];
+        const store = {
+            listMembers: async () => [],
+            listCommunityEntries: async args => { calls.push(args.offset); return args.offset >= 9 ? [] : page(args.offset); },
+            photoUrls: async () => new Map(),
+        };
+        const feed = new CommunityFeed(host, { store, userId: 'me', pageSize: 3 });
+        await new Promise(r => setTimeout(r, 20));
+        for (let i = 0; i < 3; i++) {
+            host.querySelector('#tr-feed-more').click();
+            await new Promise(r => setTimeout(r, 20));
+        }
+        assert.deepEqual(calls, [0, 3, 6, 9], 'never refetches the same offset');
+        assert.equal(host.querySelectorAll('.tr-feed-card').length, 8, 'd0…d7, the repeated dive once');
+        feed.destroy();
+        // A click on a later view in the same host must not reach the destroyed feed.
+        host.innerHTML = '<button id="tr-feed-more">x</button>';
+        feed.destroyed = false; feed.more = true; // would load if the listener were still attached
+        host.querySelector('#tr-feed-more').click();
+        await new Promise(r => setTimeout(r, 20));
+        assert.deepEqual(calls, [0, 3, 6, 9]);
+    });
+});
+
+import { avatarImgFallback } from '../js/logbook/avatars.js';
+
+test('avatarImgFallback swaps a failed uploaded avatar for its preset; other images are ignored', async () => {
+    await withDom(async host => {
+        host.innerHTML = avatarHtml({ preset: 'reef-05', url: 'https://x/expired.jpg', name: 'Jana' }) + '<img class="other" src="https://x/p.jpg">';
+        const img = host.querySelector('.tr-avatar img');
+        assert.equal(avatarImgFallback({ target: img }), 'https://x/expired.jpg');
+        assert.equal(host.querySelector('.tr-avatar img'), null);
+        assert.equal(host.querySelector('.tr-avatar svg circle').getAttribute('fill'), '#2d3a86', 'the reef-05 preset');
+        assert.equal(avatarImgFallback({ target: host.querySelector('img.other') }), null);
+        assert.ok(host.querySelector('img.other'));
+        assert.equal(avatarImgFallback({ target: host }), null);
+    });
+});
+
+test('CommunityFeed: an author avatar that fails to load falls back to the preset and stays so on re-render', async () => {
+    await withDom(async host => {
+        const store = {
+            listMembers: async () => [{ id: 'u2', display_name: 'Jana', avatar_preset: 'reef-02', avatar_path: 'u2/a.jpg' }],
+            listCommunityEntries: async () => [{ id: 'd1', owner: 'u2', dive_date: '2026-09-01' }],
+            photoUrls: async () => new Map(),
+            avatarUrls: async paths => new Map(paths.map(p => [p, 'https://x/expired.jpg'])),
+        };
+        const feed = new CommunityFeed(host, { store, userId: 'me' });
+        await new Promise(r => setTimeout(r, 20));
+        const img = host.querySelector('.tr-author-av img');
+        assert.ok(img);
+        img.dispatchEvent(new window.Event('error'));
+        assert.equal(host.querySelector('.tr-author-av img'), null);
+        assert.ok(host.querySelector('.tr-author-av svg'));
+        feed.relabel();
+        assert.equal(host.querySelector('.tr-author-av img'), null, 'the failed URL is not used again');
+        feed.destroy();
+    });
+});
+
+import { memberSummaryParts } from '../js/logbook/community.js';
+import { MembersPage, memberSummaryText } from '../js/logbook/MembersPage.js';
+import { MemberPage } from '../js/logbook/MemberPage.js';
+
+test('memberSummaryParts: count, deepest with U+00A0 and decimal comma, last dive; missing parts left out', () => {
+    const f = {
+        count: n => `${n} ponorů`, num: (n, d) => n.toFixed(d).replace('.', ','), date: d => `[${d}]`,
+        t: k => ({ deepest: 'nejhlubší {0}', lastDive: 'poslední ponor {0}' })[k],
+    };
+    assert.deepEqual(memberSummaryParts({ dive_count: 12, deepest_m: 38.61, last_dive_date: '2026-09-30' }, f),
+        ['12 ponorů', 'nejhlubší 38,6 m', 'poslední ponor [2026-09-30]']);
+    assert.deepEqual(memberSummaryParts({ dive_count: 0, deepest_m: null, last_dive_date: null }, f), ['0 ponorů']);
+    assert.deepEqual(memberSummaryParts(null, f), ['0 ponorů']);
+    assert.equal(memberSummaryText({ dive_count: 1, deepest_m: 38.6, last_dive_date: '2026-09-30' }, 'en'), '1 dive · deepest 38.6 m · last dive Sep 30, 2026');
+});
+
+test('MembersPage: own card first with "You" and the profile link, others link to their page, text escaped', async () => {
+    await withDom(async host => {
+        const store = {
+            listMembers: async () => [
+                { id: 'u2', display_name: 'Jana <i>', home_country: 'CZ', dive_count: 3, deepest_m: 27.6, last_dive_date: '2026-09-30', avatar_path: 'u2/a.jpg' },
+                { id: 'me', display_name: 'Me', dive_count: 0 },
+                { id: 'u3', display_name: null, dive_count: 1 },
+            ],
+            avatarUrls: async paths => new Map(paths.map(p => [p, 'https://x/a.jpg'])),
+        };
+        const page = new MembersPage(host, { store, userId: 'me' });
+        await new Promise(r => setTimeout(r, 20));
+        assert.match(host.querySelector('h2').textContent, /Community/);
+        const cards = [...host.querySelectorAll('.tr-member-card')];
+        assert.equal(cards.length, 3);
+        assert.equal(cards[0].getAttribute('href'), '#/profile');
+        assert.ok(cards[0].classList.contains('tr-member-own'));
+        assert.equal(cards[0].querySelector('.tr-you-tag').textContent, 'You');
+        assert.equal(cards[1].getAttribute('href'), '#/member/u2');
+        assert.ok(host.innerHTML.includes('Jana &lt;i&gt;'));
+        assert.match(cards[1].querySelector('.tr-member-stats').textContent, /^3 dives · deepest 27\.6 m · last dive /);
+        assert.equal(cards[2].querySelector('.tr-member-name-text').textContent, 'Diver');
+        assert.ok(cards[1].querySelector('img[src="https://x/a.jpg"]'));
+        page.destroy();
+        assert.equal(host.innerHTML, '');
+    });
+});
+
+test('MemberPage: header, tiles, favourite sites, own Edit profile link, owner-filtered feed; not found', async () => {
+    await withDom(async host => {
+        const calls = [];
+        const member = { id: 'me', display_name: 'Me', home_country: 'ES', dive_count: 2, deepest_m: 30, total_s: 7200, top_sites: ['Reef <x>', 'Wall'] };
+        const store = {
+            getMember: async id => (id === 'me' ? member : null),
+            listMembers: async () => [member],
+            listCommunityEntries: async args => { calls.push(args); return []; },
+            photoUrls: async () => new Map(),
+        };
+        const page = new MemberPage(host, { store, userId: 'me', memberId: 'me' });
+        await new Promise(r => setTimeout(r, 30));
+        assert.match(host.querySelector('.tr-member-head-name').textContent, /Me/);
+        assert.equal(host.querySelector('.tr-member-edit').getAttribute('href'), '#/profile');
+        assert.equal(host.querySelectorAll('.tr-tile').length, 3);
+        assert.deepEqual([...host.querySelectorAll('.tr-chip')].map(c => c.textContent), ['Reef <x>', 'Wall']);
+        assert.equal(calls[0].owner, 'me');
+        assert.equal(host.querySelector('.tr-feed-title'), null, 'no big feed title');
+        assert.match(host.textContent, /No dives to show yet\./);
+        page.destroy();
+
+        const other = new MemberPage(host, { store: { ...store, getMember: async () => ({ id: 'u2', dive_count: 0, top_sites: [] }) }, userId: 'me', memberId: 'u2' });
+        await new Promise(r => setTimeout(r, 30));
+        assert.equal(host.querySelector('.tr-member-edit'), null);
+        assert.equal(host.querySelector('.tr-member-sites'), null, 'no chips without top sites');
+        other.destroy();
+
+        const missing = new MemberPage(host, { store, userId: 'me', memberId: 'nobody' });
+        await new Promise(r => setTimeout(r, 30));
+        assert.match(host.textContent, /Member not found/);
+        assert.equal(host.querySelector('a').getAttribute('href'), '#/community');
+        missing.destroy();
     });
 });

@@ -2926,6 +2926,25 @@
             "learnWhy": "Learn why on DecoTheory ↗",
             "diver": "Diver",
             "you": "You",
+            "community": {
+                "title": "Community",
+                "intro": "Everyone here was invited. They see your dives unless you make them private.",
+                "deepest": "deepest {0}",
+                "lastDive": "last dive {0}"
+            },
+            "member": {
+                "recentDives": "Recent dives",
+                "notFound": "Member not found",
+                "toCommunity": "Back to Community",
+                "editProfile": "Edit profile",
+                "favouriteSites": "Favourite sites",
+                "noDives": "No dives to show yet.",
+                "stats": {
+                    "dives": "Dives",
+                    "deepest": "Deepest",
+                    "time": "Total time"
+                }
+            },
             "feed": {
                 "title": "Feed",
                 "loadMore": "Load more",

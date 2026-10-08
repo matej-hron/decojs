@@ -20,6 +20,8 @@ import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml } from './feedCard.js';
+import { MembersPage } from './MembersPage.js';
+import { MemberPage } from './MemberPage.js';
 import { SparkLoader } from './sparks.js';
 import { CommunityFeed } from './CommunityFeed.js';
 import { MAPY_API_KEY } from '../backend/config.js';
@@ -28,7 +30,7 @@ import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
 /** Community routes whose views arrive in later steps; until then they show My dives. */
-const PENDING_VIEWS = new Set(['community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
+const PENDING_VIEWS = new Set(['memberDive', 'memberAnalysis', 'profile']);
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
@@ -262,7 +264,7 @@ export class LogbookApp {
     _onLanguageChange() {
         this._renderShell();
         const name = this._route().name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed')) this.form.relabel(); // keep what was typed / loaded
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member')) this.form.relabel(); // keep what was typed / loaded
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
     }
@@ -293,6 +295,8 @@ export class LogbookApp {
             case 'sites': this._showSites(null); break;
             case 'site': this._showSites(route.id); break;
             case 'feed': this._showFeed(); break;
+            case 'community': this._showCommunity(); break;
+            case 'member': this._showMember(route.id); break;
             default: this._showNotFound();
         }
     }
@@ -344,8 +348,32 @@ export class LogbookApp {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new CommunityFeed(this.view.firstChild, {
             store: this.store, userId: this.user.id,
-            onError: error => this._storeError(error),
+            onError: error => this._viewError(error),
         });
+    }
+
+    // ---- Community directory and member pages ----
+
+    _showCommunity() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new MembersPage(this.view.firstChild, {
+            store: this.store, userId: this.user.id,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    _showMember(memberId) {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new MemberPage(this.view.firstChild, {
+            store: this.store, userId: this.user.id, memberId,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    /** A mounted view could not load: unmount it (a language change must not re-render it detached), show the error. */
+    _viewError(error) {
+        this._unmountForm();
+        this._storeError(error);
     }
 
     // ---- New and edit ----

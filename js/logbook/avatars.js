@@ -113,5 +113,22 @@ export function avatarHtml({ preset, url, name, id, size = 40 } = {}) {
     const inner = url
         ? `<img src="${escHtml(url)}" alt="" loading="lazy" decoding="async">`
         : AVATARS[key].svg;
-    return `<span class="tr-avatar" style="--size:${px}px" role="img" aria-label="${label}">${inner}</span>`;
+    // data-avatar: the preset an uploaded photo falls back to when it fails to load (see avatarImgFallback).
+    return `<span class="tr-avatar" style="--size:${px}px" role="img" aria-label="${label}" data-avatar="${key}">${inner}</span>`;
+}
+
+/**
+ * Shared `error` handler (capture phase: image errors do not bubble) for views that render avatars:
+ * an uploaded photo that fails to load (expired or forbidden signed URL) is swapped for the preset SVG.
+ * @returns {string|null} the failed photo URL (so the view can forget it), else null when not an avatar photo
+ */
+export function avatarImgFallback(event) {
+    const img = event?.target;
+    if (img?.tagName !== 'IMG') return null;
+    const box = img.parentElement;
+    if (!box?.classList.contains('tr-avatar')) return null;
+    const key = Object.hasOwn(AVATARS, box.dataset.avatar ?? '') ? box.dataset.avatar : AVATAR_KEYS[0];
+    const failed = img.getAttribute('src');
+    box.innerHTML = AVATARS[key].svg;
+    return failed;
 }
