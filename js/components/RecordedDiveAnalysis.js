@@ -700,6 +700,7 @@ export class RecordedDiveAnalysis {
             return;
         }
         this.el.charts.hidden = false;
+        this.el.profile.classList.toggle('rda-view-tissue', this.view === 'tissue'); // room for the tissue controls (lab/dive-log.html)
         const { setup, deviceCeiling } = prepareRecordedSetup(dive, this.gf);
         const start = this.chainEnabled ? this._startState(dive) : null;
         setup.initialTissuePressures = start?.initialTissuePressures ?? null;

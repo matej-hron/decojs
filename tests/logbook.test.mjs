@@ -1057,9 +1057,14 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             assert.equal(rda.view, 'gas');
             assert.equal(last.options.showGasConsumption, true);
 
+            const profileHost = root.querySelector('#rda-profile');
+            assert.equal(profileHost.classList.contains('rda-view-tissue'), false);
             root.querySelector('[data-view="tissue"]').click();
             assert.equal(calls.at(-1).options.showTissueLoading, true);
             assert.equal(note.hidden, true);
+            assert.equal(profileHost.classList.contains('rda-view-tissue'), true, 'room for the tissue controls');
+            root.querySelector('[data-view="profile"]').click();
+            assert.equal(profileHost.classList.contains('rda-view-tissue'), false);
             rda.destroy();
         });
     });

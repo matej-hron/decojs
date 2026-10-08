@@ -379,6 +379,11 @@
         .rda-root #rda-mvalue.chart-narrow,
         .rda-root #rda-gf.chart-narrow { height: auto !important; }
         .rda-root #rda-profile.chart-narrow { max-height: 460px; }
+        /* Tissues view: DiveProfileChart puts its tissue controls above the plot. The wrapper grows by their
+           height and the plot keeps the size it has in the other views. After the max-height rule above on purpose. */
+        .rda-root #rda-profile.rda-view-tissue { height: auto !important; max-height: none; }
+        .rda-root #rda-profile.rda-view-tissue > .dpc-chart-container { height: 520px; }
+        .rda-root #rda-profile.rda-view-tissue.chart-narrow > .dpc-chart-container { height: 460px; }
         .rda-root .chart-narrow > :is(.mvc-wrapper:not(.mvc-fullscreen), .gfc-wrapper:not(.gfc-fullscreen)) { height: auto !important; }
         .rda-root .chart-narrow :is(.mvc-wrapper:not(.mvc-fullscreen) > .mvc-chart-container, .gfc-wrapper:not(.gfc-fullscreen) > .gfc-chart-container) {
             flex: none !important;
