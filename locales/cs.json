@@ -2957,6 +2957,44 @@
                 "empty": "Od členů zatím nejsou žádné ponory.",
                 "moreFailed": "Další ponory se nepodařilo načíst. Zkuste to znovu."
             },
+            "form": {
+                "whoCanSee": "Kdo ponor uvidí",
+                "visibility": {
+                    "private": "Soukromý",
+                    "members": "Členové",
+                    "link": "Veřejný odkaz (připravujeme)"
+                },
+                "visibilityHelp": {
+                    "private": "Jen vy.",
+                    "members": "Všichni pozvaní do DecoTrailu. Vaše poznámky zůstanou soukromé.",
+                    "link": "Ponecháno beze změny: veřejná stránka zatím neexistuje."
+                },
+                "shareLocation": "Ukázat členům přesné místo"
+            },
+            "profile": {
+                "title": "Váš profil",
+                "previewNote": "Takhle vás vidí ostatní členové.",
+                "avatar": "Avatar",
+                "upload": "Nahrát fotku",
+                "remove": "Odebrat fotku",
+                "uploading": "Nahrávám fotku…",
+                "uploaded": "Fotka nahrána ✓",
+                "removed": "Fotka odebrána ✓",
+                "replaceNote": "Uložením nahradíte fotku tímto avatarem.",
+                "unreadable": "Obrázek se nepodařilo přečíst. Vyberte fotku ve formátu JPEG, PNG nebo WebP.",
+                "name": "Zobrazované jméno",
+                "nameHelp": "Zobrazí se u vašich ponorů. Když ho necháte prázdné, budete „Potápěč“.",
+                "defaultVisibility": "Kdo uvidí vaše nové ponory",
+                "defaultVisibilityHelp": "U každého ponoru to můžete změnit.",
+                "country": "Domovská země",
+                "save": "Uložit",
+                "saving": "Ukládám…",
+                "saved": "Uloženo ✓",
+                "account": "Účet",
+                "signedInAs": "Přihlášen jako {0}",
+                "emailPrivate": "Váš e-mail se ostatním členům nikdy nezobrazí.",
+                "signOut": "Odhlásit se"
+            },
             "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
             "footer": "DecoTrail — ponory vysvětlené pomocí"
         },

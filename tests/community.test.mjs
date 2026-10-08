@@ -571,3 +571,195 @@ test('EntryDetail own: visibility line only when the entry has one', async () =>
         plain.destroy();
     });
 });
+
+// ---- Task 8: own profile page, lock badge on private dives ----
+
+import { ProfilePage, countryOptions } from '../js/logbook/ProfilePage.js';
+import { lockHtml } from '../js/logbook/feedCard.js';
+import { LogbookApp } from '../js/logbook/LogbookApp.js';
+
+const PROFILE_KEYS = ['avatar_preset', 'default_visibility', 'display_name', 'home_country'];
+
+function profileStore(profile, log) {
+    let current = { ...profile };
+    return {
+        getMyProfile: async () => ({ ...current }),
+        saveProfile: async patch => { log.push(['save', { ...patch }]); current = { ...current, ...patch }; return { ...current }; },
+        removeAvatar: async () => { log.push(['remove']); current = { ...current, avatar_path: null }; return { ...current }; },
+        uploadAvatar: async blob => { log.push(['upload', blob]); current = { ...current, avatar_path: 'me/avatar-2.jpg' }; return { ...current }; },
+        avatarUrls: async paths => new Map(paths.map(p => [p, `https://example.test/${p}`])),
+        signOut: async () => { log.push(['signOut']); },
+    };
+}
+const flush = () => new Promise(r => setTimeout(r, 30));
+
+test('countryOptions: "—" first, then sorted by the localized name', () => {
+    const cs = countryOptions('cs');
+    assert.deepEqual(cs[0], { code: '', name: '—' });
+    assert.equal(cs.length, COUNTRY_CODES.length + 1);
+    const names = cs.slice(1).map(o => o.name);
+    assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b, 'cs')));
+    assert.equal(cs.find(o => o.code === 'CZ').name, 'Česko');
+});
+
+test('ProfilePage: shows the profile, saves only the allowed keys, email only here', async () => {
+    await withDom(async host => {
+        const log = [];
+        const store = profileStore({ id: 'me', display_name: 'Petr <b>', avatar_preset: 'reef-04', avatar_path: null, default_visibility: 'members', home_country: 'CZ', created_at: 'x' }, log);
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'me<x>@example.com' } });
+        await flush();
+        assert.equal(host.querySelectorAll('input[name="avatar_preset"]').length, 12);
+        assert.equal(host.querySelector('input[name="avatar_preset"]:checked').value, 'reef-04');
+        for (const r of host.querySelectorAll('input[name="avatar_preset"]')) assert.ok(r.getAttribute('aria-label'));
+        assert.equal(host.querySelector('input[name="display_name"]').value, 'Petr <b>');
+        assert.equal(host.querySelector('input[name="display_name"]').maxLength, 60);
+        assert.equal(host.querySelector('select[name="home_country"]').value, 'CZ');
+        assert.equal(host.querySelector('select[name="home_country"] option').textContent, '—');
+        assert.deepEqual([...host.querySelectorAll('input[name="default_visibility"]')].map(r => [r.value, r.checked]), [['private', false], ['members', true]]);
+        assert.match(host.textContent, /me<x>@example\.com/);
+        assert.ok(!host.innerHTML.includes('me<x>'), 'email escaped');
+        assert.match(host.textContent, /Your email is never shown to other members\./);
+        assert.equal(host.querySelector('#tr-avatar-remove'), null, 'no Remove photo without a photo');
+
+        host.querySelector('input[name="display_name"]').value = '  Jana  ';
+        host.querySelector('input[name="avatar_preset"][value="reef-02"]').checked = true;
+        host.querySelector('input[name="default_visibility"][value="private"]').checked = true;
+        host.querySelector('select[name="home_country"]').value = 'ES';
+        host.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.equal(log.length, 1);
+        const [kind, patch] = log[0];
+        assert.equal(kind, 'save');
+        assert.deepEqual(Object.keys(patch).sort(), PROFILE_KEYS);
+        assert.deepEqual(patch, { display_name: 'Jana', avatar_preset: 'reef-02', default_visibility: 'private', home_country: 'ES' });
+        assert.match(host.querySelector('.tr-profile-status').textContent, /Saved/);
+
+        host.querySelector('input[name="display_name"]').value = '   ';
+        host.querySelector('select[name="home_country"]').value = '';
+        host.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.equal(log[1][1].display_name, null);
+        assert.equal(log[1][1].home_country, null);
+
+        host.querySelector('#tr-signout').click();
+        await flush();
+        assert.deepEqual(log.at(-1), ['signOut']);
+        page.destroy();
+        assert.equal(host.innerHTML, '');
+    });
+});
+
+test('ProfilePage: an uploaded photo wins; picking a preset and saving removes it', async () => {
+    await withDom(async host => {
+        const log = [];
+        const store = profileStore({ id: 'me', display_name: 'Me', avatar_preset: 'reef-04', avatar_path: 'me/avatar-1.jpg', default_visibility: 'members', home_country: null }, log);
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'me@example.com' } });
+        await flush();
+        assert.ok(host.querySelector('.tr-profile-preview img[src="https://example.test/me/avatar-1.jpg"]'));
+        assert.equal(host.querySelector('input[name="avatar_preset"]:checked'), null, 'no preset checked while a photo is used');
+        assert.ok(host.querySelector('#tr-avatar-remove'));
+        host.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.deepEqual(log.map(l => l[0]), ['save'], 'saving without a pick keeps the photo');
+        assert.equal(log[0][1].avatar_preset, 'reef-04');
+
+        const pick = host.querySelector('input[name="avatar_preset"][value="reef-07"]');
+        pick.checked = true;
+        pick.dispatchEvent(new window.Event('change', { bubbles: true }));
+        assert.equal(host.querySelector('.tr-profile-preview img'), null, 'the preview shows the preset at once');
+        host.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.deepEqual(log.map(l => l[0]), ['save', 'save', 'remove']);
+        assert.equal(log[1][1].avatar_preset, 'reef-07');
+        assert.equal('avatar_path' in log[1][1], false);
+        assert.equal(host.querySelector('#tr-avatar-remove'), null);
+        page.destroy();
+    });
+});
+
+test('ProfilePage: Remove photo removes it at once', async () => {
+    await withDom(async host => {
+        const log = [];
+        const store = profileStore({ id: 'me', avatar_preset: null, avatar_path: 'me/a.jpg', default_visibility: 'members' }, log);
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'me@example.com' } });
+        await flush();
+        host.querySelector('#tr-avatar-remove').click();
+        await flush();
+        assert.deepEqual(log.map(l => l[0]), ['remove']);
+        assert.equal(host.querySelector('.tr-profile-preview img'), null);
+        assert.equal(host.querySelector('#tr-avatar-remove'), null);
+        page.destroy();
+    });
+});
+
+test('lockHtml: a labelled lock; feed cards show it only for private dives', () => {
+    const lock = lockHtml('Private');
+    assert.match(lock, /class="tr-lock"/);
+    assert.match(lock, /aria-label="Private"/);
+    assert.match(lock, /title="Private"/);
+    const base = { entry: { id: 'e1', log_number: 3 }, href: '#/dive/e1', title: 'Reef' };
+    const plain = feedCardHtml(base);
+    assert.equal(feedCardHtml({ ...base, lockHtml: '' }), plain, 'no lock: identical markup');
+    assert.match(feedCardHtml({ ...base, lockHtml: lock }), /tr-lock/);
+    const author = { name: 'You', avatarHtml: '', href: '#/member/me', own: true };
+    assert.match(feedCardHtml({ ...base, author, lockHtml: lock }), /tr-lock/);
+});
+
+test('CommunityFeed: the lock shows on own private dives only', async () => {
+    await withDom(async host => {
+        const rows = [
+            { id: 'a', owner: 'me', log_number: 1, dive_date: '2026-09-02', visibility: 'private' },
+            { id: 'b', owner: 'me', log_number: 2, dive_date: '2026-09-01', visibility: 'members' },
+            { id: 'c', owner: 'u2', log_number: null, dive_date: '2026-08-30', visibility: 'private' },
+        ];
+        const feed = new CommunityFeed(host, { store: { listMembers: async () => [], listCommunityEntries: async () => rows, photoUrls: async () => new Map() }, userId: 'me' });
+        await flush();
+        const lockOf = id => host.querySelector(`.tr-feed-link[href$="/${id}"]`).closest('.tr-feed-card').querySelector('.tr-lock');
+        assert.ok(lockOf('a'));
+        assert.equal(lockOf('b'), null);
+        assert.equal(lockOf('c'), null);
+        feed.destroy();
+    });
+});
+
+test('LogbookApp My dives: the lock shows on private dives in feed, tiles and table', async () => {
+    await withDom(async root => {
+        location.hash = '#/dives';
+        const entries = [
+            { id: 'e2', log_number: 2, dive_date: '2026-09-02', visibility: 'private', site_id: null, buddies: [] },
+            { id: 'e1', log_number: 1, dive_date: '2026-09-01', visibility: 'members', site_id: null, buddies: [] },
+        ];
+        const store = {
+            onAuthChange: () => () => {}, currentUser: async () => ({ id: 'me', email: 'me@example.com' }),
+            ensureEntries: async () => 0, listEntries: async () => entries, listSites: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(), communityAvailability: async () => 'no',
+        };
+        const app = new LogbookApp(root, { store, shell: null });
+        await flush();
+        for (const mode of ['feed', 'tiles', 'table']) {
+            app._setViewMode(mode);
+            const holders = mode === 'feed' ? '.lb-feed-card' : mode === 'tiles' ? '.lb-tile' : '.lb-table tbody tr';
+            const locks = [...root.querySelectorAll(holders)].map(el => !!el.querySelector('.tr-lock'));
+            assert.deepEqual(locks, [true, false], mode);
+            assert.equal(root.querySelector('.tr-lock').getAttribute('aria-label'), 'Private', mode);
+        }
+        app.destroy();
+    });
+});
+
+test('LogbookApp edit form: waits for the community probe in flight and offers the visibility fields', async () => {
+    await withDom(async root => {
+        location.hash = '#/dive/e1/edit';
+        const entry = { id: 'e1', log_number: 1, dive_date: '2026-09-01', visibility: 'private', site_id: null, buddies: [], details: {} };
+        const store = {
+            onAuthChange: () => () => {}, currentUser: async () => ({ id: 'me', email: 'me@example.com' }),
+            ensureEntries: async () => 0, listEntries: async () => [entry], getEntry: async () => entry, listSites: async () => [], listBuddies: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(), ensureProfile: async () => ({}),
+            communityAvailability: () => new Promise(r => setTimeout(() => r('yes'), 60)),
+        };
+        const app = new LogbookApp(root, { store, shell: null });
+        await new Promise(r => setTimeout(r, 150));
+        assert.deepEqual([...root.querySelectorAll('input[name="visibility"]')].map(r => [r.value, r.checked]), [['private', true], ['members', false]]);
+        app.destroy();
+    });
+});

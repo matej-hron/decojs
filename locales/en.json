@@ -2957,6 +2957,44 @@
                 "empty": "No dives from members yet.",
                 "moreFailed": "Couldn’t load more dives. Try again."
             },
+            "form": {
+                "whoCanSee": "Who can see this dive",
+                "visibility": {
+                    "private": "Private",
+                    "members": "Members",
+                    "link": "Public link (coming soon)"
+                },
+                "visibilityHelp": {
+                    "private": "Only you.",
+                    "members": "Everyone invited to DecoTrail. Your notes stay private.",
+                    "link": "Kept as it is: the public page does not exist yet."
+                },
+                "shareLocation": "Show the exact location to members"
+            },
+            "profile": {
+                "title": "Your profile",
+                "previewNote": "This is how other members see you.",
+                "avatar": "Avatar",
+                "upload": "Upload photo",
+                "remove": "Remove photo",
+                "uploading": "Uploading photo…",
+                "uploaded": "Photo uploaded ✓",
+                "removed": "Photo removed ✓",
+                "replaceNote": "Saving replaces your photo with this avatar.",
+                "unreadable": "Couldn’t read this image. Choose a JPEG, PNG or WebP photo.",
+                "name": "Display name",
+                "nameHelp": "Shown next to your dives. Leave it empty to appear as “Diver”.",
+                "defaultVisibility": "Who sees your new dives",
+                "defaultVisibilityHelp": "You can change it for each dive.",
+                "country": "Home country",
+                "save": "Save",
+                "saving": "Saving…",
+                "saved": "Saved ✓",
+                "account": "Account",
+                "signedInAs": "Signed in as {0}",
+                "emailPrivate": "Your email is never shown to other members.",
+                "signOut": "Sign out"
+            },
             "disclaimer": "For education only — not a substitute for your dive computer.",
             "footer": "DecoTrail — dives explained by"
         },

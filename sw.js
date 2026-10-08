@@ -114,6 +114,7 @@ const STATIC_ASSETS = [
   './js/logbook/CommunityFeed.js',
   './js/logbook/MembersPage.js',
   './js/logbook/MemberPage.js',
+  './js/logbook/ProfilePage.js',
   './js/logbook/memberEntryStore.js',
   './js/ndlPreview.js',
   './js/gfLimits.js',

@@ -9,6 +9,16 @@ export function resizeTarget(width, height, maxEdge = PHOTO_MAX_EDGE) {
     return { width: Math.round(width * scale), height: Math.round(height * scale) };
 }
 
+/** Edge of an uploaded avatar in pixels (square JPEG). */
+export const AVATAR_EDGE = 256;
+export const AVATAR_QUALITY = 0.85;
+
+/** The centred square of a width × height image: its top-left corner and side, in source pixels. */
+export function squareCrop(width, height) {
+    const side = Math.min(width, height);
+    return { sx: Math.floor((width - side) / 2), sy: Math.floor((height - side) / 2), side };
+}
+
 /** JPEG, PNG and WebP can be resized in every browser; HEIC cannot. */
 export function isSupportedImage(mimeOrName) {
     return /(jpe?g|png|webp)$/i.test(String(mimeOrName ?? ''));
@@ -86,24 +96,54 @@ export async function readExif(file) {
  * @returns {Promise<{blob: Blob, width: number, height: number}>}
  */
 export async function resizeImage(file) {
+    const bitmap = await decodeImage(file);
+    const { width, height } = resizeTarget(bitmap.width, bitmap.height);
+    return drawJpeg(bitmap, { sx: 0, sy: 0, sw: bitmap.width, sh: bitmap.height }, width, height, PHOTO_QUALITY);
+}
+
+/**
+ * An uploaded profile photo: the centred square, scaled to AVATAR_EDGE, as JPEG (EXIF orientation honoured,
+ * metadata dropped by the canvas). Throws `Error('unreadable-image')` when the browser cannot decode the file
+ * (HEIC on most desktop browsers, a broken file).
+ * @param {Blob} file
+ * @returns {Promise<Blob>}
+ */
+export async function avatarBlob(file) {
     let bitmap;
     try {
-        bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+        bitmap = await decodeImage(file);
+    } catch (error) {
+        console.debug('Image not decoded', error);
+        throw new Error('unreadable-image');
+    }
+    const { sx, sy, side } = squareCrop(bitmap.width, bitmap.height);
+    const { blob } = await drawJpeg(bitmap, { sx, sy, sw: side, sh: side }, AVATAR_EDGE, AVATAR_EDGE, AVATAR_QUALITY);
+    return blob;
+}
+
+/** Decode an image, honouring the EXIF orientation (createImageBitmap does by default). */
+async function decodeImage(file) {
+    try {
+        return await createImageBitmap(file, { imageOrientation: 'from-image' });
     } catch (error) {
         if (!(error instanceof TypeError)) throw error;
-        bitmap = await createImageBitmap(file); // engines that do not know the option
+        return createImageBitmap(file); // engines that do not know the option
     }
+}
+
+/** Draw a source rectangle of a bitmap onto a width × height canvas and encode it as JPEG; closes the bitmap. */
+async function drawJpeg(bitmap, { sx, sy, sw, sh }, width, height, quality) {
     const canvas = document.createElement('canvas');
     try {
-        const { width, height } = resizeTarget(bitmap.width, bitmap.height);
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#fff'; // PNG/WebP transparency would turn black in JPEG
         ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(bitmap, 0, 0, width, height);
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, width, height);
         const blob = await new Promise((resolve, reject) =>
-            canvas.toBlob(b => (b ? resolve(b) : reject(new Error('JPEG encoding failed'))), 'image/jpeg', PHOTO_QUALITY));
+            canvas.toBlob(b => (b ? resolve(b) : reject(new Error('JPEG encoding failed'))), 'image/jpeg', quality));
         return { blob, width, height };
     } finally {
         bitmap.close?.();

@@ -28,12 +28,13 @@ const NB = ' ';
  * @param {string} [o.visualHtml] - markup (see visualHtml)
  * @param {{name: string, avatarHtml: string, href: string, own?: boolean}|null} [o.author]
  * @param {string} [o.badgeHtml] - markup at the end of the head ("Add details")
+ * @param {string} [o.lockHtml] - markup after the title (see lockHtml): the dive is private
  * @param {string} [o.selectHtml] - markup at the start of the head (select-mode checkbox)
  * @param {{id: string, selected: boolean}|null} [o.pick] - select mode (My dives only)
  */
 export function feedCardHtml({
     entry, href = null, title, untitled = false, whenText = '', numberLabel = null, statsHtml: stats = '',
-    peopleText = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null,
+    peopleText = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null, lockHtml: lock = '',
 }) {
     const titleCls = `lb-feed-title${untitled ? ' lb-untitled' : ''}`;
     const srNumber = numberLabel ? `<span class="rda-visually-hidden">${escHtml(numberLabel)}, </span>` : '';
@@ -50,7 +51,7 @@ export function feedCardHtml({
                 <div class="lb-feed-head">${selectHtml}
                     ${badge}
                     <div class="lb-feed-who">
-                        <h4 class="${titleCls}">${escHtml(title)}</h4>
+                        <h4 class="${titleCls}">${escHtml(title)}${lock}</h4>
                         <p class="lb-feed-when">${srNumber}<span class="lb-date">${escHtml(whenText)}</span></p>
                     </div>
                     ${badgeHtml}
@@ -64,7 +65,7 @@ export function feedCardHtml({
                 <div class="lb-feed-head">${selectHtml}
                     ${numbered ? badge : ''}
                     <div class="lb-feed-who">
-                        <h4 class="${titleCls}"><a class="tr-feed-link" href="${escHtml(href)}">${numbered ? srNumber : ''}${escHtml(title)}</a></h4>
+                        <h4 class="${titleCls}"><a class="tr-feed-link" href="${escHtml(href)}">${numbered ? srNumber : ''}${escHtml(title)}</a>${lock}</h4>
                     </div>
                     ${badgeHtml}
                 </div>
@@ -112,4 +113,14 @@ export function visualHtml({ kind, entryId, variant, photoUrl, more = 0, moreTex
     }
     if (variant === 'tile') return `<div class="lb-visual lb-visual-none"${id} aria-hidden="true"><span>${escHtml(numberText)}</span></div>`;
     return '';
+}
+
+/**
+ * The small lock of a private dive (own cards, tiles and table rows).
+ * @param {string} label - translated "Private": the accessible name and the tooltip
+ */
+export function lockHtml(label) {
+    const text = escHtml(label);
+    return `<span class="tr-lock" role="img" aria-label="${text}" title="${text}"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">`
+        + '<rect x="3" y="7" width="10" height="7.5" rx="1.6" fill="currentColor"/><path d="M5.25 7V5.25a2.75 2.75 0 0 1 5.5 0V7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>';
 }

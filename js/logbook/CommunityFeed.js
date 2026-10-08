@@ -4,7 +4,7 @@
  */
 
 import { routeHref } from './router.js';
-import { feedCardHtml, statsHtml, visualHtml } from './feedCard.js';
+import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
 import { SparkLoader } from './sparks.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
@@ -210,6 +210,7 @@ export class CommunityFeed {
             whenText: when, numberLabel: numbered ? fill(tl('number', '#{0}'), entry.log_number) : null,
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
             peopleText: people, visualHtml: this._visual(row, entry, site),
+            lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
         });
     }
 

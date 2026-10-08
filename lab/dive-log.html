@@ -112,6 +112,21 @@
         .lb-chip-x { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 1.25rem; cursor: pointer; color: inherit; }
         .lb-form-error { margin: 0; color: var(--error-color, #c0392b); font-weight: 600; }
         .lb-form-error[hidden], .lb-field[hidden] { display: none; }
+        /* Who can see a dive (entry form) / new dives (profile): one row per choice, the help line under its label */
+        .lb-vis-options { display: grid; gap: 0.5rem; }
+        .lb-vis-option { display: flex; align-items: flex-start; gap: 0.75rem; min-height: 44px; padding: 0.65rem 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-md, 10px);
+            background: var(--surface-elevated); cursor: pointer; }
+        .lb-vis-option input { flex: none; width: 1.25rem; height: 1.25rem; margin: 0.1rem 0 0; accent-color: var(--tr-accent, var(--brand)); }
+        .lb-vis-option:has(input:checked) { border-color: var(--tr-accent, var(--brand)); background: var(--tr-accent-soft, var(--surface-sunken)); }
+        .lb-vis-text { display: grid; gap: 0.1rem; min-width: 0; }
+        .lb-vis-label { color: var(--text); font-weight: 600; }
+        .lb-vis-help { color: var(--text-subtle); font-size: var(--text-sm); }
+        .lb-vis-location { align-items: center; min-height: 44px; }
+        .lb-vis-location input { width: 1.25rem; height: 1.25rem; margin: 0; flex: none; accent-color: var(--tr-accent, var(--brand)); }
+        /* Lock of a private own dive: after the title, before the number in the table */
+        .tr-lock { display: inline-flex; vertical-align: -0.1em; margin-left: 0.4rem; color: var(--text-subtle); }
+        .tr-lock svg { display: block; }
+        .lb-table .tr-lock { margin: 0 0.35rem 0 0; }
         /* Gas cards: a slim cylinder gauge on the left shows the gas left (end ÷ start pressure). */
         .lb-gases { gap: 0.75rem; }
         .lb-gases-empty { margin: 0; color: var(--text-subtle); }
@@ -625,6 +640,46 @@
             .tr-tile { padding: 0.7rem 0.7rem; }
             .tr-tile dd { font-size: var(--text-lg); }
         }
+        /* Own profile: the water band previews how members see you; the form stays quiet below it. */
+        .tr-profile { display: grid; gap: 1.25rem; width: 100%; max-width: 42rem; margin: 0 auto; }
+        .tr-profile-preview { min-height: calc(96px + 3rem); }
+        .tr-profile-preview .tr-member-head-name { font-family: var(--font-display); font-weight: 600; }
+        .tr-profile-preview p { margin: 0; }
+        .tr-profile-preview .tr-profile-preview-note { color: rgba(255, 255, 255, 0.82); font-size: var(--text-sm); }
+        .tr-profile-form { gap: 1.5rem; }
+        .tr-avatar-field { display: grid; gap: 0.75rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+        .tr-avatar-field > legend { padding: 0; margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-subtle); }
+        .tr-avatar-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.75rem 0.5rem; justify-items: center; }
+        .tr-avatar-opt { position: relative; display: inline-flex; padding: 4px; border-radius: 50%; cursor: pointer;
+            box-shadow: 0 0 0 2px transparent; transition: box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
+        .tr-avatar-opt input { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; border-radius: 50%; opacity: 0; cursor: pointer; }
+        .tr-avatar-opt:hover { box-shadow: 0 0 0 2px var(--border-strong, var(--border)); }
+        .tr-avatar-opt:has(input:checked) { box-shadow: 0 0 0 3px var(--tr-accent); transform: scale(1.04); }
+        .tr-avatar-opt:has(input:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+        .tr-avatar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tr-avatar-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+        .tr-avatar-upload { cursor: pointer; }
+        .tr-avatar-upload:has(input:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+        .tr-avatar-upload.lb-disabled { opacity: 0.6; cursor: progress; }
+        .tr-profile-hint { margin: 0; color: var(--text-subtle); font-size: var(--text-sm); }
+        .tr-profile-hint[hidden] { display: none; }
+        .tr-profile-name .tr-profile-hint { padding-top: 0.15rem; }
+        .tr-profile-actions { align-items: center; }
+        .tr-profile-status { margin: 0; min-width: 0; color: var(--text-subtle); font-weight: 600; }
+        .tr-profile-status:empty { display: none; }
+        .tr-profile-status--ok { color: var(--success-color, #1e8e5a); }
+        .tr-profile-status--error { color: var(--error-color, #c0392b); }
+        .tr-profile-account { display: grid; gap: 0.5rem; justify-items: start; }
+        .tr-profile-account .tr-section-head { margin: 0; }
+        .tr-profile-email { margin: 0; overflow-wrap: anywhere; }
+        .tr-profile-account .btn { min-height: 44px; margin-top: 0.25rem; }
+        @media (max-width: 720px) {
+            .tr-avatar-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .tr-profile-actions { display: flex; flex-wrap: wrap; }
+            .tr-profile-actions .btn { flex: 1 1 8.5rem; }
+            .tr-profile-account { margin: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) { .tr-avatar-opt { transition: none; } }
         .tr-learn { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: var(--tr-accent); font-size: var(--text-sm); }
         .rda-invite { flex-basis: 100%; margin: 0.25rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--border); color: var(--text-subtle); font-size: var(--text-sm); }
 

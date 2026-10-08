@@ -19,9 +19,10 @@ import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
-import { feedCardHtml, statsHtml, visualHtml } from './feedCard.js';
+import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
 import { MembersPage } from './MembersPage.js';
 import { MemberPage } from './MemberPage.js';
+import { ProfilePage } from './ProfilePage.js';
 import { SparkLoader } from './sparks.js';
 import { CommunityFeed } from './CommunityFeed.js';
 import { memberEntryStore } from './memberEntryStore.js';
@@ -32,11 +33,11 @@ import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
-/** Community routes whose views arrive in later steps; until then they show My dives. */
-const PENDING_VIEWS = new Set(['profile']);
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
+/** How long the entry form waits for a probe in flight before it opens without the visibility fields. */
+const FORM_PROBE_WAIT_MS = 3000;
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
@@ -139,8 +140,7 @@ export class LogbookApp {
 
     /** The route whose view is shown. */
     _route() {
-        const route = this._shellRoute();
-        return PENDING_VIEWS.has(route.name) ? { name: 'list' } : route;
+        return this._shellRoute();
     }
 
     _renderShell() {
@@ -270,9 +270,12 @@ export class LogbookApp {
     _onLanguageChange() {
         this._renderShell();
         const name = this._route().name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive')) this.form.relabel(); // keep what was typed / loaded
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive' || name === 'profile')) this.form.relabel(); // keep what was typed / loaded
         else if (this.user && name !== 'analysis' && name !== 'memberAnalysis') this._renderRoute();
-        else translateStatic(this.view);
+        else {
+            translateStatic(this.view);
+            this._renderAnalysisAuthor(); // the "Diver" fallback name follows the language
+        }
     }
 
     // ---- Routing ----
@@ -309,6 +312,7 @@ export class LogbookApp {
             case 'member': this._showMember(route.id); break;
             case 'memberDive': this._showMemberDive(route.id, token); break;
             case 'memberAnalysis': this._showMemberAnalysis(route.id, token); break;
+            case 'profile': this._showProfile(); break;
             default: this._showNotFound();
         }
     }
@@ -382,6 +386,17 @@ export class LogbookApp {
         });
     }
 
+    // ---- Own profile ----
+
+    _showProfile() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new ProfilePage(this.view.firstChild, {
+            store: this.store, user: this.user,
+            onSignOut: () => this._logout(),
+            onError: error => this._viewError(error),
+        });
+    }
+
     // ---- Another member's dive (read-only) and its analysis ----
 
     /**
@@ -417,26 +432,37 @@ export class LogbookApp {
         return this._memberBack?.href ?? routeHref({ name: 'feed' });
     }
 
-    async _showMemberDive(id, token) {
-        const row = await this._memberRow(id, token, 'detail');
-        if (!row) return;
+    /**
+     * The author row of a member's dive. `name` and `avatarHtml` are getters, so a re-render after a
+     * language change shows the translated "Diver" fallback.
+     * @returns {Promise<{name: string, href: string, avatarHtml: string}>}
+     */
+    async _memberAuthor(owner) {
         let member = null;
         let avatarUrl = null;
         try {
-            member = await this.store.getMember(row.owner);
+            member = await this.store.getMember(owner);
             if (member?.avatar_path && this.store.avatarUrls) {
                 avatarUrl = (await this.store.avatarUrls([member.avatar_path]).catch(error => { console.error(error); return null; }))?.get(member.avatar_path) ?? null;
             }
         } catch (error) {
             console.error(error); // the author row falls back to "Diver" and a preset
         }
-        if (token !== this._viewToken) return;
-        const name = displayName(member, key => translate(`diveLog.${key}`, 'Diver'));
-        const author = {
-            name, href: routeHref({ name: 'member', id: row.owner }),
+        return {
+            get name() { return displayName(member, key => translate(`diveLog.${key}`, 'Diver')); },
+            href: routeHref({ name: 'member', id: owner }),
             // The name follows in the same link: the picture is decoration there.
-            avatarHtml: `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: member?.avatar_preset, url: avatarUrl, name, id: row.owner, size: 40 })}</span>`,
+            get avatarHtml() {
+                return `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: member?.avatar_preset, url: avatarUrl, name: this.name, id: owner, size: 40 })}</span>`;
+            },
         };
+    }
+
+    async _showMemberDive(id, token) {
+        const row = await this._memberRow(id, token, 'detail');
+        if (!row) return;
+        const author = await this._memberAuthor(row.owner);
+        if (token !== this._viewToken) return;
         const { entry, adapter } = memberEntryStore(this.store, row);
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new EntryDetail(this.view.firstChild, {
@@ -452,7 +478,9 @@ export class LogbookApp {
             this._showNotFound({ href: routeHref({ name: 'memberDive', id }), text: tl('back', '← Back') });
             return;
         }
-        this._mountRecordingAnalysis(routeHref({ name: 'memberDive', id }), adapter, entry);
+        const author = await this._memberAuthor(row.owner);
+        if (token !== this._viewToken) return;
+        this._mountRecordingAnalysis(routeHref({ name: 'memberDive', id }), adapter, entry, author);
     }
 
     /** A mounted view could not load: unmount it (a language change must not re-render it detached), show the error. */
@@ -469,16 +497,33 @@ export class LogbookApp {
         const token = this._viewToken;
         this.form = new NewDive(host, {
             store: this.store, ready: this.ensured,
-            onChoose: ({ prefill, recordingId }) => {
+            onChoose: async ({ prefill, recordingId }) => {
+                const community = await this._communityForForm();
+                const defaultVisibility = community && this.store.defaultVisibility
+                    ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
+                    : null;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId,
+                    store: this.store, prefill, recordingId, community, defaultVisibility,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
             },
         });
+    }
+
+    /**
+     * Whether the entry form offers "Who can see this dive": waits briefly for a probe in flight (a form opened
+     * right after login must not lose the fieldset). Without an answer the form shows none and sends nothing.
+     */
+    async _communityForForm() {
+        if (!this._communityKnown && this._probe) {
+            let timer;
+            await Promise.race([this._probe, new Promise(r => { timer = setTimeout(r, FORM_PROBE_WAIT_MS); })]);
+            clearTimeout(timer);
+        }
+        return this.community;
     }
 
     async _showEdit(id, token) {
@@ -495,20 +540,32 @@ export class LogbookApp {
             this._showNotFound();
             return;
         }
+        const community = await this._communityForForm();
+        if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, onSaved: back, onCancel: back });
     }
 
-    /** Back link, "Learn why" and the embedded analysis of one recorded dive (own or a member's). */
-    _analysisFrame(backHref) {
+    /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */
+    _analysisFrame(backHref, author = null) {
+        this._analysisAuthor = author;
         this.view.innerHTML = `<p class="lb-back"><a href="${escHtml(backHref)}">${escHtml(tl('back', '← Back'))}</a></p>
             <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a>
+            ${author ? '<div class="tr-author lb-analysis-author"></div>' : ''}
             <div class="rda-root lb-analysis"></div>`;
+        this._renderAnalysisAuthor();
     }
 
-    _mountRecordingAnalysis(backHref, store, entry) {
-        this._analysisFrame(backHref);
+    /** Fill (or, after a language change, refill) the author row of a member's analysis. */
+    _renderAnalysisAuthor() {
+        const a = this._analysisAuthor;
+        const host = a ? this.view?.querySelector(':scope > .lb-analysis-author') : null;
+        if (host) host.innerHTML = `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`;
+    }
+
+    _mountRecordingAnalysis(backHref, store, entry, author = null) {
+        this._analysisFrame(backHref, author);
         this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
             store, embedded: true, focusRecordingId: entry.recording_id,
             entryGases: gasesFromEntry(entry),
@@ -516,7 +573,7 @@ export class LogbookApp {
     }
 
     async _showAnalysis(id, token) {
-        this._analysisFrame(routeHref({ name: 'detail', id }));
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         let entry = this.entries?.find(e => e.id === id);
         try {
             if (!entry) entry = await this.store.getEntry(id);
@@ -801,6 +858,11 @@ export class LogbookApp {
         this._watchSparks();
     }
 
+    /** The lock of a private own dive, else nothing (other dives keep their markup unchanged). */
+    _lock(entry) {
+        return entry.visibility === 'private' ? lockHtml(translate('diveLog.trail.visibility.private', 'Private')) : '';
+    }
+
     _stats(entry) {
         return statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key]));
     }
@@ -819,7 +881,7 @@ export class LogbookApp {
             numberLabel: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
             statsHtml: this._stats(entry), peopleText: people, notesText: notes,
             badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
-            visualHtml: this._visual(entry, 'feed'),
+            visualHtml: this._visual(entry, 'feed'), lockHtml: this._lock(entry),
         });
     }
 
@@ -838,7 +900,7 @@ export class LogbookApp {
         const [open, close] = this._wrap(entry, 'lb-tile');
         return `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
             <div class="lb-tile-body">
-                <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</strong>
+                <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}${this._lock(entry)}</strong>
                 <span class="lb-date">${escHtml([fill(tl('number', '#{0}'), entry.log_number ?? '–'), formatDiveDate(entry.dive_date, currentLang())].filter(Boolean).join(', '))}</span>
                 ${stats.length ? `<span class="lb-tile-stats">${stats.map(t => `<span>${escHtml(t)}</span>`).join('')}</span>` : ''}
             </div>${close}`;
@@ -866,7 +928,7 @@ export class LogbookApp {
             const pick = this.selecting ? `<td>${this._pick(e)}</td>` : '';
             const link = (h, text) => (this.selecting ? escHtml(text) : `<a href="${h}">${escHtml(text)}</a>`);
             return `<tr ${this.selecting ? `data-pick="${escHtml(e.id)}" class="lb-selectable${this.selected.has(e.id) ? ' lb-selected' : ''}"` : `data-href="${href}"`}>${pick}
-                <td class="lb-num">${link(href, String(e.log_number ?? dash))}</td>
+                <td class="lb-num">${this._lock(e)}${link(href, String(e.log_number ?? dash))}</td>
                 <td>${link(href, formatDiveDate(e.dive_date, lang) || dash)}</td>
                 <td${site ? '' : ' class="lb-muted"'}>${escHtml(site || tl('siteNotSet', 'Site not set'))}</td>
                 <td class="lb-num">${escHtml(m(e.max_depth_m))}</td>

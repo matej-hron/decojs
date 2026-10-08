@@ -2921,6 +2921,44 @@
                 "empty": "Aún no hay inmersiones de los miembros.",
                 "moreFailed": "No se pudieron cargar más inmersiones. Inténtalo de nuevo."
             },
+            "form": {
+                "whoCanSee": "Quién puede ver esta inmersión",
+                "visibility": {
+                    "private": "Privada",
+                    "members": "Miembros",
+                    "link": "Enlace público (próximamente)"
+                },
+                "visibilityHelp": {
+                    "private": "Solo tú.",
+                    "members": "Todas las personas invitadas a DecoTrail. Tus notas siguen siendo privadas.",
+                    "link": "Se mantiene así: la página pública aún no existe."
+                },
+                "shareLocation": "Mostrar la ubicación exacta a los miembros"
+            },
+            "profile": {
+                "title": "Tu perfil",
+                "previewNote": "Así te ven los demás miembros.",
+                "avatar": "Avatar",
+                "upload": "Subir foto",
+                "remove": "Quitar foto",
+                "uploading": "Subiendo foto…",
+                "uploaded": "Foto subida ✓",
+                "removed": "Foto quitada ✓",
+                "replaceNote": "Al guardar, este avatar sustituye a tu foto.",
+                "unreadable": "No se pudo leer esta imagen. Elige una foto JPEG, PNG o WebP.",
+                "name": "Nombre visible",
+                "nameHelp": "Aparece junto a tus inmersiones. Si lo dejas vacío, aparecerás como «Buceador».",
+                "defaultVisibility": "Quién ve tus nuevas inmersiones",
+                "defaultVisibilityHelp": "Puedes cambiarlo en cada inmersión.",
+                "country": "País de origen",
+                "save": "Guardar",
+                "saving": "Guardando…",
+                "saved": "Guardado ✓",
+                "account": "Cuenta",
+                "signedInAs": "Sesión iniciada como {0}",
+                "emailPrivate": "Tu correo nunca se muestra a otros miembros.",
+                "signOut": "Cerrar sesión"
+            },
             "disclaimer": "Solo con fines educativos — no sustituye a tu ordenador de buceo.",
             "footer": "DecoTrail — inmersiones explicadas por"
         },

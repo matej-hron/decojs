@@ -11,6 +11,7 @@ import { openSitePicker } from './SitePicker.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { OFFERED_VISIBILITIES } from './community.js';
 import { gasName } from '../import/recordedDive.js';
 import {
     MIX_PRESETS, CYLINDER_GROUPS, CYLINDER_PRESETS, MATERIALS, cylinderPreset, cylinderText,
@@ -42,6 +43,12 @@ const DETAIL_INPUT = Object.freeze({
 const tf = key => translate(`diveLog.logbook.form.${key}`, key);
 const tl = (key, fallback = key) => translate(`diveLog.logbook.${key}`, fallback);
 const tb = key => translate(`diveLog.backend.${key}`, key);
+const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
+const VISIBILITY_TEXT = Object.freeze({
+    private: ['Private', 'Only you.'],
+    members: ['Members', 'Everyone invited to DecoTrail. Your notes stay private.'],
+    link: ['Public link (coming soon)', 'Kept as it is: the public page does not exist yet.'],
+});
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 /** A field label without its unit, for messages ("Start (bar)" → "Start"). */
 const labelOf = key => tf(key).replace(/\u00a0\(.*\)$/, '');
@@ -119,10 +126,12 @@ export class EntryForm {
      * @param {Object} [options.entry] - existing log_entries row to edit
      * @param {Object} [options.prefill] - fields for a new entry (from a recording or a date)
      * @param {string} [options.recordingId] - recording to link to a new entry
+     * @param {boolean} [options.community] - the community backend exists: offer "Who can see this dive"
+     * @param {string|null} [options.defaultVisibility] - the profile default for a new entry (else members)
      * @param {(entry: Object) => void} options.onSaved
      * @param {() => void} options.onCancel
      */
-    constructor(container, { store, entry = null, prefill = {}, recordingId = null, onSaved, onCancel }) {
+    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, onSaved, onCancel }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -141,6 +150,11 @@ export class EntryForm {
         this.comma = decimalSeparator(currentLang()) === ',';
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
         this.gasTouched = false; // true once the user edits the gas block
+        // Without the community backend nothing is shown and nothing is sent.
+        this.sharing = community ? {
+            visibility: entry?.visibility ?? (OFFERED_VISIBILITIES.includes(defaultVisibility) ? defaultVisibility : 'members'),
+            share_location: entry?.share_location === true,
+        } : null;
         this.render();
         this._loadSuggestions();
         if (entry?.recording_id && !Array.isArray(entry.details?.gases)) this._prefillGasesFromRecording();
@@ -271,6 +285,7 @@ export class EntryForm {
                         ${this._input('vis_deep_m', 'visDeep', v.vis_deep_m, { mode: 'decimal' })}
                     </div>
                     <label class="lb-field"><span>${escHtml(tf('notes'))}</span><textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
+                    ${this._sharingHtml()}
                 </section>
                 <details class="lb-more"${this._detailsOpen() ? ' open' : ''}>
                     <summary>${escHtml(tf('more'))}</summary>
@@ -360,6 +375,27 @@ export class EntryForm {
         this.container.querySelector('[name="buddy"]').value = '';
         this.render();
         this.container.querySelector('[name="buddy"]')?.focus();
+    }
+
+    // ---- Who can see this dive ----
+
+    /** Private / Members radios and the exact-location checkbox; an existing `link` value is shown so it is not silently changed. */
+    _sharingHtml() {
+        if (!this.sharing) return '';
+        const { visibility, share_location: shareLocation } = this.sharing;
+        const values = visibility === 'link' ? [...OFFERED_VISIBILITIES, 'link'] : OFFERED_VISIBILITIES;
+        const radio = value => {
+            const [label, help] = VISIBILITY_TEXT[value];
+            return `<label class="lb-vis-option"><input type="radio" name="visibility" value="${value}"${value === visibility ? ' checked' : ''}>
+                <span class="lb-vis-text"><span class="lb-vis-label">${escHtml(tt(`form.visibility.${value}`, label))}</span>
+                <span class="lb-vis-help">${escHtml(tt(`form.visibilityHelp.${value}`, help))}</span></span></label>`;
+        };
+        return `<fieldset class="lb-field lb-visibility">
+                        <legend>${escHtml(tt('form.whoCanSee', 'Who can see this dive'))}</legend>
+                        <div class="lb-vis-options">${values.map(radio).join('')}</div>
+                        <label class="lb-check lb-vis-location"><input type="checkbox" name="share_location"${shareLocation ? ' checked' : ''}>
+                            <span>${escHtml(tt('form.shareLocation', 'Show the exact location to members'))}</span></label>
+                    </fieldset>`;
     }
 
     // ---- Gases ----
@@ -566,6 +602,10 @@ export class EntryForm {
             const el = c.querySelector(`[name="d.${key}"]`);
             if (el) d[key] = el.value;
         }
+        if (this.sharing && c.querySelector('.lb-visibility')) {
+            this.sharing.visibility = c.querySelector('[name="visibility"]:checked')?.value ?? this.sharing.visibility;
+            this.sharing.share_location = c.querySelector('[name="share_location"]').checked;
+        }
         const other = get('d.tagsOther').split(',').map(t => t.trim()).filter(Boolean);
         d.tags = [...[...c.querySelectorAll('[name="tag"]:checked')].map(i => i.value), ...other];
     }
@@ -675,7 +715,7 @@ export class EntryForm {
             this.siteId = siteId;
             const time = this.entry?.entry_time && String(this.entry.entry_time).slice(0, 5) === v.entry_time
                 ? this.entry.entry_time : v.entry_time;
-            const row = normalizeEntry({ ...v, entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
+            const row = normalizeEntry({ ...v, ...(this.sharing ?? {}), entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
             if (!this.entry && row.log_number === null) {
                 row.log_number = nextLogNumber(await this.store.listEntries());
                 this.container.querySelector('[name="log_number"]').value = String(row.log_number);

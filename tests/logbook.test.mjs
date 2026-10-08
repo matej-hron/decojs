@@ -14,7 +14,7 @@ import {
 } from '../js/logbook/entryModel.js';
 import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
-import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
+import { resizeTarget, isSupportedImage, exifTimestamp, squareCrop, AVATAR_EDGE } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl, gasCards } from '../js/logbook/EntryDetail.js';
 import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
 import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang, distanceMeters, duplicateNameCounts, nearbySameNameSite } from '../js/logbook/geo.js';
@@ -240,6 +240,27 @@ describe('form normalisation', () => {
         for (const v of Object.values(row)) assert.ok(!Number.isNaN(v));
     });
 
+    test('normalizeEntry passes visibility and share_location only when given and valid', () => {
+        const plain = normalizeEntry({ dive_date: '2026-10-01' });
+        assert.equal('visibility' in plain, false);
+        assert.equal('share_location' in plain, false);
+        const shared = normalizeEntry({ dive_date: '2026-10-01', visibility: 'private', share_location: true });
+        assert.equal(shared.visibility, 'private');
+        assert.equal(shared.share_location, true);
+        assert.equal(normalizeEntry({ visibility: 'link' }).visibility, 'link');
+        assert.equal(normalizeEntry({ share_location: false }).share_location, false);
+        const bad = normalizeEntry({ visibility: 'public', share_location: 'yes' });
+        assert.equal('visibility' in bad, false, 'an unknown visibility is dropped');
+        assert.equal('share_location' in bad, false, 'a non-boolean share_location is dropped');
+        assert.equal('visibility' in normalizeEntry({ visibility: 'constructor' }), false);
+    });
+
+    test('formValuesFromEntry ignores visibility and share_location', () => {
+        const v = formValuesFromEntry({ dive_date: '2026-10-01', visibility: 'private', share_location: true });
+        assert.equal('visibility' in v, false);
+        assert.equal('share_location' in v, false);
+    });
+
     test('normalizeEntry reads m:ss durations to exact seconds', () => {
         assert.equal(normalizeEntry({ duration_min: '51:49' }).duration_s, 3109);
         assert.equal(normalizeEntry({ duration_min: '' }).duration_s, null);
@@ -317,6 +338,14 @@ describe('photos', () => {
         assert.deepEqual(resizeTarget(8000, 6000), { width: 2560, height: 1920 });
         assert.deepEqual(resizeTarget(3000, 4000), { width: 1920, height: 2560 });
         assert.deepEqual(resizeTarget(1200, 800), { width: 1200, height: 800 });
+    });
+
+    test('squareCrop: the centred square of landscape, portrait and square images', () => {
+        assert.deepEqual(squareCrop(4000, 3000), { sx: 500, sy: 0, side: 3000 });
+        assert.deepEqual(squareCrop(3000, 4000), { sx: 0, sy: 500, side: 3000 });
+        assert.deepEqual(squareCrop(512, 512), { sx: 0, sy: 0, side: 512 });
+        assert.deepEqual(squareCrop(101, 50), { sx: 25, sy: 0, side: 50 }, 'odd margins round down');
+        assert.equal(AVATAR_EDGE, 256);
     });
 
     test('supported image types', () => {
@@ -1378,6 +1407,88 @@ describe('entry form validation and races (jsdom)', () => {
             new NewDive(root, { store, onChoose() {}, ready: failing });
             await tick();
             assert.deepEqual(order, ['dives']); // a failed ensure does not block the page
+        });
+    });
+});
+
+describe('entry form: who can see this dive (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html' });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'));
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = () => new Promise(r => setTimeout(r, 20));
+    const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', site_id: null, buddies: [], details: {} };
+    const fakeStore = saves => ({ listSites: async () => [], listBuddies: async () => [], listEntries: async () => [],
+        saveEntry: async (row, id) => { saves.push(row); return { id: id ?? 'new', ...row }; } });
+    const submit = root => root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+    const radios = root => [...root.querySelectorAll('input[name="visibility"]')].map(r => [r.value, r.checked]);
+
+    test('community off: no fieldset, nothing sent', async () => {
+        await withDom(async root => {
+            const saves = [];
+            new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'private', share_location: true }, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(root.querySelector('.lb-visibility'), null);
+            submit(root);
+            await tick();
+            assert.equal('visibility' in saves[0], false);
+            assert.equal('share_location' in saves[0], false);
+        });
+    });
+
+    test('community on, new dive: Private / Members, the default from the profile, location checkbox', async () => {
+        await withDom(async root => {
+            const saves = [];
+            new EntryForm(root, { store: fakeStore(saves), prefill: { dive_date: '2026-10-02' }, community: true, defaultVisibility: 'private', onSaved() {}, onCancel() {} });
+            await tick();
+            assert.ok(root.querySelector('fieldset.lb-visibility'));
+            assert.deepEqual(radios(root), [['private', true], ['members', false]]);
+            const loc = root.querySelector('input[name="share_location"]');
+            assert.equal(loc.checked, false);
+            root.querySelector('input[name="visibility"][value="members"]').checked = true;
+            loc.checked = true;
+            submit(root);
+            await tick();
+            assert.equal(saves[0].visibility, 'members');
+            assert.equal(saves[0].share_location, true);
+        });
+    });
+
+    test('community on without a default: Members', async () => {
+        await withDom(async root => {
+            new EntryForm(root, { store: fakeStore([]), prefill: {}, community: true, onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', false], ['members', true]]);
+        });
+    });
+
+    test('community on, edit: the entry wins; a link dive keeps "Public link" checked and survives a relabel', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const form = new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'private', share_location: true }, community: true, defaultVisibility: 'members', onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', true], ['members', false]]);
+            assert.equal(root.querySelector('input[name="share_location"]').checked, true);
+            form.destroy();
+            const link = new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'link' }, community: true, onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', false], ['members', false], ['link', true]]);
+            assert.equal(root.querySelector('input[value="link"]').disabled, false);
+            link.relabel();
+            assert.deepEqual(radios(root), [['private', false], ['members', false], ['link', true]]);
+            submit(root);
+            await tick();
+            assert.equal(saves[0].visibility, 'link');
+            assert.equal(saves[0].share_location, false);
         });
     });
 });
