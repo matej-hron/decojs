@@ -384,6 +384,7 @@ export class RecordedDiveAnalysis {
                     <button type="submit" class="btn btn-small btn-secondary">${label(this.linkSent ? 'sendAgain' : 'sendLink', this.linkSent ? 'Send again' : 'Send login link')}</button>
                 </form>
                 ${this.linkSent ? `<p class="rda-account-msg">${label('linkSent', 'Check your email for the login link.')}</p>` : ''}
+                <a class="rda-privacy" href="../privacy.html#logbook">${label('privacyLink', 'Privacy policy')}</a>
                 ${msg}`;
             el.querySelector('#rda-google').addEventListener('click', () => this._googleLogin());
             const input = el.querySelector('#rda-email');

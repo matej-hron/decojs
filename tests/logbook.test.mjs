@@ -22,6 +22,7 @@ import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore
 import { NewDive } from '../js/logbook/NewDive.js';
 import { sortSites, parseAltitude, diveCountText } from '../js/logbook/SitesPage.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
+import { DeleteDataPanel, isConfirmed, summaryLines } from '../js/logbook/DeleteData.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
 import { mapyStaticMapUrl } from '../js/logbook/geo.js';
@@ -2105,5 +2106,73 @@ describe('feed helpers', () => {
         assert.deepEqual(idx.get('a'), { path: 'a1', count: 2 });
         assert.deepEqual(idx.get('b'), { path: 'b1', count: 1 });
         assert.equal(idx.has('c'), false);
+    });
+});
+
+describe('DeleteDataPanel (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body></body>', { url: 'http://localhost/lab/dive-log.html' });
+        const saved = {};
+        for (const k of ['window', 'document']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try { return await fn(dom.window); } finally {
+            for (const [k, d] of Object.entries(saved)) { if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k]; }
+        }
+    }
+    const tick = (ms = 20) => new Promise(r => setTimeout(r, ms));
+
+    test('only the word DELETE confirms', () => {
+        assert.equal(isConfirmed('DELETE'), true);
+        assert.equal(isConfirmed(' delete '), true);
+        assert.equal(isConfirmed('del'), false);
+        assert.equal(isConfirmed(''), false);
+    });
+
+    test('summary lists only what was deleted', () => {
+        assert.equal(summaryLines({ entries: 3, recordings: 0, photos: 2, sites: 0 }).length, 2);
+    });
+
+    test('deletes after typing DELETE, then signs out and shows the contact', async () => {
+        await withDom(async win => {
+            const calls = [];
+            const store = {
+                deleteAllMyData: async ({ onProgress }) => { onProgress('entries'); calls.push('delete'); return { entries: 2, sites: 1, recordings: 2, photos: 0, media: 0, failed: [] }; },
+                signOut: async () => { calls.push('signOut'); },
+            };
+            const panel = new DeleteDataPanel({ store, onExport: async () => {} });
+            const go = win.document.querySelector('#lb-wipe-go');
+            assert.equal(go.disabled, true);
+            const input = win.document.querySelector('#lb-wipe-type');
+            input.value = 'DELETE';
+            input.dispatchEvent(new win.Event('input'));
+            assert.equal(win.document.querySelector('#lb-wipe-go').disabled, false);
+            win.document.querySelector('#lb-wipe-go').click();
+            await tick();
+            assert.deepEqual(calls, ['delete', 'signOut']);
+            assert.match(win.document.querySelector('.lb-wipe').textContent, /matej\.hron@gmail\.com/);
+            panel.close();
+            assert.equal(win.document.querySelector('.lb-wipe'), null);
+        });
+    });
+
+    test('a partial failure keeps the user logged in', async () => {
+        await withDom(async win => {
+            const calls = [];
+            const store = {
+                deleteAllMyData: async () => ({ entries: 1, sites: 0, recordings: 0, photos: 0, media: 0, failed: [{ step: 'sites', message: 'x' }] }),
+                signOut: async () => { calls.push('signOut'); },
+            };
+            new DeleteDataPanel({ store, onExport: async () => {} });
+            const input = win.document.querySelector('#lb-wipe-type');
+            input.value = 'DELETE';
+            input.dispatchEvent(new win.Event('input'));
+            win.document.querySelector('#lb-wipe-go').click();
+            await tick();
+            assert.deepEqual(calls, []);
+            assert.ok(win.document.querySelector('#lb-wipe-retry'));
+        });
     });
 });

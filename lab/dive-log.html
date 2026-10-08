@@ -54,6 +54,7 @@
         .rda-google { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; min-height: 44px; padding: 0 1.1rem; border: 1px solid #747775; border-radius: 4px; background: #fff; color: #1f1f1f; font: 500 0.95rem/1 Roboto, system-ui, sans-serif; cursor: pointer; }
         .rda-google:hover { background: #f8f9fa; box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3); }
         .rda-google:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+        .rda-privacy { flex-basis: 100%; font-size: 0.85rem; color: var(--text-subtle); }
         .rda-or { flex-basis: 100%; display: flex; align-items: center; gap: 0.75rem; margin: 0; color: var(--text-subtle); font-size: 0.85rem; }
         .rda-or::before, .rda-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
         @media (max-width: 600px) { .rda-google { width: 100%; } .rda-login { width: 100%; } .rda-login label { flex: 1 1 100%; } .rda-login input { flex: 1; min-height: 44px; } }
@@ -210,6 +211,16 @@
         .lb-confirm, .lb-video-form { display: grid; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border-color, var(--border)); border-radius: 8px; background: var(--surface-sunken); }
         .lb-confirm p { margin: 0; }
         .lb-actions .btn-danger, .lb-confirm .btn-danger { padding: 0.6rem 1.2rem; font-size: 1rem; }
+        .lb-wipe { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0, 0, 0, 0.6); overflow-y: auto; }
+        .lb-wipe-card { display: grid; gap: 0.75rem; width: min(30rem, 100%); max-height: 100%; overflow-y: auto; padding: 1rem; background: var(--surface-elevated); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); }
+        .lb-wipe-card h2 { margin: 0; font-size: 1.2rem; }
+        .lb-wipe-card p, .lb-wipe-sum { margin: 0; }
+        .lb-wipe-card a { color: var(--brand); }
+        :root[data-theme="dark"] .lb-wipe-card a { color: var(--blue-300); }
+        .lb-wipe-sum { padding-left: 1.25rem; }
+        .lb-wipe-card .lb-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .lb-wipe-card .btn { min-height: 44px; }
+        .lb-wipe-card .lb-field input[type="text"] { min-height: 44px; font-size: 1rem; }
         .lb-d-status { margin: 0; color: var(--text-subtle); }
         .lb-viewer { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.9); }
         .lb-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -508,6 +519,7 @@
     <footer>
         <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
         <p data-i18n="diveLog.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
+        <p><a href="../privacy.html#logbook" data-i18n="diveLog.backend.privacyLink">Privacy policy</a></p>
         <span class="version-number"></span>
     </footer>
     <script src="../js/nav.js" type="module"></script>

@@ -8,6 +8,7 @@
 import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiveAnalysis.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
+import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
 import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
@@ -102,6 +103,7 @@ export class LogbookApp {
 
     destroy() {
         this.destroyed = true;
+        this.wipe?.close();
         this._unsubscribe?.();
         this._leaveLogbook();
         this._unmountAnalysis();
@@ -351,6 +353,7 @@ export class LogbookApp {
                         <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                             <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
                         <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
+                        <button type="button" class="lb-menu-item" id="lb-wipe-open">${escHtml(tl('wipe.menu', 'Delete all my data…'))}</button>
                         <button type="button" class="lb-menu-item" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
                     </div>
                 </details>
@@ -787,6 +790,7 @@ export class LogbookApp {
         this.view.querySelector('#lb-upload').addEventListener('change', e => { this._closeMenu(); this._upload(e.target); });
         this.view.querySelector('#lb-upload-empty')?.addEventListener('change', e => this._upload(e.target));
         this.view.querySelector('#lb-export').addEventListener('click', () => { this._closeMenu(); this._export(); });
+        this.view.querySelector('#lb-wipe-open').addEventListener('click', () => { this._closeMenu(); this._openWipe(); });
         this.view.querySelector('#lb-logout').addEventListener('click', () => this._logout());
     }
 
@@ -884,6 +888,11 @@ export class LogbookApp {
                 r.failed.map(f => `${f.fileName} (${f.message})`).join('; ')));
         }
         return lines;
+    }
+
+    _openWipe() {
+        if (this.wipe) return;
+        this.wipe = new DeleteDataPanel({ store: this.store, onExport: () => this._export(), onClosed: () => { this.wipe = null; } });
     }
 
     async _export() {
