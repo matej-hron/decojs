@@ -83,6 +83,7 @@ const STATIC_ASSETS = [
   './js/components/RecordedDiveAnalysis.js',
   './js/import/divesoftDlf.js',
   './js/import/recordedDive.js',
+  './js/import/recordedGas.js',
   './js/import/thinProfile.js',
   './js/import/recordedDiveSummary.js',
   './js/import/diveChain.js',

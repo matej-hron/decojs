@@ -1597,7 +1597,7 @@ export const OTU_LIMITS = {
  * as deco stops.
  *
  * @param {Object} results           Output of calculateTissueLoading (needs timePoints, depthPoints, gasSwitches).
- * @param {Array}  gases             Dive-setup gases (each {id, name, cylinderVolume, startPressure}).
+ * @param {Array}  gases             Dive-setup gases (each {id, name, cylinderVolume, startPressure, sacRate?}); a finite sacRate > 0 overrides sacRate/decoSacRate for that gas.
  * @param {number} sacRate           L/min at surface, bottom/descent/ascent.
  * @param {number} [decoSacRate]     L/min for deco/safety stops (defaults to sacRate).
  * @param {number} [reservePressure] bar — carried through to the summary so callers share one threshold.
@@ -1667,12 +1667,14 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
                     avgDepth, surfacePressure, pressurePerMeter
                 );
                 const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
-                const sac = isDecoStop ? decoSacRate : sacRate;
+                const gas = gases.find(g => g.id === currentGasId);
+                const sac = Number.isFinite(gas?.sacRate) && gas.sacRate > 0
+                    ? gas.sacRate // a recorded dive's per-gas SAC, calibrated from the logbook
+                    : (isDecoStop ? decoSacRate : sacRate);
                 currentRate = sac * ambient;
                 const consumed = sac * ambient * deltaTime;
                 if (consumedByGasId[currentGasId] !== undefined) {
                     consumedByGasId[currentGasId] += consumed;
-                    const gas = gases.find(g => g.id === currentGasId);
                     if (gas && gas.cylinderVolume > 0) {
                         const drop = consumed / gas.cylinderVolume;
                         pressureByGasId[currentGasId] = Math.max(0, pressureByGasId[currentGasId] - drop);
