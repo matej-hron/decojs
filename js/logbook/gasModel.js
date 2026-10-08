@@ -236,5 +236,6 @@ export function cylinderText(row, { fmt, material }) {
     const vol = p ? p.volumeL : toNumber(row?.volumeL);
     if (vol === null) return '';
     const mat = p ? p.material : row?.material;
-    return mat ? `${fmt(vol)}${NBSP}l, ${material(mat)}` : `${fmt(vol)}${NBSP}l`;
+    // Lower case: the material follows the volume mid-phrase ("12 l, steel").
+    return mat ? `${fmt(vol)}${NBSP}l, ${String(material(mat)).toLocaleLowerCase()}` : `${fmt(vol)}${NBSP}l`;
 }

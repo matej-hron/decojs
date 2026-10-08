@@ -105,7 +105,7 @@
         .lb-gas-gauge { position: absolute; left: 0.5rem; top: 0.75rem; bottom: 0.75rem; width: 10px; box-sizing: border-box; overflow: hidden;
             border: 1px solid var(--border); border-radius: 5px; background: var(--surface-sunken); }
         .lb-gas-gauge::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: var(--fill, 100%); background: var(--gauge); }
-        .lb-gas-card--unknown .lb-gas-gauge::after { opacity: 0.3; }
+        .lb-gas-card--unknown .lb-gas-gauge::after { opacity: 0.4; }
         .lb-gas-head { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
         .lb-gas-head select { min-height: 40px; max-width: 60%; padding: 0.3rem 0.5rem; font: inherit; font-size: 0.9rem;
             color: var(--text-color); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
@@ -152,7 +152,7 @@
         .lb-d-gas { --gauge: var(--brand); position: relative; min-width: 0; padding: 0.6rem 0.75rem 0.6rem 1.6rem;
             border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
         .lb-d-gas--deco { --gauge: var(--amber-500); }
-        .lb-d-gas--unknown .lb-gas-gauge::after { opacity: 0.3; }
+        .lb-d-gas--unknown .lb-gas-gauge::after { opacity: 0.4; }
         .lb-d-gas .lb-gas-gauge { top: 0.6rem; bottom: 0.6rem; }
         .lb-d-gas p { margin: 0; }
         .lb-d-gas-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; }

@@ -175,7 +175,7 @@ describe('gas model', () => {
     });
 
     test('cylinderText names presets and custom cylinders', () => {
-        const opts = { fmt: (v, d) => String(v).replace('.', ','), material: m => ({ steel: 'ocel', aluminium: 'hliník' })[m] };
+        const opts = { fmt: (v, d) => String(v).replace('.', ','), material: m => ({ steel: 'Ocel', aluminium: 'Hliník' })[m] };
         assert.equal(cylinderText({ cylinder: 'al80', volumeL: 11.1 }, opts), 'AL80 (11,1 l)');
         assert.equal(cylinderText({ cylinder: 'd12', volumeL: 24 }, opts), '2×12 l');
         assert.equal(cylinderText({ cylinder: 's12', volumeL: 12 }, opts), '12 l, ocel');
