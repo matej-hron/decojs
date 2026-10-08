@@ -6,6 +6,7 @@
 
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
+import { createCommunityApi } from './communityStore.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording } from '../logbook/entryModel.js';
 
 export const BUCKET = 'dive-logs';
@@ -34,6 +35,8 @@ function fail(error, fallbackKind = 'unknown') {
         : /jwt|auth|session|401|403/i.test(message) ? 'auth' : fallbackKind;
     return new DiveStoreError(kind, message);
 }
+
+export { fail as storeFail };
 
 /** True for a Postgres unique violation on the named constraint (the name appears in message or details). */
 function isUnique(error, constraint) {
@@ -200,7 +203,12 @@ export function createSupabaseStore(client) {
             return data ?? null;
         },
 
-        async saveEntry(row, id) {
+        async saveEntry(input, id) {
+            let row = input;
+            if (!await store.communityStatus()) {
+                const { visibility, share_location, ...rest } = input; // eslint-disable-line no-unused-vars
+                row = rest;
+            }
             const q = id
                 ? client.from(ENTRIES).update({ ...row, updated_at: new Date().toISOString() }).eq('id', id)
                 : client.from(ENTRIES).insert(row);
@@ -367,6 +375,7 @@ export function createSupabaseStore(client) {
             };
             let next = linked.data.reduce((m, e) => Math.max(m, e.log_number ?? 0), 0) + 1;
             let created = 0;
+            const visibility = await store.defaultVisibility();
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;
@@ -383,6 +392,7 @@ export function createSupabaseStore(client) {
                 }
                 const insert = number => client.from(ENTRIES).insert({
                     ...fields, owner: user.id, recording_id: r.id, log_number: number,
+                    ...(visibility ? { visibility } : {}),
                 });
                 let { error } = await insert(next);
                 if (isUnique(error, NUMBER_KEY)) {
@@ -494,5 +504,6 @@ export function createSupabaseStore(client) {
             return urls;
         },
     };
+    Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
     return store;
 }

@@ -1,0 +1,278 @@
+/**
+ * DecoTrail community store tests.
+ * Run: node --test tests/community-store.test.mjs
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { createSupabaseStore } from '../js/backend/supabaseStore.js';
+import { nameFromMetadata } from '../js/backend/communityStore.js';
+
+const UNIQUE = {
+    log_entries: [
+        { name: 'log_entries_recording_id_key', cols: ['recording_id'], skipNull: true },
+        { name: 'log_entries_owner_log_number_key', cols: ['owner', 'log_number'] },
+    ],
+};
+
+function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tables = {}, failTables = [], rpcResults = {}, rpcErrors = {} } = {}) {
+    const db = { dives: [], log_entries: [], sites: [], media: [], profiles: [], ...tables };
+    const files = new Map();
+    const calls = [];
+    let seq = 0;
+
+    function violation(table, row, ignoreId) {
+        for (const u of UNIQUE[table] ?? []) {
+            if (u.skipNull && u.cols.some(c => row[c] == null)) continue;
+            const clash = db[table].find(r => r.id !== ignoreId && u.cols.every(c => r[c] === row[c]));
+            if (clash) {
+                return {
+                    code: '23505',
+                    message: `duplicate key value violates unique constraint "${u.name}"`,
+                    details: `Key (${u.cols.join(', ')})=(${u.cols.map(c => row[c]).join(', ')}) already exists.`,
+                };
+            }
+        }
+        return null;
+    }
+
+    function builder(table) {
+        if (failTables.includes(table)) {
+            calls.push(['select', table]);
+            const err = { data: null, error: { code: 'PGRST205', message: `Could not find the table 'public.${table}'` } };
+            const dead = { select() { calls.push(['select', table]); return dead; }, limit() { return dead; }, eq() { return dead; }, maybeSingle() { return dead; }, single() { return dead; }, then(r, j) { return Promise.resolve(err).then(r, j); } };
+            return dead;
+        }
+        const q = {
+            _mode: 'select', _filters: [], _order: [], _payload: null, _single: null,
+            select() { calls.push(['select', table]); return this; },
+            limit() { return this; },
+            order(col, opts = {}) { this._order.push([col, opts.ascending !== false]); calls.push(['order', table, col, opts.ascending !== false]); return this; },
+            eq(col, val) { this._filters.push(r => r[col] === val); return this; },
+            in(col, vals) { this._filters.push(r => vals.includes(r[col])); return this; },
+            range(from, to) { this._range = [from, to]; return this; },
+            single() { this._single = 'single'; return this; },
+            maybeSingle() { this._single = 'maybe'; return this; },
+            insert(payload) { this._mode = 'insert'; this._payload = payload; return this; },
+            update(patch) { this._mode = 'update'; this._payload = patch; return this; },
+            delete() { this._mode = 'delete'; return this; },
+            then(resolve, reject) { return this._run().then(resolve, reject); },
+            async _run() {
+                await null; // let concurrent callers interleave
+                const shape = rows => {
+                    if (!this._single) return { data: rows, error: null };
+                    if (rows.length === 1 || (this._single === 'maybe' && rows.length <= 1)) return { data: rows[0] ?? null, error: null };
+                    return { data: null, error: { code: this._single === 'single' ? 'PGRST116' : 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' } };
+                };
+                const match = () => db[table].filter(r => this._filters.every(f => f(r)));
+                if (this._mode === 'select') {
+                    let rows = match().map(r => ({ ...r }));
+                    for (const [col, asc] of this._order.slice().reverse()) {
+                        rows.sort((a, b) => (a[col] < b[col] ? -1 : a[col] > b[col] ? 1 : 0) * (asc ? 1 : -1));
+                    }
+                    if (this._range) rows = rows.slice(this._range[0], this._range[1] + 1);
+                    return shape(rows);
+                }
+                if (this._mode === 'insert') {
+                    const inserted = [];
+                    for (const p of [].concat(this._payload)) {
+                        const row = { id: `${table}-${++seq}`, owner: user.id, buddies: [], details: {}, ...p };
+                        const error = violation(table, row);
+                        if (error) { calls.push(['insert-failed', table, row, error.message]); return { data: null, error }; }
+                        db[table].push(row);
+                        calls.push(['insert', table, row]);
+                        inserted.push({ ...row });
+                    }
+                    return shape(inserted);
+                }
+                if (this._mode === 'update') {
+                    const rows = match();
+                    const patched = [];
+                    for (const r of rows) {
+                        const next = { ...r, ...this._payload };
+                        const error = violation(table, next, r.id);
+                        if (error) return { data: null, error };
+                        Object.assign(r, this._payload);
+                        patched.push({ ...r });
+                    }
+                    calls.push(['update', table, this._payload]);
+                    return shape(patched);
+                }
+                const gone = match();
+                db[table] = db[table].filter(r => !gone.includes(r));
+                if (table === 'log_entries') db.media = db.media.filter(m => !gone.some(g => g.id === m.entry_id));
+                calls.push(['delete', table, gone.map(g => g.id)]);
+                return { data: null, error: null };
+            },
+        };
+        return q;
+    }
+
+    return {
+        calls, files, db,
+        auth: {
+            async getUser() { return { data: { user }, error: null }; },
+            async getSession() { return { data: { session: user ? { user } : null }, error: null }; },
+        },
+        from: builder,
+        async rpc(name, args) {
+            calls.push(['rpc', name, args]);
+            return { data: name in rpcResults ? rpcResults[name] : [], error: rpcErrors[name] ?? null };
+        },
+        storage: {
+            from(bucket) {
+                return {
+                    async upload(path, body, opts) { calls.push(['upload', bucket, path, opts]); files.set(`${bucket}/${path}`, body); return { data: { path }, error: null }; },
+                    async remove(paths) { calls.push(['remove', bucket, paths]); paths.forEach(p => files.delete(`${bucket}/${p}`)); return { data: [], error: null }; },
+                    async createSignedUrls(paths, seconds) {
+                        calls.push(['sign', bucket, paths, seconds]);
+                        return { data: paths.map(path => ({ path, signedUrl: `https://signed.example/${bucket}/${path}?t=1`, error: null })), error: null };
+                    },
+                };
+            },
+        },
+    };
+}
+
+
+const wrap = opts => { const client = fakeCommunityClient(opts); return { client, calls: client.calls, db: client.db }; };
+const profileSelects = calls => calls.filter(c => c[0] === 'select' && c[1] === 'profiles').length;
+
+test('communityStatus is false when profiles is missing, and saves never send visibility', async () => {
+    const { client, calls } = wrap({ failTables: ['profiles'] });
+    const store = createSupabaseStore(client);
+    assert.equal(await store.communityStatus(), false);
+    await store.saveEntry({ log_number: 1, dive_date: '2026-10-01', visibility: 'private', share_location: true });
+    const ins = calls.find(c => c[0] === 'insert' && c[1] === 'log_entries');
+    assert.ok(!('visibility' in ins[2]) && !('share_location' in ins[2]));
+});
+
+test('communityStatus true when profiles exists, and visibility is sent', async () => {
+    const { client, calls } = wrap();
+    const store = createSupabaseStore(client);
+    await store.saveEntry({ log_number: 1, dive_date: '2026-10-01', visibility: 'private' });
+    const ins = calls.find(c => c[0] === 'insert' && c[1] === 'log_entries');
+    assert.equal(ins[2].visibility, 'private');
+});
+
+test('communityStatus is cached (one probe)', async () => {
+    const { client, calls } = wrap();
+    const store = createSupabaseStore(client);
+    assert.equal(await store.communityStatus(), true);
+    assert.equal(await store.communityStatus(), true);
+    assert.equal(profileSelects(calls), 1);
+});
+
+test('ensureProfile inserts a row named from Google metadata, never the email', async () => {
+    const { client, db } = wrap({ user: { id: 'u1', email: 'me@example.com', user_metadata: { full_name: '  Jana Nováková ' } } });
+    const store = createSupabaseStore(client);
+    const p = await store.ensureProfile();
+    assert.equal(p.display_name, 'Jana Nováková');
+    assert.equal(db.profiles.length, 1);
+    assert.ok(!JSON.stringify(db.profiles).includes('example.com'));
+    assert.equal(await store.ensureProfile().then(x => x.id), 'u1');
+    assert.equal(db.profiles.length, 1);
+});
+
+test('ensureProfile is null without community', async () => {
+    const store = createSupabaseStore(fakeCommunityClient({ failTables: ['profiles'] }));
+    assert.equal(await store.ensureProfile(), null);
+    assert.equal(await store.defaultVisibility(), null);
+});
+
+test('nameFromMetadata: no metadata -> null; cut at 60', () => {
+    assert.equal(nameFromMetadata({ email: 'a@b.c' }), null);
+    assert.equal(nameFromMetadata({ user_metadata: { name: 'x'.repeat(80) } }).length, 60);
+});
+
+test('ensureEntries uses the profile default visibility', async () => {
+    const record = {
+        schemaVersion: 1,
+        start: { local: '2026-09-27T12:01:01' },
+        dives: [],
+    };
+    const { client, calls, db } = wrap({
+        tables: {
+            profiles: [{ id: 'u1', display_name: 'A', default_visibility: 'private' }],
+            dives: [{ id: 'r1', owner: 'u1', dive_number: 1, start_local: '2026-09-27T12:01:01', record }],
+        },
+    });
+    const store = createSupabaseStore(client);
+    await store.ensureEntries().catch(() => {});
+    const ins = calls.filter(c => c[0] === 'insert' && c[1] === 'log_entries');
+    assert.ok(ins.length >= 1, 'expected an inserted entry');
+    assert.ok(ins.every(c => c[2].visibility === 'private'));
+    assert.equal(db.log_entries.length, ins.length);
+});
+
+test('listCommunityEntries / getCommunityEntry / listCommunityMedia call the RPCs with exact args', async () => {
+    const { client, calls } = wrap({ rpcResults: { community_entries: [{ id: 'e9' }] } });
+    const store = createSupabaseStore(client);
+    await store.listCommunityEntries();
+    await store.listCommunityEntries({ owner: 'u2', limit: 5, offset: 10 });
+    assert.deepEqual(await store.getCommunityEntry('e9'), { id: 'e9' });
+    await store.listCommunityMedia('e9');
+    await store.listMembers();
+    await store.getMember('u2');
+    const rpcs = calls.filter(c => c[0] === 'rpc').map(c => c.slice(1));
+    assert.deepEqual(rpcs, [
+        ['community_entries', { p_owner: null, p_id: null, p_limit: 30, p_offset: 0 }],
+        ['community_entries', { p_owner: 'u2', p_id: null, p_limit: 5, p_offset: 10 }],
+        ['community_entries', { p_owner: null, p_id: 'e9', p_limit: 1, p_offset: 0 }],
+        ['community_media', { p_entry_id: 'e9' }],
+        ['community_members', { p_id: null }],
+        ['community_members', { p_id: 'u2' }],
+    ]);
+});
+
+test('getCommunityEntry / getMember return null when nothing is visible', async () => {
+    const store = createSupabaseStore(fakeCommunityClient());
+    assert.equal(await store.getCommunityEntry('x'), null);
+    assert.equal(await store.getMember('x'), null);
+});
+
+test('community recordings map to summary rows; a null recording throws', async () => {
+    const { client } = wrap({ rpcResults: {
+        community_recordings: [{ id: 'r1', device_serial: 'S', dive_number: 3, start_local: '2026-01-01T10:00:00', summary: { a: 1 } }],
+        community_recording: null,
+    } });
+    const store = createSupabaseStore(client);
+    const [row] = await store.communityRecordings('u2');
+    assert.equal(row.deviceSerial, 'S');
+    assert.equal(row.diveNumber, 3);
+    await assert.rejects(store.loadCommunityRecording('r1'), /not available/);
+});
+
+test('saveProfile drops unknown keys and updates only the own row', async () => {
+    const { client, calls, db } = wrap({ tables: { profiles: [{ id: 'u1' }, { id: 'u2' }] } });
+    const store = createSupabaseStore(client);
+    await store.saveProfile({ display_name: 'A', id: 'u2', owner: 'x' });
+    const up = calls.find(c => c[0] === 'update' && c[1] === 'profiles');
+    const allowed = ['display_name', 'avatar_preset', 'avatar_path', 'default_visibility', 'home_country', 'updated_at'];
+    assert.ok(Object.keys(up[2]).every(k => allowed.includes(k)));
+    assert.equal(db.profiles.find(p => p.id === 'u1').display_name, 'A');
+    assert.equal(db.profiles.find(p => p.id === 'u2').display_name, undefined);
+});
+
+test('uploadAvatar stores in the own folder and removes the previous file', async () => {
+    const { client, calls } = wrap({ tables: { profiles: [{ id: 'u1', avatar_path: 'u1/avatar-old.jpg' }] } });
+    const store = createSupabaseStore(client);
+    const p = await store.uploadAvatar(new Uint8Array([1]));
+    const up = calls.find(c => c[0] === 'upload');
+    assert.equal(up[1], 'avatars');
+    assert.ok(up[2].startsWith('u1/avatar-'));
+    assert.equal(up[3].contentType, 'image/jpeg');
+    assert.equal(p.avatar_path, up[2]);
+    assert.deepEqual(calls.find(c => c[0] === 'remove')[2], ['u1/avatar-old.jpg']);
+    await store.removeAvatar();
+    assert.deepEqual(calls.filter(c => c[0] === 'remove').pop()[2], [up[2]]);
+});
+
+test('avatarUrls signs once per path within the cache window', async () => {
+    const { client, calls } = wrap();
+    const store = createSupabaseStore(client);
+    const a = await store.avatarUrls(['u1/a.jpg', 'u2/b.jpg']);
+    assert.equal(a.size, 2);
+    await store.avatarUrls(['u1/a.jpg']);
+    assert.equal(calls.filter(c => c[0] === 'sign').length, 1);
+    assert.equal(calls.find(c => c[0] === 'sign')[3], 3600);
+});
