@@ -40,7 +40,7 @@
 **Interfaces — Produces:**
 - `NARROW_CHART_MAX_WIDTH = 600`, `NARROW_BUTTON_GUTTER_PX = 40`
 - `isNarrowChartWidth(width: number): boolean`
-- `applyNarrowOverrides(options: object, narrow: boolean, saved: Map): void`
+- `applyNarrowOverrides(options: object, narrow: boolean, saved: Map): void` — `saved` holds originals and created containers, keyed by JSON path
 - `narrowChartPlugin` — Chart.js inline plugin `{ id: 'narrowLayout', beforeUpdate(chart) }`
 - `syncNarrowClass(host: HTMLElement): boolean` — toggles `chart-narrow`, returns the state
 - `rankingPlacement(chartWidth: number): 'overlay' | 'below' | 'hidden'`
@@ -139,7 +139,7 @@ test('missing sections are created on narrow and removed on restore', () => {
     assert.equal(o.layout.padding.top, 40);
     assert.equal(o.plugins.legend.labels.font.size, 11);
     applyNarrowOverrides(o, false, saved);
-    assert.deepEqual(o, { layout: {}, plugins: { legend: { labels: { font: {} } } } }); // only leaves are deleted
+    assert.deepEqual(o, {}, 'containers created on narrow are pruned again');
 });
 
 test('scriptable (function) fonts are left alone', () => {
@@ -245,11 +245,19 @@ function narrowOverrides(options) {
     return list;
 }
 
-/** Walk to the parent of `path`, creating plain objects; null if a non-plain value is in the way. */
-function parentOf(root, path) {
+/**
+ * Walk to the parent of `path`; null if a non-plain value is in the way.
+ * With `saved`, missing containers are created and recorded (`created: true`) so a restore can prune them.
+ */
+function parentOf(root, path, saved = null) {
     let node = root;
-    for (const key of path.slice(0, -1)) {
-        if (node[key] === undefined) node[key] = {};
+    for (let i = 0; i < path.length - 1; i++) {
+        const key = path[i];
+        if (node[key] === undefined) {
+            if (!saved) return null;
+            node[key] = {};
+            saved.set(JSON.stringify(path.slice(0, i + 1)), { had: false, value: undefined, created: true });
+        }
         if (!isPlainObject(node[key]) && !Array.isArray(node[key])) return null;
         node = node[key];
     }
@@ -264,20 +272,21 @@ function parentOf(root, path) {
  */
 export function applyNarrowOverrides(options, narrow, saved) {
     if (!narrow) {
-        for (const [key, { had, value }] of saved) {
+        // newest first: leaves before the containers created for them
+        for (const [key, { had, value, created }] of [...saved].reverse()) {
             const path = JSON.parse(key);
             const parent = parentOf(options, path);
             if (!parent) continue;
             const last = path.at(-1);
             if (had) parent[last] = value;
-            else delete parent[last];
+            else if (!created || Object.keys(parent[last] ?? {}).length === 0) delete parent[last];
         }
         saved.clear();
         return;
     }
     for (const [path, override] of narrowOverrides(options)) {
         const key = JSON.stringify(path);
-        const parent = parentOf(options, path);
+        const parent = parentOf(options, path, saved);
         if (!parent) continue;
         const last = path.at(-1);
         if (!saved.has(key)) saved.set(key, { had: Object.hasOwn(parent, last), value: parent[last] });
@@ -311,7 +320,7 @@ export function syncNarrowClass(host) {
 }
 ```
 
-Restoring deletes only the leaf keys it added; the empty parent objects created on narrow remain, which Chart.js treats as "use defaults".
+Restoring removes every leaf and container the narrow pass added, so the options deep-equal the desktop original.
 
 - [ ] **Step 4: Run** `node --test tests/chart-narrow-layout.test.mjs`. Expected: all pass. Add the file to `package.json`'s `node --test` list, add it to `sw.js` STATIC_ASSETS, then run `npm test` (all green).
 
