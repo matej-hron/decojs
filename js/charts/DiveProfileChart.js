@@ -364,6 +364,11 @@ export class DiveProfileChart {
      */
     _toggleFullscreen() {
         const isFullscreen = this.chartContainer.classList.toggle('dpc-fullscreen');
+        // The touch readout lives outside the chart container; take it along into the overlay.
+        if (this.touchReadout) {
+            if (isFullscreen) this.chartContainer.prepend(this.touchReadout.el);
+            else this.chartContainer.before(this.touchReadout.el);
+        }
         
         if (isFullscreen) {
             document.body.style.overflow = 'hidden';
@@ -1475,7 +1480,8 @@ export class DiveProfileChart {
                 responsive: true,
                 maintainAspectRatio: false,
                 // Touch: no hover highlight (it would stick where the finger lifted); legend taps still work.
-                ...(readoutOn ? { events: ['click'], hover: { mode: 'nearest', intersect: true } } : {}),
+                // Chart.js finds no elements for an unregistered interaction mode, so nothing becomes active.
+                ...(readoutOn ? { events: ['click'], hover: { mode: 'touchReadoutNone' } } : {}),
                 animation: {
                     duration: this.isFirstRender ? this.options.animationDuration : 0
                 },

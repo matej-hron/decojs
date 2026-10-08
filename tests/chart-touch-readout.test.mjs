@@ -74,7 +74,7 @@ test('pressure, partial pressure, tissue and gas views', () => {
     assert.equal(readoutText(profileReadoutLines('pp', snap, en)).split('\n')[1],
         `pO₂ 0.90${NB}bar · pN₂ 1.92${NB}bar`);
     assert.equal(readoutText(profileReadoutLines('tissue', snap, en)).split('\n')[1],
-        `pamb 2.82${NB}bar · TC1 2.31${NB}bar · TC2 2.05${NB}bar · TC5 1.90${NB}bar · +1`);
+        `pamb 2.82${NB}bar · TC1 2.31${NB}bar · TC2 2.05${NB}bar · +2`);
     assert.equal(readoutText(profileReadoutLines('gas', snap, en)).split('\n')[1],
         `use 18.4${NB}L/min · EAN32 152${NB}bar · O₂ 180${NB}bar`);
 });

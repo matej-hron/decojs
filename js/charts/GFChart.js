@@ -1404,7 +1404,8 @@ export class GFChart {
                 responsive: true,
                 maintainAspectRatio: false,
                 // Touch: no hover highlight (it would stick where the finger lifted); legend taps still work.
-                ...(readoutOn ? { events: ['click'], hover: { mode: 'nearest', intersect: true } } : {}),
+                // Chart.js finds no elements for an unregistered interaction mode, so nothing becomes active.
+                ...(readoutOn ? { events: ['click'], hover: { mode: 'touchReadoutNone' } } : {}),
                 layout: {
                     padding: {
                         right: 170

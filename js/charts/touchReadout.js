@@ -8,7 +8,7 @@
  *
  * While active:
  *  - the chart's tooltip is off and the strip shows the values at the touched time / point,
- *  - the canvas has `touch-action: pan-y` (css/styles.css, `.chart-readout-on`): vertical swipes scroll the page (the browser cancels
+ *  - the canvas has `touch-action: pan-y pinch-zoom` (css/styles.css, `.chart-readout-on`): vertical swipes scroll the page (the browser cancels
  *    the pointer and the readout reverts), taps and horizontal drags move the readout,
  *  - tapping the same spot again, tapping outside the chart or the ✕ button clears it.
  * The touched spot is kept in data coordinates and re-resolved on every draw, so it survives the
@@ -29,7 +29,7 @@ const DRAG_PX = 6;
 /** P-P / GF: a point farther than this (CSS px) from the finger is not read. */
 const POINT_REACH_PX = 40;
 /** Tissues view lists at most this many compartments, then "+n". */
-const MAX_TISSUES = 3;
+const MAX_TISSUES = 2;
 const NB = ' ';
 
 /** True when the primary pointer is coarse (a finger). False outside a browser. */
@@ -249,8 +249,8 @@ export class TouchReadout {
 
         this._onDown = e => this._pointerDown(e);
         this._onMove = e => this._pointerMove(e);
-        this._onUp = () => this._pointerUp();
-        this._onCancel = () => this._pointerCancel();
+        this._onUp = e => this._pointerUp(e);
+        this._onCancel = e => this._pointerCancel(e);
         this._onDocDown = e => {
             if (this.anchor && !this.host.contains(e.target)) this.clear();
         };
@@ -302,14 +302,15 @@ export class TouchReadout {
     }
 
     _pointerDown(e) {
-        if (!this.active || (e.button ?? 0) !== 0) return;
+        // One finger drives the readout; a second finger (pinch) is ignored.
+        if (!this.active || (e.button ?? 0) !== 0 || e.isPrimary === false || this.gesture) return;
         const hit = this._anchorAt(e, false);
         if (!hit) return;
         const m = this.marker;
         const near = this.anchor && m && (this.mode === 'time'
             ? Math.abs(hit.px - m.x) <= TAP_AGAIN_PX
             : Math.hypot(hit.px - m.x, hit.py - (m.y ?? hit.py)) <= TAP_AGAIN_PX);
-        this.gesture = { prev: this.anchor, startX: hit.px, moved: false, tapAgain: Boolean(near) };
+        this.gesture = { id: e.pointerId, prev: this.anchor, startX: hit.px, moved: false, tapAgain: Boolean(near) };
         if (!near) {
             this.anchor = hit.anchor;
             this._redraw();
@@ -317,7 +318,7 @@ export class TouchReadout {
     }
 
     _pointerMove(e) {
-        if (!this.gesture) return;
+        if (this.gesture?.id !== e.pointerId) return;
         const hit = this._anchorAt(e, true);
         if (!hit) return;
         if (!this.gesture.moved && Math.abs(hit.px - this.gesture.startX) < DRAG_PX) return;
@@ -326,17 +327,18 @@ export class TouchReadout {
         this._redraw();
     }
 
-    _pointerUp() {
+    _pointerUp(e) {
+        if (this.gesture?.id !== e.pointerId) return;
         const g = this.gesture;
         this.gesture = null;
         if (g?.tapAgain && !g.moved) this.clear();
     }
 
     /** The browser took the gesture over (vertical scroll): undo what it changed. */
-    _pointerCancel() {
+    _pointerCancel(e) {
         const g = this.gesture;
+        if (g?.id !== e.pointerId) return;
         this.gesture = null;
-        if (!g) return;
         this.anchor = g.prev;
         this._redraw();
     }

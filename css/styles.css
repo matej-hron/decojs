@@ -1721,10 +1721,10 @@ section h2 {
     min-height: 0;
 }
 
-/* Vertical swipes scroll the page; taps and horizontal drags move the readout.
+/* Vertical swipes scroll (and pinch zooms) the page; taps and horizontal drags move the readout.
    !important: hammer.js (zoom plugin) writes touch-action inline on every chart rebuild. */
 .chart-readout-on canvas {
-    touch-action: pan-y !important;
+    touch-action: pan-y pinch-zoom !important;
 }
 
 .chart-readout {
@@ -1755,8 +1755,24 @@ section h2 {
     min-width: 0;
 }
 
+.chart-readout-line {
+    overflow: hidden;
+    white-space: nowrap; /* exactly two lines: a third would resize the plot mid-drag */
+    text-overflow: ellipsis;
+}
+
 .chart-readout-line:first-child {
     font-weight: 600;
+}
+
+/* Fullscreen profile: the strip moves into the overlay, over the time-axis title */
+.dpc-fullscreen > .chart-readout {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1001;
+    margin: 0;
 }
 
 .chart-readout-seg {
@@ -2423,7 +2439,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.212";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.213";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
