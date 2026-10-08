@@ -514,7 +514,7 @@ export class RecordedDiveAnalysis {
             const btn = e.target.closest('button[data-view]');
             if (!btn || btn.dataset.view === this.view) return;
             this.view = btn.dataset.view;
-            this._renderViews();
+            this._syncViewButtons();
             this._renderAnalysis();
         });
         this._renderViews();
@@ -630,6 +630,13 @@ export class RecordedDiveAnalysis {
         this.el.views.setAttribute('aria-label', t('view.label', 'Chart view'));
         this.el.views.innerHTML = CHART_VIEWS.map(v =>
             `<button type="button" class="rda-seg" data-view="${v.id}" aria-pressed="${v.id === this.view}">${escHtml(t(v.key, v.fallback))}</button>`).join('');
+    }
+
+    /** Mark the active view on the existing buttons (keeps keyboard focus on the clicked one). */
+    _syncViewButtons() {
+        for (const btn of this.el.views.querySelectorAll('button[data-view]')) {
+            btn.setAttribute('aria-pressed', String(btn.dataset.view === this.view));
+        }
     }
 
     _renderList() {

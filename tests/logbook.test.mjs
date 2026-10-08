@@ -1036,7 +1036,12 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             assert.equal(calls.at(-1).options.showCeiling, true);
             assert.equal(root.querySelector('#rda-gas-note').hidden, true);
 
+            buttons[4].focus();
             buttons[4].click();
+            assert.equal(root.querySelector('[data-view="gas"]'), buttons[4], 'the clicked button is not rebuilt');
+            assert.equal(root.ownerDocument.activeElement, buttons[4], 'focus stays on the clicked button');
+            assert.equal(buttons[4].getAttribute('aria-pressed'), 'true');
+            assert.equal(buttons[0].getAttribute('aria-pressed'), 'false');
             assert.equal(root.querySelector('[data-view="gas"]').getAttribute('aria-pressed'), 'true');
             assert.equal(root.querySelector('[data-view="profile"]').getAttribute('aria-pressed'), 'false');
             let last = calls.at(-1);
