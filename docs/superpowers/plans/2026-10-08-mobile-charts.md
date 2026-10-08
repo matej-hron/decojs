@@ -333,12 +333,12 @@ Restoring removes every leaf and container the narrow pass added, so the options
 **Files:** `js/charts/DiveProfileChart.js`, `js/charts/MValueChart.js`, `js/charts/GFChart.js`, `js/charts/interactionLock.js`
 
 **Interfaces — Consumes:** `narrowChartPlugin`, `syncNarrowClass`, `rankingPlacement`, `isNarrowChartWidth` from Task 1.
-**Produces (CSS hooks for Task 3):** host classes `dpc-host` / `mvc-host` / `gfc-host` + `chart-narrow`; `chart-controls`, `chart-quick-btns`, `chart-chip` (with inline `--chip-color`), `chart-chip-dot`, `chart-hint`, `chart-timeline`, `chart-timeline-btn`, `chart-timeline-slider`, `chart-timeline-time`, `chart-overlay-btn`, `chart-mini-profile`; GF `gfc-ranking-panel gfc-ranking-below` with `<p class="gfc-ranking-title">` + `<ol class="gfc-ranking-list">`.
+**Produces (CSS hooks for Task 3):** host classes `dpc-host` / `mvc-host` / `gfc-host` + `chart-narrow`; `chart-compartments`, `chart-quick-btns`, `chart-chip` (with inline `--chip-color`), `chart-chip-dot`, `chart-hint`, `chart-timeline`, `chart-timeline-btn`, `chart-timeline-slider`, `chart-timeline-time`, `chart-overlay-btn`, `chart-mini-profile`; GF `gfc-ranking-panel gfc-ranking-below` with `<p class="gfc-ranking-title">` + `<ol class="gfc-ranking-list">`.
 
 Change list. Inline styles stay exactly as they are; only classes and a CSS variable are added.
 
 - [ ] **Step 1 (all three charts):** at the top of `_buildDOM()`, add `this.container.classList.add('<prefix>-host');` and `syncNarrowClass(this.container);`. In the existing ResizeObserver callback, call `syncNarrowClass(this.container)` first (synchronously, before the debounce). Add `narrowChartPlugin` to every Chart.js config's `plugins: [...]` array (create the array where a config has none). Find each `new Chart(` in the three files and make sure every one is covered.
-- [ ] **Step 2 (MVC + GFC + DPC tissue controls):** add `chart-controls` to the compartment controls container (`mvc-controls`, `gfc-controls`, `dpc-tissue-controls`). Add `chart-quick-btns` to the quick-button group div, `chart-chip` to each compartment `<label>`, with `--chip-color: ${comp.color};` appended to its cssText. Add `chart-chip-dot` to the colour-dot span and `chart-hint` to the shortcut hint div.
+- [ ] **Step 2 (MVC + GFC + DPC tissue controls):** add `chart-compartments` to the compartment controls container (`mvc-controls`, `gfc-controls`, `dpc-tissue-controls`). Add `chart-quick-btns` to the quick-button group div, `chart-chip` to each compartment `<label>`, with `--chip-color: ${comp.color};` appended to its cssText. Add `chart-chip-dot` to the colour-dot span and `chart-hint` to the shortcut hint div.
 - [ ] **Step 3 (MVC + GFC timeline):** add `chart-timeline` to the timeline container, `chart-timeline-btn` in `_createButton`, `chart-timeline-slider` to `timeSlider` and `chart-timeline-time` to `timeDisplay`. Add `chart-mini-profile` to `miniProfileCanvas`.
 - [ ] **Step 4 (overlay buttons):** add the `chart-overlay-btn` class to the fullscreen and reset-zoom buttons in all three charts. In `interactionLock.js`, set `btn.className = 'chart-interaction-lock-btn chart-overlay-btn'`.
 - [ ] **Step 5 (GF ranking):** in `GFChart._renderCompartmentRanking`, replace the `chart.width < 800` gate with `rankingPlacement(chart.width)`. For `'hidden'` (or an empty ranking): `display: none`, return. For `'overlay'`: make sure the panel is a child of `this.chartContainer` (re-append if not), remove `gfc-ranking-below`, and keep the existing table rendering and positioning. For `'below'`: move the panel to just after `this.chartContainer` (`this.chartContainer.after(panel)` if its parent differs) and add `gfc-ranking-below`. Clear the inline `left/top/width/maxHeight`, set `display = 'block'`, and render:
@@ -405,7 +405,7 @@ panel.replaceChildren(heading, list);
 }
 
 /* Compartment chips: 8 per row, colour shown by border + tint, checkbox kept for a11y */
-.chart-narrow .chart-controls { gap: 4px !important; }
+.chart-narrow .chart-compartments { gap: 4px !important; }
 .chart-narrow .chart-quick-btns button { min-height: 34px; }
 .chart-narrow .chart-chip {
     position: relative;

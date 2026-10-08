@@ -57,7 +57,7 @@ Desktop must not change.
    ("Tissue ranking · ● TC1 92,1 % · ● TC3 80,4 % …") instead of being hidden.
    600–800 px: unchanged (hidden). ≥ 800 px: unchanged (overlay at right).
    *Why:* the brief asks for it below on narrow, and an overlay would cover the plot.
-9. **Shared classes added to existing DOM** (`chart-controls`, `chart-chip`, `chart-quick-btns`,
+9. **Shared classes added to existing DOM** (`chart-compartments`, `chart-chip`, `chart-quick-btns`,
    `chart-hint`, `chart-timeline`, `chart-timeline-btn`, `chart-timeline-slider`,
    `chart-timeline-time`, `chart-overlay-btn`). Narrow CSS targets these, and the existing
    inline styles stay exactly as they are. Narrow rules use `!important` only where they must
