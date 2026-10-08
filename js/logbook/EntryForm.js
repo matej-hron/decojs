@@ -8,6 +8,7 @@
 
 import { normalizeEntry, nextLogNumber, parseDecimal, parseDuration, formatDuration, hasUserDetails, DETAIL_KEYS } from './entryModel.js';
 import { openSitePicker } from './SitePicker.js';
+import { MediaSection } from './MediaSection.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -141,6 +142,8 @@ export class EntryForm {
         this.comma = decimalSeparator(currentLang()) === ',';
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
         this.gasTouched = false; // true once the user edits the gas block
+        // Photos need a saved entry: an existing one manages them here, a new one gets them right after the first save.
+        this.media = entry ? new MediaSection({ store, entryId: entry.id }) : null;
         this.render();
         this._loadSuggestions();
         if (entry?.recording_id && !Array.isArray(entry.details?.gases)) this._prefillGasesFromRecording();
@@ -148,6 +151,7 @@ export class EntryForm {
 
     destroy() {
         this.destroyed = true;
+        this.media?.destroy();
         this._pickAbort?.abort(); // Back navigation must not leave the picker overlay behind
         this.container.innerHTML = '';
     }
@@ -271,6 +275,10 @@ export class EntryForm {
                         ${this._input('vis_deep_m', 'visDeep', v.vis_deep_m, { mode: 'decimal' })}
                     </div>
                     <label class="lb-field"><span>${escHtml(tf('notes'))}</span><textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
+                    <div class="lb-field lb-media-field">
+                        <span>${escHtml(tf('photosTitle'))}</span>
+                        ${this.media ? '<div class="lb-media-host"></div>' : `<p class="lb-muted">${escHtml(tf('photosAfterSave'))}</p>`}
+                    </div>
                 </section>
                 <details class="lb-more"${this._detailsOpen() ? ' open' : ''}>
                     <summary>${escHtml(tf('more'))}</summary>
@@ -314,6 +322,7 @@ export class EntryForm {
             </div>
         </form>`;
         this._wire();
+        if (this.media) this.container.querySelector('.lb-media-host').appendChild(this.media.el);
         this._fillList('lb-sites', this.sites.map(s => s.name));
         this._fillList('lb-buddy-names', this.buddyNames);
         const numberInput = this.container.querySelector('[name="log_number"]');
