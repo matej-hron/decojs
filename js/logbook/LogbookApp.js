@@ -9,7 +9,7 @@ import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiv
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { parseRoute, routeHref } from './router.js';
-import { AppShell, shellTabs, activeTab, resolveRoute } from './AppShell.js';
+import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute } from './AppShell.js';
 import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
@@ -26,6 +26,9 @@ import { escHtml } from '../utils/escHtml.js';
 
 /** Community routes whose views arrive in later steps; until then they show My dives. */
 const PENDING_VIEWS = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
+/** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
+const PROBE_ATTEMPTS = 3;
+const PROBE_RETRY_MS = 5000;
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
@@ -69,7 +72,10 @@ export class LogbookApp {
         this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;
         this.community = false; // whether the community backend (migration 0004) is available
-        this._probing = false;
+        this._communityKnown = false; // false while the probe has not answered 'yes' or 'no'
+        this._probe = null; // the probe in flight
+        this._probeAttempts = 0;
+        this._probeTimer = null;
         this._session = 0;
         this.analysis = null; // the mounted RecordedDiveAnalysis (plain or embedded)
         this.entries = null;
@@ -90,7 +96,7 @@ export class LogbookApp {
         this.sparks = new Map(); // recording id -> SVG path ('' when none or failed)
         this._sparkQueue = [];
         this._sparkActive = 0;
-        this._onHash = () => this._renderRoute();
+        this._onHash = () => { this._probeCommunity(); this._renderRoute(); }; // a route change retries an 'unknown' probe
         this._onLanguage = () => this._onLanguageChange();
         this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
         this._onDocKey = e => {
@@ -132,26 +138,51 @@ export class LogbookApp {
 
     _renderShell() {
         if (!this.shell) return;
-        if (!this.user || this._probing) this.shell.render({ tabs: [] });
+        if (!this.user) this.shell.render({ tabs: [] });
         else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._shellRoute().name, this.community) });
     }
 
-    /** Ask the store once per login whether the community backend exists; render the route when known. */
+    /**
+     * Ask the store whether the community backend exists. Never blocks a view: until the answer the app
+     * behaves as without the feature. 'unknown' (a transient failure) is retried once after a few seconds
+     * and once on a later route change.
+     */
     _probeCommunity() {
+        if (this._communityKnown || this._probe || this._probeAttempts >= PROBE_ATTEMPTS) return;
+        const store = this.store;
+        const ask = typeof store.communityAvailability === 'function' ? () => store.communityAvailability()
+            : typeof store.communityStatus === 'function' ? async () => ((await store.communityStatus()) === true ? 'yes' : 'no')
+                : null;
+        if (!ask) {
+            this._communityKnown = true;
+            return;
+        }
+        this._probeAttempts++;
         const session = this._session;
-        this.community = false;
-        if (typeof this.store.communityStatus !== 'function') return;
-        this._probing = true;
-        Promise.resolve()
-            .then(() => this.store.communityStatus())
-            .catch(error => { console.error(error); return false; })
-            .then(on => {
-                if (this.destroyed || session !== this._session) return;
-                this.community = on === true;
-                this._probing = false;
-                if (this.community) Promise.resolve().then(() => this.store.ensureProfile?.()).catch(error => console.error(error));
-                this._renderRoute();
+        const probe = Promise.resolve()
+            .then(ask)
+            .catch(error => { console.error(error); return 'unknown'; })
+            .then(result => {
+                if (this.destroyed || session !== this._session || this._probe !== probe) return;
+                this._probe = null;
+                if (result === 'yes' || result === 'no') {
+                    this._communityKnown = true;
+                    this.community = result === 'yes';
+                    if (this.community) Promise.resolve().then(() => store.ensureProfile?.()).catch(error => console.error(error));
+                } else if (this._probeAttempts === 1) {
+                    this._probeTimer = setTimeout(() => { this._probeTimer = null; this._probeCommunity(); }, PROBE_RETRY_MS);
+                }
+                this._afterProbe();
             });
+        this._probe = probe;
+    }
+
+    /** The probe answered: the tabs may change, and so may home and community routes. */
+    _afterProbe() {
+        if (!this.user) return;
+        const name = parseRoute(location.hash).name;
+        if (isCommunityRoute(name) || (name === 'home' && this.community)) this._renderRoute();
+        else this._renderShell();
     }
 
     // ---- Switching between the plain page and the logbook ----
@@ -198,8 +229,8 @@ export class LogbookApp {
         this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
         document.body.classList.add('lb-in', 'tr-logged-in');
         this._session++;
-        this._probeCommunity();
         this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
+        this._probeCommunity();
         this._renderRoute();
     }
 
@@ -210,7 +241,11 @@ export class LogbookApp {
         document.removeEventListener('keydown', this._onDocKey);
         document.body.classList.remove('lb-in', 'tr-logged-in');
         this._session++;
-        this._probing = false;
+        clearTimeout(this._probeTimer);
+        this._probeTimer = null;
+        this._probe = null;
+        this._probeAttempts = 0;
+        this._communityKnown = false;
         this.community = false;
         this.shell?.render({ tabs: [] });
         this._viewToken++;
@@ -241,7 +276,9 @@ export class LogbookApp {
         this._unmountForm();
         const token = ++this._viewToken;
         this._renderShell();
-        if (this._probing) {
+        if (this._probe && !this._communityKnown && isCommunityRoute(parseRoute(location.hash).name)) {
+            // A community route asked for explicitly: wait for the probe instead of flashing My dives.
+            this.view.classList.remove('lb-list-view', 'lb-selecting');
             this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
             return;
         }

@@ -44,6 +44,11 @@ export function activeTab(routeName, communityOn = false) {
     return TAB_OF_ROUTE[routeName] ?? null;
 }
 
+/** Whether a route exists only with the community feature. */
+export function isCommunityRoute(name) {
+    return COMMUNITY_ROUTES.has(name);
+}
+
 /** The route to show: `home` picks Feed or My dives; community routes fall back to My dives when the feature is off. */
 export function resolveRoute(route, communityOn) {
     if (route.name === 'home') return { name: communityOn ? 'feed' : 'list' };

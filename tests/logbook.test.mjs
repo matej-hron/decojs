@@ -2167,6 +2167,46 @@ describe('DecoTrail shell (jsdom)', () => {
         });
     });
 
+    test('a probe that never answers does not hold the list back; an asked-for community route waits', async () => {
+        await withDom('', async (root, doc) => {
+            const app = new LogbookApp(root, { store: store({ communityStatus: () => new Promise(() => {}) }) });
+            await tick();
+            assert.ok(root.querySelector('.lb-list-view'), 'home renders My dives right away');
+            assert.ok(root.querySelector('.lb-bar'));
+            assert.deepEqual(tabs(doc), ['list', 'sites']);
+            location.hash = '#/community';
+            await tick();
+            assert.equal(root.querySelector('.lb-list-view'), null);
+            assert.match(root.textContent, /Loading/);
+            app.destroy();
+        });
+    });
+
+    test("communityAvailability: 'unknown' is retried on the next route change", async () => {
+        await withDom('', async (root, doc) => {
+            const answers = ['unknown', 'yes'];
+            let asked = 0;
+            const app = new LogbookApp(root, { store: store({
+                communityAvailability: async () => answers[asked++],
+                communityStatus: async () => { throw new Error('communityAvailability is preferred'); },
+                ensureProfile: async () => null,
+            }) });
+            await tick();
+            assert.equal(asked, 1);
+            assert.deepEqual(tabs(doc), ['list', 'sites']);
+            assert.ok(root.querySelector('.lb-list-view'));
+            location.hash = '#/sites';
+            await tick();
+            assert.equal(asked, 2);
+            assert.deepEqual(tabs(doc), ['feed', 'list', 'community', 'sites', 'profile']);
+            assert.equal(current(doc), 'sites');
+            location.hash = '#/dives';
+            await tick();
+            assert.equal(asked, 2, 'a known answer is not asked again');
+            app.destroy();
+        });
+    });
+
     test('without the feature (or the method): My dives and Sites, community routes show the list', async () => {
         for (const extra of [{ communityStatus: async () => false }, {}, { communityStatus: async () => { throw new Error('x'); } }]) {
             await withDom('#/community', async (root, doc) => {

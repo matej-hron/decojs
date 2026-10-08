@@ -572,6 +572,8 @@
             /* Selecting on phones: the select dock takes the bottom edge, the tab bar steps aside */
             body.tr-logged-in:has(.lb-selecting) { --tr-bottom-h: 0px; }
             body.tr-logged-in:has(.lb-selecting) .tr-bottom { display: none; }
+            /* The Sites tab is in the bottom bar: the list bar's own Sites button would repeat it */
+            body.tr-logged-in:has(.tr-bottom:not([hidden])) #lb-sites { display: none; }
         }
         @media (min-width: 721px) { .tr-bottom { display: none; } }
         @media (prefers-reduced-motion: reduce) { .tr-tab, .tr-tab::before, .tr-tab::after { transition: none; } }
@@ -591,7 +593,7 @@
     <nav class="tr-bottom" aria-label="DecoTrail" hidden></nav>
     <footer class="tr-foot">
         <p class="tr-foot-line"><span data-i18n="diveLog.trail.footer">DecoTrail — dives explained by</span> <a href="../index.html" data-i18n="diveLog.trail.decotheory">DecoTheory&nbsp;↗</a></p>
-        <p class="tr-foot-note" data-i18n="diveLog.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
+        <p class="tr-foot-note" data-i18n="diveLog.trail.disclaimer">For education only — not a substitute for your dive computer.</p>
         <span class="version-number"></span>
     </footer>
     <script type="module">

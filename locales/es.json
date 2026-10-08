@@ -2880,17 +2880,17 @@
             "pageTitle": "DecoTrail",
             "tab": {
                 "feed": "Novedades",
-                "list": "Mis inmersiones",
+                "list": "Inmersiones",
                 "community": "Comunidad",
                 "sites": "Sitios",
                 "profile": "Perfil"
             },
             "decotheory": "DecoTheory ↗",
             "inviteOnly": "DecoTrail es solo por invitación. Pídesela a quien te invitó o solicita una invitación.",
-            "notInvited": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "learnWhy": "Entiende por qué en DecoTheory ↗",
             "diver": "Buceador",
             "you": "Tú",
+            "disclaimer": "Solo con fines educativos — no sustituye a tu ordenador de buceo.",
             "footer": "DecoTrail — inmersiones explicadas por"
         },
         "logbook": {

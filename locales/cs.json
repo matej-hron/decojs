@@ -2923,10 +2923,10 @@
             },
             "decotheory": "DecoTheory ↗",
             "inviteOnly": "DecoTrail je jen pro zvané. Obraťte se na toho, kdo vás pozval, nebo požádejte o pozvánku.",
-            "notInvited": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
             "diver": "Potápěč",
             "you": "Vy",
+            "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
             "footer": "DecoTrail — ponory vysvětlené pomocí"
         },
         "logbook": {
