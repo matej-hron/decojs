@@ -742,7 +742,12 @@ export class LogbookApp {
         this._stopSparks();
         let body;
         if (!this.entries) body = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
-        else if (!this.entries.length) body = `<p class="rda-account-msg lb-empty">${escHtml(tl('emptyList', 'No dives yet.'))}</p>`;
+        else if (!this.entries.length) {
+            // Upload lives in the "⋯" menu; an empty logbook offers it right here.
+            body = `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>
+                <label class="btn btn-primary rda-upload lb-empty-upload"><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                    <input type="file" id="lb-upload-empty" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label></div>`;
+        }
         else {
             const list = this.viewMode === 'table' ? this._renderTable()
                 : this.viewMode === 'tiles' ? `<div class="lb-tiles">${this.entries.map(e => this._tile(e)).join('')}</div>`
@@ -768,6 +773,7 @@ export class LogbookApp {
         this.view.querySelectorAll('.lb-feed, .lb-tiles, .lb-table tbody').forEach(el => el.addEventListener('click', e => this._onPickClick(e)));
         if (this.viewMode !== 'table' && this.entries?.length) this._watchSparks();
         this.view.querySelector('#lb-upload').addEventListener('change', e => { this._closeMenu(); this._upload(e.target); });
+        this.view.querySelector('#lb-upload-empty')?.addEventListener('change', e => this._upload(e.target));
         this.view.querySelector('#lb-export').addEventListener('click', () => { this._closeMenu(); this._export(); });
         this.view.querySelector('#lb-logout').addEventListener('click', () => this._logout());
     }
