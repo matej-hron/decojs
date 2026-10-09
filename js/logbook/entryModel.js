@@ -5,6 +5,7 @@
 
 import { localeTag } from '../format.js';
 import { gasesFromRecording, primaryGas } from './gasModel.js';
+import { VISIBILITIES } from './community.js';
 
 /**
  * A `YYYY-MM-DD` dive date shown for the language (cs "27. 9. 2026"). Parsed as a calendar date and
@@ -163,13 +164,18 @@ function cleanDetails(details) {
 
 /**
  * Turn form values into a log_entries row.
- * @param {Object} form - raw form values (strings), `duration_min` as `m:ss` or minutes
+ * @param {Object} form - raw form values (strings), `duration_min` as `m:ss` or minutes;
+ *   optional `visibility` (one of VISIBILITIES) and `share_location` (boolean) pass through when valid
  * @param {Object} [previousDetails] - details stored before; unknown keys are kept
  */
 export function normalizeEntry(form, previousDetails = {}) {
     const seconds = parseDuration(form.duration_min);
     const buddies = [...new Set((form.buddies ?? []).map(b => String(b).trim()).filter(Boolean))];
     const number = parseDecimal(form.log_number);
+    // Who can see the dive: sent only when the form offers it (community available), never guessed.
+    const sharing = {};
+    if (typeof form.visibility === 'string' && VISIBILITIES.includes(form.visibility)) sharing.visibility = form.visibility;
+    if (typeof form.share_location === 'boolean') sharing.share_location = form.share_location;
     return {
         log_number: number === null ? null : Math.round(number),
         dive_date: emptyText(form.dive_date),
@@ -184,6 +190,7 @@ export function normalizeEntry(form, previousDetails = {}) {
         vis_deep_m: parseDecimal(form.vis_deep_m),
         notes: emptyText(form.notes),
         details: cleanDetails({ ...previousDetails, ...(form.details ?? {}) }),
+        ...sharing,
     };
 }
 

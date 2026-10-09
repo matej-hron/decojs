@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.214';
+const CACHE_NAME = 'deco-theory-0.6.216';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -108,6 +108,17 @@ const STATIC_ASSETS = [
   './js/logbook/photo.js',
   './js/logbook/transfer.js',
   './js/logbook/LogbookApp.js',
+  './js/logbook/AppShell.js',
+  './js/backend/communityStore.js',
+  './js/logbook/community.js',
+  './js/logbook/avatars.js',
+  './js/logbook/feedCard.js',
+  './js/logbook/sparks.js',
+  './js/logbook/CommunityFeed.js',
+  './js/logbook/MembersPage.js',
+  './js/logbook/MemberPage.js',
+  './js/logbook/ProfilePage.js',
+  './js/logbook/memberEntryStore.js',
   './js/ndlPreview.js',
   './js/gfLimits.js',
   './js/gfPresets.js',
@@ -150,6 +161,74 @@ const STATIC_ASSETS = [
   './manifest.json'
 ];
 
+// Network-first requests fall back to the cache after this long, so a flaky
+// connection still opens quickly while an online reload always gets fresh files.
+const NETWORK_TIMEOUT_MS = 3000;
+
+// Versioned third-party assets (KaTeX) are immutable, so they stay cache-first.
+const CACHEABLE_ORIGINS = ['https://cdn.jsdelivr.net'];
+
+// Decide how a request is served: 'bypass' (browser handles it), 'network-first'
+// (pages, scripts, styles, JSON: must be fresh after a release) or 'cache-first'
+// (images, fonts, other static media).
+function routeFor(request, selfOrigin) {
+  if (request.method !== 'GET') return 'bypass';
+  // Videos stream via range requests; let the browser fetch them directly
+  if (request.destination === 'video' || request.headers.has('range')) return 'bypass';
+
+  const url = new URL(request.url);
+  if (url.origin !== selfOrigin) {
+    // Supabase, Mapy, Nominatim etc. are never cached
+    return CACHEABLE_ORIGINS.includes(url.origin) ? 'cache-first' : 'bypass';
+  }
+
+  if (request.mode === 'navigate' || request.destination === 'document') return 'network-first';
+  if (/\.(?:html|js|mjs|css|json)$/i.test(url.pathname) || url.pathname.endsWith('/')) return 'network-first';
+  return 'cache-first';
+}
+
+function putInCache(request, response) {
+  if (!response || response.status !== 200) return;
+  const copy = response.clone();
+  caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
+}
+
+function networkFirst(request) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const fromCache = () => caches.match(request, { ignoreSearch: request.mode === 'navigate' });
+    const timer = setTimeout(() => {
+      fromCache().then((cached) => {
+        if (cached && !settled) { settled = true; resolve(cached); }
+      });
+    }, NETWORK_TIMEOUT_MS);
+
+    // 'no-cache' revalidates, so the HTTP cache (max-age=600) cannot serve stale files
+    fetch(request, { cache: 'no-cache' })
+      .then((response) => {
+        clearTimeout(timer);
+        putInCache(request, response);
+        if (!settled) { settled = true; resolve(response); }
+      })
+      .catch(() => {
+        clearTimeout(timer);
+        fromCache().then((cached) => {
+          if (!settled) { settled = true; resolve(cached || Response.error()); }
+        });
+      });
+  });
+}
+
+function cacheFirst(request) {
+  return caches.match(request).then((cached) => {
+    if (cached) return cached;
+    return fetch(request).then((response) => {
+      putInCache(request, response);
+      return response;
+    });
+  });
+}
+
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
@@ -157,7 +236,14 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('[SW] Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
+        // 'reload' skips the HTTP cache (GitHub Pages max-age=600), so a new
+        // release never fills its cache with stale files.
+        return Promise.all(STATIC_ASSETS.map((url) =>
+          fetch(new Request(url, { cache: 'reload' })).then((response) => {
+            if (!response.ok) throw new Error(`[SW] ${url} -> ${response.status}`);
+            return cache.put(url, response);
+          })
+        ));
       })
       .then(() => {
         // Activate immediately without waiting
@@ -188,48 +274,9 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - see routeFor() for the strategy per request
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
-
-  // Videos stream via range requests; let the browser fetch them directly
-  if (event.request.destination === 'video' || event.request.headers.has('range')) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          // Return cached version
-          return cachedResponse;
-        }
-
-        // Not in cache, fetch from network
-        return fetch(event.request)
-          .then((networkResponse) => {
-            // Don't cache non-successful responses
-            if (!networkResponse || networkResponse.status !== 200) {
-              return networkResponse;
-            }
-
-            // Clone the response before caching
-            const responseToCache = networkResponse.clone();
-            
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return networkResponse;
-          })
-          .catch(() => {
-            // Network failed, could return offline page here
-            console.log('[SW] Network request failed for:', event.request.url);
-          });
-      })
-  );
+  const route = routeFor(event.request, self.location.origin);
+  if (route === 'bypass') return;
+  event.respondWith(route === 'network-first' ? networkFirst(event.request) : cacheFirst(event.request));
 });

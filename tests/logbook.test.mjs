@@ -14,7 +14,7 @@ import {
 } from '../js/logbook/entryModel.js';
 import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
-import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
+import { resizeTarget, isSupportedImage, exifTimestamp, squareCrop, AVATAR_EDGE } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl, gasCards } from '../js/logbook/EntryDetail.js';
 import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
 import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang, distanceMeters, duplicateNameCounts, nearbySameNameSite } from '../js/logbook/geo.js';
@@ -241,6 +241,27 @@ describe('form normalisation', () => {
         for (const v of Object.values(row)) assert.ok(!Number.isNaN(v));
     });
 
+    test('normalizeEntry passes visibility and share_location only when given and valid', () => {
+        const plain = normalizeEntry({ dive_date: '2026-10-01' });
+        assert.equal('visibility' in plain, false);
+        assert.equal('share_location' in plain, false);
+        const shared = normalizeEntry({ dive_date: '2026-10-01', visibility: 'private', share_location: true });
+        assert.equal(shared.visibility, 'private');
+        assert.equal(shared.share_location, true);
+        assert.equal(normalizeEntry({ visibility: 'link' }).visibility, 'link');
+        assert.equal(normalizeEntry({ share_location: false }).share_location, false);
+        const bad = normalizeEntry({ visibility: 'public', share_location: 'yes' });
+        assert.equal('visibility' in bad, false, 'an unknown visibility is dropped');
+        assert.equal('share_location' in bad, false, 'a non-boolean share_location is dropped');
+        assert.equal('visibility' in normalizeEntry({ visibility: 'constructor' }), false);
+    });
+
+    test('formValuesFromEntry ignores visibility and share_location', () => {
+        const v = formValuesFromEntry({ dive_date: '2026-10-01', visibility: 'private', share_location: true });
+        assert.equal('visibility' in v, false);
+        assert.equal('share_location' in v, false);
+    });
+
     test('normalizeEntry reads m:ss durations to exact seconds', () => {
         assert.equal(normalizeEntry({ duration_min: '51:49' }).duration_s, 3109);
         assert.equal(normalizeEntry({ duration_min: '' }).duration_s, null);
@@ -293,8 +314,9 @@ describe('dates and same-day entries', () => {
 
 describe('router', () => {
     test('routes', () => {
-        assert.deepEqual(parseRoute(''), { name: 'list' });
-        assert.deepEqual(parseRoute('#/'), { name: 'list' });
+        assert.deepEqual(parseRoute(''), { name: 'home' });
+        assert.deepEqual(parseRoute('#/'), { name: 'home' });
+        assert.deepEqual(parseRoute('#/dives'), { name: 'list' });
         assert.deepEqual(parseRoute('#/new'), { name: 'new' });
         assert.deepEqual(parseRoute('#/dive/abc-1'), { name: 'detail', id: 'abc-1' });
         assert.deepEqual(parseRoute('#/dive/abc-1/edit'), { name: 'edit', id: 'abc-1' });
@@ -305,9 +327,10 @@ describe('router', () => {
         assert.equal(routeHref({ name: 'sites' }), '#/sites');
         assert.equal(routeHref({ name: 'site', id: 's-1' }), '#/site/s-1');
         assert.deepEqual(parseRoute('#/nonsense/x'), { name: 'notFound' });
-        assert.deepEqual(parseRoute('#error_code=otp_expired'), { name: 'list' });
+        assert.deepEqual(parseRoute('#error_code=otp_expired'), { name: 'home' });
         assert.equal(routeHref({ name: 'edit', id: 'abc-1' }), '#/dive/abc-1/edit');
-        assert.equal(routeHref({ name: 'list' }), '#/');
+        assert.equal(routeHref({ name: 'list' }), '#/dives');
+        assert.equal(routeHref({ name: 'home' }), '#/');
     });
 });
 
@@ -316,6 +339,14 @@ describe('photos', () => {
         assert.deepEqual(resizeTarget(8000, 6000), { width: 2560, height: 1920 });
         assert.deepEqual(resizeTarget(3000, 4000), { width: 1920, height: 2560 });
         assert.deepEqual(resizeTarget(1200, 800), { width: 1200, height: 800 });
+    });
+
+    test('squareCrop: the centred square of landscape, portrait and square images', () => {
+        assert.deepEqual(squareCrop(4000, 3000), { sx: 500, sy: 0, side: 3000 });
+        assert.deepEqual(squareCrop(3000, 4000), { sx: 0, sy: 500, side: 3000 });
+        assert.deepEqual(squareCrop(512, 512), { sx: 0, sy: 0, side: 512 });
+        assert.deepEqual(squareCrop(101, 50), { sx: 25, sy: 0, side: 50 }, 'odd margins round down');
+        assert.equal(AVATAR_EDGE, 256);
     });
 
     test('supported image types', () => {
@@ -1013,7 +1044,7 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             };
             const rda = new RecordedDiveAnalysis(root, { store, demoFiles: [] });
             await tick();
-            assert.match(root.querySelector('#rda-account').textContent, /Google account can't log in/);
+            assert.match(root.querySelector('#rda-account').textContent, /hasn't been invited to DecoTrail yet/);
             assert.equal(location.search, '');
             root.querySelector('#rda-google').click();
             await tick();
@@ -1377,6 +1408,88 @@ describe('entry form validation and races (jsdom)', () => {
             new NewDive(root, { store, onChoose() {}, ready: failing });
             await tick();
             assert.deepEqual(order, ['dives']); // a failed ensure does not block the page
+        });
+    });
+});
+
+describe('entry form: who can see this dive (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html' });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'));
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = () => new Promise(r => setTimeout(r, 20));
+    const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', site_id: null, buddies: [], details: {} };
+    const fakeStore = saves => ({ listSites: async () => [], listBuddies: async () => [], listEntries: async () => [],
+        saveEntry: async (row, id) => { saves.push(row); return { id: id ?? 'new', ...row }; } });
+    const submit = root => root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+    const radios = root => [...root.querySelectorAll('input[name="visibility"]')].map(r => [r.value, r.checked]);
+
+    test('community off: no fieldset, nothing sent', async () => {
+        await withDom(async root => {
+            const saves = [];
+            new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'private', share_location: true }, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(root.querySelector('.lb-visibility'), null);
+            submit(root);
+            await tick();
+            assert.equal('visibility' in saves[0], false);
+            assert.equal('share_location' in saves[0], false);
+        });
+    });
+
+    test('community on, new dive: Private / Members, the default from the profile, location checkbox', async () => {
+        await withDom(async root => {
+            const saves = [];
+            new EntryForm(root, { store: fakeStore(saves), prefill: { dive_date: '2026-10-02' }, community: true, defaultVisibility: 'private', onSaved() {}, onCancel() {} });
+            await tick();
+            assert.ok(root.querySelector('fieldset.lb-visibility'));
+            assert.deepEqual(radios(root), [['private', true], ['members', false]]);
+            const loc = root.querySelector('input[name="share_location"]');
+            assert.equal(loc.checked, false);
+            root.querySelector('input[name="visibility"][value="members"]').checked = true;
+            loc.checked = true;
+            submit(root);
+            await tick();
+            assert.equal(saves[0].visibility, 'members');
+            assert.equal(saves[0].share_location, true);
+        });
+    });
+
+    test('community on without a default: Members', async () => {
+        await withDom(async root => {
+            new EntryForm(root, { store: fakeStore([]), prefill: {}, community: true, onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', false], ['members', true]]);
+        });
+    });
+
+    test('community on, edit: the entry wins; a link dive keeps "Public link" checked and survives a relabel', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const form = new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'private', share_location: true }, community: true, defaultVisibility: 'members', onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', true], ['members', false]]);
+            assert.equal(root.querySelector('input[name="share_location"]').checked, true);
+            form.destroy();
+            const link = new EntryForm(root, { store: fakeStore(saves), entry: { ...entry, visibility: 'link' }, community: true, onSaved() {}, onCancel() {} });
+            assert.deepEqual(radios(root), [['private', false], ['members', false], ['link', true]]);
+            assert.equal(root.querySelector('input[value="link"]').disabled, false);
+            link.relabel();
+            assert.deepEqual(radios(root), [['private', false], ['members', false], ['link', true]]);
+            submit(root);
+            await tick();
+            assert.equal(saves[0].visibility, 'link');
+            assert.equal(saves[0].share_location, false);
         });
     });
 });
@@ -2114,6 +2227,121 @@ describe('feed helpers', () => {
         assert.deepEqual(idx.get('a'), { path: 'a1', count: 2, width: null, height: null });
         assert.deepEqual(idx.get('b'), { path: 'b1', count: 1, width: null, height: null });
         assert.equal(idx.has('c'), false);
+    });
+});
+
+describe('DecoTrail shell (jsdom)', () => {
+    async function withDom(hash, fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><nav class="tr-tabs" hidden></nav><div id="root"></div><nav class="tr-bottom" hidden></nav></body>',
+            { url: `http://localhost/lab/dive-log.html${hash}` });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'), dom.window.document);
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = (ms = 40) => new Promise(r => setTimeout(r, ms));
+    const store = extra => {
+        let listener;
+        return {
+            onAuthChange: l => { listener = l; return () => {}; },
+            logout: () => listener(null),
+            currentUser: async () => ({ id: 'u1', email: 'me@example.com' }),
+            ensureEntries: async () => 0,
+            listDives: async () => [], listEntries: async () => [], listSites: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(),
+            ...extra,
+        };
+    };
+    const tabs = doc => [...doc.querySelectorAll('.tr-bottom .tr-tab')].map(a => a.dataset.tab);
+    const current = doc => doc.querySelector('.tr-bottom [aria-current="page"]')?.dataset.tab;
+
+    test('with the community feature: five tabs, home is Feed, profile is ensured', async () => {
+        await withDom('', async (root, doc) => {
+            let ensured = 0;
+            const s = store({ communityStatus: async () => true, ensureProfile: async () => { ensured++; return { id: 'u1' }; } });
+            const app = new LogbookApp(root, { store: s });
+            await tick();
+            assert.deepEqual(tabs(doc), ['feed', 'list', 'community', 'sites', 'profile']);
+            assert.equal(current(doc), 'feed');
+            assert.equal(doc.querySelector('.tr-tabs').hidden, false);
+            assert.equal(doc.querySelector('.tr-tabs [aria-current="page"]').getAttribute('href'), '#/feed');
+            assert.ok(doc.body.classList.contains('tr-logged-in'));
+            assert.equal(ensured, 1);
+            location.hash = '#/sites';
+            await tick();
+            assert.equal(current(doc), 'sites');
+            s.logout();
+            assert.equal(doc.querySelector('.tr-bottom').hidden, true);
+            assert.equal(doc.querySelector('.tr-tabs').innerHTML, '');
+            assert.ok(!doc.body.classList.contains('tr-logged-in'));
+            app.destroy();
+        });
+    });
+
+    test('a probe that never answers does not hold the list back; an asked-for community route waits', async () => {
+        await withDom('', async (root, doc) => {
+            const app = new LogbookApp(root, { store: store({ communityStatus: () => new Promise(() => {}) }) });
+            await tick();
+            assert.ok(root.querySelector('.lb-list-view'), 'home renders My dives right away');
+            assert.ok(root.querySelector('.lb-bar'));
+            assert.deepEqual(tabs(doc), ['list', 'sites']);
+            location.hash = '#/community';
+            await tick();
+            assert.equal(root.querySelector('.lb-list-view'), null);
+            assert.match(root.textContent, /Loading/);
+            app.destroy();
+        });
+    });
+
+    test("communityAvailability: 'unknown' is retried on the next route change", async () => {
+        await withDom('', async (root, doc) => {
+            const answers = ['unknown', 'yes'];
+            let asked = 0;
+            const app = new LogbookApp(root, { store: store({
+                communityAvailability: async () => answers[asked++],
+                communityStatus: async () => { throw new Error('communityAvailability is preferred'); },
+                ensureProfile: async () => null,
+            }) });
+            await tick();
+            assert.equal(asked, 1);
+            assert.deepEqual(tabs(doc), ['list', 'sites']);
+            assert.ok(root.querySelector('.lb-list-view'));
+            location.hash = '#/sites';
+            await tick();
+            assert.equal(asked, 2);
+            assert.deepEqual(tabs(doc), ['feed', 'list', 'community', 'sites', 'profile']);
+            assert.equal(current(doc), 'sites');
+            location.hash = '#/dives';
+            await tick();
+            assert.equal(asked, 2, 'a known answer is not asked again');
+            app.destroy();
+        });
+    });
+
+    test('without the feature (or the method): My dives and Sites, community routes show the list', async () => {
+        for (const extra of [{ communityStatus: async () => false }, {}, { communityStatus: async () => { throw new Error('x'); } }]) {
+            await withDom('#/community', async (root, doc) => {
+                const origError = console.error;
+                console.error = () => {};
+                try {
+                    const app = new LogbookApp(root, { store: store(extra) });
+                    await tick();
+                    assert.deepEqual(tabs(doc), ['list', 'sites']);
+                    assert.equal(current(doc), 'list');
+                    assert.ok(root.querySelector('.lb-list-view'));
+                    app.destroy();
+                } finally { console.error = origError; }
+            });
+        }
     });
 });
 
