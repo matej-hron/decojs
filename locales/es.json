@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: presión ambiente {1} bar, GF {2} %"
+        },
+        "readout": {
+            "hint": "Toca el gráfico para ver sus valores",
+            "clear": "Ocultar valores",
+            "ceiling": "techo",
+            "noCeiling": "sin techo",
+            "computer": "ordenador",
+            "use": "consumo",
+            "subAmb": "amb",
+            "subTissue": "t",
+            "noPoint": "Aquí no hay ningún punto: toca una línea o un punto"
         }
     },
     "warnings": {
@@ -2962,6 +2973,34 @@
             "footer": "DecoTrail — inmersiones explicadas por"
         },
         "logbook": {
+            "wipe": {
+                "menu": "Borrar todos mis datos…",
+                "title": "Borrar todos mis datos",
+                "what": "Se eliminan de forma permanente todas las entradas del diario, grabaciones del ordenador de buceo, fotos y sitios guardados en tu cuenta. No se puede deshacer.",
+                "exportFirst": "Exporta antes tu diario si quieres conservar una copia.",
+                "export": "Exportar primero",
+                "typeLabel": "Escribe {0} para confirmar",
+                "go": "Borrar todo",
+                "cancel": "Cancelar",
+                "stepPhotos": "Borrando fotos…",
+                "stepEntries": "Borrando entradas del diario…",
+                "stepSites": "Borrando sitios…",
+                "stepRecordings": "Borrando grabaciones…",
+                "done": "Tus datos se han borrado.",
+                "doneFailed": "No se pudieron borrar algunos datos.",
+                "sumEntries": "Entradas del diario: {0}",
+                "sumRecordings": "Grabaciones del ordenador: {0}",
+                "sumPhotos": "Fotos: {0}",
+                "sumSites": "Sitios: {0}",
+                "sumNothing": "No había nada que borrar.",
+                "failed": "Fallo: {0}",
+                "retryHint": "Sigues con la sesión iniciada. Inténtalo de nuevo o escribe a la dirección de abajo.",
+                "retry": "Reintentar",
+                "signedOut": "Has cerrado sesión.",
+                "signOutFailed": "No se pudo cerrar la sesión; usa Cerrar sesión en el menú.",
+                "removeLogin": "Para eliminar también tu acceso, escribe a",
+                "close": "Cerrar"
+            },
             "newDive": "+ Nueva inmersión",
             "alreadyLogged": "Ya en tu diario",
             "siteNotSet": "Sitio sin indicar",
@@ -3144,6 +3183,8 @@
                 "duration": "Duración (m:ss)",
                 "site": "Sitio",
                 "pickOnMap": "Elegir en el mapa",
+                "photosTitle": "Fotos y vídeos",
+                "photosAfterSave": "Podrás añadir fotos justo después de guardar la inmersión.",
                 "depth": "Profundidad máxima (m)",
                 "buddies": "Compañeros",
                 "buddyAdd": "Añadir compañero",
@@ -3260,6 +3301,7 @@
                 "noneFound": "No hay inmersiones del ordenador para este día.",
                 "without": "Sin ordenador",
                 "folderUse": "Usar la carpeta del ordenador",
+                "add": "Añadir esta inmersión",
                 "folderChoose": "Elegir la carpeta DIVELOG",
                 "folderAllow": "Permitir el acceso a la carpeta guardada",
                 "folderError": "No se pudo leer la carpeta.",
@@ -3287,6 +3329,7 @@
             }
         },
         "backend": {
+            "privacyLink": "Política de privacidad",
             "loginHeading": "Tu diario de inmersiones",
             "emailLabel": "Correo electrónico",
             "sendLink": "Enviar enlace de acceso",
@@ -3467,5 +3510,53 @@
                 "bezpecnost": "Seguridad"
             }
         }
+    },
+    "privacy": {
+        "title": "Política de privacidad",
+        "subtitle": "Cómo tratan tus datos decotheory.eu, la app móvil DecoTheory y el diario de buceo opcional",
+        "summary": {
+            "title": "En breve",
+            "text": "Las páginas de teoría, los cuestionarios, el sandbox y la app móvil guardan todo <strong>localmente en tu dispositivo</strong>. La única excepción es el <strong>diario de buceo</strong> opcional (solo por invitación, un proyecto de afición): si inicias sesión allí, lo que guardes se almacena en un servidor de la UE. Sin analítica, sin publicidad y tus datos nunca se venden."
+        },
+        "web": {
+            "title": "Sitio web (decotheory.eu)",
+            "localStorage": "Usa el <strong>localStorage</strong> del navegador para recordar tus configuraciones de inmersión, el progreso en los cuestionarios y el idioma. Estos datos nunca salen de tu navegador.",
+            "serviceWorker": "Un <strong>service worker</strong> guarda en caché el HTML, CSS y JavaScript del sitio para que funcione sin conexión. La caché vive solo en tu navegador; puedes borrarla cuando quieras desde sus ajustes.",
+            "cookies": "<strong>No se establece ninguna cookie.</strong>",
+            "thirdParty": "Los enlaces externos (p. ej. a Wikipedia, GitHub, Strany potápěčské) se cargan solo cuando haces clic, nunca automáticamente."
+        },
+        "mobile": {
+            "title": "App móvil DecoTheory",
+            "asyncStorage": "Usa <strong>AsyncStorage</strong> para recordar tu perfil de buceador, planes de inmersión y progreso en los cuestionarios. Estos datos se guardan solo en tu dispositivo.",
+            "permissions": "No requiere permisos de Android más allá de los que Expo SDK 54 incluye por defecto para instalar la app.",
+            "uninstall": "Al desinstalar la app se eliminan todos los datos guardados localmente.",
+            "deepLinks": "El esquema de enlaces <code>decotheory://</code> se usa solo para compartir planes entre la app y este sitio. No se envían datos a ningún servidor."
+        },
+        "logbook": {
+            "title": "Diario de buceo (opcional, solo por invitación)",
+            "hobby": "El diario es un proyecto personal de afición, no una empresa ni un servicio comercial. Se ofrece a amigos invitados tal cual, sin garantías.",
+            "who": "<strong>Quién lo gestiona:</strong> Matěj Hron, persona física. Contacto: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
+            "what": "<strong>Qué se guarda</strong> cuando lo usas: tu correo electrónico (y el nombre y correo de tu cuenta de Google si inicias sesión con Google), las inmersiones y grabaciones del ordenador de buceo que subes, las entradas que escribes, las fotos que añades, los sitios de buceo con su posición, los nombres de compañeros que escribes y tu perfil.",
+            "where": "<strong>Dónde:</strong> en una base de datos y almacenamiento de Supabase en la UE (Fráncfort). El sitio estático lo aloja GitHub Pages. El inicio de sesión con Google lo gestiona Google. Los mapas y la búsqueda de lugares envían el texto buscado, la zona del mapa o la posición de un sitio y tu dirección IP a Mapy.com (y, como alternativa, a OpenStreetMap). Al exportar se carga una biblioteca zip desde cdnjs.cloudflare.com.",
+            "why": "<strong>Por qué:</strong> para llevar tu diario de buceo personal. Los datos son tuyos. Otros miembros invitados ven tus inmersiones, fotos, nombres de compañeros y tu perfil (nombre, avatar, país) salvo que marques una inmersión como <em>Privada</em>; nunca ven tus notas ni tu correo, y solo ven la posición exacta de un sitio si la permites en esa inmersión.",
+            "retention": "<strong>Cuánto tiempo:</strong> hasta que los borres. No se usan para nada más.",
+            "rights": "<strong>Tus derechos (RGPD):</strong> para acceder a una copia, usa <em>Exportar</em> en el menú ⋯ y descarga todo en un zip. Para corregir, edita tus entradas. Para borrar, usa <em>Borrar todos mis datos</em> en el mismo menú: elimina todas tus inmersiones, grabaciones, fotos y sitios, y vacía tu perfil. Eliminar el acceso en sí requiere mi intervención: escribe a <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. También puedes presentar una reclamación ante tu autoridad de protección de datos (en Chequia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "cookies": "<strong>Sin cookies de seguimiento ni publicidad.</strong> Al iniciar sesión se guarda un token de sesión en el almacenamiento local del navegador."
+        },
+        "notdone": {
+            "title": "Lo que explícitamente NO hacemos",
+            "analytics": "Ninguna analítica ni telemetría.",
+            "crash": "Ningún servicio de informes de fallos.",
+            "ads": "Ninguna publicidad.",
+            "accounts": "Sin cuentas de usuario en el sitio ni en la app móvil; solo el diario de buceo opcional tiene inicio de sesión.",
+            "sdks": "Ningún SDK de terceros que recopile datos.",
+            "backend": "Ningún servidor que vea tu actividad, salvo el diario de buceo cuando lo usas.",
+            "selling": "Tus datos nunca se venden ni se comparten con fines publicitarios."
+        },
+        "contact": {
+            "title": "Contacto",
+            "text": "¿Preguntas o dudas sobre esta política? Escribe a <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>."
+        },
+        "lastUpdated": "Última actualización: 2026-10-08"
     }
 }

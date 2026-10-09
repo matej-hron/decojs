@@ -36,6 +36,7 @@ import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { narrowChartPlugin, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
+import { TouchReadout, nearestChartPoint, pointReadoutLines, noPointLines } from './touchReadout.js';
 import { getCurrentLanguage, translate } from '../i18n.js';
 
 import { fmtNum } from '../format.js';
@@ -203,6 +204,8 @@ const DEFAULT_MVALUE_OPTIONS = {
     fullscreenButton: true,
     // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
     narrowLayout: false,
+    // Touch screens: value strip above the plot instead of the tooltip (touchReadout.js). Opt-in.
+    touchReadout: false,
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
@@ -413,6 +416,16 @@ export class MValueChart {
         );
 
         this.wrapper.appendChild(this.chartContainer);
+        if (this.options.touchReadout) {
+            this.touchReadout = new TouchReadout({
+                host: this.container, before: this.chartContainer, canvas: this.canvas,
+                getChart: () => this.chart, mode: 'point',
+                resolve: (chart, anchor) => {
+                    const p = nearestChartPoint(chart, anchor);
+                    return p ? { lines: pointReadoutLines('mvalue', p), marker: p.marker } : { lines: noPointLines(), marker: null };
+                },
+            });
+        }
 
         // Mini profile canvas - shows dive profile with current position marker
         this.miniProfileCanvas = document.createElement('canvas');
@@ -1790,11 +1803,14 @@ export class MValueChart {
             });
         });
 
+        // Opt-in touch readout replaces the tooltip on touch screens (js/charts/touchReadout.js).
+        const readoutOn = this.touchReadout?.sync() ?? false;
         const config = {
             type: 'scatter',
             data: { datasets },
             plugins: [
                 ...(this.options.narrowLayout ? [narrowChartPlugin] : []),
+                ...(this.touchReadout ? [this.touchReadout.plugin] : []),
                 {
                     id: 'mvalue-intersection-ruler',
                     afterDatasetsDraw: (chart) => this._drawRuler(chart)
@@ -1807,6 +1823,9 @@ export class MValueChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                // Touch: no hover highlight (it would stick where the finger lifted); legend taps still work.
+                // Chart.js finds no elements for an unregistered interaction mode, so nothing becomes active.
+                ...(readoutOn ? { events: ['click'], hover: { mode: 'touchReadoutNone' } } : {}),
                 // Only animate the first build. Every time-scrub / compartment toggle
                 // rebuilds the chart (destroy + new Chart below); a 50 ms entrance
                 // animation on each of those re-renders makes the chart re-draw from
@@ -1824,7 +1843,7 @@ export class MValueChart {
                         }
                     },
                     tooltip: {
-                        enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
+                        enabled: !readoutOn && resolveChartTooltipEnabled(this.options.interactive, this.canvas),
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';
@@ -2016,6 +2035,7 @@ export class MValueChart {
         }
         
         document.removeEventListener('keydown', this._keyHandler);
+        this.touchReadout?.destroy();
         if (this._onLanguageChange) {
             document.removeEventListener('languagechange', this._onLanguageChange);
             this._onLanguageChange = null;

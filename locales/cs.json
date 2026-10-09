@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: okolní tlak {1} bar, GF {2} %"
+        },
+        "readout": {
+            "hint": "Hodnoty zobrazíte dotykem grafu",
+            "clear": "Skrýt hodnoty",
+            "ceiling": "strop",
+            "noCeiling": "bez stropu",
+            "computer": "počítač",
+            "use": "spotřeba",
+            "subAmb": "okol",
+            "subTissue": "tk",
+            "noPoint": "Tady není žádný bod: dotkněte se čáry nebo tečky"
         }
     },
     "warnings": {
@@ -1693,10 +1704,10 @@
     },
     "privacy": {
         "title": "Zásady ochrany osobních údajů",
-        "subtitle": "Jak decotheory.eu a mobilní aplikace DecoTheory nakládají s vašimi daty",
+        "subtitle": "Jak decotheory.eu, mobilní aplikace DecoTheory a volitelný potápěčský deník nakládají s vašimi daty",
         "summary": {
             "title": "Stručně",
-            "text": "Tento web i mobilní aplikace DecoTheory ukládají všechna data <strong>lokálně na vašem zařízení</strong>. Ani jeden z nich nepřenáší data na žádný server. Neobsahují analytiku, hlášení pádů, reklamy, účty ani SDK třetích stran, které by sbíraly data."
+            "text": "Stránky s teorií, testy, sandbox i mobilní aplikace drží všechna data <strong>lokálně na vašem zařízení</strong>. Jedinou výjimkou je volitelný <strong>potápěčský deník</strong> (jen na pozvání, hobby projekt): pokud se tam přihlásíte, uložená data jsou na serveru v EU. Žádná analytika, žádné reklamy a vaše data se neprodávají."
         },
         "web": {
             "title": "Web (decotheory.eu)",
@@ -1712,20 +1723,32 @@
             "uninstall": "Při odinstalování aplikace se všechna lokálně uložená data odstraní.",
             "deepLinks": "Schéma deep-linků <code>decotheory://</code> se používá pouze pro sdílení plánů mezi aplikací a tímto webem. Na žádný server se neodesílají žádná data."
         },
+        "logbook": {
+            "title": "Potápěčský deník (volitelný, jen na pozvání)",
+            "hobby": "Deník je osobní hobby projekt, ne firma ani komerční služba. Nabízí se pozvaným přátelům tak, jak je, bez záruk.",
+            "who": "<strong>Kdo to provozuje:</strong> Matěj Hron, soukromá osoba. Kontakt: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
+            "what": "<strong>Co se ukládá</strong>, když deník používáte: vaše e-mailová adresa (a jméno a e-mail účtu Google, pokud se přihlásíte přes Google), ponory a nahrávky z potápěčského počítače, které nahrajete, záznamy, které napíšete, fotky, které přidáte, lokality s jejich polohou, jména buddy, která zadáte, a váš profil.",
+            "where": "<strong>Kde:</strong> v databázi a úložišti Supabase v EU (Frankfurt). Samotný statický web hostuje GitHub Pages. Přihlášení přes Google zajišťuje Google. Mapy a vyhledávání míst posílají hledaný text, oblast mapy nebo polohu lokality a vaši IP adresu službě Mapy.com (a záložně OpenStreetMap). Export načte knihovnu pro zip z cdnjs.cloudflare.com.",
+            "why": "<strong>Proč:</strong> abyste měli svůj osobní potápěčský deník. Data jsou vaše. Ostatní pozvaní členové vidí vaše ponory, fotky, jména buddyů a profil (jméno, avatar, zemi), pokud ponor neoznačíte jako <em>Soukromý</em>; nikdy nevidí vaše poznámky ani e-mail a přesnou polohu lokality vidí jen tehdy, když ji u ponoru povolíte.",
+            "retention": "<strong>Jak dlouho:</strong> dokud je nesmažete. K ničemu jinému se nepoužívají.",
+            "rights": "<strong>Vaše práva (GDPR):</strong> pro přístup ke kopii dat použijte <em>Export</em> v menu ⋯, stáhnete vše jako zip. Opravu provedete úpravou záznamů. Smazání: <em>Smazat všechna moje data</em> ve stejném menu odstraní všechny vaše ponory, nahrávky, fotky a lokality a vyprázdní váš profil. Odstranění samotného přihlášení vyžaduje mě, napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. Můžete také podat stížnost u dozorového úřadu (v Česku Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "cookies": "<strong>Žádné sledovací ani reklamní cookies.</strong> Přihlášení uchovává token relace v místním úložišti prohlížeče."
+        },
         "notdone": {
             "title": "Co výslovně NEDĚLÁME",
             "analytics": "Žádná analytika ani telemetrie jakéhokoli druhu.",
             "crash": "Žádná služba pro hlášení pádů.",
             "ads": "Žádné reklamy.",
-            "accounts": "Žádné uživatelské účty; žádné přihlašování.",
-            "sdks": "Žádné SDK třetích stran, které by sbíraly data.",
-            "backend": "Žádný serverový backend, který by viděl vaši aktivitu."
+            "accounts": "Žádné uživatelské účty na webu ani v mobilní aplikaci; přihlášení má jen volitelný potápěčský deník.",
+            "sdks": "Žádná SDK třetích stran, která by sbírala data.",
+            "backend": "Žádný server, který by viděl vaši aktivitu, kromě potápěčského deníku, když ho používáte.",
+            "selling": "Vaše data se neprodávají ani nesdílejí pro reklamu."
         },
         "contact": {
             "title": "Kontakt",
             "text": "Dotazy nebo připomínky k těmto zásadám? Napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>."
         },
-        "lastUpdated": "Aktualizováno: 2026-04-29"
+        "lastUpdated": "Poslední aktualizace: 2026-10-08"
     },
     "sandbox": {
         "bubble": {
@@ -2998,6 +3021,34 @@
             "footer": "DecoTrail — ponory vysvětlené pomocí"
         },
         "logbook": {
+            "wipe": {
+                "menu": "Smazat všechna moje data…",
+                "title": "Smazat všechna moje data",
+                "what": "Trvale se smažou všechny záznamy v deníku, nahrávky z potápěčského počítače, fotky a lokality uložené ve vašem účtu. Nelze to vrátit zpět.",
+                "exportFirst": "Chcete-li si ponechat kopii, nejdřív deník exportujte.",
+                "export": "Nejdřív exportovat",
+                "typeLabel": "Pro potvrzení napište {0}",
+                "go": "Smazat vše",
+                "cancel": "Zrušit",
+                "stepPhotos": "Mažu fotky…",
+                "stepEntries": "Mažu záznamy v deníku…",
+                "stepSites": "Mažu lokality…",
+                "stepRecordings": "Mažu nahrávky…",
+                "done": "Vaše data jsou smazána.",
+                "doneFailed": "Část dat se nepodařilo smazat.",
+                "sumEntries": "Záznamy v deníku: {0}",
+                "sumRecordings": "Nahrávky z počítače: {0}",
+                "sumPhotos": "Fotky: {0}",
+                "sumSites": "Lokality: {0}",
+                "sumNothing": "Nebylo co mazat.",
+                "failed": "Selhalo: {0}",
+                "retryHint": "Zůstáváte přihlášeni. Zkuste to znovu, nebo napište na adresu níže.",
+                "retry": "Zkusit znovu",
+                "signedOut": "Byli jste odhlášeni.",
+                "signOutFailed": "Odhlášení se nepovedlo; použijte Odhlásit v menu.",
+                "removeLogin": "Chcete-li odstranit i přihlášení, napište na",
+                "close": "Zavřít"
+            },
             "newDive": "+ Nový ponor",
             "alreadyLogged": "Už v deníku",
             "siteNotSet": "Lokalita nezadána",
@@ -3180,6 +3231,8 @@
                 "duration": "Délka (m:ss)",
                 "site": "Lokalita",
                 "pickOnMap": "Vybrat na mapě",
+                "photosTitle": "Fotky a videa",
+                "photosAfterSave": "Fotky můžete přidat hned po uložení ponoru.",
                 "depth": "Maximální hloubka (m)",
                 "buddies": "Parťáci",
                 "buddyAdd": "Přidat parťáka",
@@ -3296,6 +3349,7 @@
                 "noneFound": "Pro tento den nejsou žádné ponory z počítače.",
                 "without": "Bez počítače",
                 "folderUse": "Použít složku s počítačem",
+                "add": "Přidat tento ponor",
                 "folderChoose": "Vybrat složku DIVELOG",
                 "folderAllow": "Povolit přístup k uložené složce",
                 "folderError": "Složku se nepodařilo přečíst.",
@@ -3323,6 +3377,7 @@
             }
         },
         "backend": {
+            "privacyLink": "Zásady ochrany osobních údajů",
             "loginHeading": "Váš deník ponorů",
             "emailLabel": "E-mail",
             "sendLink": "Poslat přihlašovací odkaz",

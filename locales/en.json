@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: ambient pressure {1} bar, GF {2}%"
+        },
+        "readout": {
+            "hint": "Touch the chart to read its values",
+            "clear": "Clear readout",
+            "ceiling": "ceiling",
+            "noCeiling": "no ceiling",
+            "computer": "computer",
+            "use": "use",
+            "subAmb": "amb",
+            "subTissue": "t",
+            "noPoint": "No point here: touch a line or a dot"
         }
     },
     "warnings": {
@@ -1693,10 +1704,10 @@
     },
     "privacy": {
         "title": "Privacy Policy",
-        "subtitle": "How decotheory.eu and the DecoTheory mobile app handle your data",
+        "subtitle": "How decotheory.eu, the DecoTheory mobile app and the optional dive logbook handle your data",
         "summary": {
             "title": "Short version",
-            "text": "Both this website and the DecoTheory mobile app store all data <strong>locally on your device</strong>. Neither transmits data to any server. There is no analytics, no crash reporting, no advertising, no account system, and no third-party SDKs that collect data."
+            "text": "The theory pages, quizzes, sandbox and the mobile app keep everything <strong>locally on your device</strong>. The one exception is the optional <strong>dive logbook</strong> (invite-only, a hobby project): if you log in there, what you save is stored on a server in the EU. No analytics, no advertising, and your data is never sold."
         },
         "web": {
             "title": "Website (decotheory.eu)",
@@ -1712,20 +1723,32 @@
             "uninstall": "Uninstalling the app removes all locally stored data.",
             "deepLinks": "The <code>decotheory://</code> deep-link scheme is used only for sharing plans between the app and this website. No data is sent to any server."
         },
+        "logbook": {
+            "title": "Dive logbook (optional, invite-only)",
+            "hobby": "The logbook is a personal hobby project, not a company or a commercial service. It is offered to invited friends as is, without guarantees.",
+            "who": "<strong>Who runs it:</strong> Matěj Hron, a private person. Contact: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
+            "what": "<strong>What is stored</strong> when you use it: your email address (and the name and email of your Google account if you sign in with Google), the dives and dive computer recordings you upload, the log entries you write, photos you add, dive sites with their positions, buddy names you type in, and your profile.",
+            "where": "<strong>Where:</strong> in a Supabase database and file storage in the EU (Frankfurt). The static site itself is hosted by GitHub Pages. Google sign-in is handled by Google. Maps and place search send the search text, the map area or a site position, and your IP address to Mapy.com (and, as a fallback, to OpenStreetMap). Exporting loads a zip library from cdnjs.cloudflare.com.",
+            "why": "<strong>Why:</strong> to keep your personal dive logbook. Your data is yours. Other invited members see your dives, photos, buddy names and profile (name, avatar, country) unless you mark a dive <em>Private</em>; they never see your notes or your email, and see a site’s exact position only if you tick it for that dive.",
+            "retention": "<strong>How long:</strong> until you delete it. It is not used for anything else.",
+            "rights": "<strong>Your rights (GDPR):</strong> for access and a copy, use <em>Export</em> in the ⋯ menu to download everything as a zip. To correct something, edit your entries. To delete, use <em>Delete all my data</em> in the same menu: it removes all your dives, recordings, photos and sites, and empties your profile. Removing the login itself needs me, so email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. You can also complain to your data protection authority (in Czechia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "cookies": "<strong>No tracking or advertising cookies.</strong> Logging in keeps a session token in your browser's local storage."
+        },
         "notdone": {
             "title": "What we explicitly do NOT do",
             "analytics": "No analytics or telemetry of any kind.",
             "crash": "No crash reporting service.",
             "ads": "No advertising.",
-            "accounts": "No user accounts; no login.",
+            "accounts": "No user accounts on the website or in the mobile app; only the optional dive logbook has a login.",
             "sdks": "No third-party SDKs that collect data.",
-            "backend": "No server backend that sees your activity."
+            "backend": "No server that sees your activity, except the dive logbook when you use it.",
+            "selling": "Your data is never sold or shared for advertising."
         },
         "contact": {
             "title": "Contact",
             "text": "Questions or concerns about this policy? Email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>."
         },
-        "lastUpdated": "Last updated: 2026-04-29"
+        "lastUpdated": "Last updated: 2026-10-08"
     },
     "sandbox": {
         "bubble": {
@@ -2998,6 +3021,34 @@
             "footer": "DecoTrail — dives explained by"
         },
         "logbook": {
+            "wipe": {
+                "menu": "Delete all my data…",
+                "title": "Delete all my data",
+                "what": "This permanently deletes every logbook entry, dive computer recording, photo and site stored in your account. It cannot be undone.",
+                "exportFirst": "Export your logbook first if you want to keep a copy.",
+                "export": "Export first",
+                "typeLabel": "Type {0} to confirm",
+                "go": "Delete everything",
+                "cancel": "Cancel",
+                "stepPhotos": "Deleting photos…",
+                "stepEntries": "Deleting logbook entries…",
+                "stepSites": "Deleting sites…",
+                "stepRecordings": "Deleting recordings…",
+                "done": "Your data has been deleted.",
+                "doneFailed": "Some data could not be deleted.",
+                "sumEntries": "Logbook entries: {0}",
+                "sumRecordings": "Dive computer recordings: {0}",
+                "sumPhotos": "Photos: {0}",
+                "sumSites": "Sites: {0}",
+                "sumNothing": "There was nothing to delete.",
+                "failed": "Failed: {0}",
+                "retryHint": "You are still logged in. Try again, or write to the address below.",
+                "retry": "Try again",
+                "signedOut": "You have been logged out.",
+                "signOutFailed": "Could not log you out; use Log out in the menu.",
+                "removeLogin": "To also remove your login, email",
+                "close": "Close"
+            },
             "newDive": "+ New dive",
             "alreadyLogged": "Already in your logbook",
             "siteNotSet": "Site not set",
@@ -3180,6 +3231,8 @@
                 "duration": "Duration (m:ss)",
                 "site": "Site",
                 "pickOnMap": "Pick on map",
+                "photosTitle": "Photos and videos",
+                "photosAfterSave": "Photos can be added right after you save this dive.",
                 "depth": "Max depth (m)",
                 "buddies": "Buddies",
                 "buddyAdd": "Add buddy",
@@ -3296,6 +3349,7 @@
                 "noneFound": "No dive computer dives found for this day.",
                 "without": "Without dive computer",
                 "folderUse": "Use dive computer folder",
+                "add": "Add this dive",
                 "folderChoose": "Choose DIVELOG folder",
                 "folderAllow": "Allow access to the saved folder",
                 "folderError": "Could not read the folder.",
@@ -3323,6 +3377,7 @@
             }
         },
         "backend": {
+            "privacyLink": "Privacy policy",
             "loginHeading": "Your dive log",
             "emailLabel": "Email",
             "sendLink": "Send login link",

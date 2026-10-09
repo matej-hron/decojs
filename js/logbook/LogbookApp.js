@@ -8,6 +8,7 @@
 import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiveAnalysis.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
+import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
 import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute } from './AppShell.js';
 import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
@@ -17,7 +18,7 @@ import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
-import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex } from './feed.js';
+import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
 import { MembersPage } from './MembersPage.js';
@@ -128,6 +129,7 @@ export class LogbookApp {
     destroy() {
         this.destroyed = true;
         this.sparks.destroy();
+        this.wipe?.close();
         this._unsubscribe?.();
         this._leaveLogbook();
         this._unmountAnalysis();
@@ -645,6 +647,7 @@ export class LogbookApp {
                         <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                             <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
                         <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
+                        <button type="button" class="lb-menu-item" id="lb-wipe-open">${escHtml(tl('wipe.menu', 'Delete all my data…'))}</button>
                         <button type="button" class="lb-menu-item" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
                     </div>
                 </details>
@@ -833,7 +836,9 @@ export class LogbookApp {
         const photoUrl = this.thumbs.get(entry.id) ?? null;
         const apiKey = this._mapFailed ? '' : MAPY_API_KEY; // after one failed map, stop asking for more
         const { kind } = chooseVisual({ photoUrl, site, apiKey, recordingId: entry.recording_id });
-        const more = (this.photos.get(entry.id)?.count ?? 1) - 1;
+        const info = this.photos.get(entry.id);
+        const more = (info?.count ?? 1) - 1;
+        const frame = kind === 'photo' && variant === 'feed' ? photoFrame(info?.width, info?.height) : '';
         let map;
         if (kind === 'map') {
             const [w, h] = variant === 'tile' ? [320, 240] : [640, 280];
@@ -849,7 +854,7 @@ export class LogbookApp {
         return visualHtml({
             kind, entryId: entry.id, variant, photoUrl, more, moreText: fill(tl('feed.morePhotos', '{0} more photos'), more), map,
             recordingId: entry.recording_id, profileAlt: tl('feed.profileAlt', 'Depth profile'), depthText: depth,
-            numberText: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
+            numberText: fill(tl('number', '#{0}'), entry.log_number ?? '–'), frame,
         });
     }
 
@@ -1027,6 +1032,7 @@ export class LogbookApp {
         this.view.querySelector('#lb-upload').addEventListener('change', e => { this._closeMenu(); this._upload(e.target); });
         this.view.querySelector('#lb-upload-empty')?.addEventListener('change', e => this._upload(e.target));
         this.view.querySelector('#lb-export').addEventListener('click', () => { this._closeMenu(); this._export(); });
+        this.view.querySelector('#lb-wipe-open').addEventListener('click', () => { this._closeMenu(); this._openWipe(); });
         this.view.querySelector('#lb-logout').addEventListener('click', () => this._logout());
     }
 
@@ -1124,6 +1130,11 @@ export class LogbookApp {
                 r.failed.map(f => `${f.fileName} (${f.message})`).join('; ')));
         }
         return lines;
+    }
+
+    _openWipe() {
+        if (this.wipe) return;
+        this.wipe = new DeleteDataPanel({ store: this.store, onExport: () => this._export(), onClosed: () => { this.wipe = null; } });
     }
 
     async _export() {

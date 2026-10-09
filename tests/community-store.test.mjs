@@ -130,6 +130,14 @@ function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tab
             from(bucket) {
                 return {
                     async upload(path, body, opts) { calls.push(['upload', bucket, path, opts]); files.set(`${bucket}/${path}`, body); return { data: { path }, error: null }; },
+                    async list(prefix) {
+                        const names = new Set();
+                        for (const key of files.keys()) {
+                            if (!key.startsWith(`${bucket}/${prefix}/`)) continue;
+                            names.add(key.slice(bucket.length + prefix.length + 2).split('/')[0]);
+                        }
+                        return { data: [...names].map(name => ({ name, id: files.has(`${bucket}/${prefix}/${name}`) ? name : null })), error: null };
+                    },
                     async remove(paths) { calls.push(['remove', bucket, paths]); paths.forEach(p => files.delete(`${bucket}/${p}`)); return { data: [], error: null }; },
                     async createSignedUrls(paths, seconds) {
                         calls.push(['sign', bucket, paths, seconds]);
@@ -379,4 +387,27 @@ test('a profile read that resolves after the cache reset is not cached', async (
     release();
     await stale;
     assert.equal((await store.getMyProfile()).display_name, 'B', 'A\'s profile was not cached');
+});
+
+test('deleteAllMyData empties the profile and removes avatar files when community is on', async () => {
+    const { client, db, calls } = wrap({ tables: { profiles: [{ id: 'u1', display_name: 'Jana', avatar_preset: 'reef-03', avatar_path: 'u1/avatar-1.jpg', home_country: 'CZ' }] } });
+    await client.storage.from('avatars').upload('u1/avatar-1.jpg', new Uint8Array(1));
+    const steps = [];
+    const report = await createSupabaseStore(client).deleteAllMyData({ onProgress: s => steps.push(s) });
+    assert.deepEqual(report.failed, []);
+    assert.ok(steps.includes('profile'));
+    const p = db.profiles[0];
+    assert.equal(p.display_name, null);
+    assert.equal(p.avatar_preset, null);
+    assert.equal(p.avatar_path, null);
+    assert.equal(p.home_country, null);
+    assert.ok(calls.some(c => c[0] === 'remove' && c[1] === 'avatars' && c[2].includes('u1/avatar-1.jpg')));
+});
+
+test('deleteAllMyData skips the profile step without the community backend', async () => {
+    const { client } = wrap({ failTables: ['profiles'] });
+    const steps = [];
+    const report = await createSupabaseStore(client).deleteAllMyData({ onProgress: s => steps.push(s) });
+    assert.deepEqual(report.failed, []);
+    assert.ok(!steps.includes('profile'));
 });

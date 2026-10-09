@@ -12,6 +12,7 @@ import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromReco
 export const BUCKET = 'dive-logs';
 export const TABLE = 'dives';
 export const PHOTO_BUCKET = 'dive-photos';
+const AVATAR_BUCKET = 'avatars';
 const ENTRIES = 'log_entries';
 const SITES = 'sites';
 const MEDIA = 'media';
@@ -295,6 +296,104 @@ export function createSupabaseStore(client) {
                 onProgress?.(i + 1, total);
             }
             return { deleted, failed };
+        },
+
+        /**
+         * Delete everything the logged-in user owns: photo files and media rows, entries, sites, recording files
+         * and rows. Every query is filtered by owner (shared rows of other members may be readable), a failing
+         * step is recorded and the others still run. The login itself needs a server key and stays.
+         * @param {{onProgress?: (step: 'photos'|'entries'|'sites'|'recordings') => void}} [options]
+         * @returns {Promise<{entries: number, sites: number, recordings: number, photos: number, media: number,
+         *   failed: {step: string, message: string}[]}>}
+         */
+        async deleteAllMyData({ onProgress } = {}) {
+            const user = await requireUser();
+            const report = { entries: 0, sites: 0, recordings: 0, photos: 0, media: 0, failed: [] };
+            const CHUNK = 100;
+
+            const idsOf = async (table, column = 'id', filters = []) => {
+                const ids = [];
+                for (let from = 0; ; from += PAGE) {
+                    let q = client.from(table).select(`${column}`);
+                    for (const [c, v] of filters) q = q.eq(c, v);
+                    const { data, error } = await q.order('id').range(from, from + PAGE - 1);
+                    if (error) throw fail(error);
+                    ids.push(...data.map(r => r[column]));
+                    if (data.length < PAGE) return ids;
+                }
+            };
+            const deleteIn = async (table, column, values) => {
+                let count = 0;
+                for (let i = 0; i < values.length; i += CHUNK) {
+                    const { data, error } = await client.from(table).delete().in(column, values.slice(i, i + CHUNK)).select('id');
+                    if (error) throw fail(error);
+                    count += data?.length ?? 0;
+                }
+                return count;
+            };
+            const removeFiles = async (bucket, paths) => {
+                for (let i = 0; i < paths.length; i += CHUNK) {
+                    const { error } = await client.storage.from(bucket).remove(paths.slice(i, i + CHUNK));
+                    if (error && !/not.?found|404/i.test(`${error.message ?? ''} ${error.statusCode ?? ''}`)) throw fail(error, 'storage');
+                }
+            };
+            /** Every file under the user's own folder, including ones no row points to any more. */
+            const filesUnder = async (bucket, prefix) => {
+                const out = [];
+                const { data, error } = await client.storage.from(bucket).list(prefix, { limit: PAGE });
+                if (error) throw fail(error, 'storage');
+                for (const item of data ?? []) {
+                    if (item.id) out.push(`${prefix}/${item.name}`);
+                    else out.push(...await filesUnder(bucket, `${prefix}/${item.name}`));
+                }
+                return out;
+            };
+            const step = async (name, fn) => {
+                onProgress?.(name);
+                try { await fn(); } catch (error) { report.failed.push({ step: name, message: error?.message ?? String(error) }); }
+            };
+
+            const entryIds = [];
+            await step('photos', async () => {
+                const photoPaths = new Set();
+                entryIds.push(...await idsOf(ENTRIES, 'id', [['owner', user.id]]));
+                for (let i = 0; i < entryIds.length; i += CHUNK) {
+                    const { data, error } = await client.from(MEDIA).select('*').in('entry_id', entryIds.slice(i, i + CHUNK));
+                    if (error) throw fail(error);
+                    const paths = data.filter(m => m.kind === 'photo' && m.path).map(m => m.path);
+                    await removeFiles(PHOTO_BUCKET, paths);
+                    paths.forEach(path => photoPaths.add(path));
+                }
+                const leftovers = await filesUnder(PHOTO_BUCKET, user.id);
+                await removeFiles(PHOTO_BUCKET, leftovers);
+                leftovers.forEach(path => photoPaths.add(path));
+                report.photos = photoPaths.size;
+                report.media = await deleteIn(MEDIA, 'entry_id', entryIds);
+            });
+            await step('entries', async () => { report.entries = await deleteIn(ENTRIES, 'id', entryIds); });
+            await step('sites', async () => { report.sites = await deleteIn(SITES, 'id', await idsOf(SITES, 'id', [['owner', user.id]])); });
+            await step('recordings', async () => {
+                const rows = [];
+                for (let from = 0; ; from += PAGE) {
+                    const { data, error } = await client.from(TABLE).select('id, file_path').eq('owner', user.id).order('id').range(from, from + PAGE - 1);
+                    if (error) throw fail(error);
+                    rows.push(...data);
+                    if (data.length < PAGE) break;
+                }
+                await removeFiles(BUCKET, [...new Set([...rows.map(r => r.file_path).filter(Boolean), ...await filesUnder(BUCKET, user.id)])]);
+                report.recordings = await deleteIn(TABLE, 'id', rows.map(r => r.id));
+            });
+            // DecoTrail profile: the row itself goes with the account; here it is emptied and the avatar files removed.
+            if (await store.communityAvailability?.() === 'yes') {
+                await step('profile', async () => {
+                    await removeFiles(AVATAR_BUCKET, await filesUnder(AVATAR_BUCKET, user.id));
+                    const { error } = await client.from('profiles').update({
+                        display_name: null, avatar_preset: null, avatar_path: null, home_country: null, updated_at: new Date().toISOString(),
+                    }).eq('id', user.id);
+                    if (error) throw fail(error);
+                });
+            }
+            return report;
         },
 
         async listSites() {

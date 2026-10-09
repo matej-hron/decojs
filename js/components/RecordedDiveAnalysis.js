@@ -384,6 +384,7 @@ export class RecordedDiveAnalysis {
                     <button type="submit" class="btn btn-small btn-secondary">${label(this.linkSent ? 'sendAgain' : 'sendLink', this.linkSent ? 'Send again' : 'Send login link')}</button>
                 </form>
                 ${this.linkSent ? `<p class="rda-account-msg">${label('linkSent', 'Check your email for the login link.')}</p>` : ''}
+                <a class="rda-privacy" href="../privacy.html#logbook">${label('privacyLink', 'Privacy policy')}</a>
                 ${msg}
                 <p class="rda-invite">${escHtml(translate('diveLog.trail.inviteOnly', 'DecoTrail is invite-only. Ask the person who invited you, or ask for an invite.'))}</p>`;
             el.querySelector('#rda-google').addEventListener('click', () => this._googleLogin());
@@ -858,16 +859,16 @@ export class RecordedDiveAnalysis {
                         ...this._profileOptions(deviceCeiling, dive),
                         showDecoStops: false, showGasSwitches: true,
                         violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
-                        narrowLayout: true,
+                        narrowLayout: true, touchReadout: true,
                     },
                 }),
                 mvalue: new MValueChart(this.el.mvalue, {
                     diveSetup: setup,
-                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true, narrowLayout: true },
+                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true, narrowLayout: true, touchReadout: true },
                 }),
                 gf: new GFChart(this.el.gfChart, {
                     diveSetup: setup,
-                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true, narrowLayout: true },
+                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true, narrowLayout: true, touchReadout: true },
                 }),
             };
             this._chartsDive = dive;

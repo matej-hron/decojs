@@ -98,10 +98,10 @@ export function statsHtml(stats, label) {
  * @param {string} [o.depthText] - shown on the profile ("18,4 m")
  * @param {string} [o.numberText] - tile fallback ("#7")
  */
-export function visualHtml({ kind, entryId, variant, photoUrl, more = 0, moreText = '', map, recordingId, profileAlt = '', depthText = '', numberText = '' }) {
+export function visualHtml({ kind, entryId, variant, photoUrl, more = 0, moreText = '', map, recordingId, profileAlt = '', depthText = '', numberText = '', frame = '' }) {
     const id = ` data-entry="${escHtml(entryId)}" data-variant="${variant}"`;
     if (kind === 'photo') {
-        return `<div class="lb-visual lb-visual-photo"${id}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
+        return `<div class="lb-visual lb-visual-photo"${id}${frame ? ` style="--lb-ar: ${escHtml(frame)}"` : ''}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
                 ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(moreText)}</span></span>` : ''}</div>`;
     }
     if (kind === 'map') {

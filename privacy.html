@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - Deco Theory</title>
+    <meta name="robots" content="noindex">
 
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -35,7 +36,7 @@
 
     <header class="hero hero-small">
         <h1 data-i18n="privacy.title">Privacy Policy</h1>
-        <p class="hero-subtitle" data-i18n="privacy.subtitle">How decotheory.eu and the DecoTheory mobile app handle your data</p>
+        <p class="hero-subtitle" data-i18n="privacy.subtitle">How decotheory.eu, the DecoTheory mobile app and the optional dive logbook handle your data</p>
     </header>
 
     <main class="content-main">
@@ -44,10 +45,7 @@
             <div class="disclaimer-box prominent">
                 <h2 data-i18n="privacy.summary.title">Short version</h2>
                 <p data-i18n="privacy.summary.text">
-                    Both this website and the DecoTheory mobile app store all data
-                    <strong>locally on your device</strong>. Neither transmits data to any
-                    server. There is no analytics, no crash reporting, no advertising, no
-                    account system, and no third-party SDKs that collect data.
+                    The theory pages, quizzes, sandbox and the mobile app keep everything <strong>locally on your device</strong>. The one exception is the optional <strong>dive logbook</strong> (invite-only, a hobby project): if you log in there, what you save is stored on a server in the EU. No analytics, no advertising, and your data is never sold.
                 </p>
             </div>
         </section>
@@ -97,6 +95,21 @@
             </ul>
         </section>
 
+        <!-- Dive logbook -->
+        <section class="about-content" id="logbook">
+            <h2 data-i18n="privacy.logbook.title">Dive logbook (optional, invite-only)</h2>
+            <p data-i18n="privacy.logbook.hobby">The logbook is a personal hobby project, not a company or a commercial service. It is offered to invited friends as is, without guarantees.</p>
+            <ul>
+                <li data-i18n="privacy.logbook.who"><strong>Who runs it:</strong> Matěj Hron, a private person. Contact: <a href="mailto:matej.hron@gmail.com">matej.hron@gmail.com</a>.</li>
+                <li data-i18n="privacy.logbook.what"><strong>What is stored</strong> when you use it: your email address (and the name and email of your Google account if you sign in with Google), the dives and dive computer recordings you upload, the log entries you write, photos you add, dive sites with their positions, buddy names you type in, and your profile.</li>
+                <li data-i18n="privacy.logbook.where"><strong>Where:</strong> in a Supabase database and file storage in the EU (Frankfurt). The static site itself is hosted by GitHub Pages. Google sign-in is handled by Google. Maps and place search send the search text, the map area or a site position, and your IP address to Mapy.com (and, as a fallback, to OpenStreetMap). Exporting loads a zip library from cdnjs.cloudflare.com.</li>
+                <li data-i18n="privacy.logbook.why"><strong>Why:</strong> to keep your personal dive logbook. Your data is yours. Other invited members see your dives, photos, buddy names and profile (name, avatar, country) unless you mark a dive <em>Private</em>; they never see your notes or your email, and see a site’s exact position only if you tick it for that dive.</li>
+                <li data-i18n="privacy.logbook.retention"><strong>How long:</strong> until you delete it. It is not used for anything else.</li>
+                <li data-i18n="privacy.logbook.rights"><strong>Your rights (GDPR):</strong> for access and a copy, use <em>Export</em> in the ⋯ menu to download everything as a zip. To correct something, edit your entries. To delete, use <em>Delete all my data</em> in the same menu: it removes all your dives, recordings, photos and sites, and empties your profile. Removing the login itself needs me, so email <a href="mailto:matej.hron@gmail.com">matej.hron@gmail.com</a>. You can also complain to your data protection authority (in Czechia: Úřad pro ochranu osobních údajů, uoou.gov.cz).</li>
+                <li data-i18n="privacy.logbook.cookies"><strong>No tracking or advertising cookies.</strong> Logging in keeps a session token in your browser's local storage.</li>
+            </ul>
+        </section>
+
         <!-- What we don't do -->
         <section class="about-content">
             <h2 data-i18n="privacy.notdone.title">What we explicitly do NOT do</h2>
@@ -104,9 +117,10 @@
                 <li data-i18n="privacy.notdone.analytics">No analytics or telemetry of any kind.</li>
                 <li data-i18n="privacy.notdone.crash">No crash reporting service.</li>
                 <li data-i18n="privacy.notdone.ads">No advertising.</li>
-                <li data-i18n="privacy.notdone.accounts">No user accounts; no login.</li>
+                <li data-i18n="privacy.notdone.accounts">No user accounts on the website or in the mobile app; only the optional dive logbook has a login.</li>
                 <li data-i18n="privacy.notdone.sdks">No third-party SDKs that collect data.</li>
-                <li data-i18n="privacy.notdone.backend">No server backend that sees your activity.</li>
+                <li data-i18n="privacy.notdone.backend">No server that sees your activity, except the dive logbook when you use it.</li>
+                <li data-i18n="privacy.notdone.selling">Your data is never sold or shared for advertising.</li>
             </ul>
         </section>
 
@@ -118,7 +132,7 @@
                 Email <a href="mailto:matej.hron@gmail.com">matej.hron@gmail.com</a>.
             </p>
             <p class="meta" data-i18n="privacy.lastUpdated">
-                Last updated: 2026-04-29
+                Last updated: 2026-10-08
             </p>
         </section>
     </main>
