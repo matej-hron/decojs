@@ -10,14 +10,20 @@ import { AVATARS, AVATAR_KEYS, avatarHtml, avatarImgFallback, fallbackAvatarKey 
 import { COUNTRY_CODES, OFFERED_VISIBILITIES, countryName } from './community.js';
 import { avatarBlob } from './photo.js';
 import { translate } from '../i18n.js';
-import { currentLang } from '../format.js';
+import { currentLang, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
-import { normalizeLogOffset } from './entryModel.js';
+import { normalizeLogOffset, formatDiveDate } from './entryModel.js';
+import { sacSummary, sacChartModel } from './sacStats.js';
 
 const NAME_MAX = 60;
 const PREVIEW_ROWS = 6;
+const NB = '\u00a0';
+const PLAN_DEPTH_M = 30;
+const PLAN_TIME_MIN = 20;
 const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const tp = (key, fallback) => tt(`profile.${key}`, fallback);
+const ts = (key, fallback) => tp(`sac.${key}`, fallback);
+const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const VIS_FALLBACK = {
     private: ['Private', 'Only you.'],
@@ -55,6 +61,7 @@ export class ProfilePage {
         this.status = { kind: '', text: '' };
         this.failed = false;
         this.destroyed = false;
+        this.sac = null; // sacSummary of the logbook; null = not loaded / unsupported
         this.num = { offset: null, plan: null, busy: null, status: { kind: '', text: '' } }; // offset null = not loaded / unsupported
         this._onImgError = e => { if (avatarImgFallback(e)) this.photoUrl = null; };
         this.host.addEventListener('error', this._onImgError, true); // image errors do not bubble
@@ -94,6 +101,7 @@ export class ProfilePage {
         this._take(profile ?? { id: this.user?.id });
         this._render();
         this._loadNumbering();
+        this._loadSac();
         await this._signPhoto();
     }
 
@@ -108,6 +116,19 @@ export class ProfilePage {
             return;
         }
         this._renderNumbering();
+    }
+
+    async _loadSac() {
+        if (typeof this.store.listEntries !== 'function') return;
+        try {
+            const summary = sacSummary(await this.store.listEntries());
+            if (this.destroyed) return;
+            this.sac = summary;
+        } catch (error) {
+            console.error(error); // the card simply stays hidden
+            return;
+        }
+        this._renderSac();
     }
 
     /** Adopt a saved profile row: it becomes the draft. */
@@ -450,6 +471,7 @@ export class ProfilePage {
                     <p class="tr-profile-status${status.kind ? ` tr-profile-status--${status.kind}` : ''}" role="status">${escHtml(status.text)}</p>
                 </div>
             </form>
+            <div class="rda-card tr-sac" hidden></div>
             <div class="rda-card tr-numbering" hidden></div>
             <div class="rda-card tr-profile-account">
                 <h3 class="tr-section-head">${escHtml(tp('account', 'Account'))}</h3>
@@ -459,8 +481,53 @@ export class ProfilePage {
             </div>
         </div>`;
         this._wire();
+        this._renderSac();
         this._renderNumbering();
         if (this.busy) this._setBusy(this.busy);
+    }
+
+    _sacChartHtml(points, lang) {
+        const m = sacChartModel(points);
+        const grid = m.ticks.map(t => `<line class="tr-sac-grid" x1="${m.plotLeft}" x2="${m.plotRight}" y1="${t.y}" y2="${t.y}"/>`
+            + `<text class="tr-sac-tick" x="${m.plotLeft - 6}" y="${t.y}" text-anchor="end" dominant-baseline="middle">${fmtNum(t.value, 0)}</text>`).join('');
+        const dots = m.dots.map((d, i) => {
+            const p = points[i];
+            const label = fill(ts('dot', '{0}, {1}'), formatDiveDate(p.date, lang), `${fmtNum(p.sacLpm, 1)}${NB}l/min`);
+            return `<a class="tr-sac-dot${d.used ? '' : ' tr-sac-dot-off'}" href="#/dive/${escHtml(d.id)}" aria-label="${escHtml(label)}">`
+                + `<title>${escHtml(label)}</title><circle class="tr-sac-hit" cx="${Math.round(d.x * 10) / 10}" cy="${Math.round(d.y * 10) / 10}" r="15"/>`
+                + `<circle class="tr-sac-pt" cx="${Math.round(d.x * 10) / 10}" cy="${Math.round(d.y * 10) / 10}" r="4"/></a>`;
+        }).join('');
+        const first = formatDiveDate(points[0].date, lang);
+        const last = formatDiveDate(points.at(-1).date, lang);
+        return `<svg class="tr-sac-chart" viewBox="0 0 ${m.width} ${m.height}" role="group" aria-label="${escHtml(ts('chart', 'SAC per dive'))}">
+                ${grid}<text class="tr-sac-tick" x="${m.plotLeft - 6}" y="6" text-anchor="end" dominant-baseline="middle">l/min</text><path class="tr-sac-line" d="${m.line}"/>${dots}</svg>
+            <p class="tr-sac-axis"><span>${escHtml(first)}</span><span>${escHtml(last)}</span></p>`;
+    }
+
+    _sacHtml() {
+        const s = this.sac;
+        const lang = currentLang();
+        const head = `<h3 class="tr-section-head">${escHtml(ts('title', 'Gas consumption'))}</h3>`;
+        if (!s.points.length) return `${head}<p class="tr-profile-hint">${escHtml(ts('none', 'Add cylinder pressures and an average depth to your dives and your SAC shows up here.'))}</p>`;
+        const val = v => (v === null ? '–' : `${fmtNum(v, 1)}<span class="lb-unit">${NB}l/min</span>`);
+        const tile = (label, v) => `<div class="lb-stat"><dt>${escHtml(label)}</dt><dd>${val(v)}</dd></div>`;
+        const recent = s.recentLpm === null ? '' : tile(fill(ts('recent', 'Last {0} dives'), s.recentCount), s.recentLpm);
+        const plan = s.overallLpm === null ? '' : `<a class="tr-sac-plan" href="../sandbox/index.html?v=1&amp;d=${PLAN_DEPTH_M}&amp;t=${PLAN_TIME_MIN}&amp;sac=${Math.round(s.overallLpm * 10) / 10}">${escHtml(ts('plan', 'Plan a dive with this SAC →'))}</a>`;
+        const off = s.points.some(p => !p.used) ? ` ${escHtml(ts('notCounted', 'Hollow dots are not counted.'))}` : '';
+        return `${head}
+            <dl class="lb-stats tr-sac-stats">${tile(ts('overall', 'Your SAC'), s.overallLpm)}${recent}</dl>
+            <p class="tr-profile-hint">${escHtml(fill(ts('counted', 'Dives counted: {0}'), s.count))}</p>
+            ${this._sacChartHtml(s.points, lang)}
+            <p class="tr-profile-hint">${escHtml(ts('note', 'Litres per minute at the surface, from your cylinder pressures and weighted by dive time. Dives under 10 min, outside 3–60 l/min or far from your usual are left out.'))}${off}</p>
+            ${plan}`;
+    }
+
+    _renderSac() {
+        const el = this.host.querySelector('.tr-sac');
+        if (!el || this.destroyed) return;
+        if (this.sac === null) { el.hidden = true; return; }
+        el.hidden = false;
+        el.innerHTML = this._sacHtml();
     }
 
     _numberingHtml(typed) {

@@ -2950,6 +2950,18 @@
             },
             "profile": {
                 "title": "Tu perfil",
+                "sac": {
+                    "title": "Consumo de gas",
+                    "overall": "Tu SAC",
+                    "recent": "Últimas {0} inmersiones",
+                    "counted": "Inmersiones contadas: {0}",
+                    "note": "Litros por minuto en superficie, a partir de las presiones de tus botellas y ponderado por el tiempo de inmersión. Se descartan las inmersiones de menos de 10 min, fuera de 3–60 l/min o muy distintas de lo habitual.",
+                    "none": "Añade las presiones de las botellas y una profundidad media a tus inmersiones y tu SAC aparecerá aquí.",
+                    "chart": "SAC por inmersión",
+                    "notCounted": "Los puntos huecos no se cuentan.",
+                    "dot": "{0}, {1}",
+                    "plan": "Planificar una inmersión con este SAC →"
+                },
                 "previewNote": "Así te ven los demás miembros.",
                 "avatar": "Avatar",
                 "upload": "Subir foto",
@@ -3344,7 +3356,8 @@
                     "duration": "Tiempo",
                     "avgDepth": "Prof. media",
                     "temp": "Agua",
-                    "gas": "Gas"
+                    "gas": "Gas",
+                    "sac": "SAC"
                 },
                 "morePhotos": "{0} fotos más",
                 "mapAlt": "Mapa de {0}",
