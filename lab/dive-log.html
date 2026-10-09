@@ -816,6 +816,10 @@
         initI18n();
     </script>
     <script type="module">
+        import { registerServiceWorker } from '../js/swRegister.js';
+        registerServiceWorker('../sw.js'); // offline use at the dive site
+    </script>
+    <script type="module">
         import { LogbookApp } from '../js/logbook/LogbookApp.js';
         import { getDiveStore } from '../js/backend/diveStore.js';
         new LogbookApp(document.querySelector('.rda-root'), { store: getDiveStore() });

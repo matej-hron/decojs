@@ -3397,6 +3397,7 @@
             "reportUpdated": "Aktualizováno: {0}",
             "reportFailed": "Nepodařilo se uložit {0}: {1}",
             "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
+            "offline": "Jste offline. Deník ponorů potřebuje připojení, načte se, jakmile budete zase online.",
             "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
             "cannotLogin": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "continueGoogle": "Pokračovat přes Google",
