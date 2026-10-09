@@ -1729,9 +1729,9 @@
             "who": "<strong>Who runs it:</strong> Matěj Hron, a private person. Contact: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
             "what": "<strong>What is stored</strong> when you use it: your email address (and the name and email of your Google account if you sign in with Google), the dives and dive computer recordings you upload, the log entries you write, photos you add, dive sites with their positions, buddy names you type in, and your profile.",
             "where": "<strong>Where:</strong> in a Supabase database and file storage in the EU (Frankfurt). The static site itself is hosted by GitHub Pages. Google sign-in is handled by Google. Maps and place search send the search text, the map area or a site position, and your IP address to Mapy.com (and, as a fallback, to OpenStreetMap). Exporting loads a zip library from cdnjs.cloudflare.com.",
-            "why": "<strong>Why:</strong> to keep your personal dive logbook. Your data is yours; other invited members see it only if you choose to share it.",
+            "why": "<strong>Why:</strong> to keep your personal dive logbook. Your data is yours. Other invited members see your dives, photos, buddy names and profile (name, avatar, country) unless you mark a dive <em>Private</em>; they never see your notes or your email, and see a site’s exact position only if you tick it for that dive.",
             "retention": "<strong>How long:</strong> until you delete it. It is not used for anything else.",
-            "rights": "<strong>Your rights (GDPR):</strong> for access and a copy, use <em>Export</em> in the ⋯ menu to download everything as a zip. To correct something, edit your entries. To delete, use <em>Delete all my data</em> in the same menu: it removes all your dives, recordings, photos and sites. Removing the login itself needs me, so email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. You can also complain to your data protection authority (in Czechia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "rights": "<strong>Your rights (GDPR):</strong> for access and a copy, use <em>Export</em> in the ⋯ menu to download everything as a zip. To correct something, edit your entries. To delete, use <em>Delete all my data</em> in the same menu: it removes all your dives, recordings, photos and sites, and empties your profile. Removing the login itself needs me, so email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. You can also complain to your data protection authority (in Czechia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
             "cookies": "<strong>No tracking or advertising cookies.</strong> Logging in keeps a session token in your browser's local storage."
         },
         "notdone": {
@@ -2935,6 +2935,91 @@
         "startFirst": "fresh start — no earlier dive loaded",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
+        "trail": {
+            "tab": {
+                "feed": "Feed",
+                "list": "My dives",
+                "community": "Community",
+                "sites": "Sites",
+                "profile": "Profile"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail is invite-only. Ask the person who invited you, or ask for an invite.",
+            "learnWhy": "Learn why on DecoTheory ↗",
+            "diver": "Diver",
+            "you": "You",
+            "toFeed": "Back to the Feed",
+            "visibility": {
+                "private": "Private",
+                "members": "Visible to members",
+                "link": "Public link"
+            },
+            "community": {
+                "title": "Community",
+                "intro": "Everyone here was invited. They see your dives unless you make them private.",
+                "deepest": "deepest {0}",
+                "lastDive": "last dive {0}"
+            },
+            "member": {
+                "recentDives": "Recent dives",
+                "notFound": "Member not found",
+                "toCommunity": "Back to Community",
+                "editProfile": "Edit profile",
+                "favouriteSites": "Favourite sites",
+                "noDives": "No dives to show yet.",
+                "stats": {
+                    "dives": "Dives",
+                    "deepest": "Deepest",
+                    "time": "Total time"
+                }
+            },
+            "feed": {
+                "title": "Feed",
+                "loadMore": "Load more",
+                "empty": "No dives from members yet.",
+                "moreFailed": "Couldn’t load more dives. Try again."
+            },
+            "form": {
+                "whoCanSee": "Who can see this dive",
+                "visibility": {
+                    "private": "Private",
+                    "members": "Members",
+                    "link": "Public link (coming soon)"
+                },
+                "visibilityHelp": {
+                    "private": "Only you.",
+                    "members": "Everyone invited to DecoTrail. Your notes stay private.",
+                    "link": "Kept as it is: the public page does not exist yet."
+                },
+                "shareLocation": "Show the exact location to members"
+            },
+            "profile": {
+                "title": "Your profile",
+                "previewNote": "This is how other members see you.",
+                "avatar": "Avatar",
+                "upload": "Upload photo",
+                "remove": "Remove photo",
+                "uploading": "Uploading photo…",
+                "uploaded": "Photo uploaded ✓",
+                "removed": "Photo removed ✓",
+                "replaceNote": "Saving replaces your photo with this avatar.",
+                "unreadable": "Couldn’t read this image. Choose a JPEG, PNG or WebP photo.",
+                "name": "Display name",
+                "nameHelp": "Shown next to your dives. Leave it empty to appear as “Diver”.",
+                "defaultVisibility": "Who sees your new dives",
+                "defaultVisibilityHelp": "You can change it for each dive.",
+                "country": "Home country",
+                "save": "Save",
+                "saving": "Saving…",
+                "saved": "Saved ✓",
+                "account": "Account",
+                "signedInAs": "Signed in as {0}",
+                "emailPrivate": "Your email is never shown to other members.",
+                "signOut": "Sign out"
+            },
+            "disclaimer": "For education only — not a substitute for your dive computer.",
+            "footer": "DecoTrail — dives explained by"
+        },
         "logbook": {
             "wipe": {
                 "menu": "Delete all my data…",
@@ -3310,10 +3395,10 @@
             "reportFailed": "{0} could not be saved: {1}",
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
             "linkExpired": "This login link has expired. Send a new one.",
-            "cannotLogin": "This email can't log in here.",
+            "cannotLogin": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "continueGoogle": "Continue with Google",
             "orEmail": "or use an email link",
-            "cannotLoginGoogle": "This Google account can't log in here.",
+            "cannotLoginGoogle": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "googleCancelled": "Google sign-in was cancelled.",
             "tooManyLinks": "Too many login emails were sent. Wait up to an hour and try again.",
             "genericError": "Something went wrong. Please try again."

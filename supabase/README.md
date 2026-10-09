@@ -68,3 +68,12 @@ Run these in the SQL editor, in order, after `0001_dive_log.sql`:
 2. `supabase/migrations/0003_logbook_dismissed.sql` adds `dives.logbook_dismissed` (so a deleted entry is not recreated from its recording) and limits the `dive-photos` bucket to JPEG files of at most 10 MiB.
 
 **Run both migrations in Supabase BEFORE the code is deployed to `main`.** Once the new code is live, the logged-in page fails without these tables and the column.
+
+## Community migration (0004, DecoTrail)
+
+`supabase/migrations/0004_community.sql` adds member profiles, the `avatars` bucket, per-dive visibility
+(`private | members | link`, existing dives become `members`) and the read functions other members use.
+Run it once in the **SQL Editor** after 0001–0003; running it again is safe.
+
+Test it locally first (needs Docker): `bash supabase/tests/run.sh` applies a small Supabase stub and every
+migration to a throwaway Postgres, runs 0004 twice and checks the access rules as two different users.

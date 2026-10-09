@@ -6,11 +6,13 @@
 
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
+import { createCommunityApi } from './communityStore.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording } from '../logbook/entryModel.js';
 
 export const BUCKET = 'dive-logs';
 export const TABLE = 'dives';
 export const PHOTO_BUCKET = 'dive-photos';
+const AVATAR_BUCKET = 'avatars';
 const ENTRIES = 'log_entries';
 const SITES = 'sites';
 const MEDIA = 'media';
@@ -97,12 +99,17 @@ export function createSupabaseStore(client) {
         },
 
         async signOut() {
+            store.resetCommunityCache();
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
         },
 
         onAuthChange(listener) {
+            let lastId;
             const { data } = client.auth.onAuthStateChange((_event, session) => {
+                const id = session?.user?.id ?? null;
+                if (lastId !== undefined && id !== lastId) store.resetCommunityCache();
+                lastId = id;
                 listener(session?.user ? { id: session.user.id, email: session.user.email } : null);
             });
             return () => data.subscription.unsubscribe();
@@ -200,7 +207,17 @@ export function createSupabaseStore(client) {
             return data ?? null;
         },
 
-        async saveEntry(row, id) {
+        async saveEntry(input, id) {
+            let row = input;
+            if ('visibility' in input || 'share_location' in input) {
+                // Never guess: stripping on a transient probe failure would save a private dive with the DB default.
+                const availability = await store.communityAvailability();
+                if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check community features; the entry was not saved');
+                if (availability === 'no') {
+                    const { visibility, share_location, ...rest } = input; // eslint-disable-line no-unused-vars
+                    row = rest;
+                }
+            }
             const q = id
                 ? client.from(ENTRIES).update({ ...row, updated_at: new Date().toISOString() }).eq('id', id)
                 : client.from(ENTRIES).insert(row);
@@ -366,6 +383,16 @@ export function createSupabaseStore(client) {
                 await removeFiles(BUCKET, [...new Set([...rows.map(r => r.file_path).filter(Boolean), ...await filesUnder(BUCKET, user.id)])]);
                 report.recordings = await deleteIn(TABLE, 'id', rows.map(r => r.id));
             });
+            // DecoTrail profile: the row itself goes with the account; here it is emptied and the avatar files removed.
+            if (await store.communityAvailability?.() === 'yes') {
+                await step('profile', async () => {
+                    await removeFiles(AVATAR_BUCKET, await filesUnder(AVATAR_BUCKET, user.id));
+                    const { error } = await client.from('profiles').update({
+                        display_name: null, avatar_preset: null, avatar_path: null, home_country: null, updated_at: new Date().toISOString(),
+                    }).eq('id', user.id);
+                    if (error) throw fail(error);
+                });
+            }
             return report;
         },
 
@@ -455,6 +482,12 @@ export function createSupabaseStore(client) {
             };
             let next = linked.data.reduce((m, e) => Math.max(m, e.log_number ?? 0), 0) + 1;
             let created = 0;
+            let visibility = null;
+            try {
+                visibility = await store.defaultVisibility();
+            } catch (error) {
+                console.info('Default visibility unavailable; entries use the database default', error?.message ?? error);
+            }
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;
@@ -471,6 +504,7 @@ export function createSupabaseStore(client) {
                 }
                 const insert = number => client.from(ENTRIES).insert({
                     ...fields, owner: user.id, recording_id: r.id, log_number: number,
+                    ...(visibility ? { visibility } : {}),
                 });
                 let { error } = await insert(next);
                 if (isUnique(error, NUMBER_KEY)) {
@@ -582,5 +616,6 @@ export function createSupabaseStore(client) {
             return urls;
         },
     };
+    Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
     return store;
 }
