@@ -658,6 +658,56 @@ test('ProfilePage: shows the profile, saves only the allowed keys, email only he
     });
 });
 
+test('ProfilePage: dive numbering card saves the offset and previews before renumbering', async () => {
+    await withDom(async host => {
+        const log = [];
+        const store = {
+            ...profileStore({ id: 'me', display_name: 'Me', default_visibility: 'members' }, log),
+            getLogOffset: async () => 28,
+            setLogOffset: async n => { log.push(['offset', n]); return n; },
+            planRenumber: async () => ({ offset: 28, changes: [{ id: 'a', from: 29, to: 1 }, { id: 'b', from: 30, to: 2 }] }),
+            renumberByDate: async () => { log.push(['renumber']); return 2; },
+        };
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'me@example.com' } });
+        await flush();
+        const input = host.querySelector('input[name="log_offset"]');
+        assert.equal(input.value, '28');
+        input.value = '12';
+        host.querySelector('.tr-offset-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.deepEqual(log.at(-1), ['offset', 12]);
+        host.querySelector('input[name="log_offset"]').value = '-3';
+        host.querySelector('.tr-offset-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.match(host.querySelector('.tr-numbering-status').textContent, /whole number/);
+        assert.equal(log.filter(l => l[0] === 'offset').length, 1, 'invalid input is not saved');
+
+        host.querySelector('#tr-renumber').click();
+        await flush();
+        assert.match(host.querySelector('.tr-renumber-list').textContent, /#29 → #1/);
+        assert.match(host.querySelector('.tr-renumber-list').textContent, /#30 → #2/);
+        assert.ok(!log.some(l => l[0] === 'renumber'), 'nothing happens before confirming');
+        host.querySelector('#tr-renumber-no').click();
+        assert.equal(host.querySelector('.tr-renumber-plan'), null);
+        host.querySelector('#tr-renumber').click();
+        await flush();
+        host.querySelector('#tr-renumber-yes').click();
+        await flush();
+        assert.deepEqual(log.at(-1), ['renumber']);
+        assert.match(host.querySelector('.tr-numbering-status').textContent, /2 dives renumbered/);
+        page.destroy();
+    });
+});
+
+test('ProfilePage: no numbering card when the store has no offset API', async () => {
+    await withDom(async host => {
+        const page = new ProfilePage(host, { store: profileStore({ id: 'me' }, []), user: { id: 'me' } });
+        await flush();
+        assert.equal(host.querySelector('.tr-numbering').hidden, true);
+        page.destroy();
+    });
+});
+
 test('ProfilePage: an uploaded photo wins; picking a preset and saving removes it', async () => {
     await withDom(async host => {
         const log = [];

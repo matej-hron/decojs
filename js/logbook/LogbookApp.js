@@ -1055,7 +1055,9 @@ export class LogbookApp {
      */
     _storeError(error, { background = false } = {}) {
         console.error(error);
-        this.msg = [error instanceof DiveStoreError && error.kind === 'unreachable'
+        this.msg = [typeof navigator !== 'undefined' && navigator.onLine === false
+            ? tb('offline', 'You\'re offline. Your dive log needs a connection, so it will load again when you\'re back online.')
+            : error instanceof DiveStoreError && error.kind === 'unreachable'
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
         if (this.destroyed || !this.user) return;

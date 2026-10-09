@@ -12,8 +12,10 @@ import { avatarBlob } from './photo.js';
 import { translate } from '../i18n.js';
 import { currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { normalizeLogOffset } from './entryModel.js';
 
 const NAME_MAX = 60;
+const PREVIEW_ROWS = 6;
 const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const tp = (key, fallback) => tt(`profile.${key}`, fallback);
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
@@ -53,6 +55,7 @@ export class ProfilePage {
         this.status = { kind: '', text: '' };
         this.failed = false;
         this.destroyed = false;
+        this.num = { offset: null, plan: null, busy: null, status: { kind: '', text: '' } }; // offset null = not loaded / unsupported
         this._onImgError = e => { if (avatarImgFallback(e)) this.photoUrl = null; };
         this.host.addEventListener('error', this._onImgError, true); // image errors do not bubble
         this._render();
@@ -90,7 +93,21 @@ export class ProfilePage {
         if (this.destroyed) return;
         this._take(profile ?? { id: this.user?.id });
         this._render();
+        this._loadNumbering();
         await this._signPhoto();
+    }
+
+    async _loadNumbering() {
+        if (typeof this.store.getLogOffset !== 'function') return;
+        try {
+            const offset = await this.store.getLogOffset();
+            if (this.destroyed) return;
+            this.num.offset = offset;
+        } catch (error) {
+            console.error(error); // the card simply stays hidden
+            return;
+        }
+        this._renderNumbering();
     }
 
     /** Adopt a saved profile row: it becomes the draft. */
@@ -264,6 +281,72 @@ export class ProfilePage {
         }
     }
 
+    async _saveOffset() {
+        const n = this.num;
+        if (n.busy) return;
+        const input = this.host.querySelector('[name="log_offset"]');
+        const raw = String(input?.value ?? '').trim();
+        if (raw !== '' && !/^\d{1,5}$/.test(raw)) {
+            this._numStatus('error', tp('offsetInvalid', 'Enter a whole number, 0 or more.'));
+            return;
+        }
+        n.busy = 'offset';
+        n.plan = null;
+        this._renderNumbering(raw);
+        try {
+            n.offset = await this.store.setLogOffset(normalizeLogOffset(raw));
+            n.status = { kind: 'ok', text: tp('offsetSaved', 'Saved ✓') };
+        } catch (error) {
+            console.error(error);
+            n.status = { kind: 'error', text: this._errorText(error) };
+        }
+        n.busy = null;
+        if (!this.destroyed) this._renderNumbering();
+    }
+
+    async _previewRenumber() {
+        const n = this.num;
+        if (n.busy) return;
+        n.busy = 'plan';
+        n.status = { kind: '', text: '' };
+        this._renderNumbering();
+        try {
+            n.plan = await this.store.planRenumber();
+            if (!n.plan.changes.length) n.status = { kind: 'ok', text: tp('renumberNothing', 'Your dives are already numbered by date.') };
+        } catch (error) {
+            console.error(error);
+            n.plan = null;
+            n.status = { kind: 'error', text: this._errorText(error) };
+        }
+        n.busy = null;
+        if (!this.destroyed) this._renderNumbering();
+    }
+
+    async _confirmRenumber() {
+        const n = this.num;
+        if (n.busy || !n.plan) return;
+        n.busy = 'renumber';
+        this._renderNumbering();
+        try {
+            const count = await this.store.renumberByDate();
+            n.status = { kind: 'ok', text: tp('renumbered', '{0} dives renumbered ✓').replace('{0}', count) };
+        } catch (error) {
+            console.error(error);
+            n.status = { kind: 'error', text: this._errorText(error) };
+        }
+        n.plan = null;
+        n.busy = null;
+        if (!this.destroyed) this._renderNumbering();
+    }
+
+    _numStatus(kind, text) {
+        this.num.status = { kind, text };
+        const el = this.host.querySelector('.tr-numbering-status');
+        if (!el) return;
+        el.textContent = text;
+        el.className = `tr-profile-status tr-numbering-status${kind ? ` tr-profile-status--${kind}` : ''}`;
+    }
+
     async _signOut() {
         try {
             if (this.onSignOut) await this.onSignOut();
@@ -367,6 +450,7 @@ export class ProfilePage {
                     <p class="tr-profile-status${status.kind ? ` tr-profile-status--${status.kind}` : ''}" role="status">${escHtml(status.text)}</p>
                 </div>
             </form>
+            <div class="rda-card tr-numbering" hidden></div>
             <div class="rda-card tr-profile-account">
                 <h3 class="tr-section-head">${escHtml(tp('account', 'Account'))}</h3>
                 <p class="tr-profile-email">${escHtml(before)}<strong>${escHtml(email)}</strong>${escHtml(after)}</p>
@@ -375,7 +459,60 @@ export class ProfilePage {
             </div>
         </div>`;
         this._wire();
+        this._renderNumbering();
         if (this.busy) this._setBusy(this.busy);
+    }
+
+    _numberingHtml(typed) {
+        const n = this.num;
+        const busy = Boolean(n.busy);
+        const value = typed ?? String(n.offset);
+        let plan = '';
+        if (n.plan?.changes.length) {
+            const rows = n.plan.changes.slice(0, PREVIEW_ROWS)
+                .map(c => `<li><span>#${c.from ?? '–'}</span> → <strong>#${c.to}</strong></li>`).join('');
+            const more = n.plan.changes.length - PREVIEW_ROWS;
+            plan = `<div class="lb-confirm tr-renumber-plan" role="alertdialog" aria-label="${escHtml(tp('renumberConfirmLabel', 'Confirm renumbering'))}">
+                <p>${escHtml(tp('renumberPreview', '{0} dives get a new number, in date order, after your {1} earlier dives:').replace('{0}', n.plan.changes.length).replace('{1}', n.plan.offset))}</p>
+                <ul class="tr-renumber-list">${rows}</ul>
+                ${more > 0 ? `<p class="tr-profile-hint">${escHtml(tp('renumberMore', '…and {0} more').replace('{0}', more))}</p>` : ''}
+                <div class="lb-actions"><button type="button" class="btn btn-primary" id="tr-renumber-yes"${busy ? ' disabled' : ''}>${escHtml(n.busy === 'renumber' ? tp('renumbering', 'Renumbering…') : tp('renumberConfirm', 'Renumber'))}</button>
+                <button type="button" class="btn btn-secondary" id="tr-renumber-no"${busy ? ' disabled' : ''}>${escHtml(tp('cancel', 'Cancel'))}</button></div></div>`;
+        }
+        return `<h3 class="tr-section-head">${escHtml(tp('numbering', 'Dive numbering'))}</h3>
+            <form class="tr-offset-form" novalidate>
+                <label class="lb-field"><span>${escHtml(tp('offset', 'Dives logged before DecoTrail'))}</span>
+                    <input type="number" name="log_offset" inputmode="numeric" min="0" max="99999" step="1" value="${escHtml(value)}" aria-describedby="tr-offset-help"${busy ? ' disabled' : ''}>
+                    <span class="tr-profile-hint" id="tr-offset-help">${escHtml(tp('offsetHelp', 'New dives are numbered after this count, so your DecoTrail log continues your earlier logbook.'))}</span></label>
+                <div class="lb-actions tr-profile-actions">
+                    <button type="submit" class="btn btn-primary" id="tr-offset-save"${busy ? ' disabled' : ''}>${escHtml(n.busy === 'offset' ? tp('saving', 'Saving…') : tp('save', 'Save'))}</button>
+                    <button type="button" class="btn btn-secondary" id="tr-renumber"${busy || n.plan ? ' disabled' : ''}>${escHtml(n.busy === 'plan' ? tp('renumberChecking', 'Checking…') : tp('renumber', 'Renumber all dives by date'))}</button>
+                </div>
+            </form>
+            <p class="tr-profile-hint">${escHtml(tp('renumberHelp', 'Numbers your dives 1, 2, 3… after that count, oldest first. You see what changes before anything happens.'))}</p>
+            ${plan}
+            <p class="tr-profile-status tr-numbering-status${n.status.kind ? ` tr-profile-status--${n.status.kind}` : ''}" role="status">${escHtml(n.status.text)}</p>`;
+    }
+
+    _renderNumbering(typed) {
+        const el = this.host.querySelector('.tr-numbering');
+        if (!el || this.destroyed) return;
+        if (this.num.offset === null) { el.hidden = true; return; }
+        el.hidden = false;
+        el.innerHTML = this._numberingHtml(typed);
+        el.querySelector('form').addEventListener('submit', e => { e.preventDefault(); this._saveOffset(); });
+        el.querySelector('[name="log_offset"]').addEventListener('input', () => {
+            if (this.num.plan) { // the plan was for the old offset: drop it without re-rendering (keeps focus)
+                this.num.plan = null;
+                el.querySelector('.tr-renumber-plan')?.remove();
+                el.querySelector('#tr-renumber').disabled = false;
+            }
+            if (this.num.status.kind) this._numStatus('', '');
+        });
+        el.querySelector('#tr-renumber').addEventListener('click', () => this._previewRenumber());
+        el.querySelector('#tr-renumber-yes')?.addEventListener('click', () => this._confirmRenumber());
+        el.querySelector('#tr-renumber-no')?.addEventListener('click', () => { this.num.plan = null; this._renderNumbering(); });
+        if (this.num.plan && this.num.busy === null) el.querySelector('#tr-renumber-yes')?.focus({ preventScroll: true });
     }
 
     _wire() {

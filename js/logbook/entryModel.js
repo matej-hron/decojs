@@ -117,9 +117,35 @@ export function orderRecordingsForNumbering(rows) {
     });
 }
 
-/** The next free logbook number. */
-export function nextLogNumber(entries) {
-    return entries.reduce((max, e) => Math.max(max, e.log_number ?? 0), 0) + 1;
+/** Sanitise the "dives logged before DecoTrail" setting: an integer >= 0, anything else counts as 0. */
+export function normalizeLogOffset(value) {
+    const n = Math.floor(Number(value));
+    return Number.isFinite(n) && n > 0 ? Math.min(n, 99999) : 0;
+}
+
+/** The next free logbook number: past both the highest used number and the "dives before DecoTrail" offset. */
+export function nextLogNumber(entries, offset = 0) {
+    return entries.reduce((max, e) => Math.max(max, e.log_number ?? 0), normalizeLogOffset(offset)) + 1;
+}
+
+/**
+ * Plan "renumber by date": entries sorted by dive date, entry time, then recording start get
+ * offset + 1 .. offset + n. Returns the whole order (`all`) and the `changes` that need an update.
+ * @param {Array<{id: string, log_number: number|null, dive_date: string, entry_time?: string|null, recording_id?: string|null}>} entries
+ * @param {Map<string, string>|Object} recordingStarts - recording id -> local start ("2026-10-01T09:30:00")
+ */
+export function planRenumber(entries, recordingStarts = new Map(), offset = 0) {
+    const start = id => (id ? (recordingStarts instanceof Map ? recordingStarts.get(id) : recordingStarts[id]) ?? '' : '');
+    const timeOf = e => String(e.entry_time ?? '').slice(0, 8) || String(start(e.recording_id)).slice(11, 19) || '99:99:99';
+    const base = normalizeLogOffset(offset);
+    const sorted = entries.slice().sort((a, b) =>
+        String(a.dive_date).localeCompare(String(b.dive_date))
+        || timeOf(a).localeCompare(timeOf(b))
+        || String(start(a.recording_id)).localeCompare(String(start(b.recording_id)))
+        || (a.log_number ?? Infinity) - (b.log_number ?? Infinity)
+        || String(a.id).localeCompare(String(b.id)));
+    const all = sorted.map((e, i) => ({ id: e.id, from: e.log_number ?? null, to: base + i + 1 }));
+    return { all, changes: all.filter(c => c.from !== c.to) };
 }
 
 /** A stored rating as a whole number 1–5, or null when absent or out of range. */
