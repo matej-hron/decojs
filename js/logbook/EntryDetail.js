@@ -19,6 +19,7 @@ import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { avatarImgFallback } from './avatars.js';
+import { ShareCard } from './ShareCard.js';
 
 const NB = ' ';
 const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
@@ -145,16 +146,19 @@ export class EntryDetail {
      * @param {() => void} options.onDeleted - called after the entry was deleted
      * @param {(error: Error) => void} [options.onError] - for failures the screen cannot show itself
      * @param {boolean} [options.readOnly] - another member's dive: no edit, delete, upload or notes
-     * @param {{name: string, avatarHtml: string, href: string}|null} [options.author] - author row (read-only view)
-     * @param {string} [options.backHref] - target of the back link (default: My dives; read-only: the Feed)
+     * @param {{name: string, avatarHtml: string, href: ?string}|null} [options.author] - author row (read-only view; no link without href)
+     * @param {string|false} [options.backHref] - target of the back link (default: My dives; read-only: the Feed); false: none
+     * @param {string|false} [options.analysisHref] - target of the Analysis button (default: the analysis route); false: none
      */
-    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null }) {
+    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
         this.readOnly = Boolean(readOnly);
         this.author = author;
-        this.backHref = backHref ?? routeHref({ name: this.readOnly ? 'feed' : 'list' });
+        this.backHref = backHref === false ? null : backHref ?? routeHref({ name: this.readOnly ? 'feed' : 'list' });
+        this.analysisHref = analysisHref;
+        this.shareCard = null;
         this.onDeleted = onDeleted;
         this.onError = onError;
         this.destroyed = false;
@@ -174,19 +178,40 @@ export class EntryDetail {
         document.addEventListener('keydown', this._onKey);
         this._onImgError = e => avatarImgFallback(e); // an author photo that fails falls back to the preset
         this.container.addEventListener('error', this._onImgError, true);
-        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
+        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-actions"></div><div class="lb-d-share"></div><div class="lb-d-panel"></div></section>`;
         this.main = this.container.querySelector('.lb-d-main');
         this.mediaEl = this.container.querySelector('.lb-d-media');
         this.actionsEl = this.container.querySelector('.lb-d-actions');
         this.panel = this.container.querySelector('.lb-d-panel');
+        this.shareEl = this.container.querySelector('.lb-d-share');
         this.renderMain();
         this.renderMedia();
         this.renderPanel();
         this._load();
+        if (!this.readOnly) this._mountShare();
+    }
+
+    /** The public-link card, only when the backend has share links (migration 0005). */
+    async _mountShare() {
+        let available = false;
+        try {
+            available = typeof this.store.shareStatus === 'function' && await this.store.shareStatus();
+        } catch (error) {
+            console.warn('Share links unavailable', error);
+        }
+        if (!available || this.destroyed) return;
+        this.shareCard = new ShareCard(this.shareEl, {
+            store: this.store, entry: this.entry,
+            onChange: saved => {
+                this.entry = { ...this.entry, ...saved };
+                if (!this.destroyed) this.renderMain();
+            },
+        });
     }
 
     destroy() {
         this.destroyed = true;
+        this.shareCard?.destroy();
         document.removeEventListener('keydown', this._onKey);
         this.container.removeEventListener('error', this._onImgError, true);
         this._removeMap();
@@ -200,6 +225,7 @@ export class EntryDetail {
         this.renderMain();
         this.renderMedia();
         this.renderPanel();
+        this.shareCard?.relabel();
     }
 
     async _load() {
@@ -271,10 +297,12 @@ export class EntryDetail {
         const gas = gasCards(e, label, fmtNum);
         this.main.innerHTML = `
             <div class="lb-d-top">
-                <a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>
+                ${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
                 ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}
             </div>
-            ${a ? `<div class="tr-author lb-d-author"><a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a></div>` : ''}
+            ${a ? `<div class="tr-author lb-d-author">${a.href
+                ? `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`
+                : `<span class="tr-author-link">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></span>`}</div>` : ''}
             <div class="lb-d-title">
                 <h2 class="lb-d-head${siteName ? '' : ' lb-untitled'}">${escHtml(siteName ?? diveTitle(e, null, k => translate(`diveLog.logbook.${k}`, TITLE_FALLBACK[k])))}</h2>
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
@@ -296,8 +324,8 @@ export class EntryDetail {
                 ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
 `;
         // Below the photos, right above the panel where Delete asks for confirmation.
-        const analysisLink = e.recording_id
-            ? `<a class="btn btn-secondary" href="${routeHref({ name: this.readOnly ? 'memberAnalysis' : 'analysis', id: e.id })}">${escHtml(td('analysis', 'Analysis'))}</a>` : '';
+        const analysisLink = e.recording_id && this.analysisHref !== false
+            ? `<a class="btn btn-secondary" href="${escHtml(this.analysisHref ?? routeHref({ name: this.readOnly ? 'memberAnalysis' : 'analysis', id: e.id }))}">${escHtml(td('analysis', 'Analysis'))}</a>` : '';
         if (this.readOnly) {
             this.actionsEl.innerHTML = analysisLink;
             if (hasCoords) this._mountMap(this.site);

@@ -1731,6 +1731,7 @@
             "what": "<strong>What is stored</strong> when you use it: your email address (and the name and email of your Google account if you sign in with Google), the dives and dive computer recordings you upload, the log entries you write, photos you add, dive sites with their positions, buddy names you type in, and your profile.",
             "where": "<strong>Where:</strong> in a Supabase database and file storage in the EU (Frankfurt). The static site itself is hosted by GitHub Pages. Google sign-in is handled by Google. Maps and place search send the search text, the map area or a site position, and your IP address to Mapy.com (and, as a fallback, to OpenStreetMap). Exporting loads a zip library from cdnjs.cloudflare.com.",
             "why": "<strong>Why:</strong> to keep your personal dive logbook. Your data is yours. Other invited members see your dives, photos, buddy names and profile (name, avatar, country) unless you mark a dive <em>Private</em>; they never see your notes or your email, and see a site’s exact position only if you tick it for that dive.",
+            "share": "<strong>Public links:</strong> if you turn on the public link of a dive, anyone who has that link can see that one dive without an account: the profile and analysis, date, depth, time, gas, site name, photos, video links, buddy and guide names, and your display name and avatar. Never your notes, your email or your other dives; the exact position only if you ticked it. Pages behind a link are not indexed by search engines. Turning the link off stops it at once; a photo address someone already opened can keep working for up to 10 minutes.",
             "retention": "<strong>How long:</strong> until you delete it. It is not used for anything else.",
             "rights": "<strong>Your rights (GDPR):</strong> for access and a copy, use <em>Export</em> in the ⋯ menu to download everything as a zip. To correct something, edit your entries. To delete, use <em>Delete all my data</em> in the same menu: it removes all your dives, recordings, photos and sites, and empties your profile. Removing the login itself needs me, so email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. You can also complain to your data protection authority (in Czechia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
             "cookies": "<strong>No tracking or advertising cookies.</strong> Logging in keeps a session token in your browser's local storage."
@@ -2987,14 +2988,16 @@
                 "visibility": {
                     "private": "Private",
                     "members": "Members",
-                    "link": "Public link (coming soon)"
+                    "link": "Public link"
                 },
                 "visibilityHelp": {
                     "private": "Only you.",
                     "members": "Everyone invited to DecoTrail. Your notes stay private.",
-                    "link": "Kept as it is: the public page does not exist yet."
+                    "link": "Anyone with the link, no account needed. Members see it too. Never your notes.",
+                    "linkUnavailable": "Kept as it is: public links are not available yet."
                 },
-                "shareLocation": "Show the exact location to members"
+                "shareLocation": "Show the exact location to members",
+                "shareLocationAll": "Show the exact location"
             },
             "profile": {
                 "title": "Your profile",
@@ -3021,7 +3024,30 @@
                 "signOut": "Sign out"
             },
             "disclaimer": "For education only — not a substitute for your dive computer.",
-            "footer": "DecoTrail — dives explained by"
+            "footer": "DecoTrail — dives explained by",
+            "share": {
+                "title": "Public link",
+                "helpOff": "Turn on to get a link anyone can open, no account needed. Your notes are never shown.",
+                "helpOn": "Anyone with this link can see the dive, its photos, buddies and your name — no account needed. Never your notes.",
+                "linkLabel": "Link to this dive",
+                "copy": "Copy link",
+                "share": "Share…",
+                "copied": "Link copied",
+                "copyFailed": "Select the link and copy it",
+                "offNote": "Turning it off stops the link at once. Turning it on again makes a new link.",
+                "turnedOff": "Link turned off. The old link no longer works.",
+                "shareTitle": "DecoTrail dive",
+                "formNew": "The link is created when you save.",
+                "formOffNote": "Choosing Private or Members and saving stops this link.",
+                "pageIntro": "A dive shared from DecoTrail.",
+                "analysisTitle": "Profile and analysis",
+                "missingTitle": "This link does not work",
+                "missingText": "The diver may have turned the link off, or it was copied incompletely. Ask them for a new link.",
+                "errorTitle": "The dive could not be loaded",
+                "errorText": "Check your connection and try again.",
+                "retry": "Try again",
+                "toDecoTheory": "Learn how decompression works on DecoTheory"
+            }
         },
         "logbook": {
             "wipe": {

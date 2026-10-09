@@ -13,6 +13,7 @@ import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { OFFERED_VISIBILITIES } from './community.js';
+import { shareUrl } from './share.js';
 import { gasName } from '../import/recordedDive.js';
 import {
     MIX_PRESETS, CYLINDER_GROUPS, CYLINDER_PRESETS, MATERIALS, cylinderPreset, cylinderText,
@@ -48,7 +49,8 @@ const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const VISIBILITY_TEXT = Object.freeze({
     private: ['Private', 'Only you.'],
     members: ['Members', 'Everyone invited to DecoTrail. Your notes stay private.'],
-    link: ['Public link (coming soon)', 'Kept as it is: the public page does not exist yet.'],
+    link: ['Public link', 'Anyone with the link, no account needed. Members see it too. Never your notes.'],
+    linkUnavailable: ['Public link', 'Kept as it is: public links are not available yet.'],
 });
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 /** A field label without its unit, for messages ("Start (bar)" → "Start"). */
@@ -129,10 +131,11 @@ export class EntryForm {
      * @param {string} [options.recordingId] - recording to link to a new entry
      * @param {boolean} [options.community] - the community backend exists: offer "Who can see this dive"
      * @param {string|null} [options.defaultVisibility] - the profile default for a new entry (else members)
+     * @param {boolean} [options.share] - public share links exist (migration 0005): offer "Public link"
      * @param {(entry: Object) => void} options.onSaved
      * @param {() => void} options.onCancel
      */
-    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, onSaved, onCancel }) {
+    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, share = false, onSaved, onCancel }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -152,6 +155,7 @@ export class EntryForm {
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
         this.gasTouched = false; // true once the user edits the gas block
         // Without the community backend nothing is shown and nothing is sent.
+        this.share = Boolean(community && share);
         this.sharing = community ? {
             visibility: entry?.visibility ?? (OFFERED_VISIBILITIES.includes(defaultVisibility) ? defaultVisibility : 'members'),
             share_location: entry?.share_location === true,
@@ -353,6 +357,17 @@ export class EntryForm {
             this._save();
         });
         c.querySelector('#lb-cancel').addEventListener('click', () => this.onCancel?.());
+        c.querySelector('.lb-vis-copy')?.addEventListener('click', async () => {
+            const input = c.querySelector('.lb-vis-share .lb-share-url');
+            const note = c.querySelector('.lb-vis-share-note');
+            try {
+                await navigator.clipboard.writeText(input.value);
+                note.textContent = translate('diveLog.trail.share.copied', 'Link copied');
+            } catch {
+                input.focus();
+                input.select();
+            }
+        });
         this._wireGases();
         const buddyInput = c.querySelector('[name="buddy"]');
         c.querySelector('#lb-add-buddy').addEventListener('click', () => this._addBuddy());
@@ -392,18 +407,27 @@ export class EntryForm {
     _sharingHtml() {
         if (!this.sharing) return '';
         const { visibility, share_location: shareLocation } = this.sharing;
-        const values = visibility === 'link' ? [...OFFERED_VISIBILITIES, 'link'] : OFFERED_VISIBILITIES;
+        const values = this.share || visibility === 'link' ? [...OFFERED_VISIBILITIES, 'link'] : OFFERED_VISIBILITIES;
         const radio = value => {
-            const [label, help] = VISIBILITY_TEXT[value];
+            const textKey = value === 'link' && !this.share ? 'linkUnavailable' : value;
+            const [label, help] = VISIBILITY_TEXT[textKey];
             return `<label class="lb-vis-option"><input type="radio" name="visibility" value="${value}"${value === visibility ? ' checked' : ''}>
                 <span class="lb-vis-text"><span class="lb-vis-label">${escHtml(tt(`form.visibility.${value}`, label))}</span>
-                <span class="lb-vis-help">${escHtml(tt(`form.visibilityHelp.${value}`, help))}</span></span></label>`;
+                <span class="lb-vis-help">${escHtml(tt(`form.visibilityHelp.${textKey}`, help))}</span></span></label>`;
         };
+        // While "Public link" is chosen (CSS :has), the current link or a note that saving makes one.
+        const url = this.share && this.entry?.visibility === 'link' ? shareUrl(this.entry.share_token, globalThis.location?.href) : null;
+        const linkRow = !this.share ? '' : url
+            ? `<div class="lb-vis-share"><input type="text" class="lb-share-url" readonly value="${escHtml(url)}" aria-label="${escHtml(translate('diveLog.trail.share.linkLabel', 'Link to this dive'))}">
+                <button type="button" class="btn btn-secondary lb-vis-copy">${escHtml(translate('diveLog.trail.share.copy', 'Copy link'))}</button>
+                <p class="lb-vis-share-note" role="status">${escHtml(translate('diveLog.trail.share.formOffNote', 'Choosing Private or Members and saving stops this link.'))}</p></div>`
+            : `<div class="lb-vis-share"><p class="lb-vis-share-note">${escHtml(translate('diveLog.trail.share.formNew', 'The link is created when you save.'))}</p></div>`;
         return `<fieldset class="lb-field lb-visibility">
                         <legend>${escHtml(tt('form.whoCanSee', 'Who can see this dive'))}</legend>
                         <div class="lb-vis-options">${values.map(radio).join('')}</div>
+                        ${linkRow}
                         <label class="lb-check lb-vis-location"><input type="checkbox" name="share_location"${shareLocation ? ' checked' : ''}>
-                            <span>${escHtml(tt('form.shareLocation', 'Show the exact location to members'))}</span></label>
+                            <span>${escHtml(this.share ? tt('form.shareLocationAll', 'Show the exact location') : tt('form.shareLocation', 'Show the exact location to members'))}</span></label>
                     </fieldset>`;
     }
 

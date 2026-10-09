@@ -509,13 +509,14 @@ export class LogbookApp {
             store: this.store, ready: this.ensured,
             onChoose: async ({ prefill, recordingId }) => {
                 const community = await this._communityForForm();
+                const share = await this._shareForForm(community);
                 const defaultVisibility = community && this.store.defaultVisibility
                     ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
                     : null;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId, community, defaultVisibility,
+                    store: this.store, prefill, recordingId, community, defaultVisibility, share,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
@@ -536,6 +537,12 @@ export class LogbookApp {
         return this.community;
     }
 
+    /** Whether the form offers "Public link" (migration 0005); no answer means no offer. */
+    async _shareForForm(community) {
+        if (!community || typeof this.store.shareStatus !== 'function') return false;
+        return this.store.shareStatus().catch(error => { console.warn(error); return false; });
+    }
+
     async _showEdit(id, token) {
         this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         let entry;
@@ -551,10 +558,11 @@ export class LogbookApp {
             return;
         }
         const community = await this._communityForForm();
+        const share = await this._shareForForm(community);
         if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, onSaved: back, onCancel: back });
     }
 
     /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */

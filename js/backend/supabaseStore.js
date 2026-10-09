@@ -7,6 +7,7 @@
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
+import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording } from '../logbook/entryModel.js';
 
 export const BUCKET = 'dive-logs';
@@ -233,6 +234,15 @@ export function createSupabaseStore(client) {
                 if (flagError) console.warn('Could not clear logbook_dismissed', flagError);
             }
             return data;
+        },
+
+        /**
+         * Turn the public link of a dive on (visibility `link`; the database makes a new token) or off
+         * (back to `before` when that was private/members, else members; the token is cleared at once).
+         * @returns {Promise<Object>} the saved entry, with `share_token` when on
+         */
+        async setSharing(id, on, before = null) {
+            return store.saveEntry({ visibility: on ? 'link' : visibilityAfterSharing(before) }, id);
         },
 
         async deleteEntry(id) {
