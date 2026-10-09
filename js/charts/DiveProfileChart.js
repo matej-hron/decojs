@@ -30,7 +30,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
-import { narrowChartPlugin, syncNarrowClass } from './narrowLayout.js';
+import { narrowChartPlugin, syncNarrowClass, isNarrowChartWidth } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { TouchReadout, nearestIndex, profileReadoutView, profileReadoutLines } from './touchReadout.js';
 import { translate } from '../i18n.js';
@@ -123,6 +123,9 @@ export class DiveProfileChart {
         
         // Visible compartments for tissue loading mode - default to fastest only
         this.visibleCompartments = new Set([1]);
+        this._defaultCompartments = [...this.visibleCompartments];
+        // Once the user picks compartments, options.carriedOver no longer changes the selection.
+        this._userPickedCompartments = false;
         
         // Zoom state preservation
         this.savedZoomState = null;
@@ -146,6 +149,8 @@ export class DiveProfileChart {
             this.diveSetup = null;
         }
         
+        this._applyCompartmentSuggestion();
+
         // Build DOM structure
         this._buildDOM();
 
@@ -302,6 +307,7 @@ export class DiveProfileChart {
             
             // Only handle arrow keys in tissue mode
             if (!this.options.showTissueLoading) return;
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') this._userPickedCompartments = true;
             
             switch (e.key) {
                 case 'ArrowUp':
@@ -410,6 +416,10 @@ export class DiveProfileChart {
             { text: translate('chart.buttons.fast', 'Fast'), action: () => this._selectFastCompartments() },
             { text: translate('chart.buttons.slow', 'Slow'), action: () => this._selectSlowCompartments() }
         ];
+        if (this.options.carriedOver?.suggested?.length) {
+            buttons.push({ text: translate('chart.buttons.preload', 'Carried over'), action: () => this._selectCompartments(this.options.carriedOver.suggested) });
+        }
+        btnGroup.className = 'dpc-tissue-buttons';
 
         buttons.forEach(({ text, action }) => {
             const btn = document.createElement('button');
@@ -418,12 +428,16 @@ export class DiveProfileChart {
                 padding: 4px 8px; background: #e9ecef; border: 1px solid #ced4da;
                 border-radius: 4px; cursor: pointer; font-size: 12px;
             `;
-            btn.addEventListener('click', action);
+            btn.addEventListener('click', () => {
+                this._userPickedCompartments = true;
+                action();
+            });
             btnGroup.appendChild(btn);
         });
 
         // Add keyboard hint
         const hint = document.createElement('span');
+        hint.className = 'dpc-key-hint'; // hidden on touch screens (css/styles.css)
         hint.textContent = translate('chart.hints.arrowShiftArrow', '↑↓ move, Shift+↑↓ expand/shrink');
         hint.style.cssText = 'font-size: 11px; color: #6c757d; margin-left: 8px;';
         btnGroup.appendChild(hint);
@@ -432,6 +446,7 @@ export class DiveProfileChart {
         
         // Compartment checkboxes
         const checkboxContainer = document.createElement('div');
+        checkboxContainer.className = 'dpc-tissue-chips';
         checkboxContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;';
         
         COMPARTMENTS.forEach(comp => {
@@ -447,6 +462,7 @@ export class DiveProfileChart {
             checkbox.checked = this.visibleCompartments.has(comp.id);
             checkbox.dataset.compartmentId = comp.id;
             checkbox.addEventListener('change', () => {
+                this._userPickedCompartments = true;
                 if (checkbox.checked) {
                     this.visibleCompartments.add(comp.id);
                 } else {
@@ -481,6 +497,23 @@ export class DiveProfileChart {
         }
     }
     
+    _selectCompartments(ids) {
+        this.visibleCompartments = new Set(ids);
+        this._updateCompartmentCheckboxes();
+        this._render();
+    }
+
+    /**
+     * Opt-in `carriedOver.suggested`: the compartments to show first for a dive that starts with
+     * carried-over nitrogen (the chart default otherwise), until the user picks their own.
+     * @private
+     */
+    _applyCompartmentSuggestion() {
+        if (this._userPickedCompartments) return;
+        const suggested = this.options.carriedOver?.suggested;
+        this.visibleCompartments = new Set(suggested?.length ? suggested : this._defaultCompartments);
+    }
+
     _selectAllCompartments() {
         COMPARTMENTS.forEach(c => this.visibleCompartments.add(c.id));
         this._updateCompartmentCheckboxes();
@@ -1023,6 +1056,7 @@ export class DiveProfileChart {
 
         // Prepare datasets
         const datasets = [];
+        const depthBand = Boolean(this.options.narrowDepthBand && this.options.showTissueLoading);
 
         // Depth profile (primary) — vertical gradient fill: lighter near
         // the surface, fading toward transparent at the floor so the
@@ -1033,25 +1067,39 @@ export class DiveProfileChart {
                 x: t,
                 y: results.depthPoints[i]
             })),
-            borderColor: this.options.colors.depth,
+            // Opt-in depth band (narrow Tissues view, no depth axis): a faint silhouette behind the pressures
+            borderColor: depthBand
+                ? ctx => (isNarrowChartWidth(ctx.chart.width) ? `${this.options.colors.depth}59` : this.options.colors.depth)
+                : this.options.colors.depth,
             backgroundColor: (ctx) => {
                 const { chart } = ctx;
+                if (depthBand && isNarrowChartWidth(chart.width)) return `${this.options.colors.depth}1a`;
                 return depthGradient(chart.ctx, chart.chartArea, this.options.colors.depth);
             },
             fill: true,
             yAxisID: 'yDepth',
             tension: 0,
             pointRadius: 0,
-            borderWidth: 2.25,
+            borderWidth: depthBand ? ctx => (isNarrowChartWidth(ctx.chart.width) ? 1 : 2.25) : 2.25,
             order: 10
         });
         
         // Tissue loading curves (if enabled)
         if (this.options.showTissueLoading) {
+            // Opt-in: a hollow dot at t = 0 on lines that start with carried-over nitrogen
+            const carried = new Set(this.options.carriedOver?.compartments ?? []);
+            const startDotFill = theme().colors.surface;
             COMPARTMENTS.forEach(comp => {
                 if (!this.visibleCompartments.has(comp.id)) return;
                 
                 const pressureData = results.compartments[comp.id].pressures;
+                const startDot = carried.has(comp.id)
+                    ? {
+                        pointRadius: ctx => (ctx.dataIndex === 0 ? 4 : 0),
+                        pointBackgroundColor: startDotFill, pointBorderColor: comp.color, pointBorderWidth: 2,
+                        clip: { left: 6, top: 0, right: 0, bottom: 0 } // the dot sits on the left edge
+                    }
+                    : {};
                 datasets.push({
                     label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                     data: results.timePoints.map((t, i) => ({
@@ -1065,7 +1113,8 @@ export class DiveProfileChart {
                     tension: 0.1,
                     pointRadius: 0,
                     borderWidth: 1.5,
-                    order: 20
+                    order: 20,
+                    ...startDot
                 });
             });
             
@@ -1249,7 +1298,7 @@ export class DiveProfileChart {
                     text: translate('chart.axes.depthMeters', 'Depth (m)')
                 },
                 min: this.options.showLabels ? -10 : 0,
-                max: maxDepth + 5  // Add padding below max depth
+                max: Math.ceil(maxDepth + 5)  // Padding below max depth; whole metres so the last tick is round
             }
         };
         
@@ -1311,6 +1360,31 @@ export class DiveProfileChart {
         
         // Stop labels (deco stops) - shown unless showDecoStops is false
         this._addStopLabelsIfEnabled(annotations, waypoints);
+
+        // Opt-in: one note next to the highest start dot of the carried-over tissues
+        if (this.options.showTissueLoading && this.options.carriedOver?.label) {
+            const starts = (this.options.carriedOver.compartments ?? [])
+                .filter(id => this.visibleCompartments.has(id) && results.compartments[id])
+                .map(id => results.compartments[id].pressures[0]);
+            if (starts.length > 0) {
+                const surface = theme().colors.surface;
+                annotations.carriedOver = {
+                    type: 'label',
+                    xValue: results.timePoints[0],
+                    yValue: Math.max(...starts),
+                    yScaleID: 'yPressure',
+                    position: { x: 'start', y: 'end' },
+                    xAdjust: 8,
+                    yAdjust: -6,
+                    content: [this.options.carriedOver.label],
+                    color: theme().colors.muted,
+                    // translucent plate: stays readable where it crosses the pN₂ line
+                    backgroundColor: /^#[0-9a-f]{6}$/i.test(surface) ? `${surface}cc` : surface,
+                    font: { size: 10, style: 'italic' },
+                    padding: { top: 1, bottom: 1, left: 2, right: 2 }
+                };
+            }
+        }
         
         // Reserve pressure line (if showing gas consumption)
         if (this.options.showGasConsumption && gasConsumption) {
@@ -1490,6 +1564,7 @@ export class DiveProfileChart {
                     intersect: false
                 },
                 plugins: {
+                    ...(depthBand ? { narrowLayout: { depthBand: true } } : {}),
                     legend: {
                         display: this.options.showLegend !== false,
                         position: 'top',
@@ -1703,7 +1778,7 @@ export class DiveProfileChart {
      */
     update(diveSetup, options) {
         if (options) {
-            this.options = mergeOptions(this.options, options);
+            this._setOptions(options);
         }
         
         const validation = validateDiveSetup(diveSetup);
@@ -1784,12 +1859,24 @@ export class DiveProfileChart {
      * @param {Object} options - New chart options
      */
     setOptions(options) {
-        this.options = mergeOptions(this.options, options);
+        this._setOptions(options);
         if (this.diveSetup) {
             this._render();
         }
     }
     
+    /** Merge options; a new `carriedOver` re-applies the compartment suggestion and the preset button. @private */
+    _setOptions(options) {
+        const carriedBefore = JSON.stringify(this.options.carriedOver ?? null);
+        this.options = mergeOptions(this.options, options);
+        // Replaced, not merged: mergeOptions would keep the previous object when null comes in.
+        if (options.carriedOver !== undefined) this.options.carriedOver = options.carriedOver;
+        if (JSON.stringify(this.options.carriedOver ?? null) !== carriedBefore) {
+            this._applyCompartmentSuggestion();
+            this._buildTissueControls();
+        }
+    }
+
     /**
      * Get the current calculated results
      * @returns {Object|null} Calculation results or null if no data

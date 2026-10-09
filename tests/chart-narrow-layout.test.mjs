@@ -125,3 +125,28 @@ test('ranking placement', () => {
     assert.equal(rankingPlacement(800), 'overlay');
     assert.equal(rankingPlacement(0), 'hidden');
 });
+
+test('depth band (opt-in): narrow hides the depth axis and gives pressure the grid; wide restores', () => {
+    const opts = () => ({
+        plugins: { narrowLayout: { depthBand: true } },
+        scales: {
+            yDepth: { position: 'left', title: { text: 'Depth' } },
+            yPressure: { position: 'right', grid: { drawOnChartArea: false } },
+        },
+    });
+    const o = opts();
+    const saved = new Map();
+    applyNarrowOverrides(o, true, saved);
+    assert.equal(o.scales.yDepth.display, false);
+    assert.equal(o.scales.yPressure.position, 'right');
+    assert.equal(o.scales.yPressure.grid.drawOnChartArea, true);
+    applyNarrowOverrides(o, false, saved);
+    assert.deepEqual(o, opts());
+});
+
+test('depth band is off without the flag', () => {
+    const o = { scales: { yDepth: { position: 'left' }, yPressure: { position: 'right' } } };
+    applyNarrowOverrides(o, true, new Map());
+    assert.equal(o.scales.yDepth.display, undefined);
+    assert.equal(o.scales.yPressure.grid, undefined);
+});

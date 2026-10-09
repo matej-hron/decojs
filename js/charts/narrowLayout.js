@@ -5,7 +5,8 @@
  * in lab/dive-log.html does the DOM layout). A chart is "narrow" when its host is at most
  * NARROW_CHART_MAX_WIDTH wide. Narrow charts:
  *  - get the `chart-narrow` class on their host,
- *  - get smaller Chart.js fonts and a top gutter for the overlay buttons (narrowChartPlugin).
+ *  - get smaller Chart.js fonts and a top gutter for the overlay buttons (narrowChartPlugin),
+ *  - with `plugins.narrowLayout.depthBand`, hide the depth axis (pressure keeps the grid).
  * Desktop options are saved before the first override and restored when the chart widens
  * again (a phone rotated to landscape), so desktop rendering is unchanged.
  */
@@ -42,6 +43,12 @@ function narrowOverrides(options) {
         [['plugins', 'legend', 'labels', 'padding'], 6],
         [['plugins', 'legend', 'labels', 'font', 'size'], 11],
     ];
+    // Opt-in (plugins.narrowLayout.depthBand): one y axis. The depth profile stays as a background band.
+    // The pressure axis keeps its side: Chart.js reads `position` before beforeUpdate, so moving it would lag.
+    if (options.plugins?.narrowLayout?.depthBand && options.scales?.yDepth && options.scales?.yPressure) {
+        list.push([['scales', 'yDepth', 'display'], false]);
+        list.push([['scales', 'yPressure', 'grid', 'drawOnChartArea'], true]);
+    }
     for (const id of Object.keys(options.scales ?? {})) {
         list.push([['scales', id, 'title', 'font', 'size'], 11]);
         list.push([['scales', id, 'ticks', 'font', 'size'], 10]);

@@ -1068,7 +1068,8 @@
             "all": "Vše",
             "none": "Žádné",
             "fast": "Rychlé",
-            "slow": "Pomalé"
+            "slow": "Pomalé",
+            "preload": "Přenesené"
         },
         "hints": {
             "compartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · F režim celé obrazovky",
@@ -2924,8 +2925,10 @@
         "helpText": "Plný strop počítá DecoTheory pro zvolený GF: drží GF Low až do začátku výstupu a pak přechází ke GF High. Čárkovaný strop zaznamenal počítač se svým GF a podle svého pravidla; při dekompresních ponorech během výstupu obvykle mizí rychleji. Změna GF nemění vaše tkáně — jen to, kde leží limit.",
         "chainToggle": "Započítat dřívější ponory (opakované ponory)",
         "startState": "Výchozí stav",
-        "startChained": "nese dusík z {0} ({1}); poslední povrchový interval {2} h",
-        "startChainCount": "dřívějších ponorů: {0}",
+        "startChainedOne": "nese dusík z {0} (povrchový interval {1} h)",
+        "startChainedMany": "nese dusík z {0} (poslední povrchový interval {1} h)",
+        "startPreloadIn": ", převážně v {0}",
+        "carriedOverFrom": "přeneseno z {0}",
         "startLongGap": "čistý start — předchozí ponor před {0} dny",
         "startSettled": "čistý start — tkáně se vyrovnaly během {0} h na povrchu",
         "startClock": "čistý start — předchozí ponor se časově překrývá (hodiny počítače)",

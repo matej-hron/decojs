@@ -468,6 +468,50 @@
         }
         .rda-root .chart-narrow :is(.mvc-controls, .gfc-controls) > div:last-child { display: none; } /* keyboard-shortcut hint */
 
+        /* Dark theme: DiveProfileChart gives its tissue controls a light inline background (all widths) */
+        :root[data-theme="dark"] .rda-root .dpc-tissue-controls { background: var(--surface-sunken) !important; }
+        :root[data-theme="dark"] .rda-root .dpc-tissue-buttons > button {
+            background: var(--surface-elevated) !important;
+            border-color: var(--border) !important;
+            color: var(--text);
+        }
+
+        /* Tissues view picker: the same chips, quick buttons on one row above them */
+        .rda-root .chart-narrow > .dpc-tissue-controls { padding: 6px !important; }
+        .rda-root .chart-narrow .dpc-tissue-buttons {
+            flex-wrap: nowrap !important;
+            margin-right: 0 !important;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .rda-root .chart-narrow .dpc-tissue-buttons > button { flex: none; min-height: 34px; }
+        .rda-root .chart-narrow .dpc-key-hint { display: none; }
+        .rda-root .chart-narrow .dpc-tissue-chips { gap: 4px !important; margin-top: 6px !important; }
+        .rda-root .chart-narrow .dpc-tissue-chips > label {
+            position: relative;
+            flex: 0 0 calc((100% - 7 * 4px) / 8);
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 !important;
+            font-variant-numeric: tabular-nums;
+        }
+        .rda-root .chart-narrow .dpc-tissue-chips > label > input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: 0;
+            opacity: 0;
+        }
+        .rda-root .chart-narrow .dpc-tissue-chips > label > span { display: none; }
+        .rda-root .chart-narrow .dpc-tissue-chips > label:has(input:checked) {
+            background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+            font-weight: 700;
+        }
+        .rda-root .chart-narrow .dpc-tissue-chips > label:focus-within {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 1px;
+        }
+
         /* Playback: buttons fill the first row, slider and time share the second */
         .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) { flex-wrap: wrap; gap: 6px !important; }
         .rda-root .chart-narrow :is(.mvc-timeline, .gfc-timeline) > button { flex: 1 0 40px; min-height: 40px; }

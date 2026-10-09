@@ -54,8 +54,13 @@ function offGas(tissues, minutes, surfacePressure, n2Fraction) {
     return result;
 }
 
+/** Surface saturation for a dive: the tissue N₂ pressure a fresh start uses. */
+function surfaceSaturation(setup) {
+    return getInitialTissueN2(setup.gases[0].n2, getDiveSetupSurfacePressure(setup));
+}
+
 function isSettled(tissues, setup) {
-    const saturated = getInitialTissueN2(setup.gases[0].n2, getDiveSetupSurfacePressure(setup));
+    const saturated = surfaceSaturation(setup);
     return COMPARTMENTS.every(comp => Math.abs(tissues[comp.id] - saturated) < CHAIN_SETTLED_BAR);
 }
 
@@ -86,12 +91,14 @@ function runDive(dive, startTissues) {
  *   initialTissuePressures: Object|null,
  *   chain: Array<{dive: Object, surfaceIntervalMin: number}>,
  *   reason: 'chained'|'no-earlier-dive'|'long-gap'|'settled'|'clock-overlap'|'unreliable-date'|'not-chainable',
- *   previousGapMin: number|null
+ *   previousGapMin: number|null,
+ *   preload: Array<{id: number, excessBar: number}>
  * }} initialTissuePressures is null for a fresh start; chain lists the earlier
- *   dives carried over, oldest first, each with the surface interval after it
+ *   dives carried over, oldest first, each with the surface interval after it;
+ *   preload ranks the compartments above surface saturation (see rankPreload)
  */
 export function startStateFor(target, dives) {
-    const fresh = (reason, previousGapMin = null) => ({ initialTissuePressures: null, chain: [], reason, previousGapMin });
+    const fresh = (reason, previousGapMin = null) => ({ initialTissuePressures: null, chain: [], reason, previousGapMin, preload: [] });
     if (!hasReliableClock(target)) return fresh('unreliable-date');
 
     const timeline = dives
@@ -137,7 +144,8 @@ export function startStateFor(target, dives) {
     const carried = carryOver(state, target);
     if (!carried.ok) return fresh(carried.reason, previousGapMin);
     chain.at(-1).surfaceIntervalMin = carried.gapMin;
-    return { initialTissuePressures: carried.tissues, chain, reason: 'chained', previousGapMin };
+    const preload = rankPreload(carried.tissues, surfaceSaturation(prepareRecordedSetup(target).setup));
+    return { initialTissuePressures: carried.tissues, chain, reason: 'chained', previousGapMin, preload };
 }
 
 /** Off-gas `state` until `dive` starts; report whether anything is left to carry. */
@@ -151,4 +159,37 @@ function carryOver(state, dive) {
     const tissues = offGas(state.tissues, gapMin, getDiveSetupSurfacePressure(setup), setup.gases[0].n2);
     if (isSettled(tissues, setup)) return { ok: false, reason: 'settled' };
     return { ok: true, tissues, gapMin };
+}
+
+/**
+ * Compartments that start above surface saturation by at least CHAIN_SETTLED_BAR, largest excess first
+ * (ties in compartment order).
+ * @param {Object<number, number>} tissues - start tissue N₂ pressures (bar) by compartment id
+ * @param {number} saturated - surface saturation (bar)
+ * @returns {Array<{id: number, excessBar: number}>}
+ */
+export function rankPreload(tissues, saturated) {
+    return COMPARTMENTS
+        .map(comp => ({ id: comp.id, excessBar: tissues[comp.id] - saturated }))
+        .filter(r => r.excessBar >= CHAIN_SETTLED_BAR)
+        .sort((a, b) => b.excessBar - a.excessBar || a.id - b.id);
+}
+
+/**
+ * Where most of the preload sits: ranked compartments with at least half the peak excess, by id.
+ * @param {Array<{id: number, excessBar: number}>} ranked - from rankPreload
+ * @returns {number[]}
+ */
+export function preloadFocus(ranked) {
+    if (ranked.length === 0) return [];
+    const half = ranked[0].excessBar / 2;
+    return ranked.filter(r => r.excessBar >= half).map(r => r.id).sort((a, b) => a - b);
+}
+
+/** "TC8–TC14" (en dash) for the span of `ids`; one id gives "TC9", none an empty string. */
+export function compartmentSpan(ids) {
+    if (ids.length === 0) return '';
+    const lo = Math.min(...ids);
+    const hi = Math.max(...ids);
+    return lo === hi ? `TC${lo}` : `TC${lo}\u2013TC${hi}`;
 }

@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../js/import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive } from '../js/import/recordedDiveSummary.js';
-import { startStateFor, CHAIN_MAX_GAP_MIN, CHAIN_SETTLED_BAR } from '../js/import/diveChain.js';
+import { startStateFor, rankPreload, preloadFocus, compartmentSpan, CHAIN_MAX_GAP_MIN, CHAIN_SETTLED_BAR } from '../js/import/diveChain.js';
 import { getInitialTissueN2 } from '../js/deco/gasKinetics.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -123,5 +123,50 @@ describe('startStateFor', () => {
         const plain = summarizeRecordedDive(analyzeRecordedDive(setup));
         const viaNull = summarizeRecordedDive(analyzeRecordedDive({ ...setup, initialTissuePressures: null }));
         assert.deepEqual(viaNull, plain);
+    });
+});
+
+describe('preload ranking', () => {
+    const tissues = excess => Object.fromEntries(excess.map((e, i) => [i + 1, 0.74 + e]));
+
+    test('ranks compartments above surface saturation, largest excess first', () => {
+        const ranked = rankPreload(tissues([0, 0.005, 0.02, 0.05, 0.03, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 0.74);
+        assert.deepEqual(ranked.map(r => r.id), [4, 5, 3]);
+        assert.ok(Math.abs(ranked[0].excessBar - 0.05) < 1e-12);
+    });
+
+    test('ignores compartments below the settled threshold and below saturation', () => {
+        const ranked = rankPreload(tissues([-0.2, CHAIN_SETTLED_BAR - 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), 0.74);
+        assert.deepEqual(ranked, []);
+    });
+
+    test('ties keep compartment order', () => {
+        const ranked = rankPreload(tissues([0, 0, 0, 0, 0, 0, 0, 0, 0, 0.04, 0.04, 0, 0, 0, 0, 0]), 0.74);
+        assert.deepEqual(ranked.map(r => r.id), [10, 11]);
+    });
+
+    test('focus is every ranked compartment with at least half the peak excess, by id', () => {
+        const ranked = [{ id: 10, excessBar: 0.1 }, { id: 8, excessBar: 0.06 }, { id: 15, excessBar: 0.05 }, { id: 16, excessBar: 0.049 }];
+        assert.deepEqual(preloadFocus(ranked), [8, 10, 15]);
+        assert.deepEqual(preloadFocus([]), []);
+    });
+
+    test('compartment span uses an en dash, a single compartment stays single', () => {
+        assert.equal(compartmentSpan([8, 9, 10, 14]), 'TC8\u2013TC14');
+        assert.equal(compartmentSpan([9]), 'TC9');
+        assert.equal(compartmentSpan([]), '');
+    });
+
+    test('#101 after #100 (209 min): the preload sits in the middle compartments', () => {
+        const s = startStateFor(dive(101), DIVES);
+        assert.equal(s.reason, 'chained');
+        const ids = s.preload.map(r => r.id);
+        assert.ok(!ids.includes(1) && !ids.includes(4), ids.join());
+        assert.deepEqual(ids.slice(0, 3).sort((a, b) => a - b), [10, 11, 12]);
+        assert.equal(compartmentSpan(preloadFocus(s.preload)), 'TC8\u2013TC15');
+    });
+
+    test('a fresh start has no preload', () => {
+        assert.deepEqual(startStateFor(dive(92), DIVES).preload, []);
     });
 });

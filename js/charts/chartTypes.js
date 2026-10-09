@@ -293,6 +293,11 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     narrowLayout: false,
     // Touch screens: value strip above the plot instead of the tooltip (touchReadout.js). Opt-in.
     touchReadout: false,
+    // Tissues view, narrow chart: hide the depth axis, keep the profile as a band (narrowLayout.js). Opt-in.
+    narrowDepthBand: false,
+    // Dive starting with carried-over nitrogen: {compartments: ids to mark at t = 0, suggested: ids to show first,
+    // label: note next to the marks}. Opt-in (recorded repetitive dives).
+    carriedOver: null,
     animationDuration: 500,
     colors: {
         depth: '#3498db',
