@@ -3293,6 +3293,8 @@
                 "tagsOther": "Další štítky (oddělené čárkou)",
                 "guide": "Průvodce nebo instruktor",
                 "rating": "Hodnocení (1–5)",
+                "ratingStar": "{0} z 5 hvězdiček",
+                "ratingValue": "Hodnocení {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: zadejte číslo",
                 "numberRequired": "Zadejte číslo ponoru v deníku.",
@@ -3328,7 +3330,9 @@
                     },
                     "entry": {
                         "shore": "Z břehu",
-                        "boat": "Z lodi"
+                        "boat": "Z lodi",
+                        "platform": "Z plošiny",
+                        "ladder": "Po žebříku"
                     },
                     "stops": {
                         "none": "Žádné",
@@ -3342,7 +3346,13 @@
                         "ice": "Led",
                         "training": "Výcvik",
                         "deep": "Hluboký",
-                        "drift": "Proudový"
+                        "drift": "Proudový",
+                        "boat": "Z lodi",
+                        "shore": "Z břehu",
+                        "quarry": "Lom / jezero",
+                        "altitude": "Vysokohorský",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },

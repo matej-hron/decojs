@@ -10,7 +10,7 @@ import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import {
     entryFromRecording, orderRecordingsForNumbering, nextLogNumber, parseDecimal,
     normalizeEntry, needsDetails, DETAIL_KEYS, formatDiveDate, entriesOnDate,
-    surfaceTempFromSamples, avgDepthFromSamples, hasUserDetails, parseDuration, formatDuration,
+    surfaceTempFromSamples, avgDepthFromSamples, hasUserDetails, parseDuration, formatDuration, ratingOf,
 } from '../js/logbook/entryModel.js';
 import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
@@ -274,6 +274,29 @@ describe('form normalisation', () => {
         assert.equal(hasUserDetails({ tags: [] }), false);
         assert.equal(hasUserDetails({ tags: ['night'] }), true);
         assert.equal(hasUserDetails({ unknownKey: 'x' }), false);
+    });
+
+    test('a rating alone does not count as typed details', () => {
+        assert.equal(hasUserDetails({ rating: 5 }), false);
+        assert.equal(hasUserDetails({ rating: 3, tags: ['ccr'] }), true);
+        assert.equal(needsDetails({ site_id: null, buddies: [], details: { rating: 5, tags: ['boat'] } }), true);
+    });
+
+    test('ratingOf: whole number 1–5 or null', () => {
+        assert.equal(ratingOf(4), 4);
+        assert.equal(ratingOf('3'), 3);
+        assert.equal(ratingOf(4.6), 5);
+        assert.equal(ratingOf(9), 5);
+        assert.equal(ratingOf(0), 1);
+        for (const v of [null, undefined, '', 'x']) assert.equal(ratingOf(v), null);
+    });
+
+    test('normalizeEntry keeps new dive types, conditions and rating, drops a cleared rating, keeps old keys', () => {
+        const prev = { rating: 4, futureKey: 'kept', tags: ['night'] };
+        const kept = normalizeEntry({ details: { tags: ['night', 'ccr', 'quarry'], entry: 'ladder', current: 'light', weather: 'rain' } }, prev);
+        assert.deepEqual(kept.details, { rating: 4, futureKey: 'kept', tags: ['night', 'ccr', 'quarry'], entry: 'ladder', current: 'light', weather: 'rain' });
+        const cleared = normalizeEntry({ details: { rating: null, tags: [] } }, prev);
+        assert.deepEqual(cleared.details, { futureKey: 'kept' });
     });
 
     test('needsDetails', () => {

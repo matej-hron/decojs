@@ -11,7 +11,7 @@ import { uploadDivelog, exportZip } from './transfer.js';
 import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
 import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute } from './AppShell.js';
-import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
+import { needsDetails, formatDiveDate, formatDuration, ratingOf } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
@@ -20,7 +20,7 @@ import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
-import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
+import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { MembersPage } from './MembersPage.js';
 import { MemberPage } from './MemberPage.js';
 import { ProfilePage } from './ProfilePage.js';
@@ -878,6 +878,11 @@ export class LogbookApp {
         return entry.visibility === 'private' ? lockHtml(translate('diveLog.trail.visibility.private', 'Private')) : '';
     }
 
+    _rating(entry) {
+        const r = ratingOf(entry.details?.rating);
+        return ratingHtml(r, fill(tl('form.ratingValue', 'Rating {0} / 5'), r));
+    }
+
     _stats(entry) {
         return statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key]));
     }
@@ -894,7 +899,7 @@ export class LogbookApp {
             pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),
             title: diveTitle(entry, site?.name, tt), untitled: !site, whenText: this._whenText(entry),
             numberLabel: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
-            statsHtml: this._stats(entry), peopleText: people, notesText: notes,
+            statsHtml: this._stats(entry), peopleText: people, notesText: notes, ratingHtml: this._rating(entry),
             badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
             visualHtml: this._visual(entry, 'feed'), lockHtml: this._lock(entry),
         });

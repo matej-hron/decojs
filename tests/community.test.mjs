@@ -183,7 +183,7 @@ test('resolveRoute: home and community routes depend on the feature', () => {
 
 // ---- feedCard.js ----
 
-import { feedCardHtml, statsHtml, visualHtml } from '../js/logbook/feedCard.js';
+import { feedCardHtml, statsHtml, visualHtml, ratingHtml } from '../js/logbook/feedCard.js';
 
 const ownCard = extra => feedCardHtml({
     entry: { id: 'e7', log_number: 7 }, href: '#/dive/e7', title: 'Lom Leštinka', whenText: 'Mon, Sep 28, 2026, 10:15',
@@ -201,6 +201,15 @@ test('feedCardHtml without an author: the My dives card (link, number badge, whe
     assert.ok(html.includes('<span class="lb-badge">Add details</span>'));
     assert.ok(!html.includes('tr-author'));
     assert.ok(html.indexOf('lb-feed-main') < html.indexOf('<div class="lb-visual">'), 'the picture comes last');
+});
+
+test('ratingHtml: five stars with a spoken value; nothing without a valid rating', () => {
+    const html = ratingHtml(4, 'Rating 4 / 5');
+    assert.match(html, /role="img" aria-label="Rating 4 \/ 5"/);
+    assert.match(html, /lb-rate-on" aria-hidden="true">★★★★<\/span><span class="lb-rate-off" aria-hidden="true">★<\/span>/);
+    for (const bad of [null, 0, 6, 2.5]) assert.equal(ratingHtml(bad, 'x'), '');
+    assert.match(ownCard({ ratingHtml: html }), /lb-feed-rating/);
+    assert.doesNotMatch(ownCard({}), /lb-feed-rating/);
 });
 
 test('feedCardHtml without an author: a missing number shows "–"; select mode is a pickable box', () => {
