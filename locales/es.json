@@ -2887,6 +2887,91 @@
         "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
+        "trail": {
+            "tab": {
+                "feed": "Novedades",
+                "list": "Inmersiones",
+                "community": "Comunidad",
+                "sites": "Sitios",
+                "profile": "Perfil"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail es solo por invitación. Pídesela a quien te invitó o solicita una invitación.",
+            "learnWhy": "Entiende por qué en DecoTheory ↗",
+            "diver": "Buceador",
+            "you": "Tú",
+            "toFeed": "Volver a Novedades",
+            "visibility": {
+                "private": "Privada",
+                "members": "Visible para los miembros",
+                "link": "Enlace público"
+            },
+            "community": {
+                "title": "Comunidad",
+                "intro": "Todos aquí fueron invitados. Ven tus inmersiones salvo que las hagas privadas.",
+                "deepest": "máx. {0}",
+                "lastDive": "última inmersión {0}"
+            },
+            "member": {
+                "recentDives": "Inmersiones recientes",
+                "notFound": "Miembro no encontrado",
+                "toCommunity": "Volver a Comunidad",
+                "editProfile": "Editar perfil",
+                "favouriteSites": "Sitios favoritos",
+                "noDives": "Aún no hay inmersiones que mostrar.",
+                "stats": {
+                    "dives": "Inmersiones",
+                    "deepest": "Máx. profundidad",
+                    "time": "Tiempo total"
+                }
+            },
+            "feed": {
+                "title": "Novedades",
+                "loadMore": "Cargar más",
+                "empty": "Aún no hay inmersiones de los miembros.",
+                "moreFailed": "No se pudieron cargar más inmersiones. Inténtalo de nuevo."
+            },
+            "form": {
+                "whoCanSee": "Quién puede ver esta inmersión",
+                "visibility": {
+                    "private": "Privada",
+                    "members": "Miembros",
+                    "link": "Enlace público (próximamente)"
+                },
+                "visibilityHelp": {
+                    "private": "Solo tú.",
+                    "members": "Todas las personas invitadas a DecoTrail. Tus notas siguen siendo privadas.",
+                    "link": "Se mantiene así: la página pública aún no existe."
+                },
+                "shareLocation": "Mostrar la ubicación exacta a los miembros"
+            },
+            "profile": {
+                "title": "Tu perfil",
+                "previewNote": "Así te ven los demás miembros.",
+                "avatar": "Avatar",
+                "upload": "Subir foto",
+                "remove": "Quitar foto",
+                "uploading": "Subiendo foto…",
+                "uploaded": "Foto subida ✓",
+                "removed": "Foto quitada ✓",
+                "replaceNote": "Al guardar, este avatar sustituye a tu foto.",
+                "unreadable": "No se pudo leer esta imagen. Elige una foto JPEG, PNG o WebP.",
+                "name": "Nombre visible",
+                "nameHelp": "Aparece junto a tus inmersiones. Si lo dejas vacío, aparecerás como «Buceador».",
+                "defaultVisibility": "Quién ve tus nuevas inmersiones",
+                "defaultVisibilityHelp": "Puedes cambiarlo en cada inmersión.",
+                "country": "País de origen",
+                "save": "Guardar",
+                "saving": "Guardando…",
+                "saved": "Guardado ✓",
+                "account": "Cuenta",
+                "signedInAs": "Sesión iniciada como {0}",
+                "emailPrivate": "Tu correo nunca se muestra a otros miembros.",
+                "signOut": "Cerrar sesión"
+            },
+            "disclaimer": "Solo con fines educativos — no sustituye a tu ordenador de buceo.",
+            "footer": "DecoTrail — inmersiones explicadas por"
+        },
         "logbook": {
             "wipe": {
                 "menu": "Borrar todos mis datos…",
@@ -3262,10 +3347,10 @@
             "reportFailed": "No se pudieron guardar {0}: {1}",
             "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
             "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
-            "cannotLogin": "Este correo no puede iniciar sesión aquí.",
+            "cannotLogin": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "continueGoogle": "Continuar con Google",
             "orEmail": "o usa un enlace por correo",
-            "cannotLoginGoogle": "Esta cuenta de Google no puede iniciar sesión aquí.",
+            "cannotLoginGoogle": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "googleCancelled": "Se canceló el inicio de sesión con Google.",
             "tooManyLinks": "Se han enviado demasiados correos de acceso. Espera hasta una hora y vuelve a intentarlo.",
             "genericError": "Algo ha fallado. Inténtalo de nuevo."
@@ -3453,9 +3538,9 @@
             "who": "<strong>Quién lo gestiona:</strong> Matěj Hron, persona física. Contacto: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
             "what": "<strong>Qué se guarda</strong> cuando lo usas: tu correo electrónico (y el nombre y correo de tu cuenta de Google si inicias sesión con Google), las inmersiones y grabaciones del ordenador de buceo que subes, las entradas que escribes, las fotos que añades, los sitios de buceo con su posición, los nombres de compañeros que escribes y tu perfil.",
             "where": "<strong>Dónde:</strong> en una base de datos y almacenamiento de Supabase en la UE (Fráncfort). El sitio estático lo aloja GitHub Pages. El inicio de sesión con Google lo gestiona Google. Los mapas y la búsqueda de lugares envían el texto buscado, la zona del mapa o la posición de un sitio y tu dirección IP a Mapy.com (y, como alternativa, a OpenStreetMap). Al exportar se carga una biblioteca zip desde cdnjs.cloudflare.com.",
-            "why": "<strong>Por qué:</strong> para llevar tu diario de buceo personal. Los datos son tuyos; otros miembros invitados solo los ven si decides compartirlos.",
+            "why": "<strong>Por qué:</strong> para llevar tu diario de buceo personal. Los datos son tuyos. Otros miembros invitados ven tus inmersiones, fotos, nombres de compañeros y tu perfil (nombre, avatar, país) salvo que marques una inmersión como <em>Privada</em>; nunca ven tus notas ni tu correo, y solo ven la posición exacta de un sitio si la permites en esa inmersión.",
             "retention": "<strong>Cuánto tiempo:</strong> hasta que los borres. No se usan para nada más.",
-            "rights": "<strong>Tus derechos (RGPD):</strong> para acceder a una copia, usa <em>Exportar</em> en el menú ⋯ y descarga todo en un zip. Para corregir, edita tus entradas. Para borrar, usa <em>Borrar todos mis datos</em> en el mismo menú: elimina todas tus inmersiones, grabaciones, fotos y sitios. Eliminar el acceso en sí requiere mi intervención: escribe a <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. También puedes presentar una reclamación ante tu autoridad de protección de datos (en Chequia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "rights": "<strong>Tus derechos (RGPD):</strong> para acceder a una copia, usa <em>Exportar</em> en el menú ⋯ y descarga todo en un zip. Para corregir, edita tus entradas. Para borrar, usa <em>Borrar todos mis datos</em> en el mismo menú: elimina todas tus inmersiones, grabaciones, fotos y sitios, y vacía tu perfil. Eliminar el acceso en sí requiere mi intervención: escribe a <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. También puedes presentar una reclamación ante tu autoridad de protección de datos (en Chequia: Úřad pro ochranu osobních údajů, uoou.gov.cz).",
             "cookies": "<strong>Sin cookies de seguimiento ni publicidad.</strong> Al iniciar sesión se guarda un token de sesión en el almacenamiento local del navegador."
         },
         "notdone": {

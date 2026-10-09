@@ -1729,9 +1729,9 @@
             "who": "<strong>Kdo to provozuje:</strong> Matěj Hron, soukromá osoba. Kontakt: <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>.",
             "what": "<strong>Co se ukládá</strong>, když deník používáte: vaše e-mailová adresa (a jméno a e-mail účtu Google, pokud se přihlásíte přes Google), ponory a nahrávky z potápěčského počítače, které nahrajete, záznamy, které napíšete, fotky, které přidáte, lokality s jejich polohou, jména buddy, která zadáte, a váš profil.",
             "where": "<strong>Kde:</strong> v databázi a úložišti Supabase v EU (Frankfurt). Samotný statický web hostuje GitHub Pages. Přihlášení přes Google zajišťuje Google. Mapy a vyhledávání míst posílají hledaný text, oblast mapy nebo polohu lokality a vaši IP adresu službě Mapy.com (a záložně OpenStreetMap). Export načte knihovnu pro zip z cdnjs.cloudflare.com.",
-            "why": "<strong>Proč:</strong> abyste měli svůj osobní potápěčský deník. Data jsou vaše; ostatní pozvaní členové je uvidí jen tehdy, když se rozhodnete je sdílet.",
+            "why": "<strong>Proč:</strong> abyste měli svůj osobní potápěčský deník. Data jsou vaše. Ostatní pozvaní členové vidí vaše ponory, fotky, jména buddyů a profil (jméno, avatar, zemi), pokud ponor neoznačíte jako <em>Soukromý</em>; nikdy nevidí vaše poznámky ani e-mail a přesnou polohu lokality vidí jen tehdy, když ji u ponoru povolíte.",
             "retention": "<strong>Jak dlouho:</strong> dokud je nesmažete. K ničemu jinému se nepoužívají.",
-            "rights": "<strong>Vaše práva (GDPR):</strong> pro přístup ke kopii dat použijte <em>Export</em> v menu ⋯, stáhnete vše jako zip. Opravu provedete úpravou záznamů. Smazání: <em>Smazat všechna moje data</em> ve stejném menu odstraní všechny vaše ponory, nahrávky, fotky a lokality. Odstranění samotného přihlášení vyžaduje mě, napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. Můžete také podat stížnost u dozorového úřadu (v Česku Úřad pro ochranu osobních údajů, uoou.gov.cz).",
+            "rights": "<strong>Vaše práva (GDPR):</strong> pro přístup ke kopii dat použijte <em>Export</em> v menu ⋯, stáhnete vše jako zip. Opravu provedete úpravou záznamů. Smazání: <em>Smazat všechna moje data</em> ve stejném menu odstraní všechny vaše ponory, nahrávky, fotky a lokality a vyprázdní váš profil. Odstranění samotného přihlášení vyžaduje mě, napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. Můžete také podat stížnost u dozorového úřadu (v Česku Úřad pro ochranu osobních údajů, uoou.gov.cz).",
             "cookies": "<strong>Žádné sledovací ani reklamní cookies.</strong> Přihlášení uchovává token relace v místním úložišti prohlížeče."
         },
         "notdone": {
@@ -2935,6 +2935,91 @@
         "startFirst": "čistý start — není načten žádný dřívější ponor",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
         "water": {"salt": "Slaná", "fresh": "Sladká"},
+        "trail": {
+            "tab": {
+                "feed": "Přehled",
+                "list": "Moje ponory",
+                "community": "Komunita",
+                "sites": "Místa",
+                "profile": "Profil"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail je jen pro zvané. Obraťte se na toho, kdo vás pozval, nebo požádejte o pozvánku.",
+            "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
+            "diver": "Potápěč",
+            "you": "Vy",
+            "toFeed": "Zpět na přehled",
+            "visibility": {
+                "private": "Soukromý",
+                "members": "Vidí členové",
+                "link": "Veřejný odkaz"
+            },
+            "community": {
+                "title": "Komunita",
+                "intro": "Všichni tady dostali pozvánku. Vidí vaše ponory, pokud je nenastavíte jako soukromé.",
+                "deepest": "nejhlubší {0}",
+                "lastDive": "poslední ponor {0}"
+            },
+            "member": {
+                "recentDives": "Poslední ponory",
+                "notFound": "Člen nenalezen",
+                "toCommunity": "Zpět do komunity",
+                "editProfile": "Upravit profil",
+                "favouriteSites": "Oblíbené lokality",
+                "noDives": "Zatím tu nejsou žádné ponory.",
+                "stats": {
+                    "dives": "Ponory",
+                    "deepest": "Nejhlubší",
+                    "time": "Celkový čas"
+                }
+            },
+            "feed": {
+                "title": "Přehled",
+                "loadMore": "Načíst další",
+                "empty": "Od členů zatím nejsou žádné ponory.",
+                "moreFailed": "Další ponory se nepodařilo načíst. Zkuste to znovu."
+            },
+            "form": {
+                "whoCanSee": "Kdo ponor uvidí",
+                "visibility": {
+                    "private": "Soukromý",
+                    "members": "Členové",
+                    "link": "Veřejný odkaz (připravujeme)"
+                },
+                "visibilityHelp": {
+                    "private": "Jen vy.",
+                    "members": "Všichni pozvaní do DecoTrailu. Vaše poznámky zůstanou soukromé.",
+                    "link": "Ponecháno beze změny: veřejná stránka zatím neexistuje."
+                },
+                "shareLocation": "Ukázat členům přesné místo"
+            },
+            "profile": {
+                "title": "Váš profil",
+                "previewNote": "Takhle vás vidí ostatní členové.",
+                "avatar": "Avatar",
+                "upload": "Nahrát fotku",
+                "remove": "Odebrat fotku",
+                "uploading": "Nahrávám fotku…",
+                "uploaded": "Fotka nahrána ✓",
+                "removed": "Fotka odebrána ✓",
+                "replaceNote": "Uložením nahradíte fotku tímto avatarem.",
+                "unreadable": "Obrázek se nepodařilo přečíst. Vyberte fotku ve formátu JPEG, PNG nebo WebP.",
+                "name": "Zobrazované jméno",
+                "nameHelp": "Zobrazí se u vašich ponorů. Když ho necháte prázdné, budete „Potápěč“.",
+                "defaultVisibility": "Kdo uvidí vaše nové ponory",
+                "defaultVisibilityHelp": "U každého ponoru to můžete změnit.",
+                "country": "Domovská země",
+                "save": "Uložit",
+                "saving": "Ukládám…",
+                "saved": "Uloženo ✓",
+                "account": "Účet",
+                "signedInAs": "Přihlášen jako {0}",
+                "emailPrivate": "Váš e-mail se ostatním členům nikdy nezobrazí.",
+                "signOut": "Odhlásit se"
+            },
+            "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
+            "footer": "DecoTrail — ponory vysvětlené pomocí"
+        },
         "logbook": {
             "wipe": {
                 "menu": "Smazat všechna moje data…",
@@ -3310,10 +3395,10 @@
             "reportFailed": "Nepodařilo se uložit {0}: {1}",
             "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
             "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
-            "cannotLogin": "Tento e-mail se zde nemůže přihlásit.",
+            "cannotLogin": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "continueGoogle": "Pokračovat přes Google",
             "orEmail": "nebo použijte e-mailový odkaz",
-            "cannotLoginGoogle": "Tento účet Google se zde nemůže přihlásit.",
+            "cannotLoginGoogle": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "googleCancelled": "Přihlášení přes Google bylo zrušeno.",
             "tooManyLinks": "Bylo odesláno příliš mnoho přihlašovacích e-mailů. Počkejte až hodinu a zkuste to znovu.",
             "genericError": "Něco se pokazilo. Zkuste to prosím znovu."

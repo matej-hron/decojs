@@ -37,7 +37,7 @@ export function authRedirectMessage(hash = '', search = '') {
     if (!code && !error) return null;
     const text = `${code} ${error} ${params.get('error_description') ?? ''}`;
     if (code === 'otp_expired') return { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
-    if (/signups? not allowed|user_not_found/i.test(text)) return { key: 'cannotLoginGoogle', fallback: 'This Google account can\'t log in here.' };
+    if (/signups? not allowed|user_not_found/i.test(text)) return { key: 'cannotLoginGoogle', fallback: 'This account hasn\'t been invited to DecoTrail yet. Ask for an invite.' };
     if (error === 'access_denied') return { key: 'googleCancelled', fallback: 'Google sign-in was cancelled.' };
     return { key: 'genericError', fallback: 'Something went wrong. Please try again.' };
 }
@@ -385,7 +385,8 @@ export class RecordedDiveAnalysis {
                 </form>
                 ${this.linkSent ? `<p class="rda-account-msg">${label('linkSent', 'Check your email for the login link.')}</p>` : ''}
                 <a class="rda-privacy" href="../privacy.html#logbook">${label('privacyLink', 'Privacy policy')}</a>
-                ${msg}`;
+                ${msg}
+                <p class="rda-invite">${escHtml(translate('diveLog.trail.inviteOnly', 'DecoTrail is invite-only. Ask the person who invited you, or ask for an invite.'))}</p>`;
             el.querySelector('#rda-google').addEventListener('click', () => this._googleLogin());
             const input = el.querySelector('#rda-email');
             input.addEventListener('input', () => { this.email = input.value; });
@@ -402,7 +403,7 @@ export class RecordedDiveAnalysis {
         } catch (error) {
             console.error(error);
             this.accountMsg = error instanceof DiveStoreError && error.kind === 'auth'
-                ? { key: 'cannotLoginGoogle', fallback: 'This Google account can\'t log in here.' }
+                ? { key: 'cannotLoginGoogle', fallback: 'This account hasn\'t been invited to DecoTrail yet. Ask for an invite.' }
                 : null;
             if (this.accountMsg) this._renderAccount();
             else this._storeError(error);
@@ -424,7 +425,7 @@ export class RecordedDiveAnalysis {
             this.accountMsg = rateLimited
                 ? { key: 'tooManyLinks', fallback: 'Too many login emails were sent. Wait up to an hour and try again.' }
                 : error instanceof DiveStoreError && error.kind === 'auth'
-                    ? { key: 'cannotLogin', fallback: 'This email can\'t log in here.' }
+                    ? { key: 'cannotLogin', fallback: 'This account hasn\'t been invited to DecoTrail yet. Ask for an invite.' }
                     : null;
             if (this.accountMsg) this._renderAccount();
             else this._storeError(error);

@@ -10,19 +10,37 @@ import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
+import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute } from './AppShell.js';
 import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
-import { groupByMonth, sortEntries, sparklinePath, profileAreaPath, formatWeekdayDate } from './listViews.js';
+import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
+import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
+import { MembersPage } from './MembersPage.js';
+import { MemberPage } from './MemberPage.js';
+import { ProfilePage } from './ProfilePage.js';
+import { SparkLoader } from './sparks.js';
+import { CommunityFeed } from './CommunityFeed.js';
+import { memberEntryStore } from './memberEntryStore.js';
+import { displayName } from './community.js';
+import { avatarHtml } from './avatars.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+
+/** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
+const PROBE_ATTEMPTS = 3;
+const PROBE_RETRY_MS = 5000;
+/** A probe that has not answered by then counts as 'unknown'. */
+const PROBE_TIMEOUT_MS = 8000;
+/** How long the entry form waits for a probe in flight before it opens without the visibility fields. */
+const FORM_PROBE_WAIT_MS = 3000;
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
@@ -34,9 +52,6 @@ const tt = key => tl(key, TITLE_FALLBACK[key] ?? key);
 const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
 
 const VIEW_KEY = 'decojs.logbook.view';
-const SPARK_W = 300;
-const SPARK_H = 100;
-const SPARK_CONCURRENCY = 3;
 const TABLE_COLUMNS = [
     ['number', false], ['date', false], ['site', false], ['maxDepth', true], ['duration', true],
     ['avgDepth', true], ['temp', true], ['buddies', false],
@@ -57,12 +72,21 @@ function loadView() {
 export class LogbookApp {
     /**
      * @param {HTMLElement} root
-     * @param {{store?: Object|null}} [config]
+     * @param {{store?: Object|null, shell?: AppShell|null}} [config]
+     *   `shell` defaults to the page's `.tr-tabs` / `.tr-bottom` navigation (none when the page has neither)
      */
-    constructor(root, { store = null } = {}) {
+    constructor(root, { store = null, shell, probeTimeoutMs = PROBE_TIMEOUT_MS } = {}) {
         this.root = root;
         this.store = store;
+        this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;
+        this.community = false; // whether the community backend (migration 0004) is available
+        this._communityKnown = false; // false while the probe has not answered 'yes' or 'no'
+        this._probe = null; // the probe in flight
+        this._probeAttempts = 0;
+        this._probeTimer = null;
+        this._probeTimeoutMs = probeTimeoutMs;
+        this._session = 0;
         this.analysis = null; // the mounted RecordedDiveAnalysis (plain or embedded)
         this.entries = null;
         this.sites = new Map();
@@ -79,10 +103,11 @@ export class LogbookApp {
         this.selecting = false; // select mode of the list
         this.selected = new Set(); // entry ids; survives view switches and sorting
         this.bulk = null; // null | { phase: 'confirm'|'running'|'done', withRecordings, done, total, numbers, result }
-        this.sparks = new Map(); // recording id -> SVG path ('' when none or failed)
-        this._sparkQueue = [];
-        this._sparkActive = 0;
-        this._onHash = () => this._renderRoute();
+        this.sparks = new SparkLoader(id => this.store.loadDive(id)); // lazy depth profiles of the list
+        this._hash = null; // the route hash shown, and the one before it (back link of a member's dive)
+        this._prevHash = null;
+        this._memberBack = null; // { id, href }: where a member's dive goes back to, kept while visiting its analysis
+        this._onHash = () => { this._probeCommunity(); this._renderRoute(); }; // a route change retries an 'unknown' probe
         this._onLanguage = () => this._onLanguageChange();
         this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
         this._onDocKey = e => {
@@ -103,11 +128,73 @@ export class LogbookApp {
 
     destroy() {
         this.destroyed = true;
+        this.sparks.destroy();
         this.wipe?.close();
         this._unsubscribe?.();
         this._leaveLogbook();
         this._unmountAnalysis();
+        this.shell?.destroy();
         this.root.innerHTML = '';
+    }
+
+    // ---- Route and shell ----
+
+    /** The route shown: `home` resolved, community routes → My dives without the feature. */
+    _route() {
+        return resolveRoute(parseRoute(location.hash), this.community);
+    }
+
+    _renderShell() {
+        if (!this.shell) return;
+        if (!this.user) this.shell.render({ tabs: [] });
+        else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._route().name, this.community) });
+    }
+
+    /**
+     * Ask the store whether the community backend exists. Never blocks a view: until the answer the app
+     * behaves as without the feature. 'unknown' (a transient failure) is retried once after a few seconds
+     * and once on a later route change.
+     */
+    _probeCommunity() {
+        if (this._communityKnown || this._probe || this._probeAttempts >= PROBE_ATTEMPTS) return;
+        const store = this.store;
+        const ask = typeof store.communityAvailability === 'function' ? () => store.communityAvailability()
+            : typeof store.communityStatus === 'function' ? async () => ((await store.communityStatus()) === true ? 'yes' : 'no')
+                : null;
+        if (!ask) {
+            this._communityKnown = true;
+            return;
+        }
+        this._probeAttempts++;
+        const session = this._session;
+        let giveUp;
+        const timeout = new Promise(resolve => { giveUp = setTimeout(() => resolve('unknown'), this._probeTimeoutMs); });
+        const probe = Promise.race([
+            Promise.resolve().then(ask).catch(error => { console.error(error); return 'unknown'; }),
+            timeout,
+        ])
+            .then(result => {
+                clearTimeout(giveUp);
+                if (this.destroyed || session !== this._session || this._probe !== probe) return;
+                this._probe = null;
+                if (result === 'yes' || result === 'no') {
+                    this._communityKnown = true;
+                    this.community = result === 'yes';
+                    if (this.community) Promise.resolve().then(() => store.ensureProfile?.()).catch(error => console.error(error));
+                } else if (this._probeAttempts === 1) {
+                    this._probeTimer = setTimeout(() => { this._probeTimer = null; this._probeCommunity(); }, PROBE_RETRY_MS);
+                }
+                this._afterProbe();
+            });
+        this._probe = probe;
+    }
+
+    /** The probe answered: the tabs may change, and so may home and community routes. */
+    _afterProbe() {
+        if (!this.user) return;
+        const name = parseRoute(location.hash).name;
+        if (isCommunityRoute(name) || (name === 'home' && this.community)) this._renderRoute();
+        else this._renderShell();
     }
 
     // ---- Switching between the plain page and the logbook ----
@@ -152,9 +239,22 @@ export class LogbookApp {
         document.addEventListener('click', this._onDocClick);
         document.addEventListener('keydown', this._onDocKey);
         this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
-        document.body.classList.add('lb-in');
+        document.body.classList.add('lb-in', 'tr-logged-in');
+        this._resetProbe(); // another user may have signed in directly: forget the previous one's answer
         this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
+        this._probeCommunity();
         this._renderRoute();
+    }
+
+    /** Forget the community probe and its answer (new login, other user, logout); a probe in flight is ignored. */
+    _resetProbe() {
+        this._session++;
+        clearTimeout(this._probeTimer);
+        this._probeTimer = null;
+        this._probe = null;
+        this._probeAttempts = 0;
+        this._communityKnown = false;
+        this.community = false;
     }
 
     _leaveLogbook() {
@@ -162,7 +262,9 @@ export class LogbookApp {
         document.removeEventListener('languagechange', this._onLanguage);
         document.removeEventListener('click', this._onDocClick);
         document.removeEventListener('keydown', this._onDocKey);
-        document.body.classList.remove('lb-in');
+        document.body.classList.remove('lb-in', 'tr-logged-in');
+        this._resetProbe();
+        this.shell?.render({ tabs: [] });
         this._viewToken++;
         this._stopSparks();
         this._unmountForm();
@@ -176,10 +278,14 @@ export class LogbookApp {
     }
 
     _onLanguageChange() {
-        const name = parseRoute(location.hash).name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site')) this.form.relabel(); // keep what was typed
-        else if (this.user && name !== 'analysis') this._renderRoute();
-        else translateStatic(this.view);
+        this._renderShell();
+        const name = this._route().name;
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive' || name === 'profile')) this.form.relabel(); // keep what was typed / loaded
+        else if (this.user && name !== 'analysis' && name !== 'memberAnalysis') this._renderRoute();
+        else {
+            translateStatic(this.view);
+            this._renderAnalysisAuthor(); // the "Diver" fallback name follows the language
+        }
     }
 
     // ---- Routing ----
@@ -189,7 +295,18 @@ export class LogbookApp {
         this._unmountAnalysis();
         this._unmountForm();
         const token = ++this._viewToken;
-        const route = parseRoute(location.hash);
+        if (location.hash !== this._hash) {
+            this._prevHash = this._hash;
+            this._hash = location.hash;
+        }
+        this._renderShell();
+        if (this._probe && !this._communityKnown && isCommunityRoute(parseRoute(location.hash).name)) {
+            // A community route asked for explicitly: wait for the probe instead of flashing My dives.
+            this.view.classList.remove('lb-list-view', 'lb-selecting');
+            this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+            return;
+        }
+        const route = this._route();
         this.view.classList.toggle('lb-list-view', route.name === 'list'); // list layout: sidebar on wide screens
         if (route.name !== 'list') this.view.classList.remove('lb-selecting');
         switch (route.name) {
@@ -200,14 +317,20 @@ export class LogbookApp {
             case 'new': this._showNew(); break;
             case 'sites': this._showSites(null); break;
             case 'site': this._showSites(route.id); break;
+            case 'feed': this._showFeed(); break;
+            case 'community': this._showCommunity(); break;
+            case 'member': this._showMember(route.id); break;
+            case 'memberDive': this._showMemberDive(route.id, token); break;
+            case 'memberAnalysis': this._showMemberAnalysis(route.id, token); break;
+            case 'profile': this._showProfile(); break;
             default: this._showNotFound();
         }
     }
 
-    _showNotFound() {
+    _showNotFound({ href = routeHref({ name: 'list' }), text = tl('toList', 'Back to the list') } = {}) {
         this.view.innerHTML = `<section class="rda-card lb-message">
             <h2>${escHtml(tl('notFound', 'Dive not found'))}</h2>
-            <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
+            <p><a href="${escHtml(href)}">${escHtml(text)}</a></p></section>`;
     }
 
     async _showDetail(route, token) {
@@ -245,6 +368,137 @@ export class LogbookApp {
         });
     }
 
+    // ---- Feed (own and other members' dives) ----
+
+    _showFeed() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new CommunityFeed(this.view.firstChild, {
+            store: this.store, userId: this.user.id,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    // ---- Community directory and member pages ----
+
+    _showCommunity() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new MembersPage(this.view.firstChild, {
+            store: this.store, userId: this.user.id,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    _showMember(memberId) {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new MemberPage(this.view.firstChild, {
+            store: this.store, userId: this.user.id, memberId,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    // ---- Own profile ----
+
+    _showProfile() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new ProfilePage(this.view.firstChild, {
+            store: this.store, user: this.user,
+            onSignOut: () => this._logout(),
+            onError: error => this._viewError(error),
+        });
+    }
+
+    // ---- Another member's dive (read-only) and its analysis ----
+
+    /**
+     * The community row of a dive the caller may see; null when missing (not-found shown) or when the
+     * view moved on or the dive is the caller's own (then the URL is replaced by the own route).
+     */
+    async _memberRow(id, token, ownRoute) {
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        let row;
+        try {
+            row = await this.store.getCommunityEntry(id);
+        } catch (error) {
+            if (token === this._viewToken) this._storeError(error);
+            return null;
+        }
+        if (token !== this._viewToken) return null;
+        if (!row) {
+            this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
+            return null;
+        }
+        if (row.owner === this.user.id) {
+            location.replace(routeHref({ name: ownRoute, id })); // the own dive has the full, editable view
+            return null;
+        }
+        return row;
+    }
+
+    /** Back link of a member's dive: their page when it was opened from there, else the Feed. */
+    _memberDiveBack(id, owner) {
+        const prev = parseRoute(this._prevHash ?? '');
+        if (prev.name === 'member' && prev.id === owner) this._memberBack = { id, href: routeHref(prev) };
+        else if (!(prev.name === 'memberAnalysis' && prev.id === id && this._memberBack?.id === id)) this._memberBack = null;
+        return this._memberBack?.href ?? routeHref({ name: 'feed' });
+    }
+
+    /**
+     * The author row of a member's dive. `name` and `avatarHtml` are getters, so a re-render after a
+     * language change shows the translated "Diver" fallback.
+     * @returns {Promise<{name: string, href: string, avatarHtml: string}>}
+     */
+    async _memberAuthor(owner) {
+        let member = null;
+        let avatarUrl = null;
+        try {
+            member = await this.store.getMember(owner);
+            if (member?.avatar_path && this.store.avatarUrls) {
+                avatarUrl = (await this.store.avatarUrls([member.avatar_path]).catch(error => { console.error(error); return null; }))?.get(member.avatar_path) ?? null;
+            }
+        } catch (error) {
+            console.error(error); // the author row falls back to "Diver" and a preset
+        }
+        return {
+            get name() { return displayName(member, key => translate(`diveLog.${key}`, 'Diver')); },
+            href: routeHref({ name: 'member', id: owner }),
+            // The name follows in the same link: the picture is decoration there.
+            get avatarHtml() {
+                return `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: member?.avatar_preset, url: avatarUrl, name: this.name, id: owner, size: 40 })}</span>`;
+            },
+        };
+    }
+
+    async _showMemberDive(id, token) {
+        const row = await this._memberRow(id, token, 'detail');
+        if (!row) return;
+        const author = await this._memberAuthor(row.owner);
+        if (token !== this._viewToken) return;
+        const { entry, adapter } = memberEntryStore(this.store, row);
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new EntryDetail(this.view.firstChild, {
+            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner),
+        });
+    }
+
+    async _showMemberAnalysis(id, token) {
+        const row = await this._memberRow(id, token, 'analysis');
+        if (!row) return;
+        const { entry, adapter } = memberEntryStore(this.store, row);
+        if (!entry.recording_id) {
+            this._showNotFound({ href: routeHref({ name: 'memberDive', id }), text: tl('back', '← Back') });
+            return;
+        }
+        const author = await this._memberAuthor(row.owner);
+        if (token !== this._viewToken) return;
+        this._mountRecordingAnalysis(routeHref({ name: 'memberDive', id }), adapter, entry, author);
+    }
+
+    /** A mounted view could not load: unmount it (a language change must not re-render it detached), show the error. */
+    _viewError(error) {
+        this._unmountForm();
+        this._storeError(error);
+    }
+
     // ---- New and edit ----
 
     _showNew() {
@@ -253,16 +507,33 @@ export class LogbookApp {
         const token = this._viewToken;
         this.form = new NewDive(host, {
             store: this.store, ready: this.ensured,
-            onChoose: ({ prefill, recordingId }) => {
+            onChoose: async ({ prefill, recordingId }) => {
+                const community = await this._communityForForm();
+                const defaultVisibility = community && this.store.defaultVisibility
+                    ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
+                    : null;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId,
+                    store: this.store, prefill, recordingId, community, defaultVisibility,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
             },
         });
+    }
+
+    /**
+     * Whether the entry form offers "Who can see this dive": waits briefly for a probe in flight (a form opened
+     * right after login must not lose the fieldset). Without an answer the form shows none and sends nothing.
+     */
+    async _communityForForm() {
+        if (!this._communityKnown && this._probe) {
+            let timer;
+            await Promise.race([this._probe, new Promise(r => { timer = setTimeout(r, FORM_PROBE_WAIT_MS); })]);
+            clearTimeout(timer);
+        }
+        return this.community;
     }
 
     async _showEdit(id, token) {
@@ -279,14 +550,40 @@ export class LogbookApp {
             this._showNotFound();
             return;
         }
+        const community = await this._communityForForm();
+        if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, onSaved: back, onCancel: back });
+    }
+
+    /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */
+    _analysisFrame(backHref, author = null) {
+        this._analysisAuthor = author;
+        this.view.innerHTML = `<p class="lb-back"><a href="${escHtml(backHref)}">${escHtml(tl('back', '← Back'))}</a></p>
+            <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a>
+            ${author ? '<div class="tr-author lb-analysis-author"></div>' : ''}
+            <div class="rda-root lb-analysis"></div>`;
+        this._renderAnalysisAuthor();
+    }
+
+    /** Fill (or, after a language change, refill) the author row of a member's analysis. */
+    _renderAnalysisAuthor() {
+        const a = this._analysisAuthor;
+        const host = a ? this.view?.querySelector(':scope > .lb-analysis-author') : null;
+        if (host) host.innerHTML = `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`;
+    }
+
+    _mountRecordingAnalysis(backHref, store, entry, author = null) {
+        this._analysisFrame(backHref, author);
+        this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
+            store, embedded: true, focusRecordingId: entry.recording_id,
+            entryGases: gasesFromEntry(entry),
+        });
     }
 
     async _showAnalysis(id, token) {
-        this.view.innerHTML = `<p class="lb-back"><a href="${routeHref({ name: 'detail', id })}">${escHtml(tl('back', '← Back'))}</a></p>
-            <div class="rda-root lb-analysis"></div>`;
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         let entry = this.entries?.find(e => e.id === id);
         try {
             if (!entry) entry = await this.store.getEntry(id);
@@ -299,10 +596,7 @@ export class LogbookApp {
             this._showNotFound();
             return;
         }
-        this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
-            store: this.store, embedded: true, focusRecordingId: entry.recording_id,
-            entryGases: gasesFromEntry(entry),
-        });
+        this._mountRecordingAnalysis(routeHref({ name: 'detail', id }), this.store, entry);
     }
 
     // ---- List ----
@@ -511,7 +805,7 @@ export class LogbookApp {
         this.selected.clear();
         this.entries = null;
         if (this.destroyed || !this.user) return;
-        if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
+        if (this._route().name === 'list') this._showList(++this._viewToken);
     }
 
     // ---- List view ----
@@ -542,35 +836,34 @@ export class LogbookApp {
         const photoUrl = this.thumbs.get(entry.id) ?? null;
         const apiKey = this._mapFailed ? '' : MAPY_API_KEY; // after one failed map, stop asking for more
         const { kind } = chooseVisual({ photoUrl, site, apiKey, recordingId: entry.recording_id });
-        const id = ` data-entry="${escHtml(entry.id)}" data-variant="${variant}"`;
-        if (kind === 'photo') {
-            const info = this.photos.get(entry.id);
-            const more = (info?.count ?? 1) - 1;
-            const frame = variant === 'feed' ? ` style="--lb-ar: ${photoFrame(info?.width, info?.height)}"` : '';
-            return `<div class="lb-visual lb-visual-photo"${id}${frame}><img class="lb-visual-img" src="${escHtml(photoUrl)}" alt="" loading="lazy">
-                ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(fill(tl('feed.morePhotos', '{0} more photos'), more))}</span></span>` : ''}</div>`;
-        }
+        const info = this.photos.get(entry.id);
+        const more = (info?.count ?? 1) - 1;
+        const frame = kind === 'photo' && variant === 'feed' ? photoFrame(info?.width, info?.height) : '';
+        let map;
         if (kind === 'map') {
             const [w, h] = variant === 'tile' ? [320, 240] : [640, 280];
-            const src = mapyStaticMapUrl({
-                lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
-                scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
-            });
-            return `<div class="lb-visual lb-visual-map"${id}><img class="lb-visual-img lb-map-img" src="${escHtml(src)}" width="${w}" height="${h}" alt="${escHtml(fill(tl('feed.mapAlt', 'Map of {0}'), site.name))}" loading="lazy"></div>`;
+            map = {
+                width: w, height: h, alt: fill(tl('feed.mapAlt', 'Map of {0}'), site.name),
+                src: mapyStaticMapUrl({
+                    lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
+                    scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
+                }),
+            };
         }
-        if (kind === 'profile') {
-            const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';
-            return `<div class="lb-visual lb-visual-profile"${id}><span class="lb-spark" data-rec="${escHtml(entry.recording_id)}" role="img" aria-label="${escHtml(tl('feed.profileAlt', 'Depth profile'))}"></span>
-                ${depth ? `<span class="lb-visual-depth" aria-hidden="true">${escHtml(depth)}</span>` : ''}</div>`;
-        }
-        if (variant === 'tile') return `<div class="lb-visual lb-visual-none"${id} aria-hidden="true"><span>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</span></div>`;
-        return '';
+        const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';
+        return visualHtml({
+            kind, entryId: entry.id, variant, photoUrl, more, moreText: fill(tl('feed.morePhotos', '{0} more photos'), more), map,
+            recordingId: entry.recording_id, profileAlt: tl('feed.profileAlt', 'Depth profile'), depthText: depth,
+            numberText: fill(tl('number', '#{0}'), entry.log_number ?? '–'), frame,
+        });
     }
 
     /** A map image that failed (key not valid on this site, offline): show the profile instead, or nothing. */
     _onVisualError(e) {
         const img = e.target;
         if (img?.tagName !== 'IMG' || !img.classList.contains('lb-visual-img')) return;
+        // Only the My dives list is ours; images of the Feed, member pages and read-only details belong to their views.
+        if (this._route().name !== 'list' || img.closest('.lb-form-host')) return;
         const box = img.closest('.lb-visual');
         const entry = this.entries?.find(en => en.id === box?.dataset.entry);
         if (!box || !entry) return;
@@ -580,11 +873,13 @@ export class LogbookApp {
         this._watchSparks();
     }
 
-    _stats(entry, keys = null) {
-        const stats = feedStats(entry, fmtNum).filter(s => !keys || keys.includes(s.key));
-        if (!stats.length) return '';
-        return `<dl class="lb-stats">${stats.map(s => `<div class="lb-stat lb-stat-${s.key}"><dt>${escHtml(tl(`feed.stats.${s.key}`, STAT_FALLBACK[s.key]))}</dt>
-            <dd>${escHtml(s.value)}${s.unit ? `<span class="lb-unit">${NB}${escHtml(s.unit)}</span>` : ''}</dd></div>`).join('')}</dl>`;
+    /** The lock of a private own dive, else nothing (other dives keep their markup unchanged). */
+    _lock(entry) {
+        return entry.visibility === 'private' ? lockHtml(translate('diveLog.trail.visibility.private', 'Private')) : '';
+    }
+
+    _stats(entry) {
+        return statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key]));
     }
 
     /** A feed card: who/where/when, the stat row, buddies and notes, then the picture. */
@@ -594,20 +889,15 @@ export class LogbookApp {
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
         const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
-        const [open, close] = this._wrap(entry, 'lb-feed-card');
-        return `${open}<div class="lb-feed-main">
-                <div class="lb-feed-head">${this._pick(entry)}
-                    <span class="lb-num-badge" aria-hidden="true">${escHtml(String(entry.log_number ?? '–'))}</span>
-                    <div class="lb-feed-who">
-                        <h4 class="lb-feed-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</h4>
-                        <p class="lb-feed-when"><span class="rda-visually-hidden">${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}, </span><span class="lb-date">${escHtml(this._whenText(entry))}</span></p>
-                    </div>
-                    ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-                </div>
-                ${this._stats(entry)}
-                ${people ? `<p class="lb-feed-people">${escHtml(people)}</p>` : ''}
-                ${notes ? `<p class="lb-feed-notes">${escHtml(notes)}</p>` : ''}
-            </div>${this._visual(entry, 'feed')}${close}`;
+        return feedCardHtml({
+            entry, href: routeHref({ name: 'detail', id: entry.id }),
+            pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),
+            title: diveTitle(entry, site?.name, tt), untitled: !site, whenText: this._whenText(entry),
+            numberLabel: fill(tl('number', '#{0}'), entry.log_number ?? '–'),
+            statsHtml: this._stats(entry), peopleText: people, notesText: notes,
+            badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
+            visualHtml: this._visual(entry, 'feed'), lockHtml: this._lock(entry),
+        });
     }
 
     _renderFeed() {
@@ -625,7 +915,7 @@ export class LogbookApp {
         const [open, close] = this._wrap(entry, 'lb-tile');
         return `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
             <div class="lb-tile-body">
-                <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}</strong>
+                <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}${this._lock(entry)}</strong>
                 <span class="lb-date">${escHtml([fill(tl('number', '#{0}'), entry.log_number ?? '–'), formatDiveDate(entry.dive_date, currentLang())].filter(Boolean).join(', '))}</span>
                 ${stats.length ? `<span class="lb-tile-stats">${stats.map(t => `<span>${escHtml(t)}</span>`).join('')}</span>` : ''}
             </div>${close}`;
@@ -653,7 +943,7 @@ export class LogbookApp {
             const pick = this.selecting ? `<td>${this._pick(e)}</td>` : '';
             const link = (h, text) => (this.selecting ? escHtml(text) : `<a href="${h}">${escHtml(text)}</a>`);
             return `<tr ${this.selecting ? `data-pick="${escHtml(e.id)}" class="lb-selectable${this.selected.has(e.id) ? ' lb-selected' : ''}"` : `data-href="${href}"`}>${pick}
-                <td class="lb-num">${link(href, String(e.log_number ?? dash))}</td>
+                <td class="lb-num">${this._lock(e)}${link(href, String(e.log_number ?? dash))}</td>
                 <td>${link(href, formatDiveDate(e.dive_date, lang) || dash)}</td>
                 <td${site ? '' : ' class="lb-muted"'}>${escHtml(site || tl('siteNotSet', 'Site not set'))}</td>
                 <td class="lb-num">${escHtml(m(e.max_depth_m))}</td>
@@ -696,61 +986,11 @@ export class LogbookApp {
     // ---- Lazy depth profiles (Feed and Tiles, dives without a photo or map) ----
 
     _stopSparks() {
-        this._sparkObserver?.disconnect();
-        this._sparkObserver = null;
-        this._sparkQueue = [];
+        this.sparks.stop();
     }
 
     _watchSparks() {
-        this._stopSparks();
-        const slots = [...this.view.querySelectorAll('.lb-spark[data-rec]')];
-        for (const el of slots) if (this.sparks.has(el.dataset.rec)) this._paintSpark(el);
-        const pending = slots.filter(el => !this.sparks.has(el.dataset.rec));
-        if (!pending.length) return;
-        if (typeof IntersectionObserver === 'undefined') return; // no lazy loading: skip profiles rather than load every dive
-        this._sparkObserver = new IntersectionObserver(items => {
-            for (const item of items) {
-                if (!item.isIntersecting) continue;
-                this._sparkObserver?.unobserve(item.target);
-                this._enqueueSpark(item.target);
-            }
-        }, { rootMargin: '200px' });
-        pending.forEach(el => this._sparkObserver.observe(el));
-    }
-
-    _enqueueSpark(el) {
-        this._sparkQueue.push(el);
-        this._pumpSparks();
-    }
-
-    _pumpSparks() {
-        while (this._sparkActive < SPARK_CONCURRENCY && this._sparkQueue.length) {
-            const el = this._sparkQueue.shift();
-            if (!el.isConnected) continue;
-            const id = el.dataset.rec;
-            if (this.sparks.has(id)) { this._paintSpark(el); continue; }
-            this._sparkLoads ??= new Map();
-            const inFlight = this._sparkLoads.get(id);
-            if (inFlight) { inFlight.then(() => { if (el.isConnected) this._paintSpark(el); }); continue; } // same dive already loading
-            this._sparkActive++;
-            const load = this.store.loadDive(id)
-                .then(dive => ({ line: sparklinePath(dive?.samples, SPARK_W, SPARK_H, 0), area: profileAreaPath(dive?.samples, SPARK_W, SPARK_H, 0) }), () => null)
-                .catch(() => null)
-                .then(paths => {
-                    this.sparks.set(id, paths);
-                    if (el.isConnected) this._paintSpark(el);
-                })
-                .finally(() => { this._sparkLoads.delete(id); this._sparkActive--; if (!this.destroyed) this._pumpSparks(); });
-            this._sparkLoads.set(id, load);
-        }
-    }
-
-    /** The profile as a "water column": the dived shape hangs from the surface; the bottom 15 % stays free. */
-    _paintSpark(el) {
-        const paths = this.sparks.get(el.dataset.rec);
-        if (!paths?.line || el.firstChild) return;
-        el.innerHTML = `<svg viewBox="0 -3 ${SPARK_W} ${SPARK_H + 18}" preserveAspectRatio="none" focusable="false" aria-hidden="true">
-            <path class="lb-spark-area" d="${paths.area}"/><path class="lb-spark-line" d="${paths.line}" vector-effect="non-scaling-stroke"/></svg>`;
+        this.sparks.watch(this.view);
     }
 
     _renderList() {
@@ -814,7 +1054,7 @@ export class LogbookApp {
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
         if (this.destroyed || !this.user) return;
-        if (parseRoute(location.hash).name === 'list') this._renderList();
+        if (this._route().name === 'list') this._renderList();
         else if (background) this._showBanner(this.msg[0]);
         else this._showMessage(this.msg[0]);
     }
@@ -842,7 +1082,7 @@ export class LogbookApp {
 
     _setWorking(on) {
         this.working = on;
-        if (this.user && parseRoute(location.hash).name === 'list') this._renderList();
+        if (this.user && this._route().name === 'list') this._renderList();
     }
 
     async _logout() {
@@ -863,7 +1103,7 @@ export class LogbookApp {
         try {
             const { report, ensureError } = await uploadDivelog(this.store, files, (done, total) => {
                 this.msg = [fill(tb('progress', 'Saving {0} / {1}…'), done, total)];
-                if (parseRoute(location.hash).name === 'list') this._renderList();
+                if (this._route().name === 'list') this._renderList();
             });
             this.msg = this._reportLines(report);
             if (ensureError) {
@@ -871,7 +1111,7 @@ export class LogbookApp {
                 this.msg = [...this._reportLines(report), ...this.msg];
             }
             this.working = false;
-            if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
+            if (this._route().name === 'list') this._showList(++this._viewToken);
         } catch (error) {
             this._storeError(error, { background: true });
         } finally {
