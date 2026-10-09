@@ -120,6 +120,7 @@ function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tab
         auth: {
             async getUser() { return { data: { user }, error: null }; },
             async getSession() { return { data: { session: user ? { user } : null }, error: null }; },
+            async updateUser({ data }) { user.user_metadata = { ...user.user_metadata, ...data }; return { data: { user }, error: null }; },
         },
         from: builder,
         async rpc(name, args) {
@@ -410,4 +411,101 @@ test('deleteAllMyData skips the profile step without the community backend', asy
     const report = await createSupabaseStore(client).deleteAllMyData({ onProgress: s => steps.push(s) });
     assert.deepEqual(report.failed, []);
     assert.ok(!steps.includes('profile'));
+});
+
+
+// ---- Log numbering: "dives before DecoTrail" offset and renumber by date ----
+
+const recRow = (id, startLocal) => ({ id, dive_number: null, start_local: startLocal, logbook_dismissed: false, record: { id } });
+const numbers = db => Object.fromEntries(db.log_entries.map(e => [e.id, e.log_number]));
+
+test('offset: stored in the account metadata, sanitised, default 0', async () => {
+    const { client } = wrap();
+    const store = createSupabaseStore(client);
+    assert.equal(await store.getLogOffset(), 0);
+    assert.equal(await store.setLogOffset('28'), 28);
+    assert.equal(await store.getLogOffset(), 28);
+    assert.equal(await store.setLogOffset(-4), 0);
+    assert.equal(await store.setLogOffset('abc'), 0);
+});
+
+test('nextLogNumber: past the offset when the log is below it, past the max otherwise', async () => {
+    const { nextLogNumber, normalizeLogOffset } = await import('../js/logbook/entryModel.js');
+    assert.equal(nextLogNumber([], 0), 1);
+    assert.equal(nextLogNumber([], 28), 29);
+    assert.equal(nextLogNumber([{ log_number: 3 }], 28), 29);
+    assert.equal(nextLogNumber([{ log_number: 40 }], 28), 41);
+    assert.equal(normalizeLogOffset(undefined), 0);
+    assert.equal(normalizeLogOffset(2.9), 2);
+});
+
+test('renumber plan: date, entry time, then recording start; only changed entries listed', async () => {
+    const { planRenumber } = await import('../js/logbook/entryModel.js');
+    const entries = [
+        { id: 'c', log_number: 1, dive_date: '2026-10-02', entry_time: null, recording_id: 'rc' },
+        { id: 'b', log_number: 2, dive_date: '2026-10-01', entry_time: '14:00:00', recording_id: null },
+        { id: 'a', log_number: 3, dive_date: '2026-10-01', entry_time: null, recording_id: 'ra' },
+    ];
+    const starts = new Map([['ra', '2026-10-01T09:00:00'], ['rc', '2026-10-02T08:00:00']]);
+    const { all, changes } = planRenumber(entries, starts, 10);
+    assert.deepEqual(all.map(c => [c.id, c.to]), [['a', 11], ['b', 12], ['c', 13]]);
+    assert.equal(changes.length, 3);
+    assert.deepEqual(planRenumber([{ id: 'x', log_number: 1, dive_date: '2026-01-01' }]).changes, []);
+});
+
+test('renumberByDate: two-phase under the unique (owner, log_number) constraint, own entries only', async () => {
+    const tables = {
+        dives: [recRow('r1', '2026-09-01T10:00:00'), recRow('r2', '2026-09-02T10:00:00')],
+        log_entries: [
+            { id: 'e2', owner: 'u1', log_number: 1, dive_date: '2026-09-02', entry_time: null, recording_id: 'r2' },
+            { id: 'e1', owner: 'u1', log_number: 2, dive_date: '2026-09-01', entry_time: null, recording_id: 'r1' },
+            { id: 'e0', owner: 'u1', log_number: 3, dive_date: '2026-08-15', entry_time: '09:00:00', recording_id: null },
+            { id: 'other', owner: 'u2', log_number: 1, dive_date: '2026-01-01', entry_time: null, recording_id: null },
+        ],
+    };
+    const { client, db, calls } = wrap({ tables });
+    const store = createSupabaseStore(client);
+    await store.setLogOffset(5);
+    const plan = await store.planRenumber();
+    assert.deepEqual(plan.changes.map(c => `${c.from}>${c.to}`), ['3>6', '2>7', '1>8']);
+    assert.equal(await store.renumberByDate(), 3);
+    assert.deepEqual(numbers(db), { e0: 6, e1: 7, e2: 8, other: 1 });
+    const temps = calls.filter(c => c[0] === 'update' && c[1] === 'log_entries').map(c => c[2].log_number);
+    assert.deepEqual(temps.slice(0, 3).every(n => n < 0), true, 'phase one uses negative temporaries');
+    assert.equal(await store.renumberByDate(), 0, 'second run changes nothing');
+});
+
+test('renumberByDate: a failure restores the original numbers', async () => {
+    const tables = {
+        dives: [],
+        log_entries: [
+            { id: 'e2', owner: 'u1', log_number: 1, dive_date: '2026-09-02', entry_time: null, recording_id: null },
+            { id: 'e1', owner: 'u1', log_number: 2, dive_date: '2026-09-01', entry_time: null, recording_id: null },
+        ],
+    };
+    const { client, db } = wrap({ tables });
+    const store = createSupabaseStore(client);
+    // Make the final write of e1 (to number 1) fail once, after phase one has run.
+    const origFrom = client.from;
+    let armed = true;
+    client.from = table => {
+        const q = origFrom(table);
+        const upd = q.update.bind(q);
+        q.update = patch => {
+            if (armed && table === 'log_entries' && patch.log_number === 1) { armed = false; return { eq: () => Promise.resolve({ data: null, error: { message: 'boom' } }) }; }
+            return upd(patch);
+        };
+        return q;
+    };
+    await assert.rejects(() => store.renumberByDate());
+    assert.deepEqual(numbers(db), { e2: 1, e1: 2 });
+});
+
+test('ensureEntries numbers new imports after the offset', async () => {
+    const tables = { dives: [recRow('r1', '2026-10-01T09:00:00')], log_entries: [] };
+    const { client, db } = wrap({ tables, user: { id: 'u1', email: 'me@example.com', user_metadata: { log_offset: 28 } } });
+    const store = createSupabaseStore(client);
+    await store.ensureEntries();
+    assert.equal(db.log_entries.length, 1);
+    assert.equal(db.log_entries[0].log_number, 29);
 });
