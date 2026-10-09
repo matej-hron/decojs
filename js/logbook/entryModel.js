@@ -35,10 +35,13 @@ export const DETAIL_KEYS = Object.freeze({
 /** Detail keys a dive computer fills in; they do not count as something the diver typed. */
 const COMPUTER_KEYS = new Set(['computer', 'stops', 'avgDepthM', 'surfaceTempC', 'computerFillVersion']);
 
-/** True when `details` holds a value the diver entered (computer-derived keys and unknown keys do not count). */
+/** A rating is a quick tap on the card, not a typed detail: it does not open "More details". */
+const NOT_DETAILS = new Set([...COMPUTER_KEYS, 'rating']);
+
+/** True when `details` holds a value the diver entered (computer-derived keys, the rating and unknown keys do not count). */
 export function hasUserDetails(details) {
     const d = details ?? {};
-    return Object.values(DETAIL_KEYS).flat().filter(k => !COMPUTER_KEYS.has(k)).some(k => {
+    return Object.values(DETAIL_KEYS).flat().filter(k => !NOT_DETAILS.has(k)).some(k => {
         const v = d[k];
         return Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== '';
     });
@@ -143,6 +146,12 @@ export function planRenumber(entries, recordingStarts = new Map(), offset = 0) {
         || String(a.id).localeCompare(String(b.id)));
     const all = sorted.map((e, i) => ({ id: e.id, from: e.log_number ?? null, to: base + i + 1 }));
     return { all, changes: all.filter(c => c.from !== c.to) };
+}
+
+/** A stored rating as a whole number 1–5, or null when absent or out of range. */
+export function ratingOf(value) {
+    const n = parseDecimal(value);
+    return n === null ? null : Math.min(5, Math.max(1, Math.round(n)));
 }
 
 /** Parse a number typed with a decimal comma or point; null when empty or invalid. */

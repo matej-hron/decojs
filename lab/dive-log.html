@@ -109,6 +109,19 @@
         .lb-radio { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; }
         .lb-radio input { width: 1.25rem; height: 1.25rem; }
         .lb-chips:empty { display: none; }
+        .lb-tagchips { gap: 0.5rem; }
+        .lb-tagchip { position: relative; padding: 0 0.85rem; border: 1px solid var(--border-color, var(--border)); border-radius: 999px; cursor: pointer; }
+        .lb-tagchip input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+        .lb-tagchip:has(input:checked) { background: var(--blue-100, #dbeafe); border-color: var(--blue-500, #3b82f6); font-weight: 600; }
+        .lb-tagchip:has(input:focus-visible) { outline: 2px solid var(--blue-500, #3b82f6); outline-offset: 2px; }
+        :root[data-theme="dark"] .lb-tagchip:has(input:checked) { background: var(--blue-900, #1e3a5f); border-color: var(--blue-300, #93c5fd); }
+        .lb-stars { display: flex; gap: 0.1rem; }
+        .lb-star { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 1.9rem; line-height: 1; cursor: pointer; color: var(--border-color, #c4c9d0); }
+        .lb-star.lb-star-on { color: #e8a317; }
+        .lb-star:focus-visible { outline: 2px solid var(--blue-500, #3b82f6); border-radius: 6px; }
+        .lb-feed-rating { margin: 0; font-size: 1rem; letter-spacing: 0.1em; line-height: 1.2; }
+        .lb-rate-on { color: #e8a317; }
+        .lb-rate-off { color: var(--border-color, #c4c9d0); }
         .lb-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0 0.25rem 0 0.75rem; border: 1px solid var(--border-color, var(--border)); border-radius: 999px; min-height: 36px; }
         .lb-chip-x { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 1.25rem; cursor: pointer; color: inherit; }
         .lb-form-error { margin: 0; color: var(--error-color, #c0392b); font-weight: 600; }

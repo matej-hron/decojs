@@ -3261,6 +3261,8 @@
                 "tagsOther": "Otras etiquetas (separadas por comas)",
                 "guide": "Guía o instructor",
                 "rating": "Valoración (1–5)",
+                "ratingStar": "{0} de 5 estrellas",
+                "ratingValue": "Valoración {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: introduce un número",
                 "numberRequired": "Introduce el número de la inmersión.",
@@ -3296,7 +3298,9 @@
                     },
                     "entry": {
                         "shore": "Desde la orilla",
-                        "boat": "Desde barco"
+                        "boat": "Desde barco",
+                        "platform": "Desde plataforma",
+                        "ladder": "Por escalera"
                     },
                     "stops": {
                         "none": "Ninguna",
@@ -3310,7 +3314,13 @@
                         "ice": "Hielo",
                         "training": "Formación",
                         "deep": "Profundo",
-                        "drift": "A la deriva"
+                        "drift": "A la deriva",
+                        "boat": "Barco",
+                        "shore": "Orilla",
+                        "quarry": "Cantera / lago",
+                        "altitude": "Altitud",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },

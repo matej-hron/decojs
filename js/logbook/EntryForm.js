@@ -6,7 +6,7 @@
  * The helpers at the top are pure (no DOM) and are covered by tests.
  */
 
-import { normalizeEntry, nextLogNumber, parseDecimal, parseDuration, formatDuration, hasUserDetails, DETAIL_KEYS } from './entryModel.js';
+import { normalizeEntry, nextLogNumber, ratingOf, parseDecimal, parseDuration, formatDuration, hasUserDetails, DETAIL_KEYS } from './entryModel.js';
 import { openSitePicker } from './SitePicker.js';
 import { MediaSection } from './MediaSection.js';
 import { translate } from '../i18n.js';
@@ -31,10 +31,10 @@ export const CHOICES = Object.freeze({
     waves: ['calm', 'small', 'rough'],
     cylinderMaterial: ['steel', 'aluminium'],
     suit: ['wet', 'dry'],
-    entry: ['shore', 'boat'],
+    entry: ['shore', 'boat', 'platform', 'ladder'],
     stops: ['none', 'safety', 'deco'],
 });
-export const TAGS = Object.freeze(['night', 'wreck', 'cave', 'ice', 'training', 'deep', 'drift']);
+export const TAGS = Object.freeze(['boat', 'shore', 'quarry', 'cave', 'wreck', 'night', 'drift', 'deep', 'training', 'ice', 'altitude', 'sidemount', 'ccr']);
 
 /** Unit hints for the detail inputs (the unit is also in the label). */
 const DETAIL_INPUT = Object.freeze({
@@ -230,10 +230,13 @@ export class EntryForm {
         return `<label class="lb-field"><span>${escHtml(tf(labelKey))}</span><select name="d.${name}">${opts.join('')}</select></label>`;
     }
 
-    _ratingSelect(value) {
-        const current = value === undefined || value === null ? '' : String(value);
-        const opts = ['', '1', '2', '3', '4', '5'].map(o => `<option value="${o}"${o === current ? ' selected' : ''}>${o || escHtml(tf('choose'))}</option>`);
-        return `<label class="lb-field"><span>${escHtml(tf('rating'))}</span><select name="d.rating">${opts.join('')}</select></label>`;
+    /** Five tap targets; tapping the current star clears the rating. `d.rating` carries the value. */
+    _ratingHtml(value) {
+        const r = ratingOf(value) ?? 0;
+        const stars = [1, 2, 3, 4, 5].map(n => `<button type="button" class="lb-star${n <= r ? ' lb-star-on' : ''}" data-rate="${n}" role="radio" aria-checked="${n === r}" aria-label="${escHtml(fill(tf('ratingStar'), n))}">★</button>`).join('');
+        return `<div class="lb-field lb-rating"><span id="lb-rating-label">${escHtml(tf('rating'))}</span>
+            <div class="lb-stars" role="radiogroup" aria-labelledby="lb-rating-label">${stars}</div>
+            <input type="hidden" name="d.rating" value="${r || ''}"></div>`;
     }
 
     _detailNum(key) {
@@ -298,6 +301,7 @@ export class EntryForm {
                         <span>${escHtml(tf('photosTitle'))}</span>
                         ${this.media ? '<div class="lb-media-host"></div>' : `<p class="lb-muted">${escHtml(tf('photosAfterSave'))}</p>`}
                     </div>
+                    ${this._ratingHtml(d.rating)}
                     ${this._sharingHtml()}
                 </section>
                 <details class="lb-more"${this._detailsOpen() ? ' open' : ''}>
@@ -328,11 +332,10 @@ export class EntryForm {
                     </div>
                     <fieldset class="lb-field">
                         <legend>${escHtml(tf('tags'))}</legend>
-                        <div class="lb-radios">${TAGS.map(t => `<label class="lb-radio"><input type="checkbox" name="tag" value="${t}"${tags.includes(t) ? ' checked' : ''}><span>${escHtml(tf(`choices.tags.${t}`))}</span></label>`).join('')}</div>
+                        <div class="lb-radios lb-tagchips">${TAGS.map(t => `<label class="lb-radio lb-tagchip"><input type="checkbox" name="tag" value="${t}"${tags.includes(t) ? ' checked' : ''}><span>${escHtml(tf(`choices.tags.${t}`))}</span></label>`).join('')}</div>
                     </fieldset>
                     ${this._input('d.tagsOther', 'tagsOther', otherTags)}
                     ${detailText('guide')}
-                    ${this._ratingSelect(d.rating)}
                 </details>
             </div>
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
@@ -359,6 +362,20 @@ export class EntryForm {
         });
         c.querySelector('#lb-cancel').addEventListener('click', () => this.onCancel?.());
         this._wireGases();
+        const stars = c.querySelectorAll('.lb-star');
+        for (const star of stars) {
+            star.addEventListener('click', () => {
+                const hidden = c.querySelector('[name="d.rating"]');
+                const n = Number(star.dataset.rate);
+                const next = Number(hidden.value) === n ? 0 : n;
+                hidden.value = next || '';
+                for (const s of stars) {
+                    const on = Number(s.dataset.rate) <= next;
+                    s.classList.toggle('lb-star-on', on);
+                    s.setAttribute('aria-checked', String(Number(s.dataset.rate) === next));
+                }
+            });
+        }
         const buddyInput = c.querySelector('[name="buddy"]');
         c.querySelector('#lb-add-buddy').addEventListener('click', () => this._addBuddy());
         buddyInput.addEventListener('keydown', e => {

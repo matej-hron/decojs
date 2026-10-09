@@ -3309,6 +3309,8 @@
                 "tagsOther": "Other tags (comma separated)",
                 "guide": "Guide or instructor",
                 "rating": "Rating (1–5)",
+                "ratingStar": "{0} of 5 stars",
+                "ratingValue": "Rating {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: enter a number",
                 "numberRequired": "Enter the logbook number.",
@@ -3344,7 +3346,9 @@
                     },
                     "entry": {
                         "shore": "Shore",
-                        "boat": "Boat"
+                        "boat": "Boat",
+                        "platform": "Platform",
+                        "ladder": "Ladder"
                     },
                     "stops": {
                         "none": "None",
@@ -3358,7 +3362,13 @@
                         "ice": "Ice",
                         "training": "Training",
                         "deep": "Deep",
-                        "drift": "Drift"
+                        "drift": "Drift",
+                        "boat": "Boat",
+                        "shore": "Shore",
+                        "quarry": "Quarry / lake",
+                        "altitude": "Altitude",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },
