@@ -3397,6 +3397,7 @@
             "reportUpdated": "{0} updated",
             "reportFailed": "{0} could not be saved: {1}",
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
+            "offline": "You're offline. Your dive log needs a connection, so it will load again when you're back online.",
             "linkExpired": "This login link has expired. Send a new one.",
             "cannotLogin": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "continueGoogle": "Continue with Google",
