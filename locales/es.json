@@ -3365,6 +3365,7 @@
             "reportUpdated": "{0} actualizadas",
             "reportFailed": "No se pudieron guardar {0}: {1}",
             "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
+            "offline": "Estás sin conexión. Tu diario necesita conexión; se cargará de nuevo cuando vuelvas a estar en línea.",
             "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
             "cannotLogin": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "continueGoogle": "Continuar con Google",

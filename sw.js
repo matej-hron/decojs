@@ -42,6 +42,7 @@ const STATIC_ASSETS = [
   './icons/icon.svg',
   './js/charts/BubbleModel.js',
   './js/nav.js',
+  './js/swRegister.js',
   './js/appBanner.js',
   './js/decoModel.js',
   './js/deco/constants.js',
@@ -188,7 +189,8 @@ function routeFor(request, selfOrigin) {
 }
 
 function putInCache(request, response) {
-  if (!response || response.status !== 200) return;
+  // Cross-origin CDN scripts arrive opaque (status 0) and are still cacheable
+  if (!response || (response.status !== 200 && response.type !== 'opaque')) return;
   const copy = response.clone();
   caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
 }
