@@ -54,7 +54,7 @@ Turning the link off revokes it immediately; turning it on again makes a new lin
    `RecordedDiveAnalysis` (same touch readout as members' view; tissue chaining over earlier dives is not
    available because their recordings are not shared — documented gap). Footer with a "Keep your own log on
    DecoTrail" link. `<meta name="robots" content="noindex, nofollow">`, `<title>DecoTrail dive</title>`,
-   `og:title` "DecoTrail dive", generic description, `referrer` = `no-referrer`. Unknown/revoked token →
+   `og:title` "DecoTrail dive", generic description, `referrer` = `strict-origin` (origin only; map tile servers need a Referer, and the fragment is never sent anyway). Unknown/revoked token →
    friendly "This link does not work (anymore)" card.
 10. **Abuse.** 244-bit tokens; the RPC rejects anything not matching `^[0-9a-f]{64}$` before touching the
     table; equality lookup on a unique index (no prefix/LIKE); anon has no other grants (0001–0004 revoke
@@ -82,3 +82,17 @@ test style. SQL (Docker): token generated/cleared/rotated by the trigger, client
 returns null for wrong/malformed/revoked tokens and for private/members dives, never notes, coords gated,
 serial stripped, anon cannot select tables or call community RPCs, storage policies honour the header.
 Browser: share page at 390×844 and desktop, light/dark, with a fake store harness; owner card likewise.
+
+## Adversarial review (Opus, 2026-10-09) — applied
+
+- `details.computer` holds the computer serial → `details` is now an allow-list in SQL (no `computer`, no unknown keys).
+- Record: serial, firmware, hardware, lifetime dive counter and file name nulled; payload has no duplicate ids.
+- Type change keeps only valid tokens (`using case …`), whole file in a transaction; pre-flight query in the header.
+- Media rows pointing at another owner's path are not echoed; storage helpers are anon-only; `share_owner_active`
+  stops links of deleted/banned owners.
+- Known limit (accepted, documented in the migration and privacy page): Storage checks RLS when it signs a URL,
+  and the caller picks the expiry. Turning a link off stops all new access at once, but a URL signed while the
+  link was on works until it expires. The page signs for 10 minutes; someone holding a live token could sign
+  longer ones. Fix later if needed: Edge Function image proxy.
+- To check on the live stack after running 0005: an anon `storage.from('dive-photos').list('<owner>/')` with the
+  header shows no other entry folders; photos and avatar load on the share page (Storage CORS for the header).

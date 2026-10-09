@@ -178,7 +178,7 @@ export class EntryDetail {
         document.addEventListener('keydown', this._onKey);
         this._onImgError = e => avatarImgFallback(e); // an author photo that fails falls back to the preset
         this.container.addEventListener('error', this._onImgError, true);
-        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-actions"></div><div class="lb-d-share"></div><div class="lb-d-panel"></div></section>`;
+        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-share"></div><div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
         this.main = this.container.querySelector('.lb-d-main');
         this.mediaEl = this.container.querySelector('.lb-d-media');
         this.actionsEl = this.container.querySelector('.lb-d-actions');

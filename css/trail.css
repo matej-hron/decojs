@@ -809,3 +809,5 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .tr-share-missing h1 { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
 .tr-share-missing p { margin: 0; }
 .tr-share-missing .btn { justify-self: start; min-height: 44px; }
+.tr-share-analysis .rda-chain-toggle { display: none; } /* earlier dives are never shared */
+.tr-share-missing a { color: var(--tr-accent, var(--brand)); }

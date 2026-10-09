@@ -382,10 +382,10 @@ test('SharedDivePage: missing link, unavailable backend, and a loaded dive witho
 
 // ---- Page and wiring ----
 
-test('lab/dive.html: noindex, no referrer, generic preview title, wired to the share page', () => {
+test('lab/dive.html: noindex, origin-only referrer, generic preview title, wired to the share page', () => {
     const html = readFileSync(new URL('../lab/dive.html', import.meta.url), 'utf8');
     assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
-    assert.match(html, /<meta name="referrer" content="no-referrer">/);
+    assert.match(html, /<meta name="referrer" content="strict-origin">/);
     assert.match(html, /<title>DecoTrail dive<\/title>/);
     assert.match(html, /property="og:title" content="DecoTrail dive"/);
     assert.match(html, /SharedDivePage/);
