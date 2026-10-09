@@ -177,6 +177,11 @@ export class EntryForm {
         this.render();
     }
 
+    /** "Dives logged before DecoTrail" (0 when unavailable: numbering must never block saving). */
+    async _logOffset() {
+        try { return (await this.store.getLogOffset?.()) ?? 0; } catch { return 0; }
+    }
+
     async _loadSuggestions() {
         try {
             // Independent calls: one failing must not hide the others (suggestions are a convenience).
@@ -197,7 +202,7 @@ export class EntryForm {
                 this._fillList('lb-buddy-names', this.buddyNames);
             }
             if (entries.status === 'fulfilled') {
-                this.nextNumber = nextLogNumber(entries.value);
+                this.nextNumber = nextLogNumber(entries.value, await this._logOffset());
                 const numberInput = this.container.querySelector('[name="log_number"]');
                 if (numberInput && !this.entry) numberInput.placeholder = String(this.nextNumber);
             }
@@ -726,7 +731,7 @@ export class EntryForm {
                 ? this.entry.entry_time : v.entry_time;
             const row = normalizeEntry({ ...v, ...(this.sharing ?? {}), entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
             if (!this.entry && row.log_number === null) {
-                row.log_number = nextLogNumber(await this.store.listEntries());
+                row.log_number = nextLogNumber(await this.store.listEntries(), await this._logOffset());
                 this.container.querySelector('[name="log_number"]').value = String(row.log_number);
             }
             number = row.log_number;
