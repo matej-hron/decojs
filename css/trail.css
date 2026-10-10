@@ -906,6 +906,8 @@ section.lb-detail { padding: 0; margin: 0; background: none; border: 0; border-r
 /* The analysis in the main column: controls below the charts when the column is narrow */
 .lb-d-slot { display: grid; min-width: 0; container-type: inline-size; }
 .lb-d-slot .lb-analysis { padding: 0; }
+.lb-detail .lb-d-slot section.rda-analysis { padding: 0; margin: 0; background: none; border-radius: 0; }
+.lb-d-share:empty, .lb-d-top:empty { display: none; }
 @container (max-width: 960px) {
     .lb-d-slot .rda-analysis { grid-template-columns: minmax(0, 1fr); }
     .lb-d-slot .rda-charts { order: -2; } /* the profile first, then its summary, then the GF controls */
@@ -931,7 +933,8 @@ section.lb-detail { padding: 0; margin: 0; background: none; border: 0; border-r
 }
 @media (max-width: 720px) {
     .lb-d-hero { margin: 0 -1rem; border-radius: 0; }
-    .lb-d-top:empty + .lb-d-hero { margin-top: -1rem; }
+    .lb-detail .lb-d-head { font-size: var(--text-xl); }
+    .lb-media-section .lb-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; }
     .lb-detail .lb-d-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem 0; }
     .lb-d-stats .lb-stat { padding: 0 0.75rem; }
     .lb-d-stats .lb-stat:nth-child(3n + 1) { padding-left: 0; border-left: 0; }

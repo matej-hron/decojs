@@ -569,6 +569,13 @@ export function createSupabaseStore(client) {
                 console.info('Default visibility unavailable; entries use the database default', error?.message ?? error);
             }
             const shareLocation = user.user_metadata?.share_location_default !== false;
+            let community = Boolean(visibility);
+            if (!community && !shareLocation) {
+                // The owner turned exact location off: never let the database default (on) decide for them.
+                const availability = await store.communityAvailability().catch(() => 'unknown');
+                if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check community features; entries were not created');
+                community = availability === 'yes';
+            }
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;
@@ -585,7 +592,9 @@ export function createSupabaseStore(client) {
                 }
                 const insert = number => client.from(ENTRIES).insert({
                     ...fields, owner: user.id, recording_id: r.id, log_number: number,
-                    ...(visibility ? { visibility, share_location: shareLocation } : {}),
+                    ...(visibility ? { visibility } : {}),
+                    // Not tied to visibility: with community features the column exists, and its default (0009) is on.
+                    ...(community ? { share_location: shareLocation } : {}),
                 });
                 let { error } = await insert(next);
                 if (isUnique(error, NUMBER_KEY)) {

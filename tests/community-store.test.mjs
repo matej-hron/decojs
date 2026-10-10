@@ -221,6 +221,25 @@ test('ensureEntries uses the profile default visibility', async () => {
     assert.equal(db.log_entries.length, ins.length);
 });
 
+test('ensureEntries sends the owner\'s "exact location" default, also when the default visibility lookup fails', async () => {
+    const record = { schemaVersion: 1, start: { local: '2026-09-27T12:01:01' }, dives: [] };
+    for (const failVisibility of [false, true]) {
+        const { client, calls } = wrap({
+            tables: {
+                profiles: [{ id: 'u1', display_name: 'A', default_visibility: 'members' }],
+                dives: [{ id: 'r1', owner: 'u1', dive_number: 1, start_local: '2026-09-27T12:01:01', record }],
+            },
+        });
+        await client.auth.updateUser({ data: { share_location_default: false } });
+        const store = createSupabaseStore(client);
+        if (failVisibility) store.defaultVisibility = async () => { throw new Error('blip'); };
+        await store.ensureEntries();
+        const ins = calls.filter(c => c[0] === 'insert' && c[1] === 'log_entries');
+        assert.ok(ins.length >= 1);
+        assert.ok(ins.every(c => c[2].share_location === false), `failVisibility=${failVisibility}: never left to the database default (on)`);
+    }
+});
+
 test('listCommunityEntries / getCommunityEntry / listCommunityMedia call the RPCs with exact args', async () => {
     const { client, calls } = wrap({ rpcResults: { community_entries: [{ id: 'e9' }] } });
     const store = createSupabaseStore(client);

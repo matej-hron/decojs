@@ -370,3 +370,33 @@ test('ProfilePage: "Show the exact location by default" (on when unset) is saved
         bare.destroy();
     });
 });
+
+test('EntryDetail: photos that cannot be signed leave the map in the hero, not an empty box', async () => {
+    await withDom(async host => {
+        const store = ownStore({ listMedia: async () => [{ id: 'm1', kind: 'photo', path: 'a.jpg' }], photoUrls: async () => { throw new Error('storage'); } });
+        const d = new EntryDetail(host, { store, entry: { id: 'e1', dive_date: '2026-09-27', site_id: 's1', buddies: [], details: {} } });
+        await tick();
+        assert.equal(host.querySelector('.lb-d-hero-wait'), null);
+        assert.ok(host.querySelector('.lb-d-hero .lb-map'));
+        d.destroy();
+    });
+});
+
+test('ShareCard: the location box keeps the clicked state while saving, and reverts on failure', async () => {
+    await withDom(async host => {
+        let fail = null;
+        const store = { setSharing: async () => ({}), setShareLocation: () => new Promise((res, rej) => { fail = rej; }) };
+        const card = new ShareCard(host, { store, entry: { id: 'e1', visibility: 'members', share_location: true } });
+        const box = host.querySelector('[name="share_location"]');
+        box.checked = false;
+        box.dispatchEvent(new window.Event('change', { bubbles: true }));
+        const busy = host.querySelector('[name="share_location"]');
+        assert.equal(busy.checked, false);
+        assert.equal(busy.disabled, true);
+        fail(new Error('down'));
+        await tick();
+        assert.equal(host.querySelector('[name="share_location"]').checked, true);
+        assert.ok(host.querySelector('.lb-form-error'));
+        card.destroy();
+    });
+});

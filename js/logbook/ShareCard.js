@@ -93,6 +93,8 @@ export class ShareCard {
     /** "Show the exact location": saved at once (members and the public link follow it). */
     async setLocation(on) {
         if (this.busy) return;
+        const before = this.entry.share_location;
+        this.entry = { ...this.entry, share_location: on }; // the box keeps the state just clicked while it saves
         this.busy = true;
         this.error = '';
         this.note = '';
@@ -105,6 +107,7 @@ export class ShareCard {
         } catch (error) {
             console.error(error);
             if (this.destroyed) return;
+            this.entry = { ...this.entry, share_location: before };
             this.error = error?.kind === 'unreachable' ? tb('unreachable', 'Can\'t reach your dive log.') : tb('genericError', 'Something went wrong. Please try again.');
         }
         this.busy = false;

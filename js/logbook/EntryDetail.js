@@ -307,6 +307,7 @@ export class EntryDetail {
             console.error(error);
             this.urls = new Map();
         }
+        this.urlsLoaded = true;
         if (!this.destroyed) this.renderMedia();
     }
 
@@ -359,11 +360,17 @@ export class EntryDetail {
         return true;
     }
 
+    /** Photos count for the hero while their URLs load; once loaded, only photos that could be signed. */
+    _heroKind() {
+        const photos = this.urlsLoaded ? this._viewable().length : this.photos.length;
+        return heroKind({ loaded: this.loaded, photos, area: this.area });
+    }
+
     renderHero() {
-        const kind = heroKind({ loaded: this.loaded, photos: this.photos.length, area: this.area });
+        const kind = this._heroKind();
         let html = '';
         if (kind === 'photo') {
-            const first = this.photos[0];
+            const first = this._viewable()[0] ?? this.photos[0];
             const url = this.urls.get(first.path);
             const more = this.photos.length - 1;
             html = url
@@ -423,7 +430,7 @@ export class EntryDetail {
         const e = this.entry;
         const { core, groups } = detailRows(e, label);
         const area = this.area;
-        const kind = heroKind({ loaded: this.loaded, photos: this.photos.length, area });
+        const kind = this._heroKind();
         const gas = gasCards(e, label, fmtNum);
         const card = (cls, title, body) => `<section class="lb-d-card ${cls}"><h3 class="lb-d-card-h">${escHtml(title)}</h3>${body}</section>`;
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
