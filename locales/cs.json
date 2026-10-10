@@ -3052,6 +3052,18 @@
                 "nicknameHelp": "Jak vám říkají kamarádi, třeba „Luis“. Zobrazí se místo jména.",
                 "nameHelpNick": "Vaše celé jméno, třeba „Jaroslav Fiala“.",
                 "title": "Váš profil",
+                "sac": {
+                    "title": "Spotřeba plynu",
+                    "overall": "Váš SAC",
+                    "recent": "Posledních {0} ponorů",
+                    "counted": "Započítané ponory: {0}",
+                    "note": "Litry za minutu na hladině, z tlaku v lahvích a vážené dobou ponoru. Ponory kratší než 10 min, mimo 3–60 l/min nebo hodně odlišné od vašeho obvyklého se nepočítají.",
+                    "none": "Doplňte do ponorů tlaky v lahvích a průměrnou hloubku, váš SAC se ukáže tady.",
+                    "chart": "SAC podle ponorů",
+                    "notCounted": "Prázdné body se nezapočítávají.",
+                    "dot": "{0}, {1}",
+                    "plan": "Naplánovat ponor s tímto SAC →"
+                },
                 "previewNote": "Takhle vás vidí ostatní členové.",
                 "avatar": "Avatar",
                 "upload": "Nahrát fotku",
@@ -3473,7 +3485,8 @@
                     "duration": "Čas",
                     "avgDepth": "Prům. hloubka",
                     "temp": "Voda",
-                    "gas": "Plyn"
+                    "gas": "Plyn",
+                    "sac": "SAC"
                 },
                 "morePhotos": "Další fotky: {0}",
                 "mapAlt": "Mapa: {0}",

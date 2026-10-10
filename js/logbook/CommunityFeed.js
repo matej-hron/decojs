@@ -27,7 +27,7 @@ const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
-const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas', sac: 'SAC' };
 
 export class CommunityFeed {
     /**
