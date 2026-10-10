@@ -6,6 +6,7 @@
 import { routeHref } from './router.js';
 import { translate } from '../i18n.js';
 import { escHtml } from '../utils/escHtml.js';
+import { badgeText } from './social.js';
 
 /** All tabs, in display order. */
 export const SHELL_TABS = Object.freeze(['feed', 'list', 'community', 'sites', 'profile']);
@@ -56,6 +57,21 @@ export function resolveRoute(route, communityOn) {
     return route;
 }
 
+const BELL_ICON = '<path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2h-14z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/>';
+
+/**
+ * The "New for you" link of the top bar with its badge.
+ * @param {{count: number, active: boolean}} bell
+ */
+export function bellHtml({ count = 0, active = false } = {}) {
+    const n = badgeText(count);
+    const name = translate('diveLog.trail.social.inboxTitle', 'New for you');
+    const label = n ? `${name}: ${translate('diveLog.trail.social.bellNew', '{0} new').replace('{0}', n)}` : name;
+    return `<a class="tr-bell" href="${routeHref({ name: 'activity' })}" aria-label="${escHtml(label)}" title="${escHtml(name)}"${active ? ' aria-current="page"' : ''}>`
+        + `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${BELL_ICON}</svg>`
+        + `${n ? `<span class="tr-badge" aria-hidden="true">${escHtml(n)}</span>` : ''}</a>`;
+}
+
 function tabHtml(tab, active) {
     const label = escHtml(translate(`diveLog.trail.tab.${tab}`, LABEL_FALLBACK[tab]));
     const current = tab === active ? ' aria-current="page"' : '';
@@ -69,19 +85,25 @@ export class AppShell {
      * @param {{topNav?: HTMLElement|null, bottomNav?: HTMLElement|null}} navs
      *   the top-bar tab strip (wide screens) and the bottom tab bar (phones)
      */
-    constructor({ topNav = null, bottomNav = null } = {}) {
+    constructor({ topNav = null, bottomNav = null, bellSlot = null } = {}) {
         this.navs = [topNav, bottomNav].filter(Boolean);
+        this.bellSlot = bellSlot;
     }
 
     /** The shell of the page's `.tr-tabs` / `.tr-bottom`, or null when the page has neither. */
     static fromDocument(doc = globalThis.document) {
         const topNav = doc?.querySelector?.('.tr-tabs') ?? null;
         const bottomNav = doc?.querySelector?.('.tr-bottom') ?? null;
-        return topNav || bottomNav ? new AppShell({ topNav, bottomNav }) : null;
+        const bellSlot = doc?.querySelector?.('.tr-bell-slot') ?? null;
+        return topNav || bottomNav ? new AppShell({ topNav, bottomNav, bellSlot }) : null;
     }
 
-    /** Show `tabs` with `active` marked; no tabs hides the navigation. */
-    render({ tabs = [], active = null } = {}) {
+    /**
+     * Show `tabs` with `active` marked; no tabs hides the navigation. `bell` shows the "New for you" link
+     * (null hides it).
+     */
+    render({ tabs = [], active = null, bell = null } = {}) {
+        if (this.bellSlot) this.bellSlot.innerHTML = bell ? bellHtml(bell) : '';
         const html = tabs.map(tab => tabHtml(tab, active)).join('');
         for (const nav of this.navs) {
             nav.innerHTML = html;

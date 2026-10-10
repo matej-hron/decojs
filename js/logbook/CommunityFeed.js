@@ -7,6 +7,7 @@ import { routeHref } from './router.js';
 import { ratingOf } from './entryModel.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { SparkLoader } from './sparks.js';
+import { SocialController } from './SocialBar.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
 import { diveTitle, feedStats } from './feed.js';
@@ -62,7 +63,13 @@ export class CommunityFeed {
         this.sparks = new SparkLoader(id => this.store.loadCommunityRecording(id));
         this._onVisualFail = e => this._onVisualError(e);
         this.host.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
-        this._onClick = e => { if (e.target.closest('#tr-feed-more')) this._loadMore(); };
+        this.social = typeof store.socialStatus === 'function'
+            ? new SocialController({ store, userId, onChange: () => this._render() }) : null;
+        this.socialOn = null; // promise of whether kudos/comments exist (migration 0010)
+        this._onClick = e => {
+            if (this.social?.onClick(e)) return;
+            if (e.target.closest('#tr-feed-more')) this._loadMore();
+        };
         this.host.addEventListener('click', this._onClick);
         this._render();
         this._loadFirst();
@@ -72,6 +79,7 @@ export class CommunityFeed {
         this.destroyed = true;
         this._token++;
         this.sparks.destroy();
+        this.social?.destroy();
         this.host.removeEventListener('error', this._onVisualFail, true);
         this.host.removeEventListener('click', this._onClick);
         this.host.innerHTML = '';
@@ -97,6 +105,7 @@ export class CommunityFeed {
             this.offset = rows.length;
             this.more = rows.length >= this.pageSize;
             this._render();
+            this._loadSocial(rows);
             await this._signUrls(rows, members ?? [], token);
         } catch (error) {
             if (token !== this._token) return;
@@ -127,6 +136,7 @@ export class CommunityFeed {
             this.loadingMore = false;
             this._render();
             if (fresh[0]) this.host.querySelector(`.tr-feed-link[href="${this._href(fresh[0])}"]`)?.focus({ preventScroll: true });
+            this._loadSocial(fresh);
             await this._signUrls(fresh, [], token);
         } catch (error) {
             if (token !== this._token) return;
@@ -135,6 +145,13 @@ export class CommunityFeed {
             this.moreFailed = true;
             this._render();
         }
+    }
+
+    /** Kudos and comment counts of these rows, when the backend has them. */
+    async _loadSocial(rows) {
+        if (!this.social || !rows.length) return;
+        this.socialOn ??= this.store.socialStatus().catch(() => false);
+        if (await this.socialOn) this.social.load(rows.map(r => r.id));
     }
 
     _fetchPage(offset) {
@@ -217,6 +234,7 @@ export class CommunityFeed {
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
             peopleText: people, ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
             lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
+            socialHtml: this.social?.barHtml(row, { commentsHref: this._href(row) }) ?? '',
         });
     }
 

@@ -26,6 +26,7 @@ import { MemberPage } from './MemberPage.js';
 import { ProfilePage } from './ProfilePage.js';
 import { SparkLoader } from './sparks.js';
 import { CommunityFeed } from './CommunityFeed.js';
+import { ActivityPage } from './ActivityPage.js';
 import { memberEntryStore } from './memberEntryStore.js';
 import { displayName } from './community.js';
 import { avatarHtml } from './avatars.js';
@@ -39,6 +40,8 @@ const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
 /** A probe that has not answered by then counts as 'unknown'. */
 const PROBE_TIMEOUT_MS = 8000;
+/** The "New for you" badge is refreshed on route changes, at most this often. */
+const UNSEEN_REFRESH_MS = 60 * 1000;
 /** How long the entry form waits for a probe in flight before it opens without the visibility fields. */
 const FORM_PROBE_WAIT_MS = 3000;
 
@@ -81,6 +84,9 @@ export class LogbookApp {
         this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;
         this.community = false; // whether the community backend (migration 0004) is available
+        this.socialOn = false; // whether kudos and comments (migration 0010) are available
+        this.unseen = 0; // the "New for you" badge
+        this._unseenAt = 0; // when the badge was last fetched
         this._communityKnown = false; // false while the probe has not answered 'yes' or 'no'
         this._probe = null; // the probe in flight
         this._probeAttempts = 0;
@@ -147,7 +153,13 @@ export class LogbookApp {
     _renderShell() {
         if (!this.shell) return;
         if (!this.user) this.shell.render({ tabs: [] });
-        else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._route().name, this.community) });
+        else {
+            const name = this._route().name;
+            this.shell.render({
+                tabs: shellTabs(this.community), active: activeTab(name, this.community),
+                bell: this.socialOn ? { count: this.unseen, active: name === 'activity' } : null,
+            });
+        }
     }
 
     /**
@@ -180,13 +192,47 @@ export class LogbookApp {
                 if (result === 'yes' || result === 'no') {
                     this._communityKnown = true;
                     this.community = result === 'yes';
-                    if (this.community) Promise.resolve().then(() => store.ensureProfile?.()).catch(error => console.error(error));
+                    if (this.community) {
+                        Promise.resolve().then(() => store.ensureProfile?.()).catch(error => console.error(error));
+                        this._probeSocial(session);
+                    }
                 } else if (this._probeAttempts === 1) {
                     this._probeTimer = setTimeout(() => { this._probeTimer = null; this._probeCommunity(); }, PROBE_RETRY_MS);
                 }
                 this._afterProbe();
             });
         this._probe = probe;
+    }
+
+    /** Kudos and comments exist (0010): show the "New for you" bell and fetch its badge. */
+    async _probeSocial(session) {
+        if (typeof this.store.socialStatus !== 'function') return;
+        let on = false;
+        try { on = await this.store.socialStatus(); } catch (error) { console.error(error); }
+        if (this.destroyed || session !== this._session || !on) return;
+        this.socialOn = true;
+        this._unseenAt = 0;
+        this._renderShell();
+        this._refreshUnseen();
+        if (parseRoute(location.hash).name === 'activity') this._renderRoute();
+    }
+
+    /** Fetch the badge number (at most once a minute unless `force`). */
+    async _refreshUnseen({ force = false } = {}) {
+        if (!this.socialOn || (!force && Date.now() - this._unseenAt < UNSEEN_REFRESH_MS)) return;
+        this._unseenAt = Date.now();
+        const session = this._session;
+        try {
+            const n = await this.store.socialUnseenCount();
+            if (this.destroyed || session !== this._session) return;
+            if (parseRoute(location.hash).name === 'activity') return; // the open page marks everything seen
+            if (n !== this.unseen) {
+                this.unseen = n;
+                this._renderShell();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     /** The probe answered: the tabs may change, and so may home and community routes. */
@@ -255,6 +301,9 @@ export class LogbookApp {
         this._probeAttempts = 0;
         this._communityKnown = false;
         this.community = false;
+        this.socialOn = false;
+        this.unseen = 0;
+        this._unseenAt = 0;
     }
 
     _leaveLogbook() {
@@ -280,7 +329,7 @@ export class LogbookApp {
     _onLanguageChange() {
         this._renderShell();
         const name = this._route().name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive' || name === 'profile')) this.form.relabel(); // keep what was typed / loaded
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive' || name === 'profile' || name === 'activity')) this.form.relabel(); // keep what was typed / loaded
         else if (this.user && name !== 'analysis' && name !== 'memberAnalysis') this._renderRoute();
         else {
             translateStatic(this.view);
@@ -300,6 +349,7 @@ export class LogbookApp {
             this._hash = location.hash;
         }
         this._renderShell();
+        this._refreshUnseen();
         if (this._probe && !this._communityKnown && isCommunityRoute(parseRoute(location.hash).name)) {
             // A community route asked for explicitly: wait for the probe instead of flashing My dives.
             this.view.classList.remove('lb-list-view', 'lb-selecting');
@@ -323,6 +373,7 @@ export class LogbookApp {
             case 'memberDive': this._showMemberDive(route.id, token); break;
             case 'memberAnalysis': this._showMemberAnalysis(route.id, token); break;
             case 'profile': this._showProfile(); break;
+            case 'activity': this._showActivity(); break;
             default: this._showNotFound();
         }
     }
@@ -347,7 +398,7 @@ export class LogbookApp {
         else {
             this.view.innerHTML = '<div class="lb-form-host"></div>';
             this.form = new EntryDetail(this.view.firstChild, {
-                store: this.store, entry,
+                store: this.store, entry, social: this._social(),
                 onDeleted: () => { this.entries = null; location.hash = routeHref({ name: 'list' }); },
             });
         }
@@ -392,6 +443,30 @@ export class LogbookApp {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new MemberPage(this.view.firstChild, {
             store: this.store, userId: this.user.id, memberId,
+            onError: error => this._viewError(error),
+        });
+    }
+
+    /** What the dive detail needs for kudos and comments (it checks availability itself). */
+    _social() {
+        return this.community ? { store: this.store, userId: this.user.id } : null;
+    }
+
+    // ---- New for you ----
+
+    _showActivity() {
+        if (!this.socialOn) {
+            this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
+            return;
+        }
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new ActivityPage(this.view.firstChild, {
+            store: this.store,
+            onSeen: () => {
+                this.unseen = 0;
+                this._unseenAt = Date.now();
+                this._renderShell();
+            },
             onError: error => this._viewError(error),
         });
     }
@@ -476,7 +551,7 @@ export class LogbookApp {
         const { entry, adapter } = memberEntryStore(this.store, row);
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new EntryDetail(this.view.firstChild, {
-            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner),
+            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner), social: this._social(),
         });
     }
 

@@ -80,7 +80,9 @@ export class SharedDivePage {
         this.parts = parts;
         this.avatarUrl = null;
         this.state = 'ready';
+        this.kudos = null;
         this._render();
+        this._loadKudos();
         if (parts.author.avatar_path) {
             try {
                 this.avatarUrl = await this.store.avatarUrl(parts.author.avatar_path);
@@ -89,6 +91,15 @@ export class SharedDivePage {
             }
             if (this.avatarUrl && !this.destroyed && this.detail) this.detail.relabel();
         }
+    }
+
+    /** Kudos count only: the public page never shows who gave them, nor comments. */
+    async _loadKudos() {
+        if (typeof this.store.kudosCount !== 'function') return;
+        const n = await this.store.kudosCount().catch(() => null);
+        if (this.destroyed || n === null) return;
+        this.kudos = n;
+        this.detail?.setKudosCount(n);
     }
 
     relabel() {
@@ -149,6 +160,7 @@ export class SharedDivePage {
         const adapter = sharedDiveAdapter(this.store, this.parts);
         this.detail = new EntryDetail(this.root.querySelector('.tr-share-detail'), {
             store: adapter, entry, readOnly: true, author: this._author(), backHref: false, analysisHref: false,
+            kudosCount: this.kudos,
         });
         if (entry.recording_id) {
             this.analysis = new RecordedDiveAnalysis(this.root.querySelector('.lb-analysis'), {

@@ -32,10 +32,11 @@ const NB = ' ';
  * @param {string} [o.lockHtml] - markup after the title (see lockHtml): the dive is private
  * @param {string} [o.selectHtml] - markup at the start of the head (select-mode checkbox)
  * @param {{id: string, selected: boolean}|null} [o.pick] - select mode (My dives only)
+ * @param {string} [o.socialHtml] - markup at the end of a member card (kudos and comments, see SocialBar)
  */
 export function feedCardHtml({
     entry, href = null, title, untitled = false, whenText = '', numberLabel = null, statsHtml: stats = '',
-    peopleText = '', ratingHtml: rating = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null, lockHtml: lock = '',
+    peopleText = '', ratingHtml: rating = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null, lockHtml: lock = '', socialHtml: social = '',
 }) {
     const titleCls = `lb-feed-title${untitled ? ' lb-untitled' : ''}`;
     const srNumber = numberLabel ? `<span class="rda-visually-hidden">${escHtml(numberLabel)}, </span>` : '';
@@ -71,7 +72,7 @@ export function feedCardHtml({
                     </div>
                     ${badgeHtml}
                 </div>
-                ${rest}</article>`;
+                ${rest}${social}</article>`;
 }
 
 /**

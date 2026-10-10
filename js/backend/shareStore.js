@@ -50,6 +50,15 @@ export function shareStoreFor(client, token) {
             }
             return sharedDiveParts(data);
         },
+        /** The kudos count of the shared dive (no names); null when unknown or before migration 0010. */
+        async kudosCount() {
+            const { data, error } = await client.rpc('shared_dive_kudos', { p_token: token });
+            if (error) {
+                if (!MISSING.test(error.code ?? '')) console.warn('Kudos count unavailable', error.message ?? error);
+                return null;
+            }
+            return Number.isFinite(Number(data)) && data !== null ? Number(data) : null;
+        },
         photoUrls: paths => signed(PHOTO_BUCKET, paths),
         async avatarUrl(path) {
             if (!path) return null;
