@@ -4,6 +4,7 @@
  *
  * Upload and Remove photo act at once (the photo is its own storage object); everything else waits for Save.
  * Picking a preset while a photo is used replaces the photo on Save.
+ * With migration 0007: Qualifications and Medical fitness cards (ProfileDocuments.js) below the form.
  */
 
 import { AVATARS, AVATAR_KEYS, avatarHtml, avatarImgFallback, fallbackAvatarKey } from './avatars.js';
@@ -13,6 +14,7 @@ import { translate } from '../i18n.js';
 import { currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { normalizeLogOffset } from './entryModel.js';
+import { QualificationsCard, MedicalCard, badgesHtml } from './ProfileDocuments.js';
 
 const NAME_MAX = 60;
 const PREVIEW_ROWS = 6;
@@ -55,6 +57,8 @@ export class ProfilePage {
         this.status = { kind: '', text: '' };
         this.failed = false;
         this.destroyed = false;
+        this.quals = null; // QualificationsCard once the documents backend is known to exist
+        this.medical = null;
         this.num = { offset: null, plan: null, busy: null, status: { kind: '', text: '' } }; // offset null = not loaded / unsupported
         this._onImgError = e => { if (avatarImgFallback(e)) this.photoUrl = null; };
         this.host.addEventListener('error', this._onImgError, true); // image errors do not bubble
@@ -64,6 +68,8 @@ export class ProfilePage {
 
     destroy() {
         this.destroyed = true;
+        this.quals?.destroy();
+        this.medical?.destroy();
         this._revokeLocal();
         this.host.removeEventListener('error', this._onImgError, true);
         this.host.innerHTML = '';
@@ -94,6 +100,7 @@ export class ProfilePage {
         this._take(profile ?? { id: this.user?.id });
         this._render();
         this._loadNumbering();
+        this._loadDocuments();
         await this._signPhoto();
     }
 
@@ -108,6 +115,28 @@ export class ProfilePage {
             return;
         }
         this._renderNumbering();
+    }
+
+    async _loadDocuments() {
+        if (typeof this.store.documentsStatus !== 'function') return;
+        try {
+            if (!await this.store.documentsStatus() || this.destroyed) return;
+        } catch (error) {
+            console.error(error); // the cards simply stay hidden
+            return;
+        }
+        const deps = { store: this.store, user: this.user };
+        this.quals = new QualificationsCard({ ...deps, onChange: () => this._renderPreview() });
+        this.medical = new MedicalCard(deps);
+        this._mountDocuments();
+        await Promise.all([this.quals.load(), this.medical.load()]);
+    }
+
+    _mountDocuments() {
+        const q = this.host.querySelector('.tr-quals');
+        const m = this.host.querySelector('.tr-medical');
+        if (q && this.quals) this.quals.mount(q);
+        if (m && this.medical) this.medical.mount(m);
     }
 
     /** Adopt a saved profile row: it becomes the draft. */
@@ -370,6 +399,7 @@ export class ProfilePage {
                 <p class="tr-profile-preview-note">${escHtml(tp('previewNote', 'This is how other members see you.'))}</p>
                 <p class="tr-member-head-name">${escHtml(name)}</p>
                 ${country ? `<p class="tr-member-head-country">${escHtml(country)}</p>` : ''}
+                ${badgesHtml(this.quals?.shownBadges() ?? [])}
             </div>`;
     }
 
@@ -414,6 +444,8 @@ export class ProfilePage {
             this.host.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
             return;
         }
+        this.quals?.capture(); // keep what is typed in an open card form
+        this.medical?.capture();
         const lang = currentLang();
         const d = this.draft;
         const hasPhoto = Boolean(this.profile.avatar_path);
@@ -450,6 +482,8 @@ export class ProfilePage {
                     <p class="tr-profile-status${status.kind ? ` tr-profile-status--${status.kind}` : ''}" role="status">${escHtml(status.text)}</p>
                 </div>
             </form>
+            <div class="rda-card tr-docs-card tr-quals" hidden></div>
+            <div class="rda-card tr-docs-card tr-medical" hidden></div>
             <div class="rda-card tr-numbering" hidden></div>
             <div class="rda-card tr-profile-account">
                 <h3 class="tr-section-head">${escHtml(tp('account', 'Account'))}</h3>
@@ -459,6 +493,7 @@ export class ProfilePage {
             </div>
         </div>`;
         this._wire();
+        this._mountDocuments();
         this._renderNumbering();
         if (this.busy) this._setBusy(this.busy);
     }

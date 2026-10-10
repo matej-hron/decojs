@@ -475,7 +475,7 @@ describe('deleteAllMyData', () => {
         assert.deepEqual(client.tables.media.map(r => r.id), ['mx']);
         assert.deepEqual([...client.buckets['dive-logs'].keys()], ['u2/S/z.DLF']);
         assert.deepEqual([...client.buckets['dive-photos'].keys()], ['u2/ex/p.jpg']);
-        assert.deepEqual(report, { entries: 2, sites: 1, recordings: 2, photos: 2, media: 2, failed: [] });
+        assert.deepEqual(report, { entries: 2, sites: 1, recordings: 2, photos: 2, media: 2, documents: 0, failed: [] });
         assert.deepEqual(steps, ['photos', 'entries', 'sites', 'recordings']);
     });
 

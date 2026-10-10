@@ -63,6 +63,7 @@ class DocumentsCard {
     // ---- Subclass hooks ----
     /* eslint-disable class-methods-use-this */
     get kind() { return ''; }
+    get texts() { return {}; }
     get slots() { return []; }
     emptyDraft() { return {}; }
     draftOf(item) { return { ...item }; }
@@ -166,7 +167,7 @@ class DocumentsCard {
         this._dropPreviews();
         this.edit = null;
         this._render();
-        const back = id ? this.el.querySelector(`[data-act="edit"][data-id="${CSS?.escape ? CSS.escape(id) : id}"]`) : this.el.querySelector('[data-act="add"]');
+        const back = id ? [...this.el.querySelectorAll('[data-act="edit"]')].find(b => b.dataset.id === id) : this.el.querySelector('[data-act="add"]');
         back?.focus({ preventScroll: true });
     }
 
@@ -189,7 +190,7 @@ class DocumentsCard {
         const kind = scanKind(file);
         const refuse = text => { this.busy = null; this.edit.slotError = { slot, text }; this._render(); };
         if (!kind) return refuse(td('badType', 'Choose a photo or a PDF.'));
-        if (kind === 'pdf' && file.size > DOC_MAX_BYTES) return refuse(td('tooBig', 'This file is larger than 10 MB.'));
+        if (kind === 'pdf' && file.size > DOC_MAX_BYTES) return refuse(td('tooBig', 'This file is larger than 10\u00a0MB.'));
         this.busy = 'pick';
         this.edit.slotError = null;
         this._render();
@@ -202,7 +203,7 @@ class DocumentsCard {
                 if (this.destroyed || !this.edit) return;
                 return refuse(td('unreadable', 'Couldn’t read this image. Choose a JPEG, PNG or WebP photo, or a PDF.'));
             }
-            if (blob.size > DOC_MAX_BYTES) return refuse(td('tooBig', 'This file is larger than 10 MB.'));
+            if (blob.size > DOC_MAX_BYTES) return refuse(td('tooBig', 'This file is larger than 10\u00a0MB.'));
         }
         if (this.destroyed || !this.edit) return;
         const s = this.edit.slots[slot];
@@ -278,7 +279,7 @@ class DocumentsCard {
         this.busy = null;
         this.status = { kind: 'ok', text: td('saved', 'Saved ✓') };
         this._render();
-        this.el.querySelector(`[data-act="edit"][data-id="${saved.id}"]`)?.focus({ preventScroll: true });
+        [...this.el.querySelectorAll('[data-act="edit"]')].find(b => b.dataset.id === saved.id)?.focus({ preventScroll: true });
         this.onChange(this.items);
         const fresh = this.slots.map(n => saved[n]).filter(p => p && uploaded.includes(p));
         for (const p of fresh) this.urls.delete(p);
@@ -419,15 +420,15 @@ class DocumentsCard {
         const busy = Boolean(this.busy);
         const saving = this.busy === 'save';
         const confirm = e.confirm ? `<div class="lb-confirm tr-doc-confirm" role="alertdialog" aria-label="${escHtml(td('confirmDeleteLabel', 'Confirm deletion'))}">
-                <p>${escHtml(td(`${this.kind}.confirmDelete`, 'Delete this item and its scans? This cannot be undone.'))}</p>
+                <p>${escHtml(this.kt('confirmDelete'))}</p>
                 <div class="lb-actions"><button type="button" class="btn btn-danger" data-act="delete"${busy ? ' disabled' : ''}>${escHtml(this.busy === 'delete' ? td('deleting', 'Deleting…') : td('delete', 'Delete'))}</button>
                 <button type="button" class="btn btn-secondary" data-act="no-delete"${busy ? ' disabled' : ''}>${escHtml(td('cancel', 'Cancel'))}</button></div></div>` : '';
-        return `<form class="tr-doc-form lb-form" novalidate aria-label="${escHtml(e.id ? td(`${this.kind}.editTitle`, 'Edit') : td(`${this.kind}.addTitle`, 'Add'))}">
-                <h4 class="tr-doc-form-title">${escHtml(e.id ? td(`${this.kind}.editTitle`, 'Edit') : td(`${this.kind}.addTitle`, 'Add'))}</h4>
+        return `<form class="tr-doc-form lb-form" novalidate aria-label="${escHtml(e.id ? this.kt('editTitle') : this.kt('addTitle'))}">
+                <h4 class="tr-doc-form-title">${escHtml(e.id ? this.kt('editTitle') : this.kt('addTitle'))}</h4>
                 ${this.fieldsHtml(e.draft)}
                 <fieldset class="tr-scans"><legend>${escHtml(td('scans', 'Scans'))}</legend>
                     <div class="tr-scan-grid tr-scan-grid--${this.slots.length}">${this.slots.map(s => this._slotHtml(s)).join('')}</div>
-                    <p class="tr-profile-hint">${escHtml(td('scanHint', 'A photo or a PDF, up to 10 MB. Photos are scaled down and their location data removed before upload.'))}</p>
+                    <p class="tr-profile-hint">${escHtml(td('scanHint', 'A photo or a PDF, up to 10\u00a0MB. Photos are scaled down and their location data removed before upload.'))}</p>
                 </fieldset>
                 <div class="lb-actions tr-doc-actions">
                     <button type="submit" class="btn btn-primary"${busy ? ' disabled' : ''}>${escHtml(saving ? td('saving', 'Saving…') : td('save', 'Save'))}</button>
@@ -448,22 +449,37 @@ class DocumentsCard {
             const rows = this.items.map(item => (this.edit?.id === item.id
                 ? `<li class="tr-doc tr-doc--editing">${this._formHtml()}</li>`
                 : `<li class="tr-doc">${this.itemHtml(item)}<button type="button" class="btn btn-secondary tr-doc-edit" data-act="edit" data-id="${escHtml(item.id)}" aria-label="${escHtml(fill(td('editItem', 'Edit {0}'), this.itemName(item)))}"${this.edit ? ' disabled' : ''}>${escHtml(td('edit', 'Edit'))}</button></li>`)).join('');
-            const empty = !this.items.length && !this.edit ? `<p class="tr-doc-empty">${escHtml(td(`${this.kind}.empty`, 'Nothing here yet.'))}</p>` : '';
+            const empty = !this.items.length && !this.edit ? `<p class="tr-doc-empty">${escHtml(this.kt('empty'))}</p>` : '';
             const adding = this.edit && !this.edit.id ? `<div class="tr-doc tr-doc--editing tr-doc--new">${this._formHtml()}</div>` : '';
             body = `${empty}${rows ? `<ul class="tr-doc-list" role="list">${rows}</ul>` : ''}${adding}
-                ${this.edit ? '' : `<button type="button" class="btn btn-secondary tr-doc-add" data-act="add">${escHtml(td(`${this.kind}.add`, 'Add'))}</button>`}`;
+                ${this.edit ? '' : `<button type="button" class="btn btn-secondary tr-doc-add" data-act="add">${escHtml(this.kt('add'))}</button>`}`;
         }
         this.el.innerHTML = `${this.headHtml()}${body}
             <p class="tr-profile-status tr-doc-status${status.kind ? ` tr-profile-status--${status.kind}` : ''}" role="status">${escHtml(status.text)}</p>`;
     }
 
     itemName() { return ''; } // eslint-disable-line class-methods-use-this
+
+    /** A per-kind string: `diveLog.trail.docs.<kind>.<key>`. */
+    kt(key) {
+        return td(`${this.kind}.${key}`, this.texts[key] ?? key);
+    }
 }
 
 // ---- Qualifications ----
 
+const QUAL_TEXTS = {
+    empty: 'No qualifications yet.', add: 'Add qualification', addTitle: 'New qualification', editTitle: 'Edit qualification',
+    confirmDelete: 'Delete this qualification and its scans? This cannot be undone.',
+};
+const MEDICAL_TEXTS = {
+    empty: 'No medical checks yet.', add: 'Add medical check', addTitle: 'New medical check', editTitle: 'Edit medical check',
+    confirmDelete: 'Delete this medical check and its scan? This cannot be undone.',
+};
+
 export class QualificationsCard extends DocumentsCard {
     get kind() { return 'qualifications'; }
+    get texts() { return QUAL_TEXTS; }
     get slots() { return ['scan_front', 'scan_back']; }
 
     emptyDraft() {
@@ -554,6 +570,7 @@ export class QualificationsCard extends DocumentsCard {
 
 export class MedicalCard extends DocumentsCard {
     get kind() { return 'medical'; }
+    get texts() { return MEDICAL_TEXTS; }
     get slots() { return ['scan_path']; }
     emptyDraft() { return { checked_on: '', valid_until: '', doctor: '', notes: '' }; }
 

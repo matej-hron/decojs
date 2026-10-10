@@ -1,5 +1,5 @@
 /**
- * DecoTrail member profile: big avatar, name and country, stat tiles, favourite sites,
+ * DecoTrail member profile: big avatar, name and country, shown qualification badges, stat tiles, favourite sites,
  * then the member's recent dives (a CommunityFeed filtered by owner). The own page adds "Edit profile".
  */
 
@@ -8,6 +8,7 @@ import { isOwn, countryName, memberStatsView } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
 import { memberName } from './MembersPage.js';
 import { CommunityFeed } from './CommunityFeed.js';
+import { badgesHtml, badgeTexts } from './ProfileDocuments.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -34,6 +35,7 @@ export class MemberPage {
         this.onError = onError;
         this.member = undefined; // undefined while loading, null when not found
         this.avatarUrl = null;
+        this.badges = []; // "CMAS · P2" texts (community_qualifications, 0007)
         this.failed = false;
         this.feed = null;
         this.destroyed = false;
@@ -80,6 +82,7 @@ export class MemberPage {
         this._renderTop();
         if (!this.member) return;
         this._mountFeed();
+        this._loadBadges();
         if (!this.member.avatar_path || !this.store.avatarUrls) return;
         try {
             const urls = await this.store.avatarUrls([this.member.avatar_path]);
@@ -89,6 +92,18 @@ export class MemberPage {
             this._renderTop();
         } catch (error) {
             console.error(error); // the preset stays
+        }
+    }
+
+    async _loadBadges() {
+        if (typeof this.store.memberQualifications !== 'function') return;
+        try {
+            const rows = await this.store.memberQualifications(this.memberId);
+            if (this.destroyed) return;
+            this.badges = badgeTexts(rows);
+            if (this.badges.length) this._renderTop();
+        } catch (error) {
+            console.error(error); // no badges
         }
     }
 
@@ -140,6 +155,7 @@ export class MemberPage {
                 <div class="tr-member-head-text">
                     <h2 class="tr-member-head-name">${escHtml(name)}${own ? ` <span class="tr-you-tag">${escHtml(tt('you', 'You'))}</span>` : ''}</h2>
                     ${country ? `<p class="tr-member-head-country">${escHtml(country)}</p>` : ''}
+                    ${badgesHtml(this.badges)}
                     ${own ? `<a class="btn btn-secondary tr-member-edit" href="${routeHref({ name: 'profile' })}">${escHtml(tt('member.editProfile', 'Edit profile'))}</a>` : ''}
                 </div>
             </div>
