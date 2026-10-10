@@ -71,7 +71,8 @@ export function sharedDiveParts(payload) {
     }
     const media = Array.isArray(payload.media) ? payload.media.filter(m => m && typeof m === 'object').map(m => pick(m, MEDIA_KEYS)) : [];
     const a = payload.author ?? {};
-    const author = { display_name: a.display_name ?? null, avatar_preset: a.avatar_preset ?? null, avatar_path: a.avatar_path ?? null };
+    const author = { display_name: a.display_name ?? null, avatar_preset: a.avatar_preset ?? null, avatar_path: a.avatar_path ?? null,
+        author_key: typeof a.author_key === 'string' ? a.author_key : null };
     const r = payload.recording && typeof payload.recording === 'object' && payload.recording.id ? payload.recording : null;
     const recording = r ? {
         id: r.id, deviceSerial: null, diveNumber: r.dive_number ?? null, startLocal: r.start_local ?? null,
