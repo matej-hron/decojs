@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run each migration twice
-# (idempotency), then the RLS assertions. Usage: bash supabase/tests/run.sh
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006, 0009, 0007 and 0010 twice
+# (idempotency), then the RLS assertions. 0008 is live before 0006; 0007 runs after the others because its test deletes user A (0010 after it uses its own users). Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 NAME="decotrail-rls-$$"
@@ -26,6 +26,27 @@ for f in migrations/0008_share_avatar_fix.sql migrations/0008_share_avatar_fix.s
     run < "$f"
 done
 run < tests/0008_share_avatar.sql
+for f in migrations/0006_sites_description.sql migrations/0006_sites_description.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0006_sites_description.sql
+echo "applying 0006 again on data"
+run < migrations/0006_sites_description.sql
+run < tests/0008_share_avatar.sql # 0006 keeps 0008's author_key
+for f in migrations/0009_share_map.sql migrations/0009_share_map.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0009_share_map.sql
+# 0007 last: its test deletes user A at the end (cascade check).
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+# A project that auto-exposes tables would grant anon everything: running 0007 again must take it back.
+echo "grant all on public.qualifications, public.medical_checks to anon;" | run
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+run < tests/0007_documents.sql
 for f in migrations/0010_social.sql migrations/0010_social.sql; do
     echo "applying $f"
     run < "$f"

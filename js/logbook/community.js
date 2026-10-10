@@ -123,7 +123,7 @@ export function entryFromCommunityRow(row) {
     const entry = {};
     for (const [k, v] of Object.entries(row ?? {})) {
         // site_id stays: entry views look the site up by entry.site_id.
-        if ((k.startsWith('site_') && k !== 'site_id') || k.startsWith('photo_')) continue;
+        if ((k.startsWith('site_') && k !== 'site_id') || k.startsWith('photo_') || k === 'notes') continue;
         entry[k] = v;
     }
     entry.notes = null;
@@ -135,6 +135,7 @@ export function entryFromCommunityRow(row) {
         altitude_m: row.site_altitude_m,
         lat: row.site_lat ?? null,
         lon: row.site_lon ?? null,
+        url: row.site_url ?? null,
     } : null;
     return { entry, site };
 }

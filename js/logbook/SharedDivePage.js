@@ -1,7 +1,8 @@
 /**
  * The public share page (`lab/dive.html#s=<token>`): one dive, read-only, for anyone with the link.
- * The read-only dive detail (author row without a link, no back link, never notes) and the embedded
- * analysis below it. Unknown or revoked links get a plain "this link does not work" card.
+ * The read-only dive detail (author row without a link, no back link, never notes) with the embedded
+ * analysis in its main column, the site map (exact, or the approximate area from 0009), and an
+ * invitation to DecoTrail and DecoTheory at the bottom. Unknown or revoked links get a plain "this link does not work" card.
  */
 
 import { EntryDetail } from './EntryDetail.js';
@@ -118,9 +119,27 @@ export class SharedDivePage {
         this.detail?.relabel();
         const head = this.root.querySelector('.tr-share-analysis-h');
         if (head) head.textContent = ts('analysisTitle', 'Profile and analysis');
+        const learn = this.root.querySelector('.tr-share-analysis .tr-learn');
+        if (learn) learn.textContent = translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗');
         const intro = this.root.querySelector('.tr-share-intro');
         if (intro) intro.textContent = ts('pageIntro', 'A dive shared from DecoTrail.');
+        this.root.querySelector('.tr-share-cta')?.replaceWith(document.createRange().createContextualFragment(this._ctaHtml()));
         if (this.analysis) translateStatic(this.root.querySelector('.lb-analysis'));
+    }
+
+    /** The invitation at the bottom: DecoTrail (invite-only) and DecoTheory. */
+    _ctaHtml() {
+        return `<aside class="tr-share-cta" aria-labelledby="tr-share-cta-h">
+            <div class="tr-share-cta-trail">
+                <h2 id="tr-share-cta-h">${escHtml(ts('ctaTitle', 'Log your dives with DecoTrail'))}</h2>
+                <p>${escHtml(ts('ctaText', 'Profiles, tissues and gas from your dive computer, explained. DecoTrail is invite-only for now — ask a diver who uses it.'))}</p>
+                <a class="btn btn-primary" href="dive-log.html">${escHtml(ts('ctaButton', 'Open DecoTrail'))}</a>
+            </div>
+            <div class="tr-share-cta-theory">
+                <p>${escHtml(ts('ctaTheoryText', 'Curious what the ceiling, tissues and gradient factors mean?'))}</p>
+                <a class="tr-share-cta-link" href="../index.html">${escHtml(ts('ctaTheory', 'Learn the theory on DecoTheory ↗'))}</a>
+            </div>
+        </aside>`;
     }
 
     /** Author row: display name (else "Diver") and avatar; no link, the visitor has no member pages. */
@@ -160,18 +179,20 @@ export class SharedDivePage {
         const { entry } = this.parts;
         this.root.innerHTML = `<p class="tr-share-intro">${escHtml(ts('pageIntro', 'A dive shared from DecoTrail.'))}</p>
             <div class="lb-form-host tr-share-detail"></div>
-            ${entry.recording_id ? `<section class="tr-share-analysis" id="analysis" aria-labelledby="tr-share-analysis-h">
-                <h2 class="tr-share-analysis-h" id="tr-share-analysis-h">${escHtml(ts('analysisTitle', 'Profile and analysis'))}</h2>
-                <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a>
-                <div class="rda-root lb-analysis"></div>
-            </section>` : ''}`;
+            ${this._ctaHtml()}`;
         const adapter = sharedDiveAdapter(this.store, this.parts);
         this.detail = new EntryDetail(this.root.querySelector('.tr-share-detail'), {
-            store: adapter, entry, readOnly: true, author: this._author(), backHref: false, analysisHref: false,
+            store: adapter, entry, readOnly: true, author: this._author(), backHref: false, analysisHref: false, area: this.parts.area ?? null,
             kudosCount: this.kudos,
         });
         if (entry.recording_id) {
-            this.analysis = new RecordedDiveAnalysis(this.root.querySelector('.lb-analysis'), {
+            // The profile and analysis open the main column, next to the map and the dive's facts.
+            this.detail.slot.innerHTML = `<section class="lb-d-card tr-share-analysis" id="analysis" aria-labelledby="tr-share-analysis-h">
+                <div class="tr-share-analysis-top"><h3 class="lb-d-card-h tr-share-analysis-h" id="tr-share-analysis-h">${escHtml(ts('analysisTitle', 'Profile and analysis'))}</h3>
+                <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a></div>
+                <div class="rda-root lb-analysis"></div>
+            </section>`;
+            this.analysis = new RecordedDiveAnalysis(this.detail.slot.querySelector('.lb-analysis'), {
                 store: adapter, embedded: true, focusRecordingId: entry.recording_id, entryGases: gasesFromEntry(entry),
             });
         }

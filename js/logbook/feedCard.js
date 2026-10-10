@@ -25,7 +25,7 @@ const NB = ' ';
  * @param {string} [o.statsHtml] - markup (see statsHtml)
  * @param {string} [o.peopleText] - plain text: buddies and tags
  * @param {string} [o.ratingHtml] - markup (see ratingHtml)
- * @param {string} [o.notesText] - plain text
+ * @param {string} [o.notesText] - plain text: the description excerpt (own cards fall back to the notes)
  * @param {string} [o.visualHtml] - markup (see visualHtml)
  * @param {{name: string, avatarHtml: string, href: string, own?: boolean}|null} [o.author]
  * @param {string} [o.badgeHtml] - markup at the end of the head ("Add details")

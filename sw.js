@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.223';
+const CACHE_NAME = 'deco-theory-0.6.225';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -105,6 +105,8 @@ const STATIC_ASSETS = [
   './js/logbook/geo.js',
   './js/logbook/SitePicker.js',
   './js/logbook/SitesPage.js',
+  './js/logbook/SiteVisits.js',
+  './js/logbook/visits.js',
   './js/logbook/EntryDetail.js',
   './js/logbook/EntryForm.js',
   './js/logbook/MediaSection.js',
@@ -114,6 +116,7 @@ const STATIC_ASSETS = [
   './js/logbook/LogbookApp.js',
   './js/logbook/AppShell.js',
   './js/backend/communityStore.js',
+  './js/backend/documentsStore.js',
   './js/logbook/community.js',
   './js/logbook/avatars.js',
   './js/logbook/feedCard.js',
@@ -122,9 +125,13 @@ const STATIC_ASSETS = [
   './js/logbook/MembersPage.js',
   './js/logbook/MemberPage.js',
   './js/logbook/ProfilePage.js',
+  './js/logbook/ProfileDocuments.js',
+  './js/logbook/documents.js',
   './js/logbook/memberEntryStore.js',
   './js/logbook/share.js',
   './js/logbook/ShareCard.js',
+  './js/logbook/shareAction.js',
+  './js/logbook/siteMap.js',
   './js/logbook/SharedDivePage.js',
   './js/backend/shareStore.js',
   './js/backend/socialStore.js',

@@ -10,10 +10,11 @@ import { SparkLoader } from './sparks.js';
 import { SocialController } from './SocialBar.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
-import { diveTitle, feedStats } from './feed.js';
+import { diveTitle, feedStats, descriptionExcerpt } from './feed.js';
 import { groupByMonth, formatWeekdayDate } from './listViews.js';
 import { TAGS } from './EntryForm.js';
 import { mapyStaticMapUrl } from './geo.js';
+import { shareDive, shareButtonHtml, confirmSheet, toast } from './shareAction.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
@@ -66,13 +67,46 @@ export class CommunityFeed {
         this.social = typeof store.socialStatus === 'function'
             ? new SocialController({ store, userId, onChange: () => this._render() }) : null;
         this.socialOn = null; // promise of whether kudos/comments exist (migration 0010)
+        this.shareOn = false; // public share links exist (0005): own cards get a Share button
         this._onClick = e => {
             if (this.social?.onClick(e)) return;
             if (e.target.closest('#tr-feed-more')) this._loadMore();
+            const share = e.target.closest('[data-share]');
+            if (share) { e.preventDefault(); this._share(share.dataset.share); }
         };
         this.host.addEventListener('click', this._onClick);
         this._render();
         this._loadFirst();
+        this._probeShare();
+    }
+
+    async _probeShare() {
+        if (typeof this.store.shareStatus !== 'function' || typeof this.store.setSharing !== 'function') return;
+        const on = await Promise.resolve().then(() => this.store.shareStatus()).catch(() => false);
+        if (!on || this.destroyed) return;
+        this.shareOn = true;
+        if (this.rows?.some(r => isOwn(r, this.userId))) this._render();
+    }
+
+    /** Share an own dive: the full own row (with its link token) first, then the shared flow of shareAction. */
+    async _share(id) {
+        const row = this.rows?.find(r => r.id === id);
+        if (!row || !isOwn(row, this.userId) || this._sharing) return;
+        this._sharing = true;
+        try {
+            const entry = (await this.store.getEntry?.(id)) ?? { id, visibility: row.visibility };
+            const { entry: saved } = await shareDive({ store: this.store, entry, confirm: () => confirmSheet(), notify: toast, pageHref: location.href });
+            if (!this.destroyed && saved.visibility !== row.visibility) {
+                this.rows = this.rows.map(r => (r.id === id ? { ...r, visibility: saved.visibility } : r));
+                this._render();
+                [...this.host.querySelectorAll('[data-share]')].find(b => b.dataset.share === id)?.focus();
+            }
+        } catch (error) {
+            console.error(error);
+            toast(translate('diveLog.backend.genericError', 'Something went wrong. Please try again.'));
+        } finally {
+            this._sharing = false;
+        }
     }
 
     destroy() {
@@ -235,9 +269,10 @@ export class CommunityFeed {
             title: diveTitle(entry, site?.name, key => tl(key, TITLE_FALLBACK[key] ?? key)), untitled: !site?.name,
             whenText: when, numberLabel: numbered ? fill(tl('number', '#{0}'), entry.log_number) : null,
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
-            peopleText: people, ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
+            peopleText: people, notesText: descriptionExcerpt(entry.description), ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
             lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
             socialHtml: this.social?.barHtml(row, { commentsHref: this._href(row) }) ?? '',
+            badgeHtml: this.shareOn && isOwn(row, this.userId) ? shareButtonHtml(row.id, { shared: row.visibility === 'link' }) : '',
         });
     }
 

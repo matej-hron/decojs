@@ -4,6 +4,7 @@
  *
  * Upload and Remove photo act at once (the photo is its own storage object); everything else waits for Save.
  * Picking a preset while a photo is used replaces the photo on Save.
+ * With migration 0007: Qualifications and Medical fitness cards (ProfileDocuments.js) below the form.
  */
 
 import { AVATARS, AVATAR_KEYS, avatarHtml, avatarImgFallback, fallbackAvatarKey } from './avatars.js';
@@ -14,6 +15,7 @@ import { currentLang, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { normalizeLogOffset, formatDiveDate } from './entryModel.js';
 import { sacSummary, sacChartModel } from './sacStats.js';
+import { QualificationsCard, MedicalCard, badgesHtml } from './ProfileDocuments.js';
 
 const NAME_MAX = 60;
 const PREVIEW_ROWS = 6;
@@ -61,8 +63,12 @@ export class ProfilePage {
         this.status = { kind: '', text: '' };
         this.failed = false;
         this.destroyed = false;
+        this.quals = null; // QualificationsCard once the documents backend is known to exist
+        this.medical = null;
         this.sac = null; // sacSummary of the logbook; null = not loaded / unsupported
         this.num = { offset: null, plan: null, busy: null, status: { kind: '', text: '' } }; // offset null = not loaded / unsupported
+        this.shareLoc = null; // saved "Show exact location by default"; null = not loaded / unsupported
+        this.shareLocDraft = null;
         this._onImgError = e => { if (avatarImgFallback(e)) this.photoUrl = null; };
         this.host.addEventListener('error', this._onImgError, true); // image errors do not bubble
         this._render();
@@ -71,6 +77,8 @@ export class ProfilePage {
 
     destroy() {
         this.destroyed = true;
+        this.quals?.destroy();
+        this.medical?.destroy();
         this._revokeLocal();
         this.host.removeEventListener('error', this._onImgError, true);
         this.host.innerHTML = '';
@@ -99,8 +107,18 @@ export class ProfilePage {
         }
         if (this.destroyed) return;
         this._take(profile ?? { id: this.user?.id });
+        if (typeof this.store.defaultShareLocation === 'function') {
+            try {
+                this.shareLoc = await this.store.defaultShareLocation();
+                this.shareLocDraft = this.shareLoc;
+            } catch (error) {
+                console.error(error); // the checkbox stays hidden
+            }
+            if (this.destroyed) return;
+        }
         this._render();
         this._loadNumbering();
+        this._loadDocuments();
         this._loadSac();
         await this._signPhoto();
     }
@@ -116,6 +134,28 @@ export class ProfilePage {
             return;
         }
         this._renderNumbering();
+    }
+
+    async _loadDocuments() {
+        if (typeof this.store.documentsStatus !== 'function') return;
+        try {
+            if (!await this.store.documentsStatus() || this.destroyed) return;
+        } catch (error) {
+            console.error(error); // the cards simply stay hidden
+            return;
+        }
+        const deps = { store: this.store, user: this.user };
+        this.quals = new QualificationsCard({ ...deps, onChange: () => this._renderPreview() });
+        this.medical = new MedicalCard(deps);
+        this._mountDocuments();
+        await Promise.all([this.quals.load(), this.medical.load()]);
+    }
+
+    _mountDocuments() {
+        const q = this.host.querySelector('.tr-quals');
+        const m = this.host.querySelector('.tr-medical');
+        if (q && this.quals) this.quals.mount(q);
+        if (m && this.medical) this.medical.mount(m);
     }
 
     async _loadSac() {
@@ -187,6 +227,8 @@ export class ProfilePage {
         if (preset) this.draft.avatar_preset = preset;
         this.draft.default_visibility = form.querySelector('[name="default_visibility"]:checked')?.value ?? this.draft.default_visibility;
         this.draft.home_country = form.querySelector('[name="home_country"]').value;
+        const loc = form.querySelector('[name="share_location_default"]');
+        if (loc) this.shareLocDraft = loc.checked;
     }
 
     _setStatus(kind, text) {
@@ -231,6 +273,9 @@ export class ProfilePage {
         try {
             let saved = await this.store.saveProfile(patch);
             if (replacePhoto) saved = await this.store.removeAvatar();
+            if (this.shareLoc !== null && this.shareLocDraft !== this.shareLoc) {
+                this.shareLoc = await this.store.setDefaultShareLocation(this.shareLocDraft);
+            }
             if (this.destroyed) return;
             this.pickedPreset = false;
             this._take(saved);
@@ -399,6 +444,7 @@ export class ProfilePage {
                 <p class="tr-member-head-name">${escHtml(name)}</p>
                 ${full && full !== name ? `<p class="tr-member-head-full">${escHtml(full)}</p>` : ''}
                 ${country ? `<p class="tr-member-head-country">${escHtml(country)}</p>` : ''}
+                ${badgesHtml(this.quals?.shownBadges() ?? [])}
             </div>`;
     }
 
@@ -443,6 +489,8 @@ export class ProfilePage {
             this.host.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
             return;
         }
+        this.quals?.capture(); // keep what is typed in an open card form
+        this.medical?.capture();
         const lang = currentLang();
         const d = this.draft;
         const hasPhoto = Boolean(this.profile.avatar_path);
@@ -476,6 +524,9 @@ export class ProfilePage {
                     <legend>${escHtml(tp('defaultVisibility', 'Who sees your new dives'))}</legend>
                     <div class="lb-vis-options">${this._visibilityHtml()}</div>
                     <p class="tr-profile-hint">${escHtml(tp('defaultVisibilityHelp', 'You can change it for each dive.'))}</p>
+                    ${this.shareLoc === null ? '' : `<label class="lb-check tr-profile-location"><input type="checkbox" name="share_location_default"${this.shareLocDraft ? ' checked' : ''}>
+                        <span>${escHtml(tp('shareLocationDefault', 'Show the exact location by default'))}</span></label>
+                    <p class="tr-profile-hint">${escHtml(tp('shareLocationDefaultHelp', 'Off: members don’t see the site’s position, and a public link shows only the approximate area.'))}</p>`}
                 </fieldset>
                 <label class="lb-field"><span>${escHtml(tp('country', 'Home country'))}</span>
                     <select name="home_country" autocomplete="country">${countries}</select></label>
@@ -484,6 +535,8 @@ export class ProfilePage {
                     <p class="tr-profile-status${status.kind ? ` tr-profile-status--${status.kind}` : ''}" role="status">${escHtml(status.text)}</p>
                 </div>
             </form>
+            <div class="rda-card tr-docs-card tr-quals" hidden></div>
+            <div class="rda-card tr-docs-card tr-medical" hidden></div>
             <div class="rda-card tr-sac" hidden></div>
             <div class="rda-card tr-numbering" hidden></div>
             <div class="rda-card tr-profile-account">
@@ -494,6 +547,7 @@ export class ProfilePage {
             </div>
         </div>`;
         this._wire();
+        this._mountDocuments();
         this._renderSac();
         this._renderNumbering();
         if (this.busy) this._setBusy(this.busy);

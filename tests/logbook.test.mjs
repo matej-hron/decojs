@@ -1183,7 +1183,7 @@ describe('entry form helpers', () => {
         const entry = {
             log_number: 12, dive_date: '2026-10-01', entry_time: '09:30:00', duration_s: 2700,
             max_depth_m: 18.4, site_id: 's1', buddies: ['Petr'], gas: { o2: 0.32, he: 0 },
-            water_temp_c: 14.5, vis_shallow_m: 8, vis_deep_m: null, notes: 'ok',
+            water_temp_c: 14.5, vis_shallow_m: 8, vis_deep_m: null, notes: 'ok', description: 'For everyone',
             details: { weather: 'sun', tags: ['night'], rating: 4, futureKey: 'kept' },
         };
         const form = formValuesFromEntry(entry);
@@ -1480,13 +1480,25 @@ describe('entry form: who can see this dive (jsdom)', () => {
             assert.ok(root.querySelector('fieldset.lb-visibility'));
             assert.deepEqual(radios(root), [['private', true], ['members', false]]);
             const loc = root.querySelector('input[name="share_location"]');
-            assert.equal(loc.checked, false);
+            assert.equal(loc.checked, true, 'exact location is on by default (user decision 2026-10-10)');
             root.querySelector('input[name="visibility"][value="members"]').checked = true;
-            loc.checked = true;
+            loc.checked = false;
             submit(root);
             await tick();
             assert.equal(saves[0].visibility, 'members');
-            assert.equal(saves[0].share_location, true);
+            assert.equal(saves[0].share_location, false);
+        });
+    });
+
+    test('community on, new dive: the owner\'s "exact location by default" off leaves the box unticked', async () => {
+        await withDom(async root => {
+            const saves = [];
+            new EntryForm(root, { store: fakeStore(saves), prefill: { dive_date: '2026-10-02' }, community: true, defaultShareLocation: false, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(root.querySelector('input[name="share_location"]').checked, false);
+            submit(root);
+            await tick();
+            assert.equal(saves[0].share_location, false);
         });
     });
 

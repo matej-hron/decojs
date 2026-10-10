@@ -18,9 +18,10 @@ import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
-import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
+import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame, descriptionExcerpt } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
+import { shareDive, shareButtonHtml, confirmSheet, toast, isLinkShared } from './shareAction.js';
 import { MembersPage } from './MembersPage.js';
 import { MemberPage } from './MemberPage.js';
 import { ProfilePage } from './ProfilePage.js';
@@ -34,6 +35,7 @@ import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { medicalStatus, isoDate } from './documents.js';
 
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
@@ -47,6 +49,7 @@ const FORM_PROBE_WAIT_MS = 3000;
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
+const td = (key, fallback) => translate(`diveLog.trail.docs.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 
 const NB = '\u00A0';
@@ -89,6 +92,8 @@ export class LogbookApp {
         this._unseenAt = 0; // when the badge was last fetched
         this._communityKnown = false; // false while the probe has not answered 'yes' or 'no'
         this._probe = null; // the probe in flight
+        this.shareOn = false; // public share links exist (0005): own dives in the lists get a Share button
+        this._shareAsked = false;
         this._probeAttempts = 0;
         this._probeTimer = null;
         this._probeTimeoutMs = probeTimeoutMs;
@@ -283,6 +288,8 @@ export class LogbookApp {
     _enterLogbook() {
         this.entries = null;
         this.msg = [];
+        this.medNotice = null; // {state: 'soon'|'expired', validUntil} of the own medical checks (0007)
+        this.medDismissed = false; // closed for this session
         this.root.innerHTML = '';
         this.view = document.createElement('div');
         this.view.className = 'lb-root';
@@ -312,6 +319,47 @@ export class LogbookApp {
         this._socialProbe = null;
         this.unseen = 0;
         this._unseenAt = 0;
+        this.shareOn = false;
+        this._shareAsked = false;
+    }
+
+    /** Ask once (after the community probe said yes) whether share links exist; re-render the list when they do. */
+    _probeShare() {
+        if (this._shareAsked || !this.community || typeof this.store.shareStatus !== 'function') return;
+        this._shareAsked = true;
+        const session = this._session;
+        Promise.resolve().then(() => this.store.shareStatus()).catch(error => { console.warn(error); return false; }).then(on => {
+            if (this.destroyed || session !== this._session) return;
+            if (!on) { this._shareAsked = false; return; } // a transient failure is asked again on the next render
+            this.shareOn = true;
+            if (this._route().name === 'list') this._renderList();
+        });
+    }
+
+    /** The Share button of an own dive in a list (none while selecting or without share links). */
+    _shareBtn(entry) {
+        return this.shareOn && !this.selecting ? shareButtonHtml(entry.id, { shared: isLinkShared(entry) }) : '';
+    }
+
+    /** Share an own dive from a list: create the link after a confirmation, then the share sheet or copy. */
+    async _shareFromList(id) {
+        const entry = this.entries?.find(e => e.id === id);
+        if (!entry || this._sharing) return;
+        this._sharing = true;
+        try {
+            const { entry: saved } = await shareDive({
+                store: this.store, entry, confirm: () => confirmSheet(), notify: toast, pageHref: location.href,
+            });
+            if (saved !== entry && this.entries) {
+                this.entries = this.entries.map(e => (e.id === id ? saved : e));
+                if (this._route().name === 'list') {
+                    this._renderList();
+                    [...this.view.querySelectorAll('[data-share]')].find(b => b.dataset.share === id)?.focus();
+                }
+            }
+        } finally {
+            this._sharing = false;
+        }
     }
 
     _leaveLogbook() {
@@ -421,7 +469,7 @@ export class LogbookApp {
     _showSites(siteId) {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new SitesPage(this.view.firstChild, {
-            store: this.store, siteId,
+            store: this.store, siteId, userId: this.user?.id ?? null,
             onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
             onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
         });
@@ -596,14 +644,17 @@ export class LogbookApp {
             store: this.store, ready: this.ensured,
             onChoose: async ({ prefill, recordingId }) => {
                 const community = await this._communityForForm();
-                const share = await this._shareForForm(community);
+                const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
                 const defaultVisibility = community && this.store.defaultVisibility
                     ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
                     : null;
+                const defaultShareLocation = community && this.store.defaultShareLocation
+                    ? await Promise.resolve().then(() => this.store.defaultShareLocation()).catch(error => { console.error(error); return true; })
+                    : true;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId, community, defaultVisibility, share,
+                    store: this.store, prefill, recordingId, community, defaultVisibility, share, describe, defaultShareLocation,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
@@ -622,6 +673,12 @@ export class LogbookApp {
             clearTimeout(timer);
         }
         return this.community;
+    }
+
+    /** Whether the form offers the description for members (migration 0006); no answer means no offer. */
+    async _describeForForm() {
+        if (typeof this.store.descriptionStatus !== 'function') return false;
+        return this.store.descriptionStatus().catch(error => { console.warn(error); return false; });
     }
 
     /** Whether the form offers "Public link" (migration 0005); no answer means no offer. */
@@ -645,11 +702,11 @@ export class LogbookApp {
             return;
         }
         const community = await this._communityForForm();
-        const share = await this._shareForForm(community);
+        const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
         if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, describe, onSaved: back, onCancel: back });
     }
 
     /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */
@@ -698,6 +755,7 @@ export class LogbookApp {
 
     async _showList(token) {
         this._renderList();
+        this._loadMedical(token);
         try {
             await this.ensured;
             const [entries, sites, photos] = await Promise.all([
@@ -716,6 +774,36 @@ export class LogbookApp {
         } catch (error) {
             if (token === this._viewToken) this._storeError(error);
         }
+    }
+
+    /** Whether the own dive medical expires within 30 days or has expired: a quiet notice above My dives. */
+    async _loadMedical(token) {
+        if (this.medDismissed || typeof this.store?.medicalValidity !== 'function') return;
+        let rows;
+        try {
+            rows = await this.store.medicalValidity();
+        } catch (error) {
+            console.error(error); // no notice
+            return;
+        }
+        const st = rows ? medicalStatus(rows, isoDate()) : null;
+        const notice = st && (st.state === 'soon' || st.state === 'expired') ? { state: st.state, validUntil: st.validUntil } : null;
+        const changed = JSON.stringify(notice) !== JSON.stringify(this.medNotice);
+        this.medNotice = notice;
+        if (changed && token === this._viewToken && this.user && this._route().name === 'list') this._renderList();
+    }
+
+    _medicalBanner() {
+        const n = this.medNotice;
+        if (!n || this.medDismissed) return '';
+        const date = formatDiveDate(n.validUntil, currentLang()).replace(/ /g, '\u00a0');
+        const text = n.state === 'expired'
+            ? fill(td('banner.expired', 'Your dive medical expired on {0}.'), date)
+            : fill(td('banner.soon', 'Your dive medical expires on {0}.'), date);
+        const link = this.community ? ` <a href="${routeHref({ name: 'profile' })}">${escHtml(td('banner.open', 'Update in Profile'))}</a>` : '';
+        return `<div class="lb-med-banner lb-med-banner--${n.state}" role="status">
+            <p>${escHtml(text)}${link}</p>
+            <button type="button" class="lb-med-close" aria-label="${escHtml(td('banner.dismiss', 'Dismiss'))}">×</button></div>`;
     }
 
     /** Title, totals, Sites, New dive and the "⋯" menu with the rarely used account actions. */
@@ -988,8 +1076,10 @@ export class LogbookApp {
         const buddies = (entry.buddies ?? []).join(', ');
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
-        const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
-        return feedCardHtml({
+        // The description written for members; dives without one keep showing the owner's notes here.
+        const notes = descriptionExcerpt(entry.description) || descriptionExcerpt(entry.notes);
+        const share = this._shareBtn(entry);
+        const card = feedCardHtml({
             entry, href: routeHref({ name: 'detail', id: entry.id }),
             pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),
             title: diveTitle(entry, site?.name, tt), untitled: !site, whenText: this._whenText(entry),
@@ -998,6 +1088,8 @@ export class LogbookApp {
             badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
             visualHtml: this._visual(entry, 'feed'), lockHtml: this._lock(entry),
         });
+        // The card is one link; the button sits next to it, never inside (links must not nest).
+        return share ? `<div class="lb-share-wrap">${card}${share}</div>` : card;
     }
 
     _renderFeed() {
@@ -1013,12 +1105,14 @@ export class LogbookApp {
         const stats = feedStats(entry, fmtNum).filter(s => s.key === 'depth' || s.key === 'duration')
             .map(s => `${s.value}${NB}${s.unit}`);
         const [open, close] = this._wrap(entry, 'lb-tile');
-        return `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
+        const share = this._shareBtn(entry);
+        const tile = `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
             <div class="lb-tile-body">
                 <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}${this._lock(entry)}</strong>
                 <span class="lb-date">${escHtml([fill(tl('number', '#{0}'), entry.log_number ?? '–'), formatDiveDate(entry.dive_date, currentLang())].filter(Boolean).join(', '))}</span>
                 ${stats.length ? `<span class="lb-tile-stats">${stats.map(t => `<span>${escHtml(t)}</span>`).join('')}</span>` : ''}
             </div>${close}`;
+        return share ? `<div class="lb-share-wrap lb-share-wrap--tile">${tile}${share}</div>` : tile;
     }
 
     _renderTable() {
@@ -1030,7 +1124,7 @@ export class LogbookApp {
             const aria = active ? (this.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none';
             return `<th scope="col" aria-sort="${aria}"${numeric ? ' class="lb-num"' : ''}>
                 <button type="button" class="lb-sort" data-sort="${key}" title="${escHtml(fill(tl('views.sortBy', 'Sort by {0}'), label))}">${escHtml(label)}<span class="lb-sort-mark" aria-hidden="true">${active ? (this.sort.dir === 'asc' ? '▲' : '▼') : ''}</span></button></th>`;
-        }).join('');
+        }).join('') + (this.shareOn && !this.selecting ? `<th scope="col" class="lb-share-col"><span class="rda-visually-hidden">${escHtml(translate('diveLog.trail.share.shareDive', 'Share this dive'))}</span></th>` : '');
         const lang = currentLang();
         const dash = '–';
         const rows = sorted.map(e => {
@@ -1050,7 +1144,7 @@ export class LogbookApp {
                 <td class="lb-num">${escHtml(dur)}</td>
                 <td class="lb-num">${escHtml(m(e.details?.avgDepthM))}</td>
                 <td class="lb-num">${escHtml(temp)}</td>
-                <td>${escHtml((e.buddies ?? []).join(', ') || dash)}</td></tr>`;
+                <td>${escHtml((e.buddies ?? []).join(', ') || dash)}</td>${this.shareOn && !this.selecting ? `<td class="lb-share-col">${this._shareBtn(e)}</td>` : ''}</tr>`;
         }).join('');
         return `<div class="lb-table-wrap" tabindex="0"><table class="lb-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
@@ -1112,11 +1206,19 @@ export class LogbookApp {
         const docked = this.selecting && this.entries?.length; // the bulk panel then lives in the select dock
         this.view.classList.toggle('lb-selecting', !!docked);
         const menuOpen = !!this.view.querySelector('.lb-menu[open]'); // a re-render (photos arriving) must not close it
-        this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${this._medicalBanner()}${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        this.view.querySelector('.lb-med-close')?.addEventListener('click', () => {
+            this.medDismissed = true;
+            this.view.querySelector('.lb-med-banner')?.remove();
+        });
         if (menuOpen) this.view.querySelector('.lb-menu').open = true;
         this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));
         this.view.querySelectorAll('.lb-sort').forEach(b => b.addEventListener('click', () => this._sortBy(b.dataset.sort)));
+        for (const b of this.view.querySelectorAll('[data-share]')) {
+            b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this._shareFromList(b.dataset.share); });
+        }
+        this._probeShare();
         this.view.querySelector('.lb-table tbody')?.addEventListener('click', e => {
             if (this.selecting) return;
             const row = e.target.closest('tr[data-href]');

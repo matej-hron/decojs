@@ -26,6 +26,7 @@ export function summaryLines(report) {
     add(report.recordings, 'sumRecordings', 'Dive computer recordings: {0}');
     add(report.photos, 'sumPhotos', 'Photos: {0}');
     add(report.sites, 'sumSites', 'Sites: {0}');
+    add(report.documents, 'sumDocuments', 'Qualifications and medical checks: {0}');
     add(report.comments, 'sumComments', 'Comments: {0}');
     add(report.kudos, 'sumKudos', 'Kudos: {0}');
     return lines;
@@ -64,7 +65,7 @@ export class DeleteDataPanel {
     _body() {
         if (this.phase === 'confirm') {
             return `<h2 id="lb-wipe-title">${escHtml(tw('title', 'Delete all my data'))}</h2>
-                <p>${escHtml(tw('what', 'This permanently deletes every logbook entry, dive computer recording, photo and site stored in your account, and your kudos and comments. It cannot be undone.'))}</p>
+                <p>${escHtml(tw('what', 'This permanently deletes every logbook entry, dive computer recording, photo and site, your qualifications and medical checks with their scans, and your kudos and comments. It cannot be undone.'))}</p>
                 <p>${escHtml(tw('exportFirst', 'Export your logbook first if you want to keep a copy.'))}</p>
                 <div class="lb-actions"><button type="button" class="btn btn-secondary" id="lb-wipe-export">${escHtml(tw('export', 'Export first'))}</button></div>
                 <label class="lb-field"><span>${escHtml(fill(tw('typeLabel', 'Type {0} to confirm'), CONFIRM_WORD))}</span>
@@ -74,8 +75,8 @@ export class DeleteDataPanel {
                 <button type="button" class="btn btn-secondary" id="lb-wipe-cancel">${escHtml(tw('cancel', 'Cancel'))}</button></div>`;
         }
         if (this.phase === 'running') {
-            const names = { photos: 'stepPhotos', entries: 'stepEntries', sites: 'stepSites', recordings: 'stepRecordings', social: 'stepSocial', profile: 'stepProfile' };
-            const fallbacks = { photos: 'Deleting photos…', entries: 'Deleting logbook entries…', sites: 'Deleting sites…', recordings: 'Deleting recordings…', social: 'Deleting your kudos and comments…', profile: 'Clearing your DecoTrail profile…' };
+            const names = { photos: 'stepPhotos', entries: 'stepEntries', sites: 'stepSites', recordings: 'stepRecordings', documents: 'stepDocuments', social: 'stepSocial', profile: 'stepProfile' };
+            const fallbacks = { photos: 'Deleting photos…', entries: 'Deleting logbook entries…', sites: 'Deleting sites…', recordings: 'Deleting recordings…', documents: 'Deleting qualifications and medical checks…', social: 'Deleting your kudos and comments…', profile: 'Clearing your DecoTrail profile…' };
             return `<h2 id="lb-wipe-title">${escHtml(tw('title', 'Delete all my data'))}</h2>
                 <p role="status">${escHtml(tw(names[this.step] ?? 'stepPhotos', fallbacks[this.step] ?? fallbacks.photos))}</p>`;
         }
