@@ -140,7 +140,7 @@ function fakeClient({ has0011 = true, user = { id: 'me' }, own = [], directory =
             const err = errors[`rpc:${name}`];
             if (err) return { data: null, error: err };
             if (name === 'community_sites') return { data: directory, error: null };
-            if (name === 'merge_site') return { data: 2, error: null };
+            if (name === 'merge_site') return { data: { moved: 2, deleted: false }, error: null };
             if (name === 'site_stats') return { data: { visits: 1 }, error: null };
             if (name === 'site_visits') return { data: [{ id: 'd1' }], error: null };
             return { data: null, error: null };
@@ -200,7 +200,7 @@ describe('community sites store', () => {
 
     test('mergeSite uses merge_site with 0011', async () => {
         const client = fakeClient({ own: OWN });
-        await createSupabaseStore(client).mergeSite('s1', 's2');
+        assert.deepEqual(await createSupabaseStore(client).mergeSite('s1', 's2'), { moved: 2, deleted: false });
         assert.deepEqual(client.calls.filter(c => c[0] === 'rpc' && c[1] === 'merge_site').map(c => c[2]), [{ p_from: 's1', p_into: 's2' }]);
         assert.equal(client.calls.some(c => c[0] === 'update' && c[1] === 'log_entries'), false);
     });
@@ -249,5 +249,66 @@ describe('directory helpers', () => {
         assert.equal(distanceText(4234, 'cs'), '4,2 km');
         assert.equal(distanceText(123456, 'en'), '123 km');
         assert.equal(distanceText(null), '');
+    });
+});
+
+// ---- Duplicates and the nearest site ----
+
+import { similarSiteNames, possibleDuplicates, nearestSite, foldSiteName } from '../js/logbook/geo.js';
+
+describe('similar names and possible duplicates', () => {
+    test('folding: case, diacritics, punctuation', () => {
+        assert.equal(foldSiteName('  Lom  Hořice – sever! '), 'lom horice sever');
+    });
+    test('similar: equal folded, contained word(s), small typos; not unrelated or tiny names', () => {
+        assert.equal(similarSiteNames('Barbora CMAS', 'barbora-cmas'), true);
+        assert.equal(similarSiteNames('Lom Hořice', 'LOM HORICE'), true);
+        assert.equal(similarSiteNames('Barbora', 'Lom Barbora'), true);
+        assert.equal(similarSiteNames('Barbora', 'Barbara'), true, 'one edit at 7 characters');
+        assert.equal(similarSiteNames('Hemmoor Kreidesee', 'Hemoor Kreidesee'), true);
+        assert.equal(similarSiteNames('Lom', 'Lom Borek'), false, 'too short to count as contained');
+        assert.equal(similarSiteNames('Borek', 'Barbora'), false);
+        assert.equal(similarSiteNames('Bora', 'Bara'), false, 'no typos under 5 characters');
+        assert.equal(similarSiteNames('', 'x'), false);
+    });
+    test('possibleDuplicates: similar name within 300 m, nearest first, never itself', () => {
+        const mine = { id: 'm', name: 'Barbora', lat: 50.6, lon: 13.8 };
+        const sites = [mine,
+            { id: 'a', name: 'Barbora CMAS', lat: 50.6009, lon: 13.8 }, // ~100 m
+            { id: 'b', name: 'barbora', lat: 50.6001, lon: 13.8 }, // ~11 m
+            { id: 'c', name: 'Barbora', lat: 50.61, lon: 13.8 }, // ~1.1 km
+            { id: 'd', name: 'Lahošť', lat: 50.6, lon: 13.8 }, // same spot, other name
+            { id: 'e', name: 'Barbora' }, // no position
+        ];
+        assert.deepEqual(possibleDuplicates(mine, sites).map(d => d.site.id), ['b', 'a']);
+        assert.deepEqual(possibleDuplicates({ ...mine, lat: null }, sites), []);
+    });
+});
+
+describe('nearestSite', () => {
+    const here = { lat: 50, lon: 14 };
+    test('nearest within the limit, with its distance; null when none is close', () => {
+        const sites = [
+            { id: 'far', name: 'Far', lat: 50.02, lon: 14 }, // ~2.2 km
+            { id: 'near', name: 'Near', lat: 50.001, lon: 14 }, // ~111 m
+            { id: 'mid', name: 'Mid', lat: 50.005, lon: 14 }, // ~556 m
+            { id: 'nopos', name: 'No position' },
+        ];
+        const hit = nearestSite(sites, here);
+        assert.equal(hit.site.id, 'near');
+        assert.ok(Math.abs(hit.distance - 111.2) < 1);
+        assert.equal(nearestSite(sites.filter(s => s.id === 'far'), here), null);
+        assert.equal(nearestSite(sites.filter(s => s.id === 'far'), here, 3000).site.id, 'far');
+        assert.equal(nearestSite(sites, { lat: null, lon: 14 }), null);
+        assert.equal(nearestSite([], here), null);
+    });
+    test('ties: own first, then most visits, then name', () => {
+        const at = { lat: 50.001, lon: 14 };
+        const a = { id: 'a', name: 'Zeta', ...at, own: false, visits: 9 };
+        const b = { id: 'b', name: 'Alpha', ...at, own: false, visits: 2 };
+        const c = { id: 'c', name: 'Mine', ...at, own: true, visits: 0 };
+        assert.equal(nearestSite([a, b, c], here).site.id, 'c');
+        assert.equal(nearestSite([b, a], here).site.id, 'a');
+        assert.equal(nearestSite([{ ...a, visits: 2 }, b], here).site.id, 'b');
     });
 });

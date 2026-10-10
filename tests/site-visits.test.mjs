@@ -662,3 +662,88 @@ describe('entry form: community sites (jsdom)', () => {
         });
     });
 });
+
+describe('cross-member duplicates and site suggestions (jsdom)', () => {
+    const mine = { id: 'm1', owner: 'me', own: true, name: 'barbora', lat: 50.6001, lon: 13.8, visibility: 'members', visits: 1, used_by_others: true };
+    const luis = { id: 'lu1', owner: 'luis', own: false, name: 'Barbora CMAS', lat: 50.6, lon: 13.8, visibility: 'members', visits: 9 };
+    const store = (over = {}) => ({
+        listSites: async () => [mine], listAllSites: async () => [mine, luis], siteUsage: async () => new Map([['m1', 1]]),
+        descriptionStatus: async () => true, communitySitesStatus: async () => true, communityStatus: async () => true,
+        listMembers: async () => [{ id: 'luis', display_name: 'Luis' }], avatarUrls: async () => new Map(),
+        siteStats: async () => ({ visits: 0, divers: 0, vis: {}, temp: {}, months: [] }), siteVisits: async () => [],
+        listBuddies: async () => [], listEntries: async () => [], photoUrls: async () => new Map(), listMedia: async () => [],
+        ...over,
+    });
+
+    test('the list flags an own site that duplicates a community site', async () => {
+        await withDom(async root => {
+            new SitesPage(root, { store: store(), userId: 'me' });
+            await tick();
+            await tick();
+            const badge = [...root.querySelectorAll('.lb-dup-badge')].map(b => b.textContent);
+            assert.deepEqual(badge, ['Possible duplicate of Barbora CMAS (added by Luis)']);
+        });
+    });
+
+    test('merge from the hint moves only own dives; a kept site shows a notice', async () => {
+        await withDom(async root => {
+            const calls = [];
+            new SitesPage(root, { store: store({ mergeSite: async (a, b) => { calls.push([a, b]); return { moved: 1, deleted: false }; } }), siteId: 'm1', userId: 'me', onDone: () => assert.fail('the site stays') });
+            await tick();
+            await tick();
+            root.querySelector('[data-merge-into="lu1"]').click();
+            assert.match(root.querySelector('.lb-confirm').textContent, /Move your 1 dive to Barbora CMAS/);
+            root.querySelector('#lb-confirm-yes').click();
+            await tick();
+            await tick();
+            assert.deepEqual(calls, [['m1', 'lu1']]);
+            assert.match(root.querySelector('.lb-site-notice').textContent, /stays because other members/);
+        });
+    });
+
+    const withGeo = async (geo, fn) => {
+        const d = Object.getOwnPropertyDescriptor(globalThis.navigator, 'geolocation');
+        Object.defineProperty(globalThis.navigator, 'geolocation', { value: geo, configurable: true });
+        try { return await fn(); } finally {
+            if (d) Object.defineProperty(globalThis.navigator, 'geolocation', d); else delete globalThis.navigator.geolocation;
+        }
+    };
+    const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', buddies: [], details: {} };
+
+    test('"near me" asks for the position only on the tap and suggests the nearest site with its distance', async () => {
+        let asked = 0;
+        const geo = { getCurrentPosition: ok => { asked++; ok({ coords: { latitude: 50.601, longitude: 13.8 } }); } };
+        await withGeo(geo, () => withDom(async root => {
+            new EntryForm(root, { store: store(), entry, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(asked, 0, 'not on load');
+            root.querySelector('#lb-site-near').click();
+            assert.equal(asked, 1);
+            assert.match(root.querySelector('.lb-site-suggest').textContent, /Are you at barbora \(100 m\)\?/);
+            root.querySelector('[data-suggest-use]').click();
+            assert.equal(root.querySelector('[name="site"]').value, 'barbora');
+            assert.equal(root.querySelector('.lb-site-suggest'), null);
+        }));
+    });
+
+    test('nothing within 1 km: the map picker opens instead', async () => {
+        const geo = { getCurrentPosition: ok => ok({ coords: { latitude: 49, longitude: 13.8 } }) };
+        await withGeo(geo, () => withDom(async root => {
+            new EntryForm(root, { store: store(), entry, onSaved() {}, onCancel() {} });
+            await tick();
+            root.querySelector('#lb-site-near').click();
+            assert.equal(root.querySelector('.lb-site-suggest'), null);
+            assert.ok(document.querySelector('.lb-picker'), 'picker opened');
+            document.querySelector('.lb-picker [data-act="cancel"]').click();
+        }));
+    });
+
+    test('a dive without a site whose photo has GPS gets a suggestion', async () => {
+        await withDom(async root => {
+            new EntryForm(root, { store: store({ listMedia: async () => [{ id: 'p', kind: 'photo', lat: 50.6003, lon: 13.8 }] }), entry, onSaved() {}, onCancel() {} });
+            await tick();
+            await tick();
+            assert.match(root.querySelector('.lb-site-suggest').textContent, /photos were taken near barbora/);
+        });
+    });
+});

@@ -13,7 +13,7 @@ import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { OFFERED_VISIBILITIES, buddySuggestions, displayName } from './community.js';
-import { findSiteByName, siteNameOptions } from './geo.js';
+import { findSiteByName, siteNameOptions, nearestSite } from './geo.js';
 import { shareUrl } from './share.js';
 import { STORY_MAX } from './feed.js';
 import { gasName } from '../import/recordedDive.js';
@@ -47,6 +47,9 @@ const DETAIL_INPUT = Object.freeze({
 const tf = key => translate(`diveLog.logbook.form.${key}`, key);
 const tl = (key, fallback = key) => translate(`diveLog.logbook.${key}`, fallback);
 const tb = key => translate(`diveLog.backend.${key}`, key);
+const tsg = (key, fallback) => translate(`diveLog.logbook.form.siteSuggest.${key}`, fallback);
+/** A community site this close to the diver (or a photo of the dive) is suggested. */
+export const SUGGEST_RADIUS_M = 1000;
 const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const VISIBILITY_TEXT = Object.freeze({
     private: ['Private', 'Only you.'],
@@ -175,6 +178,7 @@ export class EntryForm {
         this.nextNumber = null;
         this.siteName = '';
         this.siteTouched = false; // true once the user edits the site field
+        this.suggestion = null; // "Are you at …?": {site, distance, source: 'here'|'photo'} | {status: 'locating'}
         this.siteId = entry?.site_id ?? prefill.site_id ?? null;
         this.comma = decimalSeparator(currentLang()) === ',';
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
@@ -235,6 +239,7 @@ export class EntryForm {
                 const siteInput = this.container.querySelector('[name="site"]');
                 if (site && siteInput && siteInput.value === '' && !this.siteTouched) siteInput.value = this.siteName = site.name;
                 this._fillSites();
+                this._suggestFromPhotos();
             }
             if (buddies.status === 'fulfilled') this.buddyNames = buddies.value;
             this._fillBuddies();
@@ -249,6 +254,69 @@ export class EntryForm {
     }
 
     /** @param {(string|{value: string, label?: string})[]} names */
+    // ---- "Are you at …?" site suggestion ----
+
+    _suggestHtml() {
+        const sg = this.suggestion;
+        if (!sg) return '';
+        if (sg.status === 'locating') return `<p class="lb-site-suggest lb-muted" role="status">${escHtml(tsg('locating', 'Finding your location…'))}</p>`;
+        const dist = sg.distance < 1000 ? `${Math.round(sg.distance)}\u00a0m` : `${fmtNum(sg.distance / 1000, 1)}\u00a0km`;
+        const text = sg.source === 'photo'
+            ? fill(tsg('photoQuestion', 'Your photos were taken near {0} ({1}). Is that the site?'), sg.site.name, dist)
+            : fill(tsg('question', 'Are you at {0} ({1})?'), sg.site.name, dist);
+        return `<div class="lb-site-suggest" role="group" aria-label="${escHtml(tsg('label', 'Site suggestion'))}">
+            <p>${escHtml(text)}</p>
+            <div class="lb-actions"><button type="button" class="btn btn-primary" data-suggest-use>${escHtml(fill(tsg('use', 'Use {0}'), sg.site.name))}</button>
+            <button type="button" class="btn btn-secondary" data-suggest-no>${escHtml(tsg('no', 'No'))}</button></div></div>`;
+    }
+
+    _setSuggestion(suggestion) {
+        this.suggestion = suggestion;
+        const host = this.container.querySelector('.lb-site-suggest-host');
+        if (host) host.innerHTML = this._suggestHtml();
+    }
+
+    /** "Near me": ask for the position only now (a tap), suggest the nearest site, else open the map picker. */
+    _suggestFromLocation() {
+        if (!navigator.geolocation) { this._pickOnMap(); return; }
+        this._setSuggestion({ status: 'locating' });
+        navigator.geolocation.getCurrentPosition(p => {
+            if (this.destroyed) return;
+            const hit = nearestSite(this.sites, { lat: p.coords.latitude, lon: p.coords.longitude }, SUGGEST_RADIUS_M);
+            if (hit) this._setSuggestion({ ...hit, source: 'here' });
+            else { this._setSuggestion(null); this._pickOnMap(); }
+        }, () => {
+            if (this.destroyed) return;
+            this._setSuggestion(null);
+            this._pickOnMap(); // no position: the picker (search, tap the map)
+        }, { timeout: 10000, maximumAge: 120000 });
+    }
+
+    /** A dive without a site whose photos carry GPS: suggest the site nearest to the first such photo. */
+    async _suggestFromPhotos() {
+        if (!this.entry?.id || this.siteId || typeof this.store.listMedia !== 'function') return;
+        try {
+            const media = await this.store.listMedia(this.entry.id);
+            if (this.destroyed || this.siteId || this.siteTouched || this.suggestion) return;
+            const photo = (media ?? []).find(m => Number.isFinite(m.lat) && Number.isFinite(m.lon));
+            const hit = photo ? nearestSite(this.sites, { lat: photo.lat, lon: photo.lon }, SUGGEST_RADIUS_M) : null;
+            if (hit) this._setSuggestion({ ...hit, source: 'photo' });
+        } catch (error) {
+            console.warn('Photo positions unavailable', error);
+        }
+    }
+
+    _useSuggestion() {
+        const site = this.suggestion?.site;
+        if (!site) return;
+        this.siteId = site.id;
+        this.siteName = site.name;
+        this.siteTouched = true;
+        const field = this.container.querySelector('[name="site"]');
+        if (field) { field.value = site.name; field.focus(); }
+        this._setSuggestion(null);
+    }
+
     /** Who added a community site ("Luis"), from the members list; null while unknown. */
     _ownerName(site) {
         const m = (this.memberNames ?? []).find(x => x.id === site.owner);
@@ -347,9 +415,11 @@ export class EntryForm {
                         <span>${escHtml(tf('site'))}</span>
                         <div class="lb-site-row">
                             <input type="text" name="site" value="${escHtml(this.siteName)}" list="lb-sites" autocomplete="off" aria-label="${escHtml(tf('site'))}">
+                            <button type="button" class="btn btn-secondary lb-site-near" id="lb-site-near" aria-label="${escHtml(tsg('nearMe', 'Suggest the site where I am'))}" title="${escHtml(tsg('nearMe', 'Suggest the site where I am'))}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/><circle cx="12" cy="12" r="7"/></svg></button>
                             <button type="button" class="btn btn-secondary" id="lb-pick-map">${escHtml(tf('pickOnMap'))}</button>
                         </div>
                         <datalist id="lb-sites"></datalist>
+                        <div class="lb-site-suggest-host" aria-live="polite">${this._suggestHtml()}</div>
                     </div>
                     <div class="lb-field lb-buddies-field">
                         <span>${escHtml(tf('buddies'))}</span>
@@ -426,6 +496,11 @@ export class EntryForm {
         const c = this.container;
         c.querySelector('[name="site"]').addEventListener('input', () => { this.siteTouched = true; });
         c.querySelector('#lb-pick-map').addEventListener('click', () => this._pickOnMap());
+        c.querySelector('#lb-site-near').addEventListener('click', () => this._suggestFromLocation());
+        c.querySelector('.lb-site-suggest-host').addEventListener('click', e => {
+            if (e.target.closest('[data-suggest-use]')) this._useSuggestion();
+            else if (e.target.closest('[data-suggest-no]')) this._setSuggestion(null);
+        });
         const story = c.querySelector('.lb-story-input');
         // The story box grows with the text: CSS field-sizing where supported, else its scroll height.
         if (story && !globalThis.CSS?.supports?.('field-sizing', 'content')) {

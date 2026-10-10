@@ -89,10 +89,15 @@ export function createSitesApi(client, { requireUser, fail, communityAvailabilit
             return (await rpc('site_visits', { p_site_id: id, p_limit: limit, p_offset: offset })) ?? [];
         },
 
-        /** Move every dive (any member's) of own site `fromId` to `intoId` and delete `fromId`; returns the moved count. */
+        /**
+         * Move the user's own dives at own site `fromId` to `intoId` (other members' dives are never touched), then
+         * delete `fromId` unless other members' dives still use it.
+         * @returns {Promise<{moved: number, deleted: boolean}>}
+         */
         async mergeSiteInto(fromId, intoId) {
             if (!fromId || !intoId || fromId === intoId) throw new DiveStoreError('unknown', 'Cannot merge a site into itself');
-            return Number(await rpc('merge_site', { p_from: fromId, p_into: intoId })) || 0;
+            const r = (await rpc('merge_site', { p_from: fromId, p_into: intoId })) ?? {};
+            return { moved: Number(r.moved) || 0, deleted: r.deleted === true };
         },
     };
 }

@@ -12,6 +12,7 @@
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { parseDecimal } from './entryModel.js';
 import { mapLinkButtonHtml } from './mapLinks.js';
+import { possibleDuplicates } from './geo.js';
 import { duplicateNameCounts, siteNameKey, mapyStaticMapUrl, parseSiteUrl, siteInfoLinkHtml, distanceMeters } from './geo.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { routeHref } from './router.js';
@@ -138,6 +139,7 @@ export class SitesPage {
         this.confirm = null; // 'merge' | 'delete'
         this.busy = false;
         this.error = '';
+        this.notice = ''; // after a merge that kept the site
         this._pickAbort = null;
         this._mapCleanup = null;
         this.render();
@@ -333,6 +335,7 @@ export class SitesPage {
     _cardHtml(site, dupes, scope) {
         const n = scope === 'mine' ? (this.usage.get(site.id) ?? 0) : (site.visits ?? this.usage.get(site.id) ?? 0);
         const dup = scope === 'mine' ? dupes.get(siteNameKey(site.name)) : null;
+        const likely = this._duplicateText(site);
         const map = hasPosition(site) ? mapyStaticMapUrl({
             lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: 120, height: 90, zoom: 11,
             scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
@@ -349,7 +352,8 @@ export class SitesPage {
                 <div class="lb-muted lb-site-meta">${escHtml(meta)}</div>
                 ${summary ? `<div class="lb-site-sum">${escHtml(summary)}</div>` : ''}
                 ${hasPosition(site) ? '' : `<div class="lb-muted">${escHtml(ts('noPosition', 'No position'))}</div>`}
-                ${dup ? `<span class="lb-badge">${escHtml(fill(ts('sameName', '{0} sites named {1}'), dup, site.name.trim()))}</span>` : ''}
+                ${dup && !likely ? `<span class="lb-badge">${escHtml(fill(ts('sameName', '{0} sites named {1}'), dup, site.name.trim()))}</span>` : ''}
+                ${likely ? `<span class="lb-badge lb-dup-badge">${escHtml(likely)}</span>` : ''}
             </div></a>`;
     }
 
@@ -398,6 +402,20 @@ export class SitesPage {
         }
     }
 
+    /** Probable duplicates of an own site among all the others (similar name within 300 m), nearest first. */
+    _duplicatesOf(site) {
+        return site.own === false ? [] : possibleDuplicates(site, this.sites, 300);
+    }
+
+    /** "Possible duplicate of Barbora CMAS (added by Luis)" for an own site, else ''. */
+    _duplicateText(site) {
+        const d = this._duplicatesOf(site)[0];
+        if (!d) return '';
+        const name = d.site.own === false ? this._ownerName(d.site) : null;
+        return name ? fill(ts('possibleDuplicateBy', 'Possible duplicate of {0} (added by {1})'), d.site.name, name)
+            : fill(ts('possibleDuplicate', 'Possible duplicate of {0}'), d.site.name);
+    }
+
     _setPrefs(patch, focusSel) {
         this.prefs = { ...this.prefs, ...patch };
         savePrefs(this.prefs);
@@ -444,6 +462,15 @@ export class SitesPage {
         }
         const privacy = site.visibility === 'private'
             ? `<p class="lb-site-privacy">${LOCK}<span>${escHtml(ts('privateNote', 'Only you can see this site.'))}</span></p>` : '';
+        const dups = this._duplicatesOf(site).slice(0, 3);
+        const dupHint = dups.length ? `<div class="lb-dup-hint" role="note">
+                <p>${escHtml(ts('duplicateHint', 'This looks like a site that already exists. Merge it to keep one entry per place.'))}</p>
+                <ul>${dups.map(d => {
+                    const by = d.site.own === false ? this._ownerName(d.site) : null;
+                    const label = by ? fill(ts('mergeOption', '{0} (added by {1})'), d.site.name, by) : d.site.name;
+                    return `<li><span>${escHtml(label)} <span class="lb-muted">${escHtml(distanceText(d.distance))}</span></span>
+                        <button type="button" class="btn btn-secondary" data-merge-into="${escHtml(d.site.id)}">${escHtml(fill(ts('mergeIntoNamed', 'Merge into {0}'), d.site.name))}</button></li>`;
+                }).join('')}</ul></div>` : '';
         return `<section class="rda-card lb-sv-head">
                 <div class="lb-sv-titlebar">
                     <h2 class="lb-sv-name-h">${escHtml(site.name)}</h2>
@@ -451,6 +478,7 @@ export class SitesPage {
                 </div>
                 ${facts.length ? `<p class="lb-muted lb-sv-own">${escHtml(facts.join(' · '))}</p>` : ''}
                 ${privacy}
+                ${dupHint}
                 ${preview}
             </section>`;
     }
@@ -460,6 +488,7 @@ export class SitesPage {
         const statsHtml = conditionsCardHtml(this.stats?.failed ? null : this.stats, { failed: this.stats?.failed === true });
         const owner = site.own !== false ? this._ownerSectionsHtml() : `<p class="lb-muted lb-site-readonly">${escHtml(ts('readOnly', 'Only the member who added this site can change it.'))}</p>`;
         this.container.innerHTML = `${this._back(routeHref({ name: 'sites' }), ts('backToSites', '← Back to the sites'))}
+            ${this.notice ? `<p class="rda-card lb-site-notice" role="status">${escHtml(this.notice)}</p>` : ''}
             ${this._headHtml()}
             ${statsHtml}
             ${this._visitsHtml()}
@@ -472,6 +501,9 @@ export class SitesPage {
         q('.lb-site-form').addEventListener('submit', e => { e.preventDefault(); this._save(); });
         q('#lb-move-pin').addEventListener('click', () => this._movePin());
         q('#lb-merge')?.addEventListener('click', () => this._askMerge());
+        for (const b of this.container.querySelectorAll('[data-merge-into]')) {
+            b.addEventListener('click', () => this._askMerge(b.dataset.mergeInto));
+        }
         q('#lb-delete')?.addEventListener('click', () => { this._readDom(); this.confirm = 'delete'; this.error = ''; this.render(); });
         q('#lb-confirm-no')?.addEventListener('click', () => { this._readDom(); this.confirm = null; this.render(); });
         q('#lb-confirm-yes')?.addEventListener('click', () => (this.confirm === 'merge' ? this._merge() : this._delete()));
@@ -490,7 +522,9 @@ export class SitesPage {
         let confirmHtml = '';
         if (this.confirm === 'merge' && target) {
             confirmHtml = `<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(ts('confirm', 'Confirm'))}">
-                <p>${escHtml(fill(ts('mergeConfirm', 'Move {0} to {1} and delete the site {2}? This cannot be undone.'), diveCountText(dives), target.name, site.name))}</p>
+                <p>${escHtml(this.community
+                    ? fill(ts('mergeConfirmOwn', 'Move your {0} to {1}? The site {2} is then deleted, unless other members\' dives still use it. This cannot be undone.'), diveCountText(this.usage.get(this.siteId) ?? 0), target.name, site.name)
+                    : fill(ts('mergeConfirm', 'Move {0} to {1} and delete the site {2}? This cannot be undone.'), diveCountText(dives), target.name, site.name))}</p>
                 <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-confirm-yes"${disabled}>${escHtml(ts('merge', 'Merge'))}</button>
                 <button type="button" class="btn btn-secondary" id="lb-confirm-no">${escHtml(ts('cancel', 'Cancel'))}</button></div></div>`;
         } else if (this.confirm === 'delete') {
@@ -502,7 +536,7 @@ export class SitesPage {
         const label = s => (s.own === false && this._ownerName(s) ? fill(ts('mergeOption', '{0} (added by {1})'), s.name, this._ownerName(s)) : s.name);
         const mergeBlock = others.length ? `<div class="lb-site-block">
                 <h3>${escHtml(ts('mergeTitle', 'Merge into another site'))}</h3>
-                ${this.community ? `<p class="lb-muted">${escHtml(ts('mergeHint', 'Moves every dive at this site, also other members\' dives, then deletes this site.'))}</p>` : ''}
+                ${this.community ? `<p class="lb-muted">${escHtml(ts('mergeHint', 'Moves your dives at this site to the other site, then deletes this site unless other members\' dives use it. Their dives are never moved.'))}</p>` : ''}
                 <label class="lb-field"><span>${escHtml(ts('mergeInto', 'Merge into…'))}</span>
                     <select id="lb-merge-into"><option value="">–</option>${others.map(s =>
                         `<option value="${escHtml(s.id)}"${s.id === this.mergeTarget ? ' selected' : ''}>${escHtml(label(s))}</option>`).join('')}</select></label>
@@ -512,7 +546,7 @@ export class SitesPage {
                 <h3>${escHtml(ts('deleteTitle', 'Delete'))}</h3>
                 ${!inUse
                     ? `<div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-delete"${disabled}>${escHtml(ts('delete', 'Delete'))}</button></div>`
-                    : `<p class="lb-muted">${escHtml(site.used_by_others ? ts('mergeFirstShared', 'Other members\' dives use this site. Merge it into another site to remove it.') : ts('mergeFirst', 'Merge it into another site first.'))}</p>`}
+                    : `<p class="lb-muted">${escHtml(site.used_by_others ? ts('mergeFirstShared', 'Other members\' dives use this site, so it stays. Merging moves only your dives.') : ts('mergeFirst', 'Merge it into another site first.'))}</p>`}
             </div>`;
         const urlField = this.siteLink || site.url ? `<label class="lb-field"><span>${escHtml(ts('url', 'Site info link'))}</span>
                         <input type="url" name="url" inputmode="url" value="${escHtml(v.url)}" placeholder="https://" autocomplete="off" spellcheck="false">
@@ -611,8 +645,10 @@ export class SitesPage {
         this.render();
     }
 
-    _askMerge() {
+    /** Confirm a merge into the chosen site (`target`: from a duplicate hint, else the select). */
+    _askMerge(target = null) {
         this._readDom();
+        if (target) this.mergeTarget = target;
         if (!this._others().some(s => s.id === this.mergeTarget)) { this._setError(ts('mergePick', 'Choose the site to merge into.')); return; }
         this.confirm = 'merge';
         this.error = '';
@@ -620,8 +656,23 @@ export class SitesPage {
     }
 
     async _merge() {
-        const ok = await this._run(() => this.store.mergeSite(this.siteId, this.mergeTarget));
-        if (ok && !this.destroyed) this.onDone();
+        let result = null;
+        const target = this.sites.find(s => s.id === this.mergeTarget);
+        const ok = await this._run(async () => { result = await this.store.mergeSite(this.siteId, this.mergeTarget); });
+        if (!ok || this.destroyed) return;
+        if (result?.deleted === false) {
+            // Other members' dives still use this site: it stays, only the user's own dives moved.
+            this.notice = fill(ts('mergeKept', 'Your dives moved to {0}. This site stays because other members\' dives use it.'), target?.name ?? '');
+            this.busy = false;
+            this.confirm = null;
+            this.sites = null;
+            this.visits = null;
+            this.stats = null;
+            this.render();
+            this._load();
+            return;
+        }
+        this.onDone();
     }
 
     async _delete() {

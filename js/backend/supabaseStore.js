@@ -562,15 +562,20 @@ export function createSupabaseStore(client) {
             }
         },
 
-        /** Move every dive of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses the link. */
+        /**
+         * Move the user's dives of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses
+         * the link. With 0011 a site other members' dives still use is kept (their dives are never moved).
+         * @returns {Promise<{moved: number|null, deleted: boolean}>}
+         */
         async mergeSite(fromId, intoId) {
             if (!fromId || !intoId || fromId === intoId) throw new DiveStoreError('unknown', 'Cannot merge a site into itself');
-            // 0011: one server call that also moves other members' dives (the delete would refuse otherwise).
-            if (await store.sitesAvailability() === 'yes') { await store.mergeSiteInto(fromId, intoId); return; }
+            // 0011: one server call; it keeps the site when other members' dives still use it.
+            if (await store.sitesAvailability() === 'yes') return store.mergeSiteInto(fromId, intoId);
             const moved = await client.from(ENTRIES).update({ site_id: intoId }).eq('site_id', fromId);
             if (moved.error) throw fail(moved.error);
             const { error } = await client.from(SITES).delete().eq('id', fromId);
             if (error) throw fail(error);
+            return { moved: null, deleted: true };
         },
 
         async deleteSite(id) {

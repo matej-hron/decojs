@@ -132,6 +132,82 @@ export function duplicateNameCounts(sites) {
     return new Map([...all].filter(([, n]) => n > 1));
 }
 
+/** A site name folded for comparing: trimmed, case and diacritics folded, punctuation and repeated spaces collapsed. */
+export function foldSiteName(name) {
+    return String(name ?? '').normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+
+/** Levenshtein distance, giving up (returning `max + 1`) once it exceeds `max`. */
+function editDistance(a, b, max) {
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+        const cur = [i];
+        let best = i;
+        for (let j = 1; j <= b.length; j++) {
+            cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+            best = Math.min(best, cur[j]);
+        }
+        if (best > max) return max + 1;
+        prev = cur;
+    }
+    return prev[b.length];
+}
+
+/**
+ * Whether two site names probably mean the same place: equal after folding (case, diacritics, punctuation), one
+ * contains the other (the shorter has at least 4 characters: "Barbora" / "Lom Barbora"), or a typo apart
+ * (one edit from 5 characters, two from 10).
+ */
+export function similarSiteNames(a, b) {
+    const x = foldSiteName(a);
+    const y = foldSiteName(b);
+    if (!x || !y) return false;
+    if (x === y) return true;
+    const [short, long] = x.length <= y.length ? [x, y] : [y, x];
+    if (short.length >= 4 && (` ${long} `).includes(` ${short} `)) return true;
+    const max = short.length >= 10 ? 2 : short.length >= 5 ? 1 : 0;
+    return max > 0 && editDistance(x, y, max) <= max;
+}
+
+/** A site has a usable position. */
+const positioned = s => Number.isFinite(s?.lat) && Number.isFinite(s?.lon);
+
+/**
+ * Other sites that are probably the same place as `site`: a similar name (see similarSiteNames) and a position
+ * within `limitM` metres. Nearest first.
+ * @returns {{site: Object, distance: number}[]}
+ */
+export function possibleDuplicates(site, sites, limitM = 300) {
+    if (!positioned(site)) return [];
+    return sites
+        .filter(s => s.id !== site.id && positioned(s) && similarSiteNames(s.name, site.name))
+        .map(s => ({ site: s, distance: distanceMeters(site, s) }))
+        .filter(d => d.distance <= limitM)
+        .sort((a, b) => a.distance - b.distance || String(a.site.id).localeCompare(String(b.site.id)));
+}
+
+/**
+ * The site nearest to `point` within `maxM` metres, or null. Ties (equal distance, e.g. duplicates at one spot):
+ * the user's own site first, then the one with more visits, then by name and id, so the answer is stable.
+ * @param {Object[]} sites - with lat, lon (others are skipped), optional own and visits
+ * @param {{lat: number, lon: number}} point
+ * @returns {{site: Object, distance: number}|null}
+ */
+export function nearestSite(sites, point, maxM = 1000) {
+    if (!positioned(point)) return null;
+    const rank = (a, b) => a.distance - b.distance
+        || Number(b.site.own !== false) - Number(a.site.own !== false)
+        || (Number(b.site.visits) || 0) - (Number(a.site.visits) || 0)
+        || String(a.site.name).localeCompare(String(b.site.name)) || String(a.site.id).localeCompare(String(b.site.id));
+    const near = (sites ?? []).filter(positioned)
+        .map(site => ({ site, distance: Math.round(distanceMeters(point, site) * 10) / 10 })) // 0.1 m: float noise is a tie
+        .filter(d => d.distance <= maxM)
+        .sort(rank);
+    return near[0] ?? null;
+}
+
 /**
  * The site a typed name means: the user's own site of that name (trimmed, case-insensitive) first, else the
  * community site of that name with the most visits. Null when none.
