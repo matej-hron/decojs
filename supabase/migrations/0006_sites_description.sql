@@ -1,5 +1,7 @@
 -- Site link and dive description (docs/superpowers/specs/2026-10-10-site-visits-description-design.md).
--- Run once in the Supabase SQL editor after 0005. Safe to run again.
+-- Run once in the Supabase SQL editor after 0005 (and after 0008, if that ran first). Safe to run again.
+-- get_shared_dive() here is a superset of 0008's (it keeps 'author_key'): if 0008 is ever run again after
+-- this file, run this file again too, or the share page loses the dive story and the site link.
 --
 -- Security model, unchanged from 0004/0005: the owner-only RLS of log_entries and sites stays as it is. Other
 -- members read only through community_entries(), anonymous visitors only through get_shared_dive(). Both are
@@ -85,7 +87,7 @@ as $$
 $$;
 
 -- ---------------------------------------------------------------------------
--- get_shared_dive: same as 0005, plus entry.description and site.url (only with share_location).
+-- get_shared_dive: same as 0005 + 0008 (author_key), plus entry.description and site.url (only with share_location).
 -- ---------------------------------------------------------------------------
 
 create or replace function public.get_shared_dive(p_token text)
@@ -128,7 +130,9 @@ as $$
         'author', jsonb_build_object(
             'display_name', p.display_name,
             'avatar_preset', p.avatar_preset,
-            'avatar_path', p.avatar_path
+            'avatar_path', p.avatar_path,
+            -- From 0008: stable per author, not per dive; one-way (the owner id cannot be recovered from it).
+            'author_key', left(md5(e.owner::text || ':decotrail-avatar'), 12)
         ),
         'media', coalesce((
             select jsonb_agg(jsonb_build_object(
