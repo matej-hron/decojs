@@ -94,7 +94,7 @@ export class CommunityFeed {
             if (!this.destroyed && saved.visibility !== row.visibility) {
                 this.rows = this.rows.map(r => (r.id === id ? { ...r, visibility: saved.visibility } : r));
                 this._render();
-                this.host.querySelector(`[data-share="${CSS.escape(id)}"]`)?.focus();
+                [...this.host.querySelectorAll('[data-share]')].find(b => b.dataset.share === id)?.focus();
             }
         } catch (error) {
             console.error(error);

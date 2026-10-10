@@ -216,14 +216,16 @@ export class EntryDetail {
         this._onImgError = e => avatarImgFallback(e); // an author photo that fails falls back to the preset
         this.container.addEventListener('error', this._onImgError, true);
         this.container.innerHTML = `<section class="lb-detail">
+            <div class="lb-d-top"></div>
             <div class="lb-d-hero"></div>
             <div class="lb-d-main"></div>
             <div class="lb-d-story"></div>
-            <div class="lb-d-actions"></div><div class="lb-d-panel"></div>
             <div class="lb-d-grid">
                 <div class="lb-d-col lb-d-col--main"><div class="lb-d-slot"></div><div class="lb-d-media"></div><div class="lb-d-text"></div></div>
                 <div class="lb-d-col lb-d-col--side"><div class="lb-d-side"></div><div class="lb-d-share"></div></div>
-            </div></section>`;
+            </div>
+            <div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
+        this.topEl = this.container.querySelector('.lb-d-top');
         this.heroEl = this.container.querySelector('.lb-d-hero');
         this.main = this.container.querySelector('.lb-d-main');
         this.sideEl = this.container.querySelector('.lb-d-side');
@@ -395,11 +397,9 @@ export class EntryDetail {
         const stats = feedStats(e, fmtNum);
         const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
         const rating = ratingOf(e.details?.rating);
+        this.topEl.innerHTML = `${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
+            ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}`.trim();
         this.main.innerHTML = `
-            <div class="lb-d-top">
-                ${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
-                ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}
-            </div>
             ${a ? `<div class="tr-author lb-d-author">${a.href
                 ? `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`
                 : `<span class="tr-author-link">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></span>`}</div>` : ''}
@@ -429,7 +429,7 @@ export class EntryDetail {
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
         const out = [];
         if (this.loaded && area && kind !== 'map') {
-            out.push(card('lb-d-mapcard', area.exact ? td('location', 'Location') : td('approxArea', 'Approximate area'),
+            out.push(card('lb-d-mapcard', td('location', 'Location'), // an approximate map says so on the map itself
                 this._mapHtml(area, { width: 640, height: 360, zoom: 13, className: 'lb-d-map' })));
         }
         if (gas.cards.length) {

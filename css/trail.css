@@ -828,6 +828,10 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
    Hero → title block → stat strip → two columns (main: analysis slot, photos, text; side: map, gases,
    conditions, buddies, share). Phones: one column, cards re-ordered with `order` (the column wrappers
    become display: contents). */
+/* The site-wide `section` look (styles.css) is not wanted inside the detail: cards style themselves */
+section.lb-detail { padding: 0; margin: 0; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.lb-detail section { margin: 0; box-shadow: none; }
+.lb-detail section.lb-d-story-in { padding: 0; background: none; border-radius: 0; }
 .lb-d-hero { position: relative; overflow: hidden; border-radius: var(--radius-lg); background: var(--surface-sunken); }
 .lb-d-hero-photo { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
 .lb-d-hero-photo img, .lb-d-hero-wait { display: block; width: 100%; height: clamp(14rem, 38vw, 26rem); object-fit: cover; object-position: 50% 35%; }
@@ -844,7 +848,6 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .lb-d-stats .lb-stat:first-child { padding-left: 0; border-left: 0; }
 .lb-d-stats .lb-stat dt { font-size: var(--text-sm); }
 .lb-d-stats .lb-stat dd { font-family: var(--font-display); font-size: clamp(var(--text-xl), 2.6vw, 2.1rem); font-weight: 600; letter-spacing: -0.01em; }
-.lb-d-actions { padding-top: 0; border-top: 0; }
 /* The dive story: the diver's own words, given room right under the stats */
 .lb-d-story[hidden] { display: none; }
 .lb-d-story-in { max-width: 68ch; font-size: var(--text-lg); line-height: 1.6; color: var(--text); }
@@ -859,7 +862,7 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
     .lb-d-grid:not(:has(.lb-d-col--main > :not(:empty))) .lb-d-side { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
 }
 
-.lb-d-card { min-width: 0; padding: 1rem 1.1rem 1.1rem; background: var(--surface-elevated, var(--surface)); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.lb-detail .lb-d-card { min-width: 0; padding: 1rem 1.1rem 1.1rem; background: var(--surface-elevated, var(--surface)); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .lb-d-card-h { display: flex; align-items: baseline; gap: 0.5rem; margin: 0 0 0.75rem; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; line-height: 1.2; }
 .lb-d-card-tag { margin-left: auto; font-family: var(--font-body, inherit); font-size: var(--text-sm); font-weight: 500; color: var(--text-subtle); }
 .lb-d-group-h { margin: 0.9rem 0 0.4rem; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); }
@@ -903,7 +906,11 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 /* The analysis in the main column: controls below the charts when the column is narrow */
 .lb-d-slot { display: grid; min-width: 0; container-type: inline-size; }
 .lb-d-slot .lb-analysis { padding: 0; }
-@container (max-width: 960px) { .lb-d-slot .rda-analysis { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 960px) {
+    .lb-d-slot .rda-analysis { grid-template-columns: minmax(0, 1fr); }
+    .lb-d-slot .rda-charts { order: -2; } /* the profile first, then its summary, then the GF controls */
+    .lb-d-slot .rda-summary { order: -1; }
+}
 .tr-share-analysis { display: grid; gap: 0.5rem; }
 .tr-share-analysis-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
 .tr-share-analysis-top .lb-d-card-h { margin: 0; }
@@ -923,11 +930,12 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
     .lb-d-share { order: 11; }
 }
 @media (max-width: 720px) {
-    .lb-d-hero { margin: -1rem -1rem 0; border-radius: 0; }
+    .lb-d-hero { margin: 0 -1rem; border-radius: 0; }
+    .lb-d-top:empty + .lb-d-hero { margin-top: -1rem; }
     .lb-detail .lb-d-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem 0; }
     .lb-d-stats .lb-stat { padding: 0 0.75rem; }
     .lb-d-stats .lb-stat:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
-    .lb-d-card { padding: 0.9rem; }
+    .lb-detail .lb-d-card { padding: 0.9rem; }
     .lb-d-photos .lb-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem; }
     .lb-d-photos .lb-photos--one { grid-template-columns: minmax(0, 1fr); }
     .lb-d-slot .lb-d-card { margin: 0 -1rem; border-radius: 0; border-left: 0; border-right: 0; }

@@ -293,7 +293,7 @@ export class LogbookApp {
                 this.entries = this.entries.map(e => (e.id === id ? saved : e));
                 if (this._route().name === 'list') {
                     this._renderList();
-                    this.view.querySelector(`[data-share="${CSS.escape(id)}"]`)?.focus();
+                    [...this.view.querySelectorAll('[data-share]')].find(b => b.dataset.share === id)?.focus();
                 }
             }
         } finally {

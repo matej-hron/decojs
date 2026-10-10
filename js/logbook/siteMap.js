@@ -71,11 +71,17 @@ export function wireSiteMap(root, { loadLeaflet, tileUrl, attribution }) {
             el.remove();
         }
     };
+    // Mapy.com answers a key it refuses here (another referrer, quota) with a small 256 × 256 error picture and
+    // an HTTP error, which an <img> shows without an error event: anything but the requested size falls back too.
+    const wrong = img => { const w = Number(img.getAttribute('width')); return img.naturalWidth === 0 || ![w, w * 2].includes(img.naturalWidth); };
     for (const el of root.querySelectorAll('.lb-map')) {
         const img = el.querySelector('.lb-map-static');
         if (!img) fallBack(el);
-        else if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) fallBack(el);
-        else img.addEventListener('error', () => fallBack(el), { once: true });
+        else if (img.complete && img.getAttribute('src')) { if (wrong(img)) fallBack(el); }
+        else {
+            img.addEventListener('error', () => fallBack(el), { once: true });
+            img.addEventListener('load', () => { if (wrong(img)) fallBack(el); }, { once: true });
+        }
     }
     return () => {
         gone = true;
