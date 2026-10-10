@@ -3128,8 +3128,8 @@
                 "shareLocationAll": "Ukázat přesnou polohu"
             },
             "profile": {
-                "nameHelpNick": "Vaše celé jméno, třeba „Jaroslav Fiala“.",
-                "nicknameHelp": "Jak vám říkají kamarádi, třeba „Luis“. Zobrazí se místo jména.",
+                "nameHelpNick": "Vaše celé jméno, třeba „Jan Novák“.",
+                "nicknameHelp": "Jak vám říkají kamarádi, třeba „Honza“. Zobrazí se místo jména.",
                 "nickname": "Přezdívka",
                 "shareLocationDefault": "Ve výchozím stavu ukazovat přesnou polohu",
                 "shareLocationDefaultHelp": "Vypnuto: členové polohu lokality neuvidí a veřejný odkaz ukáže jen přibližnou oblast.",

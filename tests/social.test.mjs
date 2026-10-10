@@ -257,8 +257,8 @@ import { shareStoreFor } from '../js/backend/shareStore.js';
 
 test('displayName: nickname, else display name, else Diver', () => {
     const t = () => 'Diver';
-    assert.equal(displayName({ nickname: ' Luis ', display_name: 'Jarda Fiala' }, t), 'Luis');
-    assert.equal(displayName({ nickname: '  ', display_name: 'Jarda Fiala' }, t), 'Jarda Fiala');
+    assert.equal(displayName({ nickname: ' Honza ', display_name: 'Jan Novak' }, t), 'Honza');
+    assert.equal(displayName({ nickname: '  ', display_name: 'Jan Novak' }, t), 'Jan Novak');
     assert.equal(displayName({ nickname: null, display_name: '' }, t), 'Diver');
     assert.equal(fullName({ display_name: ' Jarda ' }), 'Jarda');
     assert.equal(fullName(null), '');
@@ -267,20 +267,20 @@ test('displayName: nickname, else display name, else Diver', () => {
 test('buddySuggestions: typed names first, then other members by nickname with the full name as hint', () => {
     const members = [
         { id: 'u1', nickname: 'Me' },
-        { id: 'u2', nickname: 'Luis', display_name: 'Jarda Fiala' },
+        { id: 'u2', nickname: 'Honza', display_name: 'Jan Novak' },
         { id: 'u3', nickname: 'petr', display_name: 'Petr Novák' },
         { id: 'u4', nickname: null, display_name: 'No Nick' },
         { id: 'u5', nickname: 'Same', display_name: 'Same' },
     ];
     assert.deepEqual(buddySuggestions(['Petr', ' Jana '], members, 'u1'), [
-        { value: 'Petr' }, { value: 'Jana' }, { value: 'Luis', label: 'Jarda Fiala' }, { value: 'Same' },
+        { value: 'Petr' }, { value: 'Jana' }, { value: 'Honza', label: 'Jan Novak' }, { value: 'Same' },
     ]);
     assert.deepEqual(buddySuggestions(null, null, 'u1'), []);
 });
 
 test('share store: social extras give the count and nickname, nulls before 0010', async () => {
     const client = res => ({ rpc: async (name, args) => { assert.equal(name, 'shared_dive_social'); assert.equal(args.p_token, 'tok'); return res; } });
-    assert.deepEqual(await shareStoreFor(client({ data: { kudos_count: 4, author_nickname: ' Luis ' }, error: null }), 'tok').socialExtras(), { kudos: 4, nickname: 'Luis' });
+    assert.deepEqual(await shareStoreFor(client({ data: { kudos_count: 4, author_nickname: ' Honza ' }, error: null }), 'tok').socialExtras(), { kudos: 4, nickname: 'Honza' });
     assert.deepEqual(await shareStoreFor(client({ data: null, error: { code: 'PGRST202', message: 'missing' } }), 'tok').socialExtras(), { kudos: null, nickname: null });
     assert.deepEqual(await shareStoreFor(client({ data: { kudos_count: 0, author_nickname: null }, error: null }), 'tok').socialExtras(), { kudos: 0, nickname: null });
 });
