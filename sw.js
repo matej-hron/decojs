@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.229';
+const CACHE_NAME = 'deco-theory-0.6.230';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -120,6 +120,7 @@ const STATIC_ASSETS = [
   './js/backend/documentsStore.js',
   './js/logbook/community.js',
   './js/logbook/avatars.js',
+  './js/logbook/avatarLightbox.js',
   './js/logbook/feedCard.js',
   './js/logbook/sparks.js',
   './js/logbook/CommunityFeed.js',

@@ -142,6 +142,12 @@ test('avatarHtml escapes the name and prefers the uploaded url', () => {
     assert.ok(unknown.includes(AVATARS[fallbackAvatarKey('abc')].svg));
 });
 
+test('avatarHtml: zoom marks uploaded photos only, never presets or opt-out', () => {
+    assert.match(avatarHtml({ url: 'https://x/a.jpg', name: 'Petr', zoom: true }), /data-zoom/);
+    assert.doesNotMatch(avatarHtml({ url: 'https://x/a.jpg', name: 'Petr' }), /data-zoom/);
+    assert.doesNotMatch(avatarHtml({ preset: 'reef-03', name: 'Petr', zoom: true }), /data-zoom/);
+});
+
 test('avatarHtml: own-property presets only, sane size, label and id fallbacks', () => {
     const proto = avatarHtml({ preset: 'constructor', name: 'abc' });
     assert.doesNotMatch(proto, /undefined/);
