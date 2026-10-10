@@ -208,8 +208,15 @@ export class LogbookApp {
     async _probeSocial(session) {
         if (typeof this.store.socialStatus !== 'function') return;
         let on = false;
-        try { on = await this.store.socialStatus(); } catch (error) { console.error(error); }
-        if (this.destroyed || session !== this._session || !on) return;
+        const probe = Promise.resolve().then(() => this.store.socialStatus()).catch(error => { console.error(error); return false; });
+        this._socialProbe = probe;
+        on = await probe;
+        if (this._socialProbe === probe) this._socialProbe = null;
+        if (this.destroyed || session !== this._session) return;
+        if (!on) {
+            if (parseRoute(location.hash).name === 'activity') this._renderRoute();
+            return;
+        }
         this.socialOn = true;
         this._unseenAt = 0;
         this._renderShell();
@@ -302,6 +309,7 @@ export class LogbookApp {
         this._communityKnown = false;
         this.community = false;
         this.socialOn = false;
+        this._socialProbe = null;
         this.unseen = 0;
         this._unseenAt = 0;
     }
@@ -449,12 +457,16 @@ export class LogbookApp {
 
     /** What the dive detail needs for kudos and comments (it checks availability itself). */
     _social() {
-        return this.community ? { store: this.store, userId: this.user.id } : null;
+        return typeof this.store.socialStatus === 'function' ? { store: this.store, userId: this.user.id } : null;
     }
 
     // ---- New for you ----
 
     _showActivity() {
+        if (!this.socialOn && this._socialProbe) {
+            this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+            return; // _probeSocial renders the route when it answers
+        }
         if (!this.socialOn) {
             this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
             return;

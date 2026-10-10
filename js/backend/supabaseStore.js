@@ -399,7 +399,9 @@ export function createSupabaseStore(client) {
                 report.recordings = await deleteIn(TABLE, 'id', rows.map(r => r.id));
             });
             // Own kudos and comments on other members' dives (those on own dives went with the entries).
-            if (await store.socialAvailability?.() === 'yes') {
+            const social = await store.socialAvailability?.();
+            if (social === 'unknown') report.failed.push({ step: 'social', message: 'Could not check kudos and comments; try again' });
+            if (social === 'yes') {
                 await step('social', async () => {
                     const r = await store.deleteMySocial();
                     report.kudos = r.kudos;
@@ -694,6 +696,6 @@ export function createSupabaseStore(client) {
         },
     };
     Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
-    Object.assign(store, createSocialApi(client, { requireUser, fail, communityStatus: () => store.communityStatus(), DiveStoreError }));
+    Object.assign(store, createSocialApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     return store;
 }

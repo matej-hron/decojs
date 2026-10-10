@@ -331,6 +331,14 @@ as $$
     returning seen_at;
 $$;
 
+-- Delete all my data: forget when "New for you" was last opened.
+create or replace function public.social_forget_seen()
+returns void
+language sql volatile security definer set search_path = ''
+as $$
+    delete from public.social_seen where member_id = auth.uid();
+$$;
+
 -- Anon share page, for the 'link' dive whose token the caller holds: the kudos count only (no names) and the
 -- author's nickname. Separate from get_shared_dive, which other migrations redefine.
 create or replace function public.shared_dive_social(p_token text)
@@ -404,6 +412,7 @@ begin
         'public.social_inbox(integer)',
         'public.social_unseen_count()',
         'public.social_mark_seen()',
+        'public.social_forget_seen()',
         'public.community_members(uuid)'
     ] loop
         execute format('revoke all on function %s from public, anon', f);

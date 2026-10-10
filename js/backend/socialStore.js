@@ -6,7 +6,7 @@
 const QUIET_CODES = /^(PGRST205|PGRST202|42P01|42883)$/;
 const COUNT_CHUNK = 200; // social_counts reads at most this many ids per call
 
-export function createSocialApi(client, { requireUser, fail, communityStatus, DiveStoreError }) {
+export function createSocialApi(client, { requireUser, fail, communityAvailability, DiveStoreError }) {
     let state = null; // 'yes' | 'no' once known
     let epoch = 0;
 
@@ -22,9 +22,10 @@ export function createSocialApi(client, { requireUser, fail, communityStatus, Di
     async function socialAvailability() {
         if (state) return state;
         const started = epoch;
-        if (!await communityStatus()) {
-            if (started === epoch) state = 'no';
-            return 'no';
+        const community = await communityAvailability();
+        if (community !== 'yes') {
+            if (community === 'no' && started === epoch) state = 'no';
+            return community === 'no' ? 'no' : 'unknown'; // a transient failure is asked again next time
         }
         let result = 'unknown';
         try {
@@ -148,7 +149,10 @@ export function createSocialApi(client, { requireUser, fail, communityStatus, Di
                 if (error) throw fail(error);
                 return data?.length ?? 0;
             };
-            return { kudos: await del('kudos', 'member_id'), comments: await del('comments', 'author_id') };
+            const result = { kudos: await del('kudos', 'member_id'), comments: await del('comments', 'author_id') };
+            const { error } = await client.rpc('social_forget_seen', {}); // when "New for you" was last opened
+            if (error) throw fail(error);
+            return result;
         },
     };
 }

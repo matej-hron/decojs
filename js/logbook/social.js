@@ -77,7 +77,7 @@ export function socialBarHtml({ entryId, counts, own, listOpen = false, comments
         ? `<span class="tr-kudos-icon" aria-hidden="true">👏</span>`
         : `<button type="button" class="tr-kudos-btn" data-kudos="${id}" aria-pressed="${c.kudoed}" aria-label="${name}" title="${name}"${busy ? ' aria-busy="true"' : ''}><span aria-hidden="true">👏</span></button>`;
     const count = c.kudos > 0
-        ? `<button type="button" class="tr-kudos-count" data-kudos-list="${id}" aria-expanded="${listOpen}" aria-controls="tr-kl-${id}" aria-label="${escHtml(fill(text.countLabel, c.kudos))}">${c.kudos}</button>`
+        ? `<button type="button" class="tr-kudos-count" data-kudos-list="${id}" aria-expanded="${listOpen}"${listOpen ? ` aria-controls="tr-kl-${id}"` : ''} aria-label="${escHtml(fill(text.countLabel, c.kudos))}">${c.kudos}</button>`
         : '';
     const kudos = own && c.kudos === 0 ? '' : `<span class="tr-kudos">${button}${count}</span>`; // nothing to show on an own dive yet
     const comments = commentsHref && c.commentsEnabled

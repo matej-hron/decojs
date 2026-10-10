@@ -234,7 +234,11 @@ export class EntryDetail {
     _renderSocial() {
         if (this.destroyed) return;
         if (this.socialCtl) {
+            // The bar re-renders on every toggle: keep the focus on the same control.
+            const active = this.socialEl.contains(document.activeElement) ? document.activeElement : null;
+            const key = active ? (active.dataset.kudos ? 'data-kudos' : active.dataset.kudosList ? 'data-kudos-list' : null) : null;
             this.socialEl.innerHTML = this.socialCtl.barHtml(this.entry);
+            if (key) this.socialEl.querySelector(`[${key}]`)?.focus({ preventScroll: true });
             return;
         }
         const n = Number(this.kudosCount) || 0;

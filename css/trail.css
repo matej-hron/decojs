@@ -848,7 +848,7 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .tr-kudos-btn[aria-pressed="true"] > span { animation: tr-kudos-pop 260ms var(--ease-out); }
 .tr-kudos-btn[aria-busy="true"] { cursor: progress; }
 .tr-kudos:has(.tr-kudos-btn[aria-pressed="true"]) { border-color: color-mix(in srgb, var(--tr-accent) 45%, var(--border)); }
-.tr-kudos-btn + .tr-kudos-count { padding-left: 0.2rem; min-width: 36px; }
+.tr-kudos-btn + .tr-kudos-count { padding-left: 0.2rem; min-width: 44px; }
 .tr-kudos-count { font-weight: 600; color: var(--text-subtle); }
 .tr-kudos-count:hover, .tr-kudos-count[aria-expanded="true"] { color: var(--tr-accent); text-decoration: underline; text-underline-offset: 0.15em; }
 .tr-kudos-icon { display: inline-flex; align-items: center; min-height: 42px; padding: 0 0.1rem 0 0.7rem; font-size: 1.15rem; }

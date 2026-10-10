@@ -169,6 +169,7 @@ select pg_temp.check((select site_name from public.social_inbox() where entry_id
 select pg_temp.check(not exists (select 1 from public.social_inbox() where entry_id = :'MINE'), 'inbox only has own dives');
 select pg_temp.check(public.social_mark_seen() is not null, 'mark seen');
 select pg_temp.check(public.social_unseen_count() = 0, 'badge cleared after the visit');
+select pg_temp.check(pg_temp.refused('select 1 from public.social_seen'), 'members cannot read social_seen directly');
 select pg_temp.check((select count(*) from public.social_inbox()) = 7 and not (select bool_or(is_new) from public.social_inbox()), 'inbox keeps old events, not new');
 -- The owner deletes another member's comment on their dive, but cannot edit it.
 select pg_temp.check(pg_temp.affected(format('update public.comments set body = %L where id = %L', 'owner edit', :'c1')) = 0, 'owner cannot edit M''s comment');
@@ -241,6 +242,9 @@ set role authenticated;
 select set_config('request.jwt.claim.sub', :'N', false);
 delete from public.kudos where member_id = :'N';
 delete from public.comments where author_id = :'N';
+select public.social_mark_seen();
+select public.social_forget_seen();
 reset role;
+select pg_temp.check(not exists (select 1 from public.social_seen where member_id = :'N'), 'forget seen deletes the own row');
 select pg_temp.check(not exists (select 1 from public.kudos where member_id = :'N') and not exists (select 1 from public.comments where author_id = :'N'),
     'own kudos and comments deleted, also on a dive that turned private');

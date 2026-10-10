@@ -282,7 +282,8 @@ export class CommunityFeed {
     /** "Complete your profile" for a member whose profile has no name yet. */
     _nudgeHtml() {
         const p = this.me;
-        if (!p || (typeof p.display_name === 'string' && p.display_name.trim())) return '';
+        const has = v => typeof v === 'string' && v.trim() !== '';
+        if (!p || has(p.display_name) || has(p.nickname)) return '';
         const nick = Object.hasOwn(p, 'nickname');
         return `<section class="tr-nudge" aria-labelledby="tr-nudge-h">
             <h3 id="tr-nudge-h">${escHtml(tt('nudge.title', 'Complete your profile'))}</h3>

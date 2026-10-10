@@ -54,7 +54,8 @@ test('socialBarHtml: member dive has a pressed state, own dive only the count', 
     const counts = { kudos: 3, kudoed: true, comments: 2, commentsEnabled: true };
     const html = socialBarHtml({ entryId: 'e1', counts, own: false, commentsHref: '#/m/e1', text: TEXT });
     assert.match(html, /class="tr-kudos-btn"[^>]*aria-pressed="true"[^>]*aria-label="Kudos"[^>]*title="Kudos"/);
-    assert.match(html, /data-kudos-list="e1" aria-expanded="false" aria-controls="tr-kl-e1" aria-label="3 kudos, show who">3</);
+    assert.match(html, /data-kudos-list="e1" aria-expanded="false" aria-label="3 kudos, show who">3</);
+    assert.match(socialBarHtml({ entryId: 'e1', counts, own: false, listOpen: true, text: TEXT }), /aria-expanded="true" aria-controls="tr-kl-e1"/, 'controls only while the list exists');
     assert.match(html, /href="#\/m\/e1" aria-label="2 comments"/);
     const own = socialBarHtml({ entryId: 'e1', counts, own: true, text: TEXT });
     assert.ok(!own.includes('tr-kudos-btn'), 'no kudos button on own dives');
@@ -152,7 +153,7 @@ class DiveStoreError extends Error { constructor(kind, m) { super(m); this.kind 
 const api = (client, { community = true } = {}) => createSocialApi(client, {
     requireUser: async () => client.user,
     fail: e => new DiveStoreError('unknown', e.message),
-    communityStatus: async () => community,
+    communityAvailability: async () => (community === 'unknown' ? 'unknown' : community ? 'yes' : 'no'),
     DiveStoreError,
 });
 
@@ -166,6 +167,8 @@ test('socialStatus: yes with the table, no without (cached), no without communit
     const nc = fakeClient();
     assert.equal(await api(nc, { community: false }).socialStatus(), false);
     assert.equal(nc.calls.length, 0, 'no probe without community');
+    const flaky = api(fakeClient(), { community: 'unknown' });
+    assert.equal(await flaky.socialAvailability(), 'unknown', 'community unknown: social unknown, not no');
 });
 
 test('socialStatus: a transient failure is not cached; reset forgets the answer', async () => {
@@ -245,6 +248,7 @@ test('deleteMySocial removes only the caller\'s kudos and comments', async () =>
     assert.deepEqual(await api(c).deleteMySocial(), { kudos: 1, comments: 2 });
     assert.deepEqual(c.db.kudos, [{ entry_id: 'b', member_id: 'u2' }]);
     assert.deepEqual(c.db.comments, [{ id: 'c3', author_id: 'u2' }]);
+    assert.ok(c.calls.some(x => x[0] === 'rpc' && x[1] === 'social_forget_seen'), 'last-seen time forgotten');
 });
 
 // ---- Nickname ----

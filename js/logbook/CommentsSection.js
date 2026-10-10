@@ -340,7 +340,9 @@ export class CommentsSection {
 
     _render() {
         if (this.destroyed) return;
-        const focusedId = this.host.contains(document.activeElement) ? document.activeElement.id : '';
+        const focused = this.host.contains(document.activeElement) ? document.activeElement : null;
+        const focusedId = focused?.id ?? '';
+        const sel = focused?.tagName === 'TEXTAREA' ? [focused.selectionStart, focused.selectionEnd, focused.scrollTop, focused.style.height] : null;
         const heading = `<h3 class="tr-comments-title" id="tr-comments-h">${escHtml(ts('comments', 'Comments'))}${this.enabled && this.rows?.length ? ` <span class="tr-comments-n">${this.rows.length}</span>` : ''}</h3>`;
         if (!this.enabled) {
             this.host.innerHTML = `<section class="tr-comments" aria-labelledby="tr-comments-h">${heading}
@@ -366,7 +368,11 @@ export class CommentsSection {
             const el = this.host.querySelector(`#${CSS.escape(focusedId)}`);
             if (el) {
                 el.focus({ preventScroll: true });
-                if (el.tagName === 'TEXTAREA') el.setSelectionRange(el.value.length, el.value.length);
+                if (el.tagName === 'TEXTAREA' && sel) {
+                    el.style.height = sel[3];
+                    el.setSelectionRange(Math.min(sel[0], el.value.length), Math.min(sel[1], el.value.length));
+                    el.scrollTop = sel[2];
+                }
             }
         }
     }
