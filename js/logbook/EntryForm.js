@@ -14,6 +14,7 @@ import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { OFFERED_VISIBILITIES } from './community.js';
 import { shareUrl } from './share.js';
+import { STORY_MAX } from './feed.js';
 import { gasName } from '../import/recordedDive.js';
 import {
     MIX_PRESETS, CYLINDER_GROUPS, CYLINDER_PRESETS, MATERIALS, cylinderPreset, cylinderText,
@@ -365,6 +366,13 @@ export class EntryForm {
         const c = this.container;
         c.querySelector('[name="site"]').addEventListener('input', () => { this.siteTouched = true; });
         c.querySelector('#lb-pick-map').addEventListener('click', () => this._pickOnMap());
+        const story = c.querySelector('.lb-story-input');
+        // The story box grows with the text: CSS field-sizing where supported, else its scroll height.
+        if (story && !globalThis.CSS?.supports?.('field-sizing', 'content')) {
+            const grow = () => { story.style.height = 'auto'; story.style.height = `${story.scrollHeight + 2}px`; };
+            story.addEventListener('input', grow);
+            grow();
+        }
         c.querySelector('form').addEventListener('submit', e => {
             e.preventDefault();
             this._save();
@@ -428,12 +436,13 @@ export class EntryForm {
         this.container.querySelector('[name="buddy"]')?.focus();
     }
 
-    // ---- Description for members ----
+    // ---- Dive story (log_entries.description), for members ----
 
     _descriptionHtml() {
         if (!this.describe) return '';
         return `<label class="lb-field lb-desc-field"><span>${escHtml(tf('description'))}</span>
-                        <textarea name="description" rows="4" maxlength="4000" aria-describedby="lb-desc-hint">${escHtml(this.values.description)}</textarea>
+                        <textarea name="description" class="lb-story-input" rows="4" maxlength="${STORY_MAX}" aria-describedby="lb-desc-hint"
+                            placeholder="${escHtml(tf('descriptionPlaceholder'))}">${escHtml(this.values.description)}</textarea>
                         <small class="lb-hint" id="lb-desc-hint">${escHtml(tf('descriptionHint'))}</small></label>`;
     }
 

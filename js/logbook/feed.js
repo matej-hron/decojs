@@ -5,6 +5,8 @@
 
 import { formatDuration } from './entryModel.js';
 import { gasLabel } from './listViews.js';
+import { isHttpsUrl } from './geo.js';
+import { escHtml } from '../utils/escHtml.js';
 
 const NB = '\u00a0';
 const has = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
@@ -96,8 +98,44 @@ export function photoIndex(media) {
     return out;
 }
 
-/** Length of the description excerpt on a feed card (the card also clamps it to three lines). */
-export const EXCERPT_CHARS = 160;
+/** Length of the dive story excerpt on a feed card (the card also clamps it to three lines). */
+export const EXCERPT_CHARS = 220;
+
+/** Longest dive story (log_entries.description; the 0006 check constraint says the same). */
+export const STORY_MAX = 5000;
+
+const URL_IN_TEXT = /https:\/\/[^\s<>"'`]+/g;
+
+/** One line of a story: escaped text with its https:// addresses as links that open in a new tab. */
+function linkedLine(line) {
+    let out = '';
+    let at = 0;
+    for (const m of line.matchAll(URL_IN_TEXT)) {
+        let url = m[0];
+        // Punctuation that ends the sentence is not part of the address; a ")" only when it closes nothing in it.
+        for (;;) {
+            const last = url.at(-1);
+            if ('.,;:!?'.includes(last) || (last === ')' && !url.includes('('))) url = url.slice(0, -1);
+            else break;
+        }
+        out += escHtml(line.slice(at, m.index));
+        out += isHttpsUrl(url)
+            ? `<a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer nofollow ugc">${escHtml(url)}</a>`
+            : escHtml(url);
+        at = m.index + url.length;
+    }
+    return out + escHtml(line.slice(at));
+}
+
+/**
+ * The dive story as HTML: escaped, blank lines start a paragraph, single line breaks stay, and https://
+ * addresses become links. '' for no text.
+ */
+export function storyHtml(text) {
+    if (typeof text !== 'string' || !text.trim()) return '';
+    return text.replace(/\r\n?/g, '\n').trim().split(/\n[ \t]*\n\s*/)
+        .map(par => `<p>${par.split('\n').map(linkedLine).join('<br>')}</p>`).join('');
+}
 
 /**
  * A dive description shortened for a card: whitespace runs become one space, and a longer text is cut

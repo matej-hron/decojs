@@ -53,9 +53,21 @@ Missing values are skipped and never count as 0.
 - Shown as "Site info ↗" on the site page and on the owner's dive detail, with `target=_blank rel="noopener noreferrer"`.
 - **Shared with others only like coordinates** (the owner's own view, or `share_location`): `community_entries.site_url` and `get_shared_dive.site.url`. *Why:* a pasted map link can carry the exact position; the owner already decides about that with "Show the exact location".
 
-## 3. Dive description (visible to members)
+## 3. Dive story (`log_entries.description`, visible to members)
 
-- `log_entries.description text`, check `char_length(description) <= 4000`.
+User clarification (2026-10-10): the field is the diver's personal story of the dive (how it was, what they saw, what happened), meant to be shared. It is a first-class field:
+- Label "Dive story" (cs "Příběh ponoru", es "Relato de la inmersión"). Placeholder "How was the dive? What did you see?"
+- A multi-line textarea that grows with the text (CSS `field-sizing: content`, with a scroll-height fallback). Limit 5000 characters, in the form and in the 0006 check.
+- Display through `storyHtml`:
+  - the text is escaped;
+  - a blank line starts a paragraph and single line breaks are kept;
+  - `https://` addresses become `rel="noopener noreferrer nofollow ugc"` new-tab links, with trailing punctuation left outside the link.
+- Shown as reading text right under the title: on the detail page, the member view and the share page.
+- Feed cards show a 2–3 line excerpt (220 characters, plus a 3-line clamp).
+- Private Notes stay separate (only you). The rest of this section is unchanged:
+
+
+- `log_entries.description text`, check `char_length(btrim(description)) between 1 and 5000`.
 - **Form:** the "Description (visible to members)" textarea sits right after the buddies, near the top. It has a hint: "Members see this. Keep private thoughts in Notes."
   - "Notes (only you)" moves into **More details**, as its first field. More details opens by itself when the entry has notes.
   - *Why:* this is the brief's layout. Auto-open keeps existing notes from being hidden.

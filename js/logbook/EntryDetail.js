@@ -15,7 +15,7 @@ import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
 import { gasName } from '../import/recordedDive.js';
 import { gasesFromEntry, gasUsage, cylinderText } from './gasModel.js';
-import { diveTitle, feedStats } from './feed.js';
+import { diveTitle, feedStats, storyHtml } from './feed.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -301,7 +301,7 @@ export class EntryDetail {
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
                 ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
-            ${description ? `<p class="lb-d-desc">${escHtml(description)}</p>` : ''}
+            ${description ? `<div class="lb-d-story">${storyHtml(description)}</div>` : ''}
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
             ${gas.cards.length ? `<section class="lb-d-gases" aria-labelledby="lb-d-gases-h"><h3 id="lb-d-gases-h">${escHtml(label('detail.gases'))}</h3>

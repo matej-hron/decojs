@@ -397,7 +397,7 @@ describe('entry detail: description and site link (jsdom)', () => {
             const store = { listSites: async () => [{ id: 's1', name: 'Borek', url: 'https://example.com/borek' }], listMedia: async () => [], photoUrls: async () => new Map() };
             new EntryDetail(root, { store, entry: { id: 'e1', log_number: 1, dive_date: '2026-06-01', site_id: 's1', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
             await tick();
-            assert.equal(root.querySelector('.lb-d-desc').textContent, 'For all');
+            assert.equal(root.querySelector('.lb-d-story').textContent, 'For all');
             assert.match(root.querySelector('.lb-d-notes').textContent, /Mine/);
             assert.equal(root.querySelector('.lb-site-info').getAttribute('href'), 'https://example.com/borek');
         });
@@ -408,7 +408,7 @@ describe('entry detail: description and site link (jsdom)', () => {
             const store = { listSites: async () => [], listMedia: async () => [], photoUrls: async () => new Map() };
             new EntryDetail(root, { store, readOnly: true, entry: { id: 'e1', dive_date: '2026-06-01', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
             await tick();
-            assert.equal(root.querySelector('.lb-d-desc').textContent, 'For all');
+            assert.equal(root.querySelector('.lb-d-story').textContent, 'For all');
             assert.equal(root.querySelector('.lb-d-notes'), null);
         });
     });
@@ -492,6 +492,71 @@ describe('site page: visits and link (jsdom)', () => {
             assert.equal(root.querySelectorAll('.lb-sv-visit').length, 20);
             root.querySelector('#lb-sv-all').click();
             assert.equal(root.querySelectorAll('.lb-sv-visit').length, 25);
+        });
+    });
+});
+
+// ---- Dive story: display, limits, labels ----
+
+import { storyHtml, STORY_MAX } from '../js/logbook/feed.js';
+
+describe('dive story', () => {
+    test('escapes HTML', () => {
+        assert.equal(storyHtml('<b>hi</b> & "x"'), '<p>&lt;b&gt;hi&lt;/b&gt; &amp; &quot;x&quot;</p>');
+    });
+    test('blank lines make paragraphs, single line breaks stay', () => {
+        assert.equal(storyHtml('First line\nsecond\n\n\nNew para\r\n'), '<p>First line<br>second</p><p>New para</p>');
+    });
+    test('https links become safe new-tab links; trailing punctuation stays outside', () => {
+        const html = storyHtml('Photos: https://example.com/a?b=1&c=2. More (https://x.example/p).');
+        assert.match(html, /<a href="https:\/\/example\.com\/a\?b=1&amp;c=2" target="_blank" rel="noopener noreferrer nofollow ugc">https:\/\/example\.com\/a\?b=1&amp;c=2<\/a>\./);
+        assert.match(html, /\(<a href="https:\/\/x\.example\/p"[^>]*>https:\/\/x\.example\/p<\/a>\)\./);
+    });
+    test('http, javascript and quote-breaking text are never links', () => {
+        assert.doesNotMatch(storyHtml('http://example.com'), /<a /);
+        assert.doesNotMatch(storyHtml('javascript:alert(1)'), /<a /);
+        const html = storyHtml('https://e.com/"onmouseover="x');
+        assert.doesNotMatch(html, /"onmouseover/);
+    });
+    test('empty text gives no markup', () => {
+        assert.equal(storyHtml('  \n '), '');
+        assert.equal(storyHtml(null), '');
+    });
+    test('the limit is 5000 characters, in the form and the migration', async () => {
+        assert.equal(STORY_MAX, 5000);
+        const { readFileSync } = await import('node:fs');
+        const sql = readFileSync(new URL('../supabase/migrations/0006_sites_description.sql', import.meta.url), 'utf8');
+        assert.match(sql, /between 1 and 5000/);
+    });
+    test('labels: Dive story in en/cs/es, with a placeholder', async () => {
+        const { readFileSync } = await import('node:fs');
+        const form = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).diveLog.logbook.form;
+        assert.equal(form('en').description, 'Dive story');
+        assert.equal(form('cs').description, 'Příběh ponoru');
+        assert.equal(form('es').description, 'Relato de la inmersión');
+        for (const l of ['en', 'cs', 'es']) assert.ok(form(l).descriptionPlaceholder, l);
+        assert.equal(form('en').descriptionPlaceholder, 'How was the dive? What did you see?');
+    });
+});
+
+describe('dive story in the views (jsdom)', () => {
+    test('detail: paragraphs and safe links; form: placeholder and 5000 limit', async () => {
+        await withDom(async root => {
+            const store = { listSites: async () => [], listMedia: async () => [], photoUrls: async () => new Map(), listBuddies: async () => [], listEntries: async () => [] };
+            new EntryDetail(root, { store, readOnly: true, entry: { id: 'e1', dive_date: '2026-06-01', buddies: [], details: {},
+                description: 'We dropped in.\nCold!\n\nVideo: https://example.com/v. <script>x</script>' } });
+            await tick();
+            const story = root.querySelector('.lb-d-story');
+            assert.equal(story.querySelectorAll('p').length, 2);
+            assert.equal(story.querySelectorAll('br').length, 1);
+            assert.equal(story.querySelector('a').getAttribute('href'), 'https://example.com/v');
+            assert.equal(story.querySelector('script'), null);
+            root.innerHTML = '';
+            new EntryForm(root, { store: { ...store, saveEntry: async r => r }, entry: { id: 'e1', dive_date: '2026-06-01', buddies: [], details: {} }, describe: true, onSaved() {}, onCancel() {} });
+            await tick();
+            const ta = root.querySelector('textarea[name="description"]');
+            assert.equal(ta.getAttribute('maxlength'), '5000');
+            assert.ok(ta.getAttribute('placeholder'));
         });
     });
 });

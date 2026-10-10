@@ -69,7 +69,7 @@ do $$ begin
 exception when check_violation then raise notice 'ok: blank description rejected';
 end $$;
 do $$ begin
-    update public.log_entries set description = repeat('x', 4001) where id = '40000000-0000-0000-0000-000000000001';
+    update public.log_entries set description = repeat('x', 5001) where id = '40000000-0000-0000-0000-000000000001';
     raise exception 'FAILED: overlong description accepted';
 exception when check_violation then raise notice 'ok: overlong description rejected';
 end $$;

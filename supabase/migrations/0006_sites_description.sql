@@ -3,7 +3,7 @@
 --
 -- Security model, unchanged from 0004/0005: the owner-only RLS of log_entries and sites stays as it is. Other
 -- members read only through community_entries(), anonymous visitors only through get_shared_dive(). Both are
--- redefined here with exactly the same filters; they gain the dive's description (written for others) and the
+-- redefined here with exactly the same filters; they gain the dive's story (`description`, written for others) and the
 -- site's link. Notes stay private. The site link can carry a position (a pasted map link), so it is shared
 -- under the same rule as the site's coordinates: to the owner, or when the dive has share_location.
 
@@ -27,7 +27,7 @@ alter table public.sites add constraint sites_url_https
 alter table public.log_entries add column if not exists description text;
 alter table public.log_entries drop constraint if exists log_entries_description_length;
 alter table public.log_entries add constraint log_entries_description_length
-    check (description is null or char_length(btrim(description)) between 1 and 4000);
+    check (description is null or char_length(btrim(description)) between 1 and 5000);
 
 -- ---------------------------------------------------------------------------
 -- community_entries: same filters as 0004, plus description and site_url.

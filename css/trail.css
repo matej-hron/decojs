@@ -872,7 +872,13 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .lb-sv-capped { margin: 0; }
 .lb-hint { display: block; color: var(--text-subtle); font-size: var(--text-xs); }
 /* Dive description (for members) and the owner's private notes */
-.lb-d-desc { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--text-lg); line-height: 1.5; max-width: 65ch; }
+/* The dive story: the diver's own words, set as reading text right under the title */
+.lb-d-story { max-width: 65ch; font-size: var(--text-lg); line-height: 1.55; overflow-wrap: anywhere; }
+.lb-d-story p { margin: 0; }
+.lb-d-story p + p { margin-top: 0.75em; }
+.lb-d-story a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+:root[data-theme="dark"] .lb-d-story a { color: var(--blue-300); }
+.lb-form textarea.lb-story-input { field-sizing: content; min-height: 7.5rem; max-height: 70vh; resize: vertical; line-height: 1.5; }
 .lb-d-notes { padding: 0.6rem 0.8rem; border-left: 3px solid var(--border); background: var(--surface-sunken); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .lb-d-notes-label { margin: 0 0 0.2rem; font-size: var(--text-xs); color: var(--text-subtle); }
 .lb-d-notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
