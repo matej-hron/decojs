@@ -854,7 +854,7 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .lb-sv-month--none { color: var(--text-subtle); background: var(--surface-sunken); }
 .lb-sv-mname { font-size: var(--text-xs); }
 .lb-sv-month:not(.lb-sv-month--none) .lb-sv-mname { opacity: 0.85; }
-.lb-sv-mtemp { font-size: var(--text-sm); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lb-sv-mtemp { font-size: var(--text-sm); letter-spacing: -0.01em; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .lb-sv-card { display: grid; gap: 0.5rem; }
 .lb-root .lb-sv-title { margin: 0; }
 .lb-sv-list { list-style: none; margin: 0; padding: 0; }

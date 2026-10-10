@@ -24,7 +24,7 @@ const metres = v => (has(v) ? `${fmtNum(Number(v), 1)}${NB}m` : '–');
 const tempRange = (min, max) => (min === max ? fmtNum(min) : `${fmtNum(min)}–${fmtNum(max)}`);
 // The water strip tints each month between these temperatures (°C).
 const COLD = 4;
-const WARM = 28;
+const WARM = 24;
 
 /** Short month names (January first) in the UI language. */
 function monthNames(lang) {
@@ -56,9 +56,9 @@ function waterStrip(months, lang) {
         const label = fill(tv('monthLabel', '{0}: {1} °C, {2} dives'), name, tempRange(m.min, m.max), m.n);
         return `<li class="lb-sv-month" style="--warmth:${warmth}%" aria-label="${escHtml(label)}" title="${escHtml(label)}">
             <span class="lb-sv-mname" aria-hidden="true">${escHtml(name)}</span>
-            <span class="lb-sv-mtemp" aria-hidden="true">${escHtml(tempRange(m.min, m.max))}°</span></li>`;
+            <span class="lb-sv-mtemp" aria-hidden="true">${escHtml(tempRange(Math.round(m.min), Math.round(m.max)))}</span></li>`;
     });
-    return `<div class="lb-sv-water"><h3 class="lb-sv-h">${escHtml(tv('waterByMonth', 'Water by month'))}</h3>
+    return `<div class="lb-sv-water"><h3 class="lb-sv-h">${escHtml(tv('waterByMonth', 'Water by month'))} <span class="lb-sv-unit">(°C)</span></h3>
         <ol class="lb-sv-months">${cells.join('')}</ol></div>`;
 }
 
