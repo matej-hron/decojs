@@ -6,6 +6,7 @@
  */
 
 import { distanceMeters } from './geo.js';
+import { surfaceTemp } from './siteStats.js';
 
 /** Rows per `community_entries` call (the function's maximum) and the most pages one site page reads. */
 export const VISITS_PAGE = 100;
@@ -78,7 +79,10 @@ export function siteVisitStats(rows) {
 
 const KEEP = ['id', 'owner', 'dive_date', 'entry_time', 'duration_s', 'max_depth_m', 'water_temp_c', 'vis_shallow_m', 'vis_deep_m',
     'visibility', 'site_id', 'site_name', 'site_lat', 'site_lon', 'recording_id'];
-const visitRow = r => Object.fromEntries(KEEP.filter(k => Object.hasOwn(r, k)).map(k => [k, r[k]]));
+const visitRow = r => ({
+    ...Object.fromEntries(KEEP.filter(k => Object.hasOwn(r, k)).map(k => [k, r[k]])),
+    surface_temp_c: surfaceTemp(r), // from the dive's details, as the site_visits function (0011) returns it
+});
 const newestFirst = (a, b) => String(b.dive_date ?? '').localeCompare(String(a.dive_date ?? ''))
     || String(b.entry_time ?? '').localeCompare(String(a.entry_time ?? ''));
 
