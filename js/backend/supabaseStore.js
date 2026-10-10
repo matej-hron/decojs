@@ -20,6 +20,7 @@ const MEDIA = 'media';
 const PHOTO_URL_SECONDS = 3600;
 const PAGE = 1000; // PostgREST returns at most this many rows per request
 const CONFLICT_KEY = 'owner,device_serial,dive_number,start_local';
+const MISSING_COLUMN = /^(42703|PGRST204|PGRST205|42P01)$/;
 const LIST_COLUMNS = 'id, device_serial, dive_number, start_local, file_sha256, parser_version, summary, file_path';
 
 /** A store failure the page can explain in plain words. */
@@ -72,6 +73,43 @@ export function createSupabaseStore(client) {
         const { data, error } = await client.storage.from(BUCKET).download(path);
         if (error) throw fail(error, 'storage');
         return new Uint8Array(await data.arrayBuffer());
+    }
+
+    // Migration 0006 (log_entries.description, sites.url): 'yes' | 'no' once known, never cached while unknown.
+    let extrasState = null;
+
+    /** 'yes' | 'no' (the columns are definitively absent) | 'unknown' (transient failure). */
+    async function descriptionAvailability() {
+        if (extrasState) return extrasState;
+        let result = 'unknown';
+        try {
+            const { error, status } = await client.from(ENTRIES).select('description').limit(1);
+            if (!error) result = 'yes';
+            else if (MISSING_COLUMN.test(error.code ?? '') || (status === 400 && /column/i.test(error.message ?? ''))) {
+                result = 'no';
+                console.info('Dive description and site link unavailable', error.message ?? error);
+            } else {
+                console.warn('Description probe failed', error.message ?? error);
+            }
+        } catch (error) {
+            console.warn('Description probe failed', error?.message ?? error);
+        }
+        if (result !== 'unknown') extrasState = result;
+        return result;
+    }
+
+    /**
+     * `row` without the 0006 columns `keys` when the database lacks them. Never guesses: with no answer the
+     * save fails (silently dropping text the user typed is worse than a retry).
+     */
+    async function withoutMissingColumns(row, keys) {
+        if (!keys.some(k => k in row)) return row;
+        const availability = await descriptionAvailability();
+        if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check the database version; nothing was saved');
+        if (availability === 'yes') return row;
+        const rest = { ...row };
+        for (const k of keys) delete rest[k];
+        return rest;
     }
 
     async function listMedia(entryId) {
@@ -196,6 +234,13 @@ export function createSupabaseStore(client) {
 
         // ---- Logbook (step 4c) ----
 
+        descriptionAvailability,
+
+        /** Whether dives have a description and sites a link (migration 0006). */
+        async descriptionStatus() {
+            return (await descriptionAvailability()) === 'yes';
+        },
+
         async listEntries() {
             const { data, error } = await client.from(ENTRIES).select('*').order('log_number', { ascending: false });
             if (error) throw fail(error);
@@ -209,13 +254,13 @@ export function createSupabaseStore(client) {
         },
 
         async saveEntry(input, id) {
-            let row = input;
+            let row = await withoutMissingColumns(input, ['description']);
             if ('visibility' in input || 'share_location' in input) {
                 // Never guess: stripping on a transient probe failure would save a private dive with the DB default.
                 const availability = await store.communityAvailability();
                 if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check community features; the entry was not saved');
                 if (availability === 'no') {
-                    const { visibility, share_location, ...rest } = input; // eslint-disable-line no-unused-vars
+                    const { visibility, share_location, ...rest } = row; // eslint-disable-line no-unused-vars
                     row = rest;
                 }
             }
@@ -412,7 +457,8 @@ export function createSupabaseStore(client) {
             return data;
         },
 
-        async saveSite(row, id) {
+        async saveSite(input, id) {
+            const row = await withoutMissingColumns(input, ['url']);
             const q = id
                 ? client.from(SITES).update({ ...row, updated_at: new Date().toISOString() }).eq('id', id)
                 : client.from(SITES).insert(row);

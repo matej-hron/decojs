@@ -95,3 +95,20 @@ export function photoIndex(media) {
     }
     return out;
 }
+
+/** Length of the description excerpt on a feed card (the card also clamps it to three lines). */
+export const EXCERPT_CHARS = 160;
+
+/**
+ * A dive description shortened for a card: whitespace runs become one space, and a longer text is cut
+ * at the last word boundary before `max` characters, with "…". '' for no text.
+ */
+export function descriptionExcerpt(text, max = EXCERPT_CHARS) {
+    if (typeof text !== 'string') return '';
+    const flat = text.replace(/\s+/g, ' ').trim();
+    const chars = Array.from(flat); // code points: never split an emoji
+    if (chars.length <= max) return flat;
+    const head = chars.slice(0, max).join('');
+    const cut = head.lastIndexOf(' ');
+    return `${(cut > max / 2 ? head.slice(0, cut) : head).replace(/[\s.,;:!?–-]+$/u, '')}…`;
+}

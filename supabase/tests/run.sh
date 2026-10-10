@@ -26,4 +26,6 @@ for f in migrations/0006_sites_description.sql migrations/0006_sites_description
     run < "$f"
 done
 run < tests/0006_sites_description.sql
+echo "applying 0006 again on data"
+run < migrations/0006_sites_description.sql
 echo "ALL RLS TESTS PASSED"

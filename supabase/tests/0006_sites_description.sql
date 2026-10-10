@@ -20,18 +20,53 @@ update auth.users set banned_until = null, is_anonymous = false, deleted_at = nu
 -- ---- Constraints (as superuser) ----
 do $$ begin
     update public.sites set url = 'http://example.com/x' where id = '20000000-0000-0000-0000-000000000001';
-    raise exception 'FAILED: http url accepted';
-exception when check_violation then raise notice 'ok: http url rejected';
+    raise exception 'FAILED: bad url accepted: %', 'http://example.com/x';
+exception when check_violation then raise notice 'ok: bad url rejected';
 end $$;
 do $$ begin
     update public.sites set url = 'https://example.com/a b' where id = '20000000-0000-0000-0000-000000000001';
-    raise exception 'FAILED: url with a space accepted';
-exception when check_violation then raise notice 'ok: url with a space rejected';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/a b';
+exception when check_violation then raise notice 'ok: bad url rejected';
 end $$;
 do $$ begin
     update public.sites set url = 'https://example.com/' || repeat('x', 500) where id = '20000000-0000-0000-0000-000000000001';
-    raise exception 'FAILED: overlong url accepted';
-exception when check_violation then raise notice 'ok: overlong url rejected';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/' || repeat('x', 500);
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'https://example.com/' || chr(1) where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/' || chr(1);
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'https://example.com/' || chr(8238) where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/' || chr(8238);
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'https://example.com/' || chr(160) where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/' || chr(160);
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'https://example.com/"><script>' where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'https://example.com/"><script>';
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'https:///x' where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'https:///x';
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.sites set url = 'HTTPS://example.com/' where id = '20000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: bad url accepted: %', 'HTTPS://example.com/';
+exception when check_violation then raise notice 'ok: bad url rejected';
+end $$;
+do $$ begin
+    update public.log_entries set description = '   ' where id = '40000000-0000-0000-0000-000000000001';
+    raise exception 'FAILED: blank description accepted';
+exception when check_violation then raise notice 'ok: blank description rejected';
 end $$;
 do $$ begin
     update public.log_entries set description = repeat('x', 4001) where id = '40000000-0000-0000-0000-000000000001';
@@ -39,6 +74,8 @@ do $$ begin
 exception when check_violation then raise notice 'ok: overlong description rejected';
 end $$;
 
+update public.sites set url = 'https://www.example.cz/lokality/lom-ho%C5%99ice?id=12&x=(1)#mapa' where id = '20000000-0000-0000-0000-000000000001';
+select pg_temp.check(true, 'a percent-encoded url with query and fragment is accepted');
 update public.sites set url = 'https://dive.example/secret-cove' where id = '20000000-0000-0000-0000-000000000001';
 update public.sites set url = 'https://dive.example/open-reef' where id = '20000000-0000-0000-0000-000000000002';
 update public.sites set url = 'https://dive.example/shared-wall' where id = '2c000000-0000-0000-0000-000000000001';
@@ -51,6 +88,16 @@ update public.log_entries set description = 'C-DESC', visibility = 'link', share
 select pg_temp.check(not has_function_privilege('anon', 'public.community_entries(uuid, uuid, integer, integer)', 'execute'), 'anon cannot call community_entries');
 select pg_temp.check(has_function_privilege('authenticated', 'public.community_entries(uuid, uuid, integer, integer)', 'execute'), 'members can call community_entries');
 select pg_temp.check(has_function_privilege('anon', 'public.get_shared_dive(text)', 'execute'), 'anon can still call get_shared_dive');
+select pg_temp.check((select array_agg(a::text order by a::text) from pg_proc, unnest(proacl) a
+    where oid = 'public.community_entries(uuid, uuid, integer, integer)'::regprocedure and a::text !~ '^(postgres|service_role|supabase_admin)=')
+    = array['authenticated=X/postgres'], 'community_entries: execute only for authenticated (plus admin roles)');
+set role anon;
+do $$ begin
+    perform public.community_entries();
+    raise exception 'FAILED: anon called community_entries';
+exception when insufficient_privilege then raise notice 'ok: anon calling community_entries is refused';
+end $$;
+reset role;
 select pg_temp.check((select prosecdef and proconfig @> array['search_path=""'] from pg_proc
     where oid = 'public.community_entries(uuid, uuid, integer, integer)'::regprocedure), 'community_entries: security definer, empty search_path');
 select pg_temp.check((select prosecdef and proconfig @> array['search_path=""'] from pg_proc
@@ -105,4 +152,15 @@ update public.log_entries set share_location = true where id = :'E1';
 set role anon;
 select pg_temp.check(public.get_shared_dive(:'tok') #>> '{site,url}' = 'https://dive.example/shared-wall', 'share page: site url with share_location');
 select pg_temp.check(public.get_shared_dive(repeat('0', 64)) is null, 'unknown token: null');
+reset role;
+
+-- ---- Old guarantees still hold with the new get_shared_dive ----
+update auth.users set banned_until = now() + interval '1 day' where id = :'C';
+set role anon;
+select pg_temp.check(public.get_shared_dive(:'tok') is null, 'banned owner: link does not work');
+reset role;
+update auth.users set banned_until = null where id = :'C';
+update public.log_entries set visibility = 'members' where id = :'E1';
+set role anon;
+select pg_temp.check(public.get_shared_dive(:'tok') is null, 'dive no longer link: null');
 reset role;

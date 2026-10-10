@@ -9,6 +9,9 @@
 
 begin;
 
+-- Adding columns locks both tables until commit: give up rather than queue every app request behind a slow query.
+set local lock_timeout = '5s';
+
 -- ---------------------------------------------------------------------------
 -- Columns
 -- ---------------------------------------------------------------------------
@@ -16,12 +19,15 @@ begin;
 alter table public.sites add column if not exists url text;
 alter table public.sites drop constraint if exists sites_url_https;
 alter table public.sites add constraint sites_url_https
-    check (url is null or (url ~ '^https://[^[:space:]]+$' and char_length(url) <= 500));
+    -- Only the characters RFC 3986 allows (the app saves URL.href: punycode host, percent-encoded path), so no
+    -- spaces, control, bidi or invisible characters, and no quotes or angle brackets; a host must follow https://.
+    check (url is null or (url ~ '^https://[A-Za-z0-9._~:/?#@!$&''()*+,;=%[\]-]+$' and url !~ '^https://[/?#]'
+                           and char_length(url) <= 500));
 
 alter table public.log_entries add column if not exists description text;
 alter table public.log_entries drop constraint if exists log_entries_description_length;
 alter table public.log_entries add constraint log_entries_description_length
-    check (description is null or char_length(description) <= 4000);
+    check (description is null or char_length(btrim(description)) between 1 and 4000);
 
 -- ---------------------------------------------------------------------------
 -- community_entries: same filters as 0004, plus description and site_url.
