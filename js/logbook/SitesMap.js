@@ -33,16 +33,20 @@ export function mountSitesMap(el, { sites, here = null, popupHtml }) {
                 radius: 9, weight: site.visibility === 'private' ? 3 : 2,
                 color: site.visibility === 'private' ? '#1f2d3a' : '#fff',
                 fillColor: site.own ? OWN_PIN : OTHER_PIN, fillOpacity: 0.95,
-            }).bindPopup(popupHtml(site), { className: 'lb-sites-popup', maxWidth: 260 }).addTo(map);
+            }).bindPopup(popupHtml(site), { className: 'lb-sites-popup', maxWidth: 260, autoPanPaddingTopLeft: [56, 16] }).addTo(map);
         }
         if (here) {
             L.circleMarker([here.lat, here.lon], { radius: 6, weight: 2, color: '#fff', fillColor: '#d62d20', fillOpacity: 1, interactive: false }).addTo(map);
         }
-        if (located.length > 1) map.fitBounds(L.latLngBounds(located.map(s => [s.lat, s.lon])), { padding: [24, 24], maxZoom: 13 });
-        else if (located.length === 1) map.setView([located[0].lat, located[0].lon], 12);
-        else if (here) map.setView([here.lat, here.lon], 10);
-        else map.setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lon], DEFAULT_VIEW.zoom);
-        requestAnimationFrame(() => map?.invalidateSize());
+        const fit = () => {
+            if (located.length > 1) map.fitBounds(L.latLngBounds(located.map(s => [s.lat, s.lon])), { padding: [24, 24], maxZoom: 13 });
+            else if (located.length === 1) map.setView([located[0].lat, located[0].lon], 12);
+            else if (here) map.setView([here.lat, here.lon], 10);
+            else map.setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lon], DEFAULT_VIEW.zoom);
+        };
+        fit();
+        // The container gets its final size after layout: measure again, then fit the pins to it.
+        requestAnimationFrame(() => { if (!map) return; map.invalidateSize(); fit(); });
     }).catch(error => {
         console.error(error);
         if (!closed) el.innerHTML = `<p class="lb-muted lb-sites-map-msg" role="alert">${escHtml(translate('diveLog.logbook.site.mapFailed', 'The map could not be loaded. Check your connection.'))}</p>`;

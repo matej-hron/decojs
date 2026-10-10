@@ -634,3 +634,31 @@ describe('community site directory (jsdom)', () => {
         });
     });
 });
+
+describe('entry form: community sites (jsdom)', () => {
+    test('a typed name of another member\'s site reuses it (no duplicate); the datalist names who added it', async () => {
+        await withDom(async (root, window) => {
+            const saves = [];
+            const store = {
+                listSites: async () => [], listBuddies: async () => [], listEntries: async () => [], listMedia: async () => [], photoUrls: async () => new Map(),
+                listAllSites: async () => [{ id: 'lu1', owner: 'luis', own: false, name: 'Barbora CMAS', visits: 9 }],
+                communityStatus: async () => true, currentUser: async () => ({ id: 'me' }),
+                listMembers: async () => [{ id: 'luis', display_name: 'Luis' }],
+                saveSite: async () => assert.fail('must not create a duplicate site'),
+                saveEntry: async (row, id) => { saves.push(row); return { id: id ?? 'n', ...row }; },
+            };
+            new EntryForm(root, { store, entry: { id: 'e1', log_number: 5, dive_date: '2026-10-01', buddies: [], details: {} }, onSaved() {}, onCancel() {} });
+            await tick();
+            await tick();
+            const option = root.querySelector('#lb-sites option');
+            assert.equal(option.value, 'Barbora CMAS');
+            assert.match(option.getAttribute('label'), /Luis/);
+            const input = root.querySelector('[name="site"]');
+            input.value = 'barbora cmas';
+            input.dispatchEvent(new window.Event('input', { bubbles: true }));
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves[0].site_id, 'lu1');
+        });
+    });
+});
