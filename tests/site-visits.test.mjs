@@ -437,9 +437,10 @@ describe('site page: visits and link (jsdom)', () => {
             assert.match(items[0].textContent, /Jana/);
             assert.match(items[1].textContent, /You/);
             assert.doesNotMatch(root.textContent, /NOPE/);
-            assert.match(root.querySelector('.lb-sv-stats').textContent, /2/);
-            assert.equal(root.querySelectorAll('.lb-sv-month').length, 12);
-            assert.equal(root.querySelectorAll('.lb-sv-month:not(.lb-sv-month--none)').length, 2);
+            assert.match(root.querySelector('.lb-cond-visits').textContent, /2/);
+            assert.ok(root.querySelector('.lb-cond-panel--vis') && root.querySelector('.lb-cond-panel--temp'), 'visibility and temperature side by side');
+            assert.equal(root.querySelectorAll('.lb-cm').length, 12);
+            assert.equal(root.querySelectorAll('.lb-cm:not(.lb-cm--none)').length, 2);
             assert.equal(root.querySelector('.lb-sv-head .lb-site-info').getAttribute('rel'), 'noopener noreferrer');
         });
     });
@@ -558,6 +559,78 @@ describe('dive story in the views (jsdom)', () => {
             const ta = root.querySelector('textarea[name="description"]');
             assert.equal(ta.getAttribute('maxlength'), '5000');
             assert.ok(ta.getAttribute('placeholder'));
+        });
+    });
+});
+
+describe('community site directory (jsdom)', () => {
+    const own = { id: 's1', owner: 'me', own: true, name: 'Lom Borek', lat: 50, lon: 14, notes: 'my secret notes', visibility: 'members', visits: 2,
+        vis_min: 4, vis_max: 8, temp_min: 6, temp_max: 21, last_visit: '2026-09-27', used_by_others: false };
+    const other = { id: 's2', owner: 'luis', own: false, name: 'Barbora CMAS', lat: 50.5, lon: 13.8, visibility: 'members', visits: 5,
+        vis_min: 3, vis_max: 6, temp_min: 5, temp_max: 19, last_visit: '2026-08-01' };
+    const stats = {
+        visits: 5, divers: 2, first_visit: '2025-01-15', last_visit: '2026-08-01',
+        vis: { shallow: { n: 2, avg: 5, min: 4, max: 6, best_date: '2026-08-01', latest: 6, latest_date: '2026-08-01' }, deep: null },
+        temp: { bottom: { n: 2, avg: 12, min: 5, max: 19, best_date: '2026-08-01', latest: 19, latest_date: '2026-08-01' },
+            surface: { n: 1, avg: 21, min: 21, max: 21, best_date: '2026-08-01', latest: 21, latest_date: '2026-08-01' } },
+        months: [{ month: 8, n: 1, bottom: { avg: 19, min: 19, max: 19, n: 1 }, surface: { avg: 21, min: 21, max: 21, n: 1 }, vis: { avg: 6, n: 1 } }],
+    };
+    const dirStore = (over = {}) => ({
+        listSites: async () => [own], listAllSites: async () => [own, other], siteUsage: async () => new Map([['s1', 2]]),
+        descriptionStatus: async () => true, communitySitesStatus: async () => true, communityStatus: async () => true,
+        listMembers: async () => [{ id: 'luis', display_name: 'Luis' }], avatarUrls: async () => new Map(),
+        siteStats: async () => stats, siteVisits: async () => [
+            { id: 'v1', owner: 'luis', dive_date: '2026-08-01', water_temp_c: 19, surface_temp_c: 21, vis_shallow_m: 6, vis_deep_m: null },
+        ],
+        saveSite: async () => own,
+        ...over,
+    });
+
+    test('All sites lists everyone\'s sites with who added them and the conditions line; My sites only own', async () => {
+        await withDom(async root => {
+            try { localStorage.removeItem('decojs.logbook.sitesView'); } catch { /* none */ }
+            new SitesPage(root, { store: dirStore(), userId: 'me' });
+            await tick();
+            await tick();
+            const cards = [...root.querySelectorAll('.lb-site-card')];
+            assert.deepEqual(cards.map(c => c.querySelector('.lb-site-name').textContent.trim()), ['Barbora CMAS', 'Lom Borek']);
+            assert.match(cards[0].textContent, /Luis/);
+            assert.match(cards[0].querySelector('.lb-site-sum').textContent, /3–6 m · 5–19 °C/);
+            assert.doesNotMatch(root.textContent, /my secret notes/);
+            root.querySelector('[data-scope="mine"]').click();
+            assert.deepEqual([...root.querySelectorAll('.lb-site-card .lb-site-name')].map(n => n.textContent.trim()), ['Lom Borek']);
+        });
+    });
+
+    test('another member\'s site: conditions with temperature next to visibility, read-only', async () => {
+        await withDom(async root => {
+            new SitesPage(root, { store: dirStore(), siteId: 's2', userId: 'me' });
+            await tick();
+            await tick();
+            assert.equal(root.querySelector('.lb-site-form'), null, 'no edit form');
+            assert.ok(root.querySelector('.lb-site-readonly'));
+            const temp = root.querySelector('.lb-cond-panel--temp').textContent;
+            assert.match(temp, /21/);
+            assert.match(temp, /12/);
+            assert.match(root.querySelector('.lb-cond-panel--vis').textContent, /5/);
+            assert.equal(root.querySelectorAll('.lb-cm:not(.lb-cm--none)').length, 1);
+            assert.match(root.querySelector('.lb-sv-visit').textContent, /19\.0\u00a0\/\u00a021\.0\u00a0°C/);
+        });
+    });
+
+    test('own site: visibility can be set to private; no delete while others use it', async () => {
+        await withDom(async (root, window) => {
+            const saved = [];
+            new SitesPage(root, { store: dirStore({ listAllSites: async () => [{ ...own, used_by_others: true }, other], saveSite: async row => { saved.push(row); return own; } }), siteId: 's1', userId: 'me' });
+            await tick();
+            await tick();
+            assert.equal(root.querySelector('#lb-delete'), null);
+            const form = root.querySelector('.lb-site-form');
+            form.elements.visibility.value = 'private';
+            form.dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saved[0].visibility, 'private');
+            assert.match(root.querySelector('#lb-merge-into').textContent, /Barbora CMAS \(added by Luis\)/);
         });
     });
 });

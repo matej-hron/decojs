@@ -133,6 +133,38 @@ export function duplicateNameCounts(sites) {
 }
 
 /**
+ * The site a typed name means: the user's own site of that name (trimmed, case-insensitive) first, else the
+ * community site of that name with the most visits. Null when none.
+ */
+export function findSiteByName(sites, name) {
+    const key = siteNameKey(name);
+    if (!key) return null;
+    const same = sites.filter(s => siteNameKey(s.name) === key);
+    return same.find(s => s.own !== false)
+        ?? same.filter(s => s.own === false).sort((a, b) => (Number(b.visits) || 0) - (Number(a.visits) || 0))[0] ?? null;
+}
+
+/**
+ * Datalist options for the site field: each name once (the site `findSiteByName` would pick), own sites first, then
+ * community sites labelled "added by …" via `ownerLabel(site)` (null leaves the label out).
+ * @returns {{value: string, label?: string}[]}
+ */
+export function siteNameOptions(sites, ownerLabel = () => null) {
+    const seen = new Set();
+    const out = [];
+    const ordered = [...sites.filter(s => s.own !== false), ...sites.filter(s => s.own === false)
+        .sort((a, b) => (Number(b.visits) || 0) - (Number(a.visits) || 0))];
+    for (const s of ordered) {
+        const key = siteNameKey(s.name);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        const label = s.own === false ? ownerLabel(s) : null;
+        out.push(label ? { value: s.name, label } : { value: s.name });
+    }
+    return out;
+}
+
+/**
  * The nearest site with the same name (trimmed, case-insensitive) and a position within `limitM` metres of `pin`.
  * @returns {{site: Object, distance: number}|null}
  */

@@ -1248,3 +1248,76 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
 .tr-nudge h3 { margin: 0; font-size: var(--text-lg); }
 .tr-nudge p { margin: 0; max-width: 36rem; }
 .tr-nudge .btn { min-height: 44px; }
+
+/* ---- Community site directory (SitesPage, SiteConditions, SitesMap; migration 0011) ---- */
+.lb-sites-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.lb-sites-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.lb-sites-intro { margin: -0.25rem 0 0; }
+.lb-sites-near { justify-self: start; min-height: 44px; }
+.lb-site-map--none { display: block; background: var(--surface-sunken); }
+.lb-site-name { display: inline-flex; align-items: center; gap: 0.35rem; min-width: 0; overflow-wrap: anywhere; }
+.lb-site-private { display: inline-flex; color: var(--text-subtle); }
+.lb-site-dist { flex: none; font-variant-numeric: tabular-nums; }
+.lb-site-meta { font-size: var(--text-sm); }
+.lb-site-sum { font-size: var(--text-sm); font-variant-numeric: tabular-nums; color: var(--text); }
+.lb-sites-map { height: min(70vh, 560px); min-height: 320px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); background: var(--surface-sunken); }
+.lb-sites-map-msg { margin: 0; padding: 1rem; }
+.lb-pop { display: grid; gap: 0.2rem; font: inherit; }
+.lb-pop-name { font-size: var(--text-base, 1rem); }
+.lb-pop-by { color: var(--gray-500, #6b7280); font-size: 0.85rem; }
+.lb-pop-sum { font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.lb-pop-open { justify-self: start; display: inline-flex; align-items: center; min-height: 36px; font-weight: 600; }
+.lb-site-privacy { display: flex; align-items: center; gap: 0.4rem; margin: 0; color: var(--text-subtle); font-size: var(--text-sm); }
+.lb-site-preview { width: 100%; height: auto; border-radius: var(--radius-md); }
+.lb-site-readonly { margin: 0; padding: 0 0.25rem; }
+.lb-d-title .lb-site-page-link { min-height: 36px; font-size: var(--text-sm); }
+
+/* Conditions: visibility and water temperature carry equal weight, side by side */
+.lb-root { --lb-vis: #2c7fb8; }
+:root[data-theme="dark"] .lb-root { --lb-vis: #6fb3e0; }
+.lb-cond { display: grid; gap: 0.85rem; }
+.lb-root .lb-cond .lb-sv-title { margin: 0; }
+.lb-cond-visits { margin: -0.4rem 0 0; color: var(--text-subtle); }
+.lb-cond-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.lb-cond-panel { min-width: 0; padding: 0.75rem 0.9rem 0.85rem; border-radius: var(--radius-md); background: var(--surface-sunken); border-top: 3px solid var(--lb-vis); }
+.lb-cond-panel--temp { border-top-color: var(--lb-warm); }
+.lb-root .lb-cond-h { margin: 0 0 0.5rem; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); }
+.lb-cond-rows { display: grid; gap: 0.65rem; margin: 0; }
+.lb-cond-row { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); align-items: baseline; gap: 0 0.5rem; }
+.lb-cond-row dt { font-size: var(--text-sm); color: var(--text-subtle); }
+.lb-cond-row dd { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.6rem; min-width: 0; }
+.lb-cond-big { font-size: var(--text-2xl); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.lb-cond-big .lb-unit { font-size: var(--text-base, 1rem); font-weight: 500; color: var(--text-subtle); }
+.lb-cond-range { font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+.lb-cond-note { flex-basis: 100%; font-size: var(--text-xs); color: var(--text-subtle); font-variant-numeric: tabular-nums; }
+.lb-cond-row--none .lb-cond-big { color: var(--text-subtle); }
+
+/* The month strip: one small water column per month, surface above bottom, visibility bar below */
+.lb-cond-months .lb-sv-h { margin-bottom: 0.4rem; }
+.lb-cm-strip { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+.lb-cm { display: grid; gap: 2px; text-align: center; min-width: 0; }
+.lb-cm-name { font-size: var(--text-xs); color: var(--text-subtle); }
+.lb-cm-col { display: grid; grid-template-rows: 1fr 1fr; min-height: 3.6rem; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-sunken); }
+.lb-cm-t { display: grid; place-items: center; color: #fff; font-size: var(--text-sm); font-weight: 600; font-variant-numeric: tabular-nums;
+    background: color-mix(in oklab, var(--lb-warm) var(--warmth, 50%), var(--lb-cold)); }
+.lb-cm-s { background: color-mix(in oklab, color-mix(in oklab, var(--lb-warm) var(--warmth, 50%), var(--lb-cold)) 72%, #fff); color: #0d2338; }
+.lb-cm-b + .lb-cm-t, .lb-cm-s + .lb-cm-b { border-top: 1px solid rgba(255, 255, 255, 0.55); }
+.lb-cm-t--none { background: transparent; }
+.lb-cm-visbar { display: block; height: 4px; border-radius: 2px; background: var(--surface-sunken); overflow: hidden; }
+.lb-cm-vis { display: block; height: 100%; width: var(--vis, 50%); background: var(--lb-vis); }
+.lb-cm--none .lb-cm-col { opacity: 0.6; }
+.lb-cm-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.5rem; margin: 0.45rem 0 0; font-size: var(--text-xs); color: var(--text-subtle); }
+.lb-cm-key { display: inline-block; width: 0.8rem; height: 0.55rem; border-radius: 2px; margin-left: 0.35rem; }
+.lb-cm-key:first-child { margin-left: 0; }
+.lb-cm-key--s { background: color-mix(in oklab, var(--lb-warm) 72%, #fff); }
+.lb-cm-key--b { background: var(--lb-warm); }
+.lb-cm-key--v { height: 4px; background: var(--lb-vis); }
+:root[data-theme="dark"] .lb-cm-s { background: color-mix(in oklab, color-mix(in oklab, var(--lb-warm) var(--warmth, 50%), var(--lb-cold)) 70%, #dbe8f3); }
+@media (max-width: 600px) {
+    .lb-cond-grid { grid-template-columns: minmax(0, 1fr); }
+    .lb-cm-strip { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: 0.5rem; }
+    .lb-sites-head { align-items: flex-start; }
+    .lb-sites-controls { width: 100%; }
+    .lb-sites-controls .lb-switch { flex: 1 1 auto; }
+    .lb-sites-controls .lb-seg { flex: 1 1 0; padding: 0 0.6rem; }
+}

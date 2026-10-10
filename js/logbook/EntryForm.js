@@ -12,7 +12,8 @@ import { MediaSection } from './MediaSection.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
-import { OFFERED_VISIBILITIES, buddySuggestions } from './community.js';
+import { OFFERED_VISIBILITIES, buddySuggestions, displayName } from './community.js';
+import { findSiteByName, siteNameOptions } from './geo.js';
 import { shareUrl } from './share.js';
 import { STORY_MAX } from './feed.js';
 import { gasName } from '../import/recordedDive.js';
@@ -196,7 +197,9 @@ export class EntryForm {
         try {
             // Independent calls: one failing must not hide the others (suggestions are a convenience).
             const [sites, buddies, entries, members] = await Promise.allSettled([
-                this.store.listSites(), this.store.listBuddies(), this.store.listEntries(),
+                // Own sites and the community directory (0011), so members reuse one entry per place.
+                typeof this.store.listAllSites === 'function' ? this.store.listAllSites() : this.store.listSites(),
+                this.store.listBuddies(), this.store.listEntries(),
                 // Members by nickname as buddy suggestions, only with the community feature.
                 (async () => {
                     if (typeof this.store.listMembers !== 'function' || !await this.store.communityStatus?.()) return [];
@@ -212,7 +215,7 @@ export class EntryForm {
                 const site = this.siteId ? this.sites.find(s => s.id === this.siteId) : null;
                 const siteInput = this.container.querySelector('[name="site"]');
                 if (site && siteInput && siteInput.value === '' && !this.siteTouched) siteInput.value = this.siteName = site.name;
-                this._fillList('lb-sites', this.sites.map(s => s.name));
+                this._fillSites();
             }
             if (buddies.status === 'fulfilled') this.buddyNames = buddies.value;
             this._fillBuddies();
@@ -227,6 +230,19 @@ export class EntryForm {
     }
 
     /** @param {(string|{value: string, label?: string})[]} names */
+    /** Who added a community site ("Luis"), from the members list; null while unknown. */
+    _ownerName(site) {
+        const m = (this.memberNames ?? []).find(x => x.id === site.owner);
+        return m ? displayName(m, key => translate(`diveLog.${key}`, 'Diver')) : null;
+    }
+
+    _fillSites() {
+        this._fillList('lb-sites', siteNameOptions(this.sites, s => {
+            const name = this._ownerName(s);
+            return name ? translate('diveLog.logbook.sites.addedBy', 'Added by {0}').replace('{0}', name) : null;
+        }));
+    }
+
     _fillList(id, names) {
         const list = this.container.querySelector(`#${id}`);
         if (list) list.innerHTML = names.map(n => (typeof n === 'string' ? { value: n } : n))
@@ -370,7 +386,7 @@ export class EntryForm {
         </form>`;
         this._wire();
         if (this.media) this.container.querySelector('.lb-media-host').appendChild(this.media.el);
-        this._fillList('lb-sites', this.sites.map(s => s.name));
+        this._fillSites();
         this._fillBuddies();
         const numberInput = this.container.querySelector('[name="log_number"]');
         if (numberInput && !this.entry && this.nextNumber) numberInput.placeholder = String(this.nextNumber);
@@ -725,16 +741,20 @@ export class EntryForm {
             this.siteName = input.value;
             const current = this.sites.find(s => s.id === this.siteId && s.name === input.value.trim());
             this._pickAbort = new AbortController();
-            const site = await openSitePicker({ store: this.store, sites: this.sites, initial: current ?? null, initialName: input.value.trim(), signal: this._pickAbort.signal });
+            const site = await openSitePicker({
+                store: this.store, sites: this.sites, initial: current ?? null, initialName: input.value.trim(), signal: this._pickAbort.signal,
+                ownerName: s => this._ownerName(s),
+            });
             if (!site || this.destroyed) return;
             const at = this.sites.findIndex(s => s.id === site.id);
-            if (at >= 0) this.sites[at] = site; else this.sites.push(site);
+            const own = site.own ?? (at >= 0 ? this.sites[at].own : true);
+            if (at >= 0) this.sites[at] = { ...this.sites[at], ...site, own }; else this.sites.push({ ...site, own });
             this.siteId = site.id;
             this.siteName = site.name;
             this.siteTouched = true;
             const field = this.container.querySelector('[name="site"]');
             if (field) field.value = site.name;
-            this._fillList('lb-sites', this.sites.map(s => s.name));
+            this._fillSites();
         } finally {
             this._picking = false;
         }
@@ -745,10 +765,10 @@ export class EntryForm {
         if (!name) return this.siteTouched ? null : this.siteId; // untouched and not loaded yet: keep the stored site
         const known = this.sites.find(s => s.id === this.siteId);
         if (known && known.name === name) return known.id;
-        const match = this.sites.find(s => s.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+        const match = findSiteByName(this.sites, name); // own first, then the community site most dived
         if (match) return match.id;
         const created = await this.store.saveSite({ name });
-        this.sites.push(created); // a retry after a failed save must not create it again
+        this.sites.push({ ...created, own: true }); // a retry after a failed save must not create it again
         return created.id;
     }
 

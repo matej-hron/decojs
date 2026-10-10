@@ -166,8 +166,9 @@ export class EntryDetail {
      *   default: the site's own position, exact
      * @param {{store: Object, userId: string}|null} [options.social] - kudos and comments (migration 0010), when available
      * @param {number|null} [options.kudosCount] - the share page: a kudos count only, no names, no comments
+     * @param {boolean} [options.sitePage] - link the site name to its site page (logged-in app only)
      */
-    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null, area, social = null, kudosCount = null }) {
+    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null, area, social = null, kudosCount = null, sitePage = false }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -176,6 +177,7 @@ export class EntryDetail {
         this.backHref = backHref === false ? null : backHref ?? routeHref({ name: this.readOnly ? 'feed' : 'list' });
         this.analysisHref = analysisHref;
         this.areaOverride = area;
+        this.sitePage = Boolean(sitePage);
         this.shareCard = null;
         this.social = social;
         this.socialOn = false; // the backend has kudos and comments
@@ -355,7 +357,9 @@ export class EntryDetail {
     async _load() {
         try {
             const [sites, media] = await Promise.all([
-                this.entry.site_id ? this.store.listSites() : Promise.resolve([]),
+                // A dive may use another member's site (community directory, 0011): the store lists those too.
+                !this.entry.site_id ? Promise.resolve([])
+                    : typeof this.store.listAllSites === 'function' ? this.store.listAllSites() : this.store.listSites(),
                 this.store.listMedia(this.entry.id),
             ]);
             if (this.destroyed) return;
@@ -497,6 +501,7 @@ export class EntryDetail {
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
                 ${ratingHtml(rating, fill(label('form.ratingValue'), rating))}
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
+                ${this.sitePage && this.site?.id ? `<a class="lb-site-info lb-site-page-link" href="${routeHref({ name: 'site', id: this.site.id })}">${escHtml(translate('diveLog.logbook.sites.sitePage', 'Site page and conditions'))}</a>` : ''}
                 ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>

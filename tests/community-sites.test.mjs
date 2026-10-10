@@ -213,3 +213,41 @@ describe('community sites store', () => {
         assert.deepEqual(client.calls.find(c => c[1] === 'site_visits')[2], { p_site_id: 's2', p_limit: 50, p_offset: 0 });
     });
 });
+
+
+// ---- Ordering and name matching ----
+
+import { findSiteByName, siteNameOptions } from '../js/logbook/geo.js';
+import { orderSites, distanceText } from '../js/logbook/SitesPage.js';
+
+describe('directory helpers', () => {
+    const sites = [
+        { id: 'a', name: 'Barbora CMAS', own: false, owner: 'luis', visits: 9, lat: 50.6, lon: 13.8 },
+        { id: 'b', name: 'barbora cmas', own: false, owner: 'eva', visits: 2, lat: 50.6, lon: 13.8 },
+        { id: 'c', name: 'Lom Borek', own: true, owner: 'me', lat: 50.0, lon: 14.0 },
+        { id: 'd', name: 'Abyss', own: true, owner: 'me' },
+    ];
+    test('findSiteByName: own first, then the most-visited community site', () => {
+        assert.equal(findSiteByName(sites, ' BARBORA cmas ').id, 'a');
+        assert.equal(findSiteByName([...sites, { id: 'e', name: 'Barbora CMAS', own: true }], 'Barbora CMAS').id, 'e');
+        assert.equal(findSiteByName(sites, 'Nowhere'), null);
+        assert.equal(findSiteByName(sites, '  '), null);
+    });
+    test('siteNameOptions: each name once, own first, others labelled', () => {
+        const opts = siteNameOptions(sites, s => `Added by ${s.owner}`);
+        assert.deepEqual(opts, [{ value: 'Lom Borek' }, { value: 'Abyss' }, { value: 'Barbora CMAS', label: 'Added by luis' }]);
+    });
+    test('orderSites: by name, by distance with positionless last, My sites only own', () => {
+        assert.deepEqual(orderSites(sites, { lang: 'en' }).map(s => s.id), ['d', 'a', 'b', 'c']);
+        const near = orderSites(sites, { here: { lat: 50.01, lon: 14.0 }, lang: 'en' });
+        assert.deepEqual(near.map(s => s.id), ['c', 'a', 'b', 'd']);
+        assert.ok(near[0].distance > 1000 && near[0].distance < 1200);
+        assert.deepEqual(orderSites(sites, { scope: 'mine', lang: 'en' }).map(s => s.id), ['d', 'c']);
+    });
+    test('distanceText', () => {
+        assert.equal(distanceText(347, 'en'), '350 m');
+        assert.equal(distanceText(4234, 'cs'), '4,2 km');
+        assert.equal(distanceText(123456, 'en'), '123 km');
+        assert.equal(distanceText(null), '');
+    });
+});
