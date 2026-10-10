@@ -513,10 +513,13 @@ export class LogbookApp {
                 const defaultVisibility = community && this.store.defaultVisibility
                     ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
                     : null;
+                const defaultShareLocation = community && this.store.defaultShareLocation
+                    ? await Promise.resolve().then(() => this.store.defaultShareLocation()).catch(error => { console.error(error); return true; })
+                    : true;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId, community, defaultVisibility, share,
+                    store: this.store, prefill, recordingId, community, defaultVisibility, share, defaultShareLocation,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });

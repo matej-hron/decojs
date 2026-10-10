@@ -56,6 +56,8 @@ export class ProfilePage {
         this.failed = false;
         this.destroyed = false;
         this.num = { offset: null, plan: null, busy: null, status: { kind: '', text: '' } }; // offset null = not loaded / unsupported
+        this.shareLoc = null; // saved "Show exact location by default"; null = not loaded / unsupported
+        this.shareLocDraft = null;
         this._onImgError = e => { if (avatarImgFallback(e)) this.photoUrl = null; };
         this.host.addEventListener('error', this._onImgError, true); // image errors do not bubble
         this._render();
@@ -92,6 +94,15 @@ export class ProfilePage {
         }
         if (this.destroyed) return;
         this._take(profile ?? { id: this.user?.id });
+        if (typeof this.store.defaultShareLocation === 'function') {
+            try {
+                this.shareLoc = await this.store.defaultShareLocation();
+                this.shareLocDraft = this.shareLoc;
+            } catch (error) {
+                console.error(error); // the checkbox stays hidden
+            }
+            if (this.destroyed) return;
+        }
         this._render();
         this._loadNumbering();
         await this._signPhoto();
@@ -161,6 +172,8 @@ export class ProfilePage {
         if (preset) this.draft.avatar_preset = preset;
         this.draft.default_visibility = form.querySelector('[name="default_visibility"]:checked')?.value ?? this.draft.default_visibility;
         this.draft.home_country = form.querySelector('[name="home_country"]').value;
+        const loc = form.querySelector('[name="share_location_default"]');
+        if (loc) this.shareLocDraft = loc.checked;
     }
 
     _setStatus(kind, text) {
@@ -204,6 +217,9 @@ export class ProfilePage {
         try {
             let saved = await this.store.saveProfile(patch);
             if (replacePhoto) saved = await this.store.removeAvatar();
+            if (this.shareLoc !== null && this.shareLocDraft !== this.shareLoc) {
+                this.shareLoc = await this.store.setDefaultShareLocation(this.shareLocDraft);
+            }
             if (this.destroyed) return;
             this.pickedPreset = false;
             this._take(saved);
@@ -442,6 +458,9 @@ export class ProfilePage {
                     <legend>${escHtml(tp('defaultVisibility', 'Who sees your new dives'))}</legend>
                     <div class="lb-vis-options">${this._visibilityHtml()}</div>
                     <p class="tr-profile-hint">${escHtml(tp('defaultVisibilityHelp', 'You can change it for each dive.'))}</p>
+                    ${this.shareLoc === null ? '' : `<label class="lb-check tr-profile-location"><input type="checkbox" name="share_location_default"${this.shareLocDraft ? ' checked' : ''}>
+                        <span>${escHtml(tp('shareLocationDefault', 'Show the exact location by default'))}</span></label>
+                    <p class="tr-profile-hint">${escHtml(tp('shareLocationDefaultHelp', 'Off: members don’t see the site’s position, and a public link shows only the approximate area.'))}</p>`}
                 </fieldset>
                 <label class="lb-field"><span>${escHtml(tp('country', 'Home country'))}</span>
                     <select name="home_country" autocomplete="country">${countries}</select></label>

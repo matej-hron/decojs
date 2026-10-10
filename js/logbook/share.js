@@ -50,16 +50,17 @@ export function visibilityAfterSharing(before) {
 
 const pick = (obj, keys) => Object.fromEntries(keys.filter(k => obj && Object.hasOwn(obj, k)).map(k => [k, obj[k]]));
 const ENTRY_KEYS = ['id', 'dive_date', 'entry_time', 'duration_s', 'max_depth_m', 'buddies', 'gas', 'water_temp_c',
-    'vis_shallow_m', 'vis_deep_m', 'details', 'share_location'];
+    'vis_shallow_m', 'vis_deep_m', 'details', 'share_location', 'description'];
 const SITE_KEYS = ['id', 'name', 'country', 'water', 'altitude_m', 'lat', 'lon'];
 const MEDIA_KEYS = ['id', 'kind', 'path', 'url', 'width', 'height', 'taken_at', 'lat', 'lon', 'caption', 'created_at'];
 
 /**
  * Split the `get_shared_dive` payload into what the read-only views take. Keeps only known
  * fields (whatever the server sends, notes never reach the views).
- * @returns {{entry: Object, site: Object|null, media: Object[], author: Object, recording: Object|null, record: Object|null}|null}
+ * @param {Object|null} [area] - the `get_shared_dive_area` payload (0009), when the backend has it
+ * @returns {{entry: Object, site: Object|null, area: Object|null, media: Object[], author: Object, recording: Object|null, record: Object|null}|null}
  */
-export function sharedDiveParts(payload) {
+export function sharedDiveParts(payload, area = null) {
     if (!payload || typeof payload !== 'object' || !payload.entry || typeof payload.entry !== 'object') return null;
     const entry = { ...pick(payload.entry, ENTRY_KEYS), notes: null, log_number: null, visibility: 'link' };
     if (!Array.isArray(entry.buddies)) entry.buddies = [];
@@ -80,5 +81,26 @@ export function sharedDiveParts(payload) {
     const record = r && r.record && typeof r.record === 'object' ? r.record : null;
     entry.site_id = site?.id ?? null;
     entry.recording_id = recording?.id ?? null;
-    return { entry, site, media, author, recording, record };
+    return { entry, site, area: siteArea(site, area), media, author, recording, record };
+}
+
+const validLatLon = (lat, lon) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180;
+
+/**
+ * Where the share page's map points: the site's exact position when the dive shares it, else the approximate
+ * area from `get_shared_dive_area` (rounded by the server), else null (no map).
+ * @param {Object|null} site - with `lat`/`lon` only when the dive has share_location
+ * @param {Object|null} area - `{lat, lon, exact}`
+ * @returns {{lat: number, lon: number, exact: boolean}|null}
+ */
+export function siteArea(site, area) {
+    if (site && site.lat !== null && site.lon !== null && validLatLon(Number(site.lat), Number(site.lon))) {
+        return { lat: Number(site.lat), lon: Number(site.lon), exact: true };
+    }
+    if (!area || typeof area !== 'object' || area.lat === null || area.lon === null) return null;
+    const lat = Number(area.lat);
+    const lon = Number(area.lon);
+    if (!validLatLon(lat, lon)) return null;
+    // Never more precise than the server's rounding unless the server says the position is exact.
+    return area.exact === true ? { lat, lon, exact: true } : { lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100, exact: false };
 }

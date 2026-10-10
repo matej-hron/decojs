@@ -132,10 +132,11 @@ export class EntryForm {
      * @param {boolean} [options.community] - the community backend exists: offer "Who can see this dive"
      * @param {string|null} [options.defaultVisibility] - the profile default for a new entry (else members)
      * @param {boolean} [options.share] - public share links exist (migration 0005): offer "Public link"
+     * @param {boolean} [options.defaultShareLocation] - the owner's default for "Show the exact location" on a new entry (on)
      * @param {(entry: Object) => void} options.onSaved
      * @param {() => void} options.onCancel
      */
-    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, share = false, onSaved, onCancel }) {
+    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, share = false, defaultShareLocation = true, onSaved, onCancel }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -158,7 +159,7 @@ export class EntryForm {
         this.share = Boolean(community && share);
         this.sharing = community ? {
             visibility: entry?.visibility ?? (OFFERED_VISIBILITIES.includes(defaultVisibility) ? defaultVisibility : 'members'),
-            share_location: entry?.share_location === true,
+            share_location: entry ? entry.share_location === true : defaultShareLocation !== false,
         } : null;
         // Photos need a saved entry: an existing one manages them here, a new one gets them right after the first save.
         this.media = entry ? new MediaSection({ store, entryId: entry.id }) : null;
