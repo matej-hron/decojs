@@ -85,6 +85,15 @@ visibility (shallow/deep) and water temperature (bottom/surface), both by month.
   a typed name resolves to own site first, then the community site with most visits. Duplicate guard checks all
   sites within 300 m: "Use Barbora CMAS (added by Luis)". Entry detail and the dive list resolve names through
   `listAllSites()` so a dive at another member's site shows its name.
+- **Cross-member duplicates** (follow-up request): the Sites list flags an own site with "Possible duplicate of X
+  (added by Y)" when another site has a similar name (folded case/diacritics/punctuation, contained word, or a small
+  typo) within 300 m; the site page lists them with "Merge into X". Merge moves only the creator's own dives and
+  deletes the site unless other members' dives still use it (then a notice says it stays). *Why:* never touch other
+  members' dives.
+- **"Are you at …?"** (follow-up request): a locate button beside the site field asks for the position only on that
+  tap and suggests the nearest site within 1 km with its distance (`nearestSite`: haversine, ties own → more visits →
+  name → id); nothing that close opens the map picker. An existing dive without a site whose photos carry EXIF GPS
+  gets the same suggestion without asking for the location.
 - Degrades without 0011: the probe says 'no' → My sites only, client-side stats, no visibility field, old merge.
 - en/cs/es strings, phone-first, dark mode via existing tokens.
 
