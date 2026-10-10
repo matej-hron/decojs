@@ -874,6 +874,8 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 /* Dive description (for members) and the owner's private notes */
 /* The dive story: the diver's own words, set as reading text right under the title */
 .lb-d-story { max-width: 65ch; font-size: var(--text-lg); line-height: 1.55; overflow-wrap: anywhere; }
+.lb-root .lb-d-story { padding: 0; background: none; border: 0; box-shadow: none; }
+.lb-root .lb-d-story-h { margin: 0 0 0.35rem; padding: 0; border: 0; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); line-height: 1.3; }
 .lb-d-story p { margin: 0; }
 .lb-d-story p + p { margin-top: 0.75em; }
 .lb-d-story a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }

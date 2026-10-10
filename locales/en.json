@@ -3338,7 +3338,7 @@
                 "visShallow": "Visibility, shallow (m)",
                 "visDeep": "Visibility, deep (m)",
                 "notes": "Notes",
-                "description": "Dive story",
+                "description": "How was it?",
                 "descriptionHint": "Your story of the dive, for other members and anyone with the public link. Line breaks and links are kept. Private thoughts go in Notes (only you) under More details.",
                 "descriptionPlaceholder": "How was the dive? What did you see?",
                 "notesPrivate": "Notes (only you)",

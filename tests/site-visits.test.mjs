@@ -397,7 +397,7 @@ describe('entry detail: description and site link (jsdom)', () => {
             const store = { listSites: async () => [{ id: 's1', name: 'Borek', url: 'https://example.com/borek' }], listMedia: async () => [], photoUrls: async () => new Map() };
             new EntryDetail(root, { store, entry: { id: 'e1', log_number: 1, dive_date: '2026-06-01', site_id: 's1', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
             await tick();
-            assert.equal(root.querySelector('.lb-d-story').textContent, 'For all');
+            assert.equal(root.querySelector('.lb-d-story p').textContent, 'For all');
             assert.match(root.querySelector('.lb-d-notes').textContent, /Mine/);
             assert.equal(root.querySelector('.lb-site-info').getAttribute('href'), 'https://example.com/borek');
         });
@@ -408,7 +408,7 @@ describe('entry detail: description and site link (jsdom)', () => {
             const store = { listSites: async () => [], listMedia: async () => [], photoUrls: async () => new Map() };
             new EntryDetail(root, { store, readOnly: true, entry: { id: 'e1', dive_date: '2026-06-01', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
             await tick();
-            assert.equal(root.querySelector('.lb-d-story').textContent, 'For all');
+            assert.equal(root.querySelector('.lb-d-story p').textContent, 'For all');
             assert.equal(root.querySelector('.lb-d-notes'), null);
         });
     });
@@ -528,12 +528,12 @@ describe('dive story', () => {
         const sql = readFileSync(new URL('../supabase/migrations/0006_sites_description.sql', import.meta.url), 'utf8');
         assert.match(sql, /between 1 and 5000/);
     });
-    test('labels: Dive story in en/cs/es, with a placeholder', async () => {
+    test('labels: How was it? in en/cs/es, with a placeholder', async () => {
         const { readFileSync } = await import('node:fs');
         const form = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).diveLog.logbook.form;
-        assert.equal(form('en').description, 'Dive story');
-        assert.equal(form('cs').description, 'Příběh ponoru');
-        assert.equal(form('es').description, 'Relato de la inmersión');
+        assert.equal(form('en').description, 'How was it?');
+        assert.equal(form('cs').description, 'Jaké to bylo?');
+        assert.equal(form('es').description, '¿Qué tal fue?');
         for (const l of ['en', 'cs', 'es']) assert.ok(form(l).descriptionPlaceholder, l);
         assert.equal(form('en').descriptionPlaceholder, 'How was the dive? What did you see?');
     });
@@ -548,6 +548,7 @@ describe('dive story in the views (jsdom)', () => {
             await tick();
             const story = root.querySelector('.lb-d-story');
             assert.equal(story.querySelectorAll('p').length, 2);
+            assert.equal(story.querySelector('h3').textContent, 'How was it?', 'the field label is the heading');
             assert.equal(story.querySelectorAll('br').length, 1);
             assert.equal(story.querySelector('a').getAttribute('href'), 'https://example.com/v');
             assert.equal(story.querySelector('script'), null);

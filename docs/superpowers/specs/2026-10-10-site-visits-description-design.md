@@ -56,7 +56,7 @@ Missing values are skipped and never count as 0.
 ## 3. Dive story (`log_entries.description`, visible to members)
 
 User clarification (2026-10-10): the field is the diver's personal story of the dive (how it was, what they saw, what happened), meant to be shared. It is a first-class field:
-- Label "Dive story" (cs "Příběh ponoru", es "Relato de la inmersión"). Placeholder "How was the dive? What did you see?"
+- Label, also the heading above the story on the detail, member and share pages: en "How was it?", cs "Jaké to bylo?", es "¿Qué tal fue?" (the user's wording; this replaced "Dive story"). Placeholders: "How was the dive? What did you see?" / "Jak se ponor vydařil? Co jste viděli?" / "¿Qué tal la inmersión? ¿Qué viste?"
 - A multi-line textarea that grows with the text (CSS `field-sizing: content`, with a scroll-height fallback). Limit 5000 characters, in the form and in the 0006 check.
 - Display through `storyHtml`:
   - the text is escaped;

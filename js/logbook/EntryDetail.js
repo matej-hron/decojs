@@ -301,7 +301,7 @@ export class EntryDetail {
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
                 ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
-            ${description ? `<div class="lb-d-story">${storyHtml(description)}</div>` : ''}
+            ${description ? `<section class="lb-d-story" aria-labelledby="lb-d-story-h"><h3 class="lb-d-story-h" id="lb-d-story-h">${escHtml(translate('diveLog.logbook.form.description', 'How was it?'))}</h3>${storyHtml(description)}</section>` : ''}
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
             ${gas.cards.length ? `<section class="lb-d-gases" aria-labelledby="lb-d-gases-h"><h3 id="lb-d-gases-h">${escHtml(label('detail.gases'))}</h3>
