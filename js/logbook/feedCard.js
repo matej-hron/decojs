@@ -4,6 +4,7 @@
  */
 
 import { escHtml } from '../utils/escHtml.js';
+import { mapLinkButtonHtml } from './mapLinks.js';
 
 const NB = ' ';
 
@@ -118,7 +119,7 @@ export function visualHtml({ kind, entryId, variant, photoUrl, more = 0, moreTex
                 ${more > 0 ? `<span class="lb-more-photos"><span aria-hidden="true">+${more}</span><span class="rda-visually-hidden">${escHtml(moreText)}</span></span>` : ''}</div>`;
     }
     if (kind === 'map') {
-        return `<div class="lb-visual lb-visual-map"${id}><img class="lb-visual-img lb-map-img" src="${escHtml(map.src)}" width="${map.width}" height="${map.height}" alt="${escHtml(map.alt)}" loading="lazy"></div>`;
+        return `<div class="lb-visual lb-visual-map"${id}><img class="lb-visual-img lb-map-img" src="${escHtml(map.src)}" width="${map.width}" height="${map.height}" alt="${escHtml(map.alt)}" loading="lazy">${map.link ? mapLinkButtonHtml(map.link, { tag: 'span', className: 'lb-map-open--card' }) : ''}</div>`;
     }
     if (kind === 'profile') {
         return `<div class="lb-visual lb-visual-profile"${id}><span class="lb-spark" data-rec="${escHtml(recordingId)}" role="img" aria-label="${escHtml(profileAlt)}"></span>

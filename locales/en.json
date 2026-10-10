@@ -3397,6 +3397,16 @@
                     "capped": "Only the newest 2000 dives of the community were searched."
                 }
             },
+            "mapLinks": {
+                "title": "Open in maps",
+                "open": "Open in maps",
+                "approx": "approximate area",
+                "mapy": "Mapy.com",
+                "google": "Google Maps",
+                "navigate": "Navigate",
+                "chooser": "Other map app",
+                "close": "Close"
+            },
             "detail": {
                 "mapAlt": "Map of {0}",
                 "mapAltNoName": "Map of the dive site",

@@ -3346,6 +3346,16 @@
                     "capped": "Solo se buscó en las 2000 inmersiones más recientes de la comunidad."
                 }
             },
+            "mapLinks": {
+                "title": "Abrir en mapas",
+                "open": "Abrir en mapas",
+                "approx": "área aproximada",
+                "mapy": "Mapy.com",
+                "google": "Google Maps",
+                "navigate": "Navegar",
+                "chooser": "Otra app de mapas",
+                "close": "Cerrar"
+            },
             "detail": {
                 "mapAlt": "Mapa de {0}",
                 "mapAltNoName": "Mapa del sitio de buceo",
