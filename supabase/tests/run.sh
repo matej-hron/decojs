@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006, 0009, 0007 and 0010 twice
-# (idempotency), then the RLS assertions. 0008 is live before 0006; 0007 runs after the others because its test deletes user A (0010 after it uses its own users). Usage: bash supabase/tests/run.sh
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006, 0009, 0007, 0010 and 0011 twice
+# (idempotency), then the RLS assertions. 0008 is live before 0006; 0007 runs after the others because its test deletes user A (0010 and 0011 after it use their own users). Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 NAME="decotrail-rls-$$"
@@ -52,4 +52,9 @@ for f in migrations/0010_social.sql migrations/0010_social.sql; do
     run < "$f"
 done
 run < tests/0010_social.sql
+for f in migrations/0011_community_sites.sql migrations/0011_community_sites.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0011_community_sites.sql
 echo "ALL RLS TESTS PASSED"
