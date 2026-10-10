@@ -11,6 +11,7 @@
 
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { parseDecimal } from './entryModel.js';
+import { mapLinkButtonHtml } from './mapLinks.js';
 import { duplicateNameCounts, siteNameKey, mapyStaticMapUrl, parseSiteUrl, siteInfoLinkHtml, distanceMeters } from './geo.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { routeHref } from './router.js';
@@ -94,10 +95,11 @@ const valuesFromSite = site => ({
  * error picture and no error event: anything but the requested size (or its 2× version) counts as failed.
  */
 function watchMapImage(img) {
+    const drop = () => (img.closest('.lb-site-preview-wrap') ?? img).remove();
     const wrong = () => { const w = Number(img.getAttribute('width')); return img.naturalWidth === 0 || ![w, w * 2].includes(img.naturalWidth); };
-    if (img.complete && img.getAttribute('src')) { if (wrong()) img.remove(); return; }
-    img.addEventListener('error', () => img.remove(), { once: true });
-    img.addEventListener('load', () => { if (wrong()) img.remove(); }, { once: true });
+    if (img.complete && img.getAttribute('src')) { if (wrong()) drop(); return; }
+    img.addEventListener('error', drop, { once: true });
+    img.addEventListener('load', () => { if (wrong()) drop(); }, { once: true });
 }
 
 const LOCK = '<svg class="lb-lock-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
@@ -427,10 +429,10 @@ export class SitesPage {
 
     _headHtml() {
         const site = this.site;
-        const preview = hasPosition(site) && MAPY_API_KEY ? `<img class="lb-site-preview" src="${escHtml(mapyStaticMapUrl({
+        const preview = hasPosition(site) && MAPY_API_KEY ? `<div class="lb-site-preview-wrap lb-map"><img class="lb-site-preview" src="${escHtml(mapyStaticMapUrl({
             lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: 640, height: 240, zoom: 13,
             scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
-        }))}" width="640" height="240" alt="${escHtml(site.name)}">` : '';
+        }))}" width="640" height="240" alt="${escHtml(site.name)}">${mapLinkButtonHtml({ lat: site.lat, lon: site.lon, label: site.name, exact: true })}</div>` : '';
         const info = siteInfoLinkHtml(site.url, ts('siteInfo', 'Site info'));
         const dives = this.usage.get(this.siteId) ?? 0;
         const facts = [];

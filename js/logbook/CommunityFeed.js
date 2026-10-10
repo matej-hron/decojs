@@ -241,6 +241,7 @@ export class CommunityFeed {
                     lat: Number(row.site_lat), lon: Number(row.site_lon), apiKey: MAPY_API_KEY, width: 640, height: 280,
                     scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
                 }),
+                link: { lat: Number(row.site_lat), lon: Number(row.site_lon), label: site?.name ?? '', exact: true }, // coordinates arrive only when shared
             };
         }
         const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';

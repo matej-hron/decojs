@@ -1034,6 +1034,7 @@ export class LogbookApp {
                     lat: site.lat, lon: site.lon, apiKey: MAPY_API_KEY, width: w, height: h,
                     scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
                 }),
+                link: { lat: site.lat, lon: site.lon, label: site.name, exact: true },
             };
         }
         const depth = entry.max_depth_m != null && Number.isFinite(Number(entry.max_depth_m)) ? `${fmtNum(Number(entry.max_depth_m), 1)}${NB}m` : '';

@@ -83,6 +83,23 @@ export function invalidNumberFields(values) {
 }
 
 /**
+ * Why the average depth cannot be right, or null: it must be above 0 and not above the
+ * maximum depth. Blank fields and unparsable numbers are not judged here (`invalidNumberFields`).
+ * @param {{max_depth_m?: string, details?: {avgDepthM?: string}}} values - form values
+ * @returns {'avgDepthPositive'|'avgDepthAboveMax'|null}
+ */
+export function avgDepthProblem(values) {
+    const avg = parseDecimal(values?.details?.avgDepthM);
+    if (avg === null) return null;
+    if (avg <= 0) return 'avgDepthPositive';
+    const max = parseDecimal(values?.max_depth_m);
+    return max !== null && max > 0 && avg > max ? 'avgDepthAboveMax' : null;
+}
+
+/** Average depth suggested from the maximum depth (a diver's tap, never applied silently). */
+export const AVG_DEPTH_ESTIMATE = 0.6;
+
+/**
  * Form values (strings) for an entry or a computer prefill; the reverse of
  * `normalizeEntry` for everything the form shows. `gases` holds one form row per gas card.
  * @param {Object} entry - log_entries row or partial prefill
@@ -145,6 +162,8 @@ export class EntryForm {
         this.store = store;
         this.entry = entry;
         this.recordingId = recordingId;
+        // Without a recording the diver types the average depth next to the maximum depth (SAC needs it).
+        this.manual = !entry?.recording_id && !recordingId;
         this.onSaved = onSaved;
         this.onCancel = onCancel;
         this.destroyed = false;
@@ -277,6 +296,13 @@ export class EntryForm {
             <input type="hidden" name="d.rating" value="${r || ''}"></div>`;
     }
 
+    /** Average depth input with its inline error line (filled by `_updateGasLive`). */
+    _avgDepthHtml() {
+        return `<label class="lb-field lb-avg-field"><span>${escHtml(tf('avgDepthM'))}</span>
+            <input type="text" name="d.avgDepthM" value="${escHtml(this._detailNum('avgDepthM'))}" inputmode="decimal" autocomplete="off" aria-describedby="lb-avg-error">
+            <small class="lb-hint lb-avg-error" id="lb-avg-error" role="alert" hidden></small></label>`;
+    }
+
     _detailNum(key) {
         const v = this.values.details[key];
         if (v === null || v === undefined || v === '') return '';
@@ -307,8 +333,12 @@ export class EntryForm {
                     </div>
                     <div class="lb-row">
                         ${this._input('duration_min', 'duration', v.duration_min)}
-                        ${this._input('max_depth_m', 'depth', v.max_depth_m, { mode: 'decimal' })}
+                        ${this.manual ? '' : this._input('max_depth_m', 'depth', v.max_depth_m, { mode: 'decimal' })}
                     </div>
+                    ${this.manual ? `<div class="lb-row lb-row-pair">
+                        ${this._input('max_depth_m', 'depth', v.max_depth_m, { mode: 'decimal' })}
+                        ${this._avgDepthHtml()}
+                    </div>` : ''}
                     <div class="lb-row">
                         ${this._input('water_temp_c', 'waterTemp', v.water_temp_c, { mode: 'decimal' })}
                         ${detailNum('surfaceTempC')}
@@ -367,7 +397,7 @@ export class EntryForm {
                     <h3>${escHtml(tf('dive'))}</h3>
                     <div class="lb-row">
                         ${this._select('entry', 'entry', CHOICES.entry, d.entry)}
-                        ${detailNum('avgDepthM')}
+                        ${this.manual ? '' : this._avgDepthHtml()}
                         ${this._select('stops', 'stops', CHOICES.stops, d.stops)}
                     </div>
                     <fieldset class="lb-field">
@@ -606,6 +636,10 @@ export class EntryForm {
         // Gauges, usage lines and the summary follow every keystroke without re-rendering (focus stays).
         c.querySelector('form').addEventListener('input', () => this._updateGasLive());
         c.querySelector('form').addEventListener('change', () => this._updateGasLive());
+        c.querySelector('.lb-gas-summary').addEventListener('click', e => {
+            if (e.target.closest('.lb-avg-focus')) this._focusAvgDepth();
+            else if (e.target.closest('.lb-avg-estimate')) this._estimateAvgDepth();
+        });
         this._updateGasLive();
     }
 
@@ -642,16 +676,53 @@ export class EntryForm {
             if (u.usedL !== null) parts.push(`${fmtNum(u.usedL, 0)}${NBSP}l`);
             card.querySelector('.lb-gas-use').textContent = parts.join(' · ');
         });
+        this._updateAvgError();
         if (usage.totalL === null) {
             summary.hidden = true;
             summary.textContent = '';
             return;
         }
         const used = `${tf('gasUsed')} ${fmtNum(usage.totalL, 0)}${NBSP}l`;
-        summary.innerHTML = usage.sacLpm !== null
-            ? escHtml(`${used} · ${tf('sac')} ${fmtNum(usage.sacLpm, 1)}${NBSP}l/min`)
-            : `${escHtml(used)}<span class="lb-gas-hint">${escHtml(tf('sacNeedsAvg'))}</span>`;
+        if (usage.sacLpm !== null) {
+            summary.textContent = `${used} · ${tf('sac')} ${fmtNum(usage.sacLpm, 1)}${NBSP}l/min`;
+        } else {
+            const maxDepth = parseDecimal(c.querySelector('[name="max_depth_m"]')?.value);
+            const estimate = maxDepth !== null && maxDepth > 0
+                ? ` <button type="button" class="lb-link lb-avg-estimate">${escHtml(tf('avgDepthEstimate'))}</button>` : '';
+            summary.innerHTML = `${escHtml(used)}<span class="lb-gas-hint">${escHtml(tf('sacNeedsAvg'))} `
+                + `<button type="button" class="lb-link lb-avg-focus">${escHtml(tf('avgDepthEnter'))}</button>${estimate}</span>`;
+        }
         summary.hidden = false;
+    }
+
+    /** Inline error of the average depth field (> 0 and ≤ maximum depth); the typed values stay. */
+    _updateAvgError() {
+        const c = this.container;
+        const input = c.querySelector('[name="d.avgDepthM"]');
+        const note = c.querySelector('.lb-avg-error');
+        if (!input || !note) return;
+        const key = avgDepthProblem({ max_depth_m: c.querySelector('[name="max_depth_m"]')?.value, details: { avgDepthM: input.value } });
+        note.textContent = key ? tf(key) : '';
+        note.hidden = !key;
+        if (key) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    }
+
+    /** Focus the average depth field (opening "More details" when it lives there). */
+    _focusAvgDepth() {
+        const input = this.container.querySelector('[name="d.avgDepthM"]');
+        const more = input?.closest('details');
+        if (more) more.open = true;
+        input?.focus();
+    }
+
+    /** Fill the average depth with a share of the maximum depth: a visible tap by the diver. */
+    _estimateAvgDepth() {
+        const input = this.container.querySelector('[name="d.avgDepthM"]');
+        const max = parseDecimal(this.container.querySelector('[name="max_depth_m"]')?.value);
+        if (!input || max === null || max <= 0) return;
+        input.value = this._num(Math.round(max * AVG_DEPTH_ESTIMATE * 10) / 10);
+        input.dispatchEvent(new (input.ownerDocument.defaultView.Event)('input', { bubbles: true }));
+        input.focus();
     }
 
     /**
@@ -802,6 +873,13 @@ export class EntryForm {
         const bad = invalidNumberFields(v);
         if (bad.length) {
             this._setError(fill(tf('invalidNumber'), labelOf(bad[0])));
+            return;
+        }
+        const avgProblem = avgDepthProblem(v);
+        if (avgProblem) {
+            this._setError(tf(avgProblem));
+            this._updateAvgError();
+            this._focusAvgDepth();
             return;
         }
         if (this.entry && !String(v.log_number).trim()) {

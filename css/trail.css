@@ -81,6 +81,7 @@
 .lb-core, .lb-more { display: grid; gap: 0.75rem; min-width: 0; padding: 0; margin: 0; border: 0; box-shadow: none; background: none; }
 .lb-more summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .lb-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; align-items: end; min-width: 0; }
+.lb-row-pair { grid-template-columns: 1fr 1fr; align-items: start; }
 .lb-field { display: grid; gap: 0.25rem; min-width: 0; margin: 0; padding: 0; border: 0; }
 .lb-field > span, .lb-field > legend { font-size: 0.9rem; color: var(--text-subtle); padding: 0; }
 .lb-field input[type="text"], .lb-field input[type="date"], .lb-field input[type="time"], .lb-field input[type="number"], .lb-field select, .lb-field textarea {
@@ -149,6 +150,10 @@
 .lb-gas-summary { margin: 0; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .lb-gas-summary[hidden] { display: none; }
 .lb-gas-hint { display: block; color: var(--text-subtle); }
+.lb-link { background: none; border: 0; padding: 0.5rem 0.25rem; min-height: 44px; font: inherit; color: var(--link-color, var(--primary-color)); text-decoration: underline; cursor: pointer; }
+.lb-avg-error { color: var(--danger-color); }
+.lb-avg-error[hidden] { display: none; }
+.lb-form input[aria-invalid="true"] { border-color: var(--danger-color); }
 #lb-add-gas { min-height: 44px; justify-self: start; }
 .lb-site-position { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; font-variant-numeric: tabular-nums; }
 .lb-site-position .btn { min-height: 44px; }
@@ -1321,3 +1326,22 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
     .lb-sites-controls .lb-switch { flex: 1 1 auto; }
     .lb-sites-controls .lb-seg { flex: 1 1 0; padding: 0 0.6rem; }
 }
+
+/* Open in maps: trigger on every map and the sheet it opens (js/logbook/mapLinks.js) */
+.lb-map, .lb-visual-map, .lb-site-preview-wrap { cursor: pointer; }
+.lb-site-preview-wrap { position: relative; overflow: hidden; border-radius: var(--radius-md); z-index: 0; }
+.lb-map-open { position: absolute; right: 0.5rem; bottom: 0.5rem; z-index: 500; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--surface-elevated); color: var(--text); box-shadow: var(--shadow-md, 0 2px 6px rgba(0, 0, 0, 0.25)); cursor: pointer; }
+.lb-map-open svg { fill: currentColor; }
+.lb-map-open:focus-visible { outline: 2px solid var(--primary-color, #2980b9); outline-offset: 2px; }
+.lb-map-open--card { right: 0.4rem; bottom: 0.4rem; width: 36px; height: 36px; }
+.lb-map-open--card svg { width: 18px; height: 18px; }
+.lb-maplinks { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.45); }
+.lb-maplinks-sheet { box-sizing: border-box; width: min(100%, 26rem); display: grid; gap: 0.5rem; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); background: var(--surface-elevated); color: var(--text); border-radius: var(--radius-lg, 16px) var(--radius-lg, 16px) 0 0; box-shadow: var(--shadow-lg); }
+.lb-maplinks-title { margin: 0; font-weight: 600; }
+.lb-maplinks-approx { font-weight: 400; color: var(--text-subtle); }
+.lb-maplinks-list { display: grid; gap: 0.5rem; }
+.lb-maplinks-item, .lb-maplinks-close { display: flex; align-items: center; min-height: 44px; padding: 0 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; }
+.lb-maplinks-close { justify-content: center; }
+@media (min-width: 640px) { .lb-maplinks { align-items: center; } .lb-maplinks-sheet { border-radius: var(--radius-lg, 16px); } }
+.lb-pop-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.lb-pop .lb-map-open { position: static; width: 36px; height: 36px; box-shadow: none; }

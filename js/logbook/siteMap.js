@@ -9,6 +9,7 @@
 
 import { mapyStaticMapUrl, metersPerPixel } from './geo.js';
 import { escHtml } from '../utils/escHtml.js';
+import { mapLinkButtonHtml } from './mapLinks.js';
 
 /** Radius of the approximate area: the server rounds to 2 decimals (up to ~0.56 km off), so 1 km covers it. */
 export const AREA_RADIUS_M = 1000;
@@ -26,8 +27,10 @@ export const AREA_RADIUS_M = 1000;
  * @param {string} o.alt - text alternative ("Map of Lom Barbora")
  * @param {string} [o.areaLabel] - shown on an approximate map ("Approximate area")
  * @param {string} [o.className]
+ * @param {string} [o.label] - site name for the external map links
+ * @param {string} [o.openText] - label of the "Open in maps" button
  */
-export function siteMapHtml({ area, apiKey, width, height, zoom = 13, scale = 1, lang = 'en', alt, areaLabel = '', className = '' }) {
+export function siteMapHtml({ area, apiKey, width, height, zoom = 13, scale = 1, lang = 'en', alt, areaLabel = '', className = '', label = '', openText }) {
     const src = mapyStaticMapUrl({ lat: area.lat, lon: area.lon, apiKey, width, height, zoom, scale, lang, marker: area.exact });
     const r = Math.round(AREA_RADIUS_M / metersPerPixel(area.lat, zoom));
     // The circle lives in the image's pixel space; "slice" crops like the image's object-fit: cover.
@@ -37,6 +40,7 @@ export function siteMapHtml({ area, apiKey, width, height, zoom = 13, scale = 1,
     return `<div class="lb-map${area.exact ? '' : ' lb-map--approx'}${className ? ` ${className}` : ''}" ${data} role="img" aria-label="${escHtml(alt)}">
         ${src ? `<img class="lb-map-static" src="${escHtml(src)}" width="${width}" height="${height}" alt="" loading="lazy">${circle}` : ''}
         ${area.exact || !areaLabel ? '' : `<span class="lb-map-label">${escHtml(areaLabel)}</span>`}
+        ${mapLinkButtonHtml({ lat: area.lat, lon: area.lon, exact: area.exact, label }, openText ? { text: openText } : {})}
     </div>`;
 }
 

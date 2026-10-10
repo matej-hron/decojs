@@ -3461,6 +3461,16 @@
                     "capped": "Only the newest 2000 dives of the community were searched."
                 }
             },
+            "mapLinks": {
+                "title": "Open in maps",
+                "open": "Open in maps",
+                "approx": "approximate area",
+                "mapy": "Mapy.com",
+                "google": "Google Maps",
+                "navigate": "Navigate",
+                "chooser": "Other map app",
+                "close": "Close"
+            },
             "detail": {
                 "mapAlt": "Map of {0}",
                 "mapAltNoName": "Map of the dive site",
@@ -3572,7 +3582,11 @@
                 "gasesEmpty": "No gas recorded yet.",
                 "gasUsed": "Gas used",
                 "sac": "SAC",
-                "sacNeedsAvg": "SAC needs the average depth (More details).",
+                "avgDepthEnter": "Enter it",
+                "avgDepthEstimate": "Estimate ≈ 60 % of max depth",
+                "avgDepthPositive": "Average depth must be above 0.",
+                "avgDepthAboveMax": "Average depth cannot be more than the maximum depth.",
+                "sacNeedsAvg": "Enter the average depth to calculate your consumption (SAC).",
                 "waterTemp": "Water temperature – bottom (°C)",
                 "visShallow": "Visibility, shallow (m)",
                 "visDeep": "Visibility, deep (m)",

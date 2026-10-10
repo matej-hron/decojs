@@ -3461,6 +3461,16 @@
                     "capped": "Prohledali jsme jen 2000 nejnovějších ponorů komunity."
                 }
             },
+            "mapLinks": {
+                "title": "Otevřít v mapách",
+                "open": "Otevřít v mapách",
+                "approx": "přibližná oblast",
+                "mapy": "Mapy.com",
+                "google": "Google Maps",
+                "navigate": "Navigovat",
+                "chooser": "Jiná mapová aplikace",
+                "close": "Zavřít"
+            },
             "detail": {
                 "mapAlt": "Mapa: {0}",
                 "mapAltNoName": "Mapa lokality",
@@ -3572,7 +3582,11 @@
                 "gasesEmpty": "Zatím bez směsi.",
                 "gasUsed": "Spotřeba",
                 "sac": "SAC",
-                "sacNeedsAvg": "Pro SAC doplňte průměrnou hloubku (Další údaje).",
+                "avgDepthEnter": "Zadat",
+                "avgDepthEstimate": "Odhad ≈ 60 % max. hloubky",
+                "avgDepthPositive": "Průměrná hloubka musí být větší než 0.",
+                "avgDepthAboveMax": "Průměrná hloubka nemůže být větší než maximální.",
+                "sacNeedsAvg": "Zadejte průměrnou hloubku, aby se spočítala spotřeba (SAC).",
                 "waterTemp": "Teplota vody – u dna (°C)",
                 "visShallow": "Viditelnost, mělce (m)",
                 "visDeep": "Viditelnost, hluboko (m)",

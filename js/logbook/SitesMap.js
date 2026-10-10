@@ -7,6 +7,7 @@ import { loadLeaflet, setupMapLayers, OWN_PIN, OTHER_PIN } from './SitePicker.js
 import { routeHref } from './router.js';
 import { translate } from '../i18n.js';
 import { escHtml } from '../utils/escHtml.js';
+import { mapLinkButtonHtml } from './mapLinks.js';
 
 const ts = (key, fallback) => translate(`diveLog.logbook.sites.${key}`, fallback);
 const DEFAULT_VIEW = Object.freeze({ lat: 49.8, lon: 15.5, zoom: 6 });
@@ -59,5 +60,6 @@ export function sitePopupHtml(site, { by, summary }) {
     return `<div class="lb-pop"><strong class="lb-pop-name">${escHtml(site.name)}</strong>
         ${by ? `<span class="lb-pop-by">${escHtml(by)}</span>` : ''}
         ${summary ? `<span class="lb-pop-sum">${escHtml(summary)}</span>` : ''}
-        <a class="lb-pop-open" href="${routeHref({ name: 'site', id: site.id })}">${escHtml(ts('openSite', 'Open site'))}</a></div>`;
+        <span class="lb-pop-actions"><a class="lb-pop-open" href="${routeHref({ name: 'site', id: site.id })}">${escHtml(ts('openSite', 'Open site'))}</a>
+        ${mapLinkButtonHtml({ lat: site.lat, lon: site.lon, label: site.name, exact: true }, { className: 'lb-pop-maps' })}</span></div>`;
 }
