@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004 and 0005 twice
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005 and 0007 twice
 # (idempotency), then the RLS assertions. Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -26,4 +26,12 @@ for f in migrations/0008_share_avatar_fix.sql migrations/0008_share_avatar_fix.s
     run < "$f"
 done
 run < tests/0008_share_avatar.sql
+# 0007 last: its test deletes user A at the end (cascade check).
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+# A project that auto-exposes tables would grant anon everything: running 0007 again must take it back.
+echo "grant all on public.qualifications, public.medical_checks to anon;" | run
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+run < tests/0007_documents.sql
 echo "ALL RLS TESTS PASSED"

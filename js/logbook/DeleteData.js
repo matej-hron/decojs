@@ -26,6 +26,7 @@ export function summaryLines(report) {
     add(report.recordings, 'sumRecordings', 'Dive computer recordings: {0}');
     add(report.photos, 'sumPhotos', 'Photos: {0}');
     add(report.sites, 'sumSites', 'Sites: {0}');
+    add(report.documents, 'sumDocuments', 'Qualifications and medical checks: {0}');
     return lines;
 }
 
@@ -62,7 +63,7 @@ export class DeleteDataPanel {
     _body() {
         if (this.phase === 'confirm') {
             return `<h2 id="lb-wipe-title">${escHtml(tw('title', 'Delete all my data'))}</h2>
-                <p>${escHtml(tw('what', 'This permanently deletes every logbook entry, dive computer recording, photo and site stored in your account. It cannot be undone.'))}</p>
+                <p>${escHtml(tw('what', 'This permanently deletes every logbook entry, dive computer recording, photo and site, and your qualifications and medical checks with their scans. It cannot be undone.'))}</p>
                 <p>${escHtml(tw('exportFirst', 'Export your logbook first if you want to keep a copy.'))}</p>
                 <div class="lb-actions"><button type="button" class="btn btn-secondary" id="lb-wipe-export">${escHtml(tw('export', 'Export first'))}</button></div>
                 <label class="lb-field"><span>${escHtml(fill(tw('typeLabel', 'Type {0} to confirm'), CONFIRM_WORD))}</span>
@@ -72,8 +73,8 @@ export class DeleteDataPanel {
                 <button type="button" class="btn btn-secondary" id="lb-wipe-cancel">${escHtml(tw('cancel', 'Cancel'))}</button></div>`;
         }
         if (this.phase === 'running') {
-            const names = { photos: 'stepPhotos', entries: 'stepEntries', sites: 'stepSites', recordings: 'stepRecordings' };
-            const fallbacks = { photos: 'Deleting photos…', entries: 'Deleting logbook entries…', sites: 'Deleting sites…', recordings: 'Deleting recordings…' };
+            const names = { photos: 'stepPhotos', entries: 'stepEntries', sites: 'stepSites', recordings: 'stepRecordings', documents: 'stepDocuments' };
+            const fallbacks = { photos: 'Deleting photos…', entries: 'Deleting logbook entries…', sites: 'Deleting sites…', recordings: 'Deleting recordings…', documents: 'Deleting qualifications and medical checks…' };
             return `<h2 id="lb-wipe-title">${escHtml(tw('title', 'Delete all my data'))}</h2>
                 <p role="status">${escHtml(tw(names[this.step] ?? 'stepPhotos', fallbacks[this.step] ?? fallbacks.photos))}</p>`;
         }
