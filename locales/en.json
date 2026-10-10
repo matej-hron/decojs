@@ -3021,6 +3021,22 @@
                 "account": "Account",
                 "signedInAs": "Signed in as {0}",
                 "emailPrivate": "Your email is never shown to other members.",
+                "numbering": "Dive numbering",
+                "offset": "Dives logged before DecoTrail",
+                "offsetHelp": "New dives are numbered after this count, so your DecoTrail log continues your earlier logbook.",
+                "offsetInvalid": "Enter a whole number, 0 or more.",
+                "offsetSaved": "Saved ✓",
+                "renumber": "Renumber all dives by date",
+                "renumberChecking": "Checking…",
+                "renumberHelp": "Numbers your dives 1, 2, 3… after that count, oldest first. You see what changes before anything happens.",
+                "renumberNothing": "Your dives are already numbered by date.",
+                "renumberPreview": "{0} dives get a new number, in date order, after your {1} earlier dives:",
+                "renumberMore": "…and {0} more",
+                "renumberConfirm": "Renumber",
+                "renumbering": "Renumbering…",
+                "renumberConfirmLabel": "Confirm renumbering",
+                "renumbered": "{0} dives renumbered ✓",
+                "cancel": "Cancel",
                 "signOut": "Sign out"
             },
             "disclaimer": "For education only — not a substitute for your dive computer.",
@@ -3319,6 +3335,8 @@
                 "tagsOther": "Other tags (comma separated)",
                 "guide": "Guide or instructor",
                 "rating": "Rating (1–5)",
+                "ratingStar": "{0} of 5 stars",
+                "ratingValue": "Rating {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: enter a number",
                 "numberRequired": "Enter the logbook number.",
@@ -3354,7 +3372,9 @@
                     },
                     "entry": {
                         "shore": "Shore",
-                        "boat": "Boat"
+                        "boat": "Boat",
+                        "platform": "Platform",
+                        "ladder": "Ladder"
                     },
                     "stops": {
                         "none": "None",
@@ -3368,7 +3388,13 @@
                         "ice": "Ice",
                         "training": "Training",
                         "deep": "Deep",
-                        "drift": "Drift"
+                        "drift": "Drift",
+                        "boat": "Boat",
+                        "shore": "Shore",
+                        "quarry": "Quarry / lake",
+                        "altitude": "Altitude",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },
@@ -3423,6 +3449,7 @@
             "reportUpdated": "{0} updated",
             "reportFailed": "{0} could not be saved: {1}",
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
+            "offline": "You're offline. Your dive log needs a connection, so it will load again when you're back online.",
             "linkExpired": "This login link has expired. Send a new one.",
             "cannotLogin": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "continueGoogle": "Continue with Google",

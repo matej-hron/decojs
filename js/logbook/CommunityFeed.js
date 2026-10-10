@@ -4,7 +4,8 @@
  */
 
 import { routeHref } from './router.js';
-import { feedCardHtml, statsHtml, visualHtml, lockHtml } from './feedCard.js';
+import { ratingOf } from './entryModel.js';
+import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { SparkLoader } from './sparks.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
@@ -195,6 +196,11 @@ export class CommunityFeed {
         });
     }
 
+    _rating(entry) {
+        const r = ratingOf(entry.details?.rating);
+        return ratingHtml(r, fill(tl('form.ratingValue', 'Rating {0} / 5'), r));
+    }
+
     _card(row) {
         const { entry, site } = entryFromCommunityRow(row);
         const buddies = (entry.buddies ?? []).join(', ');
@@ -209,7 +215,7 @@ export class CommunityFeed {
             title: diveTitle(entry, site?.name, key => tl(key, TITLE_FALLBACK[key] ?? key)), untitled: !site?.name,
             whenText: when, numberLabel: numbered ? fill(tl('number', '#{0}'), entry.log_number) : null,
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
-            peopleText: people, visualHtml: this._visual(row, entry, site),
+            peopleText: people, ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
             lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
         });
     }

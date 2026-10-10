@@ -8,7 +8,7 @@ import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
-import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording } from '../logbook/entryModel.js';
+import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
 
 export const BUCKET = 'dive-logs';
 export const TABLE = 'dives';
@@ -471,6 +471,58 @@ export function createSupabaseStore(client) {
                 .map(g => g.name);
         },
 
+        // ---- Log numbering ----
+
+        /** "Dives logged before DecoTrail": new entries are numbered after it. Kept in the account metadata (no schema needed). */
+        async getLogOffset() {
+            return normalizeLogOffset((await requireUser()).user_metadata?.log_offset);
+        },
+
+        async setLogOffset(value) {
+            const offset = normalizeLogOffset(value);
+            const { error } = await client.auth.updateUser({ data: { log_offset: offset } });
+            if (error) throw fail(error, 'auth');
+            return offset;
+        },
+
+        /** What "renumber by date" would do for the signed-in user's own entries: { all, changes, offset }. */
+        async planRenumber() {
+            const user = await requireUser();
+            const offset = normalizeLogOffset(user.user_metadata?.log_offset);
+            const { data, error } = await client.from(ENTRIES).select('*').eq('owner', user.id);
+            if (error) throw fail(error);
+            const recordingIds = data.map(e => e.recording_id).filter(Boolean);
+            const starts = new Map();
+            if (recordingIds.length) {
+                const recs = await client.from(TABLE).select('id, start_local').in('id', recordingIds);
+                if (recs.error) throw fail(recs.error);
+                for (const r of recs.data) starts.set(r.id, r.start_local);
+            }
+            return { ...planRenumber(data, starts, offset), offset };
+        },
+
+        /**
+         * Renumber the user's own entries chronologically after the offset. Two phases because
+         * (owner, log_number) is unique: changed entries first move to negative temporary numbers, then to
+         * their final ones. On failure the original numbers are restored (best effort).
+         * @returns {Promise<number>} how many entries changed
+         */
+        async renumberByDate() {
+            const { changes } = await store.planRenumber();
+            const set = (id, log_number) => client.from(ENTRIES).update({ log_number }).eq('id', id);
+            const run = async (c, number) => { const { error } = await set(c.id, number); if (error) throw error; };
+            try {
+                for (const [i, c] of changes.entries()) await run(c, -(i + 1));
+                for (const c of changes) await run(c, c.to);
+            } catch (error) {
+                // Park everything that moved on temporaries again, then put the originals back.
+                for (const [i, c] of changes.entries()) await set(c.id, -(i + 1));
+                for (const c of changes) await set(c.id, c.from);
+                throw fail(error);
+            }
+            return changes.length;
+        },
+
         async ensureEntries() {
             const user = await requireUser();
             const recs = await client.from(TABLE).select('id, dive_number, start_local, logbook_dismissed');
@@ -485,12 +537,13 @@ export function createSupabaseStore(client) {
             const recordOf = new Map(full.data.map(r => [r.id, r.record]));
             const ordered = orderRecordingsForNumbering(missing.map(r => ({ id: r.id, diveNumber: r.dive_number, startLocal: r.start_local })));
 
+            const offset = normalizeLogOffset(user.user_metadata?.log_offset);
             const freshNext = async () => {
                 const { data, error } = await client.from(ENTRIES).select('log_number');
                 if (error) throw fail(error);
-                return data.reduce((m, e) => Math.max(m, e.log_number ?? 0), 0) + 1;
+                return data.reduce((m, e) => Math.max(m, e.log_number ?? 0), offset) + 1;
             };
-            let next = linked.data.reduce((m, e) => Math.max(m, e.log_number ?? 0), 0) + 1;
+            let next = linked.data.reduce((m, e) => Math.max(m, e.log_number ?? 0), offset) + 1;
             let created = 0;
             let visibility = null;
             try {

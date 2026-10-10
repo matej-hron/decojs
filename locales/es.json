@@ -2972,6 +2972,22 @@
                 "account": "Cuenta",
                 "signedInAs": "Sesión iniciada como {0}",
                 "emailPrivate": "Tu correo nunca se muestra a otros miembros.",
+                "numbering": "Numeración de inmersiones",
+                "offset": "Inmersiones registradas antes de DecoTrail",
+                "offsetHelp": "Las nuevas inmersiones se numeran a partir de esta cifra, así tu registro en DecoTrail continúa tu cuaderno anterior.",
+                "offsetInvalid": "Introduce un número entero, 0 o más.",
+                "offsetSaved": "Guardado ✓",
+                "renumber": "Renumerar todas las inmersiones por fecha",
+                "renumberChecking": "Comprobando…",
+                "renumberHelp": "Numera tus inmersiones 1, 2, 3… tras esa cifra, de la más antigua a la más reciente. Verás qué cambia antes de que ocurra nada.",
+                "renumberNothing": "Tus inmersiones ya están numeradas por fecha.",
+                "renumberPreview": "{0} inmersiones reciben un número nuevo, por fecha, tras tus {1} inmersiones anteriores:",
+                "renumberMore": "…y {0} más",
+                "renumberConfirm": "Renumerar",
+                "renumbering": "Renumerando…",
+                "renumberConfirmLabel": "Confirmar renumeración",
+                "renumbered": "{0} inmersiones renumeradas ✓",
+                "cancel": "Cancelar",
                 "signOut": "Cerrar sesión"
             },
             "disclaimer": "Solo con fines educativos — no sustituye a tu ordenador de buceo.",
@@ -3270,6 +3286,8 @@
                 "tagsOther": "Otras etiquetas (separadas por comas)",
                 "guide": "Guía o instructor",
                 "rating": "Valoración (1–5)",
+                "ratingStar": "{0} de 5 estrellas",
+                "ratingValue": "Valoración {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: introduce un número",
                 "numberRequired": "Introduce el número de la inmersión.",
@@ -3305,7 +3323,9 @@
                     },
                     "entry": {
                         "shore": "Desde la orilla",
-                        "boat": "Desde barco"
+                        "boat": "Desde barco",
+                        "platform": "Desde plataforma",
+                        "ladder": "Por escalera"
                     },
                     "stops": {
                         "none": "Ninguna",
@@ -3319,7 +3339,13 @@
                         "ice": "Hielo",
                         "training": "Formación",
                         "deep": "Profundo",
-                        "drift": "A la deriva"
+                        "drift": "A la deriva",
+                        "boat": "Barco",
+                        "shore": "Orilla",
+                        "quarry": "Cantera / lago",
+                        "altitude": "Altitud",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },
@@ -3374,6 +3400,7 @@
             "reportUpdated": "{0} actualizadas",
             "reportFailed": "No se pudieron guardar {0}: {1}",
             "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
+            "offline": "Estás sin conexión. Tu diario necesita conexión; se cargará de nuevo cuando vuelvas a estar en línea.",
             "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
             "cannotLogin": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "continueGoogle": "Continuar con Google",

@@ -251,14 +251,5 @@
         createLanguageSwitcher();
         initI18n();
     </script>
-    
-    <!-- Unregister Service Worker (was causing cache issues during development) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                registrations.forEach(r => r.unregister());
-            });
-        }
-    </script>
 </body>
 </html>

@@ -3021,6 +3021,22 @@
                 "account": "Účet",
                 "signedInAs": "Přihlášen jako {0}",
                 "emailPrivate": "Váš e-mail se ostatním členům nikdy nezobrazí.",
+                "numbering": "Číslování ponorů",
+                "offset": "Ponory zapsané před DecoTrail",
+                "offsetHelp": "Nové ponory se číslují od tohoto počtu, takže váš deník v DecoTrail navazuje na dřívější deník.",
+                "offsetInvalid": "Zadejte celé číslo, 0 nebo více.",
+                "offsetSaved": "Uloženo ✓",
+                "renumber": "Přečíslovat všechny ponory podle data",
+                "renumberChecking": "Kontroluji…",
+                "renumberHelp": "Ponory se očíslují 1, 2, 3… za tímto počtem, od nejstaršího. Před změnou uvidíte, co se změní.",
+                "renumberNothing": "Ponory už jsou číslované podle data.",
+                "renumberPreview": "{0} ponorů dostane nové číslo, podle data, za vašimi {1} dřívějšími ponory:",
+                "renumberMore": "…a dalších {0}",
+                "renumberConfirm": "Přečíslovat",
+                "renumbering": "Přečíslovávám…",
+                "renumberConfirmLabel": "Potvrdit přečíslování",
+                "renumbered": "Přečíslováno ponorů: {0} ✓",
+                "cancel": "Zrušit",
                 "signOut": "Odhlásit se"
             },
             "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
@@ -3319,6 +3335,8 @@
                 "tagsOther": "Další štítky (oddělené čárkou)",
                 "guide": "Průvodce nebo instruktor",
                 "rating": "Hodnocení (1–5)",
+                "ratingStar": "{0} z 5 hvězdiček",
+                "ratingValue": "Hodnocení {0} / 5",
                 "choose": "–",
                 "invalidNumber": "{0}: zadejte číslo",
                 "numberRequired": "Zadejte číslo ponoru v deníku.",
@@ -3354,7 +3372,9 @@
                     },
                     "entry": {
                         "shore": "Z břehu",
-                        "boat": "Z lodi"
+                        "boat": "Z lodi",
+                        "platform": "Z plošiny",
+                        "ladder": "Po žebříku"
                     },
                     "stops": {
                         "none": "Žádné",
@@ -3368,7 +3388,13 @@
                         "ice": "Led",
                         "training": "Výcvik",
                         "deep": "Hluboký",
-                        "drift": "Proudový"
+                        "drift": "Proudový",
+                        "boat": "Z lodi",
+                        "shore": "Z břehu",
+                        "quarry": "Lom / jezero",
+                        "altitude": "Vysokohorský",
+                        "sidemount": "Sidemount",
+                        "ccr": "CCR"
                     }
                 }
             },
@@ -3423,6 +3449,7 @@
             "reportUpdated": "Aktualizováno: {0}",
             "reportFailed": "Nepodařilo se uložit {0}: {1}",
             "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
+            "offline": "Jste offline. Deník ponorů potřebuje připojení, načte se, jakmile budete zase online.",
             "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
             "cannotLogin": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "continueGoogle": "Pokračovat přes Google",

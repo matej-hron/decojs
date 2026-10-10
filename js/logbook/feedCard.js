@@ -24,6 +24,7 @@ const NB = ' ';
  * @param {string|null} [o.numberLabel] - screen-reader number ("#7"); null for none
  * @param {string} [o.statsHtml] - markup (see statsHtml)
  * @param {string} [o.peopleText] - plain text: buddies and tags
+ * @param {string} [o.ratingHtml] - markup (see ratingHtml)
  * @param {string} [o.notesText] - plain text
  * @param {string} [o.visualHtml] - markup (see visualHtml)
  * @param {{name: string, avatarHtml: string, href: string, own?: boolean}|null} [o.author]
@@ -34,12 +35,13 @@ const NB = ' ';
  */
 export function feedCardHtml({
     entry, href = null, title, untitled = false, whenText = '', numberLabel = null, statsHtml: stats = '',
-    peopleText = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null, lockHtml: lock = '',
+    peopleText = '', ratingHtml: rating = '', notesText = '', visualHtml: visual = '', author = null, badgeHtml = '', selectHtml = '', pick = null, lockHtml: lock = '',
 }) {
     const titleCls = `lb-feed-title${untitled ? ' lb-untitled' : ''}`;
     const srNumber = numberLabel ? `<span class="rda-visually-hidden">${escHtml(numberLabel)}, </span>` : '';
     const badge = `<span class="lb-num-badge" aria-hidden="true">${escHtml(String(entry.log_number ?? '–'))}</span>`;
     const rest = `${stats}
+                ${rating}
                 ${peopleText ? `<p class="lb-feed-people">${escHtml(peopleText)}</p>` : ''}
                 ${notesText ? `<p class="lb-feed-notes">${escHtml(notesText)}</p>` : ''}
             </div>${visual}`;
@@ -70,6 +72,16 @@ export function feedCardHtml({
                     ${badgeHtml}
                 </div>
                 ${rest}</article>`;
+}
+
+/**
+ * A dive's star rating for a card or detail ("★★★★☆"); '' when there is none.
+ * @param {number|null} rating - whole number 1–5
+ * @param {string} label - screen-reader text ("Rating 4 / 5")
+ */
+export function ratingHtml(rating, label) {
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) return '';
+    return `<p class="lb-feed-rating" role="img" aria-label="${escHtml(label)}"><span class="lb-rate-on" aria-hidden="true">${'★'.repeat(rating)}</span><span class="lb-rate-off" aria-hidden="true">${'★'.repeat(5 - rating)}</span></p>`;
 }
 
 /**

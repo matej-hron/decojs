@@ -183,7 +183,7 @@ test('resolveRoute: home and community routes depend on the feature', () => {
 
 // ---- feedCard.js ----
 
-import { feedCardHtml, statsHtml, visualHtml } from '../js/logbook/feedCard.js';
+import { feedCardHtml, statsHtml, visualHtml, ratingHtml } from '../js/logbook/feedCard.js';
 
 const ownCard = extra => feedCardHtml({
     entry: { id: 'e7', log_number: 7 }, href: '#/dive/e7', title: 'Lom Leštinka', whenText: 'Mon, Sep 28, 2026, 10:15',
@@ -201,6 +201,15 @@ test('feedCardHtml without an author: the My dives card (link, number badge, whe
     assert.ok(html.includes('<span class="lb-badge">Add details</span>'));
     assert.ok(!html.includes('tr-author'));
     assert.ok(html.indexOf('lb-feed-main') < html.indexOf('<div class="lb-visual">'), 'the picture comes last');
+});
+
+test('ratingHtml: five stars with a spoken value; nothing without a valid rating', () => {
+    const html = ratingHtml(4, 'Rating 4 / 5');
+    assert.match(html, /role="img" aria-label="Rating 4 \/ 5"/);
+    assert.match(html, /lb-rate-on" aria-hidden="true">★★★★<\/span><span class="lb-rate-off" aria-hidden="true">★<\/span>/);
+    for (const bad of [null, 0, 6, 2.5]) assert.equal(ratingHtml(bad, 'x'), '');
+    assert.match(ownCard({ ratingHtml: html }), /lb-feed-rating/);
+    assert.doesNotMatch(ownCard({}), /lb-feed-rating/);
 });
 
 test('feedCardHtml without an author: a missing number shows "–"; select mode is a pickable box', () => {
@@ -646,6 +655,56 @@ test('ProfilePage: shows the profile, saves only the allowed keys, email only he
         assert.deepEqual(log.at(-1), ['signOut']);
         page.destroy();
         assert.equal(host.innerHTML, '');
+    });
+});
+
+test('ProfilePage: dive numbering card saves the offset and previews before renumbering', async () => {
+    await withDom(async host => {
+        const log = [];
+        const store = {
+            ...profileStore({ id: 'me', display_name: 'Me', default_visibility: 'members' }, log),
+            getLogOffset: async () => 28,
+            setLogOffset: async n => { log.push(['offset', n]); return n; },
+            planRenumber: async () => ({ offset: 28, changes: [{ id: 'a', from: 29, to: 1 }, { id: 'b', from: 30, to: 2 }] }),
+            renumberByDate: async () => { log.push(['renumber']); return 2; },
+        };
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'me@example.com' } });
+        await flush();
+        const input = host.querySelector('input[name="log_offset"]');
+        assert.equal(input.value, '28');
+        input.value = '12';
+        host.querySelector('.tr-offset-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.deepEqual(log.at(-1), ['offset', 12]);
+        host.querySelector('input[name="log_offset"]').value = '-3';
+        host.querySelector('.tr-offset-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await flush();
+        assert.match(host.querySelector('.tr-numbering-status').textContent, /whole number/);
+        assert.equal(log.filter(l => l[0] === 'offset').length, 1, 'invalid input is not saved');
+
+        host.querySelector('#tr-renumber').click();
+        await flush();
+        assert.match(host.querySelector('.tr-renumber-list').textContent, /#29 → #1/);
+        assert.match(host.querySelector('.tr-renumber-list').textContent, /#30 → #2/);
+        assert.ok(!log.some(l => l[0] === 'renumber'), 'nothing happens before confirming');
+        host.querySelector('#tr-renumber-no').click();
+        assert.equal(host.querySelector('.tr-renumber-plan'), null);
+        host.querySelector('#tr-renumber').click();
+        await flush();
+        host.querySelector('#tr-renumber-yes').click();
+        await flush();
+        assert.deepEqual(log.at(-1), ['renumber']);
+        assert.match(host.querySelector('.tr-numbering-status').textContent, /2 dives renumbered/);
+        page.destroy();
+    });
+});
+
+test('ProfilePage: no numbering card when the store has no offset API', async () => {
+    await withDom(async host => {
+        const page = new ProfilePage(host, { store: profileStore({ id: 'me' }, []), user: { id: 'me' } });
+        await flush();
+        assert.equal(host.querySelector('.tr-numbering').hidden, true);
+        page.destroy();
     });
 });
 
