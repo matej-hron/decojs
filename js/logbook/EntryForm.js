@@ -12,7 +12,7 @@ import { MediaSection } from './MediaSection.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
-import { OFFERED_VISIBILITIES } from './community.js';
+import { OFFERED_VISIBILITIES, buddySuggestions } from './community.js';
 import { shareUrl } from './share.js';
 import { STORY_MAX } from './feed.js';
 import { gasName } from '../import/recordedDive.js';
@@ -151,6 +151,7 @@ export class EntryForm {
         this.error = '';
         this.sites = [];
         this.buddyNames = [];
+        this.memberNames = []; // community_members rows: suggested by nickname
         this.nextNumber = null;
         this.siteName = '';
         this.siteTouched = false; // true once the user edits the site field
@@ -194,11 +195,18 @@ export class EntryForm {
     async _loadSuggestions() {
         try {
             // Independent calls: one failing must not hide the others (suggestions are a convenience).
-            const [sites, buddies, entries] = await Promise.allSettled([
+            const [sites, buddies, entries, members] = await Promise.allSettled([
                 this.store.listSites(), this.store.listBuddies(), this.store.listEntries(),
+                // Members by nickname as buddy suggestions, only with the community feature.
+                (async () => {
+                    if (typeof this.store.listMembers !== 'function' || !await this.store.communityStatus?.()) return [];
+                    this.userId = (await this.store.currentUser?.())?.id ?? null; // the own profile is not a buddy
+                    return this.store.listMembers();
+                })(),
             ]);
             if (this.destroyed) return;
-            for (const r of [sites, buddies, entries]) if (r.status === 'rejected') console.error(r.reason);
+            for (const r of [sites, buddies, entries, members]) if (r.status === 'rejected') console.error(r.reason);
+            this.memberNames = members.status === 'fulfilled' ? members.value : [];
             if (sites.status === 'fulfilled') {
                 this.sites = sites.value;
                 const site = this.siteId ? this.sites.find(s => s.id === this.siteId) : null;
@@ -206,10 +214,8 @@ export class EntryForm {
                 if (site && siteInput && siteInput.value === '' && !this.siteTouched) siteInput.value = this.siteName = site.name;
                 this._fillList('lb-sites', this.sites.map(s => s.name));
             }
-            if (buddies.status === 'fulfilled') {
-                this.buddyNames = buddies.value;
-                this._fillList('lb-buddy-names', this.buddyNames);
-            }
+            if (buddies.status === 'fulfilled') this.buddyNames = buddies.value;
+            this._fillBuddies();
             if (entries.status === 'fulfilled') {
                 this.nextNumber = nextLogNumber(entries.value, await this._logOffset());
                 const numberInput = this.container.querySelector('[name="log_number"]');
@@ -220,9 +226,16 @@ export class EntryForm {
         }
     }
 
+    /** @param {(string|{value: string, label?: string})[]} names */
     _fillList(id, names) {
         const list = this.container.querySelector(`#${id}`);
-        if (list) list.innerHTML = names.map(n => `<option value="${escHtml(n)}"></option>`).join('');
+        if (list) list.innerHTML = names.map(n => (typeof n === 'string' ? { value: n } : n))
+            .map(n => `<option value="${escHtml(n.value)}"${n.label ? ` label="${escHtml(n.label)}"` : ''}></option>`).join('');
+    }
+
+    _fillBuddies() {
+        this.buddySuggestions = buddySuggestions(this.buddyNames, this.memberNames, this.userId ?? null);
+        this._fillList('lb-buddy-names', this.buddySuggestions);
     }
 
     // ---- Rendering ----
@@ -358,7 +371,7 @@ export class EntryForm {
         this._wire();
         if (this.media) this.container.querySelector('.lb-media-host').appendChild(this.media.el);
         this._fillList('lb-sites', this.sites.map(s => s.name));
-        this._fillList('lb-buddy-names', this.buddyNames);
+        this._fillBuddies();
         const numberInput = this.container.querySelector('[name="log_number"]');
         if (numberInput && !this.entry && this.nextNumber) numberInput.placeholder = String(this.nextNumber);
     }
@@ -414,7 +427,7 @@ export class EntryForm {
             }
         });
         buddyInput.addEventListener('change', () => {
-            if (buddyInput.value.trim() && this.buddyNames.includes(buddyInput.value.trim())) this._addBuddy();
+            if (buddyInput.value.trim() && (this.buddySuggestions ?? []).some(n => n.value === buddyInput.value.trim())) this._addBuddy();
         });
         for (const x of c.querySelectorAll('[data-buddy]')) {
             x.addEventListener('click', () => {

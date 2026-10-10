@@ -7,6 +7,7 @@
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
+import { createSocialApi } from './socialStore.js';
 import { createDocumentsApi } from './documentsStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
@@ -140,6 +141,7 @@ export function createSupabaseStore(client) {
 
         async signOut() {
             store.resetCommunityCache();
+            store.resetSocialCache();
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
         },
@@ -148,7 +150,10 @@ export function createSupabaseStore(client) {
             let lastId;
             const { data } = client.auth.onAuthStateChange((_event, session) => {
                 const id = session?.user?.id ?? null;
-                if (lastId !== undefined && id !== lastId) store.resetCommunityCache();
+                if (lastId !== undefined && id !== lastId) {
+                    store.resetCommunityCache();
+                    store.resetSocialCache();
+                }
                 lastId = id;
                 listener(session?.user ? { id: session.user.id, email: session.user.email } : null);
             });
@@ -373,11 +378,11 @@ export function createSupabaseStore(client) {
 
         /**
          * Delete everything the logged-in user owns: photo files and media rows, entries, sites, recording files
-         * and rows, qualifications and medical checks with their scans. Every query is filtered by owner (shared
-         * rows of other members may be readable), a failing step is recorded and the others still run. The login
-         * itself needs a server key and stays.
-         * @param {{onProgress?: (step: 'photos'|'entries'|'sites'|'recordings'|'documents'|'profile') => void}} [options]
-         * @returns {Promise<{entries: number, sites: number, recordings: number, photos: number, media: number, documents: number,
+         * and rows, qualifications and medical checks with their scans, and own kudos and comments. Every query is
+         * filtered by owner (shared rows of other members may be readable), a failing step is recorded and the others
+         * still run. The login itself needs a server key and stays.
+         * @param {{onProgress?: (step: 'photos'|'entries'|'sites'|'recordings'|'documents'|'social'|'profile') => void}} [options]
+         * @returns {Promise<{entries: number, sites: number, recordings: number, photos: number, media: number, documents: number, kudos?: number, comments?: number,
          *   failed: {step: string, message: string}[]}>}
          */
         async deleteAllMyData({ onProgress } = {}) {
@@ -464,12 +469,23 @@ export function createSupabaseStore(client) {
                     report.documents = done.rows;
                 });
             }
+            // Own kudos and comments on other members' dives (those on own dives went with the entries).
+            const social = await store.socialAvailability?.();
+            if (social === 'unknown') report.failed.push({ step: 'social', message: 'Could not check kudos and comments; try again' });
+            if (social === 'yes') {
+                await step('social', async () => {
+                    const r = await store.deleteMySocial();
+                    report.kudos = r.kudos;
+                    report.comments = r.comments;
+                });
+            }
             // DecoTrail profile: the row itself goes with the account; here it is emptied and the avatar files removed.
             if (await store.communityAvailability?.() === 'yes') {
                 await step('profile', async () => {
                     await removeFiles(AVATAR_BUCKET, await filesUnder(AVATAR_BUCKET, user.id));
                     const { error } = await client.from('profiles').update({
                         display_name: null, avatar_preset: null, avatar_path: null, home_country: null, updated_at: new Date().toISOString(),
+                        ...(await store.socialAvailability?.() === 'yes' ? { nickname: null } : {}), // the column comes with 0010
                     }).eq('id', user.id);
                     if (error) throw fail(error);
                 });
@@ -762,6 +778,7 @@ export function createSupabaseStore(client) {
         },
     };
     Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
+    Object.assign(store, createSocialApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     Object.assign(store, createDocumentsApi(client, { requireUser, fail }));
     const resetCommunity = store.resetCommunityCache;
     store.resetCommunityCache = () => { resetCommunity(); store.resetDocumentsCache(); }; // both are per user

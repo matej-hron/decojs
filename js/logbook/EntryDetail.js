@@ -28,6 +28,8 @@ import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 import { avatarImgFallback } from './avatars.js';
 import { ShareCard } from './ShareCard.js';
+import { SocialController, ts } from './SocialBar.js';
+import { CommentsSection } from './CommentsSection.js';
 
 const NB = ' ';
 const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
@@ -162,8 +164,10 @@ export class EntryDetail {
      * @param {string|false} [options.analysisHref] - target of the Analysis button (default: the analysis route); false: none
      * @param {{lat: number, lon: number, exact: boolean}|null} [options.area] - where the map points (share page);
      *   default: the site's own position, exact
+     * @param {{store: Object, userId: string}|null} [options.social] - kudos and comments (migration 0010), when available
+     * @param {number|null} [options.kudosCount] - the share page: a kudos count only, no names, no comments
      */
-    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null, area }) {
+    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null, area, social = null, kudosCount = null }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -173,6 +177,12 @@ export class EntryDetail {
         this.analysisHref = analysisHref;
         this.areaOverride = area;
         this.shareCard = null;
+        this.social = social;
+        this.socialOn = false; // the backend has kudos and comments
+        this.socialCtl = null;
+        this.comments = null;
+        this.kudosCount = kudosCount;
+        this.togglingComments = false;
         this.onDeleted = onDeleted;
         this.onError = onError;
         this.destroyed = false;
@@ -203,10 +213,10 @@ export class EntryDetail {
             <div class="lb-d-main"></div>
             <div class="lb-d-story"></div>
             <div class="lb-d-grid">
-                <div class="lb-d-col lb-d-col--main"><div class="lb-d-slot"></div><div class="lb-d-media"></div><div class="lb-d-text"></div></div>
+                <div class="lb-d-col lb-d-col--main"><div class="lb-d-slot"></div><div class="lb-d-media"></div><div class="lb-d-social"></div><div class="lb-d-text"></div></div>
                 <div class="lb-d-col lb-d-col--side"><div class="lb-d-side"></div><div class="lb-d-share"></div></div>
             </div>
-            <div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
+            <div class="lb-d-actions"></div><div class="lb-d-panel"></div><div class="lb-d-comments"></div></section>`;
         this.topEl = this.container.querySelector('.lb-d-top');
         this.heroEl = this.container.querySelector('.lb-d-hero');
         this.main = this.container.querySelector('.lb-d-main');
@@ -219,11 +229,85 @@ export class EntryDetail {
         this.actionsEl = this.container.querySelector('.lb-d-actions');
         this.panel = this.container.querySelector('.lb-d-panel');
         this.shareEl = this.container.querySelector('.lb-d-share');
+        this.socialEl = this.container.querySelector('.lb-d-social');
+        this.commentsEl = this.container.querySelector('.lb-d-comments');
+        this._onSocialClick = e => this.socialCtl?.onClick(e);
+        this.socialEl.addEventListener('click', this._onSocialClick);
         this.renderMain();
         this.renderMedia();
         this.renderPanel();
+        this._renderSocial();
         this._load();
         if (!this.readOnly) this._mountShare();
+        if (this.social) this._mountSocial();
+    }
+
+    /** Kudos bar and comments, only when the backend has them (migration 0010). */
+    async _mountSocial() {
+        const { store, userId } = this.social;
+        let counts;
+        try {
+            if (typeof store.socialStatus !== 'function' || !await store.socialStatus()) return;
+            counts = (await store.socialCounts([this.entry.id])).get(this.entry.id);
+        } catch (error) {
+            console.warn('Kudos and comments unavailable', error);
+            return;
+        }
+        if (this.destroyed || !counts) return;
+        this.socialOn = true;
+        this.entry = { ...this.entry, comments_enabled: counts.commentsEnabled };
+        this.socialCtl = new SocialController({ store, userId, onChange: () => this._renderSocial() });
+        this.socialCtl.counts.set(this.entry.id, counts);
+        this.comments = new CommentsSection(this.commentsEl, {
+            store, entry: this.entry, userId,
+            onCount: n => this.socialCtl?.set(this.entry.id, { comments: n }),
+        });
+        this._renderSocial();
+        if (!this.readOnly) this.renderMain(); // the ⋯ menu
+    }
+
+    _renderSocial() {
+        if (this.destroyed) return;
+        if (this.socialCtl) {
+            // The bar re-renders on every toggle: keep the focus on the same control.
+            const active = this.socialEl.contains(document.activeElement) ? document.activeElement : null;
+            const key = active ? (active.dataset.kudos ? 'data-kudos' : active.dataset.kudosList ? 'data-kudos-list' : null) : null;
+            this.socialEl.innerHTML = this.socialCtl.barHtml(this.entry);
+            if (key) this.socialEl.querySelector(`[${key}]`)?.focus({ preventScroll: true });
+            return;
+        }
+        const n = Number(this.kudosCount) || 0;
+        this.socialEl.innerHTML = n > 0
+            ? `<div class="tr-social-wrap"><p class="tr-social tr-social--static" role="img" aria-label="${escHtml(fill(ts('kudosTotal', '{0} kudos'), n))}"><span class="tr-kudos-icon" aria-hidden="true">👏</span><span aria-hidden="true">${n}</span></p></div>`
+            : '';
+    }
+
+    /** The share page's kudos count arrived. */
+    setKudosCount(n) {
+        this.kudosCount = n;
+        this._renderSocial();
+    }
+
+    /** ⋯ menu of an own dive: turn comments off or on. */
+    async _toggleComments() {
+        if (this.togglingComments) return;
+        const on = this.entry.comments_enabled === false;
+        this.togglingComments = true;
+        this.errors = [];
+        try {
+            const saved = await this.social.store.setCommentsEnabled(this.entry.id, on);
+            if (this.destroyed) return;
+            this.entry = { ...this.entry, comments_enabled: saved?.comments_enabled ?? on };
+            this.comments?.setEnabled(this.entry.comments_enabled);
+            this.socialCtl?.set(this.entry.id, { commentsEnabled: this.entry.comments_enabled });
+        } catch (error) {
+            if (this.destroyed) return;
+            this._fail(error);
+        }
+        this.togglingComments = false;
+        this.renderMain();
+        this.renderPanel();
+        this.topEl.querySelector('.lb-d-menu > summary')?.focus();
     }
 
     /** The public-link card, only when the backend has share links (migration 0005). */
@@ -247,6 +331,9 @@ export class EntryDetail {
     destroy() {
         this.destroyed = true;
         this.shareCard?.destroy();
+        this.socialCtl?.destroy();
+        this.comments?.destroy();
+        this.socialEl.removeEventListener('click', this._onSocialClick);
         document.removeEventListener('keydown', this._onKey);
         this.container.removeEventListener('error', this._onImgError, true);
         this._removeMaps();
@@ -260,6 +347,8 @@ export class EntryDetail {
         this.renderMain();
         this.renderMedia();
         this.renderPanel();
+        this._renderSocial();
+        this.comments?.relabel();
         this.shareCard?.relabel();
     }
 
@@ -373,6 +462,16 @@ export class EntryDetail {
         }
     }
 
+    _menuHtml() {
+        if (!this.socialOn) return '';
+        const more = translate('diveLog.logbook.bar.more', 'More actions');
+        const off = this.entry.comments_enabled === false;
+        return `<details class="lb-menu lb-d-menu">
+            <summary class="btn btn-secondary lb-menu-btn" aria-label="${escHtml(more)}" title="${escHtml(more)}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></summary>
+            <div class="lb-menu-pop"><button type="button" class="lb-menu-item" id="lb-comments-toggle"${this.togglingComments ? ' disabled' : ''}>${escHtml(off ? ts('turnOn', 'Turn on comments') : ts('turnOff', 'Turn off comments'))}</button></div>
+        </details>`;
+    }
+
     renderMain() {
         const e = this.entry;
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
@@ -387,7 +486,8 @@ export class EntryDetail {
         const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
         const rating = ratingOf(e.details?.rating);
         this.topEl.innerHTML = `${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
-            ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}`.trim();
+            ${this.readOnly ? '' : `<span class="lb-d-topacts">${this._menuHtml()}<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a></span>`}`.trim();
+        this.topEl.querySelector('#lb-comments-toggle')?.addEventListener('click', () => this._toggleComments());
         this.main.innerHTML = `
             ${a ? `<div class="tr-author lb-d-author">${a.href
                 ? `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`

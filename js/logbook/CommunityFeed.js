@@ -7,6 +7,7 @@ import { routeHref } from './router.js';
 import { ratingOf } from './entryModel.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { SparkLoader } from './sparks.js';
+import { SocialController } from './SocialBar.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
 import { diveTitle, feedStats, descriptionExcerpt } from './feed.js';
@@ -63,8 +64,12 @@ export class CommunityFeed {
         this.sparks = new SparkLoader(id => this.store.loadCommunityRecording(id));
         this._onVisualFail = e => this._onVisualError(e);
         this.host.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
+        this.social = typeof store.socialStatus === 'function'
+            ? new SocialController({ store, userId, onChange: () => this._render() }) : null;
+        this.socialOn = null; // promise of whether kudos/comments exist (migration 0010)
         this.shareOn = false; // public share links exist (0005): own cards get a Share button
         this._onClick = e => {
+            if (this.social?.onClick(e)) return;
             if (e.target.closest('#tr-feed-more')) this._loadMore();
             const share = e.target.closest('[data-share]');
             if (share) { e.preventDefault(); this._share(share.dataset.share); }
@@ -108,6 +113,7 @@ export class CommunityFeed {
         this.destroyed = true;
         this._token++;
         this.sparks.destroy();
+        this.social?.destroy();
         this.host.removeEventListener('error', this._onVisualFail, true);
         this.host.removeEventListener('click', this._onClick);
         this.host.innerHTML = '';
@@ -123,16 +129,20 @@ export class CommunityFeed {
     async _loadFirst() {
         const token = ++this._token;
         try {
-            const [members, rows] = await Promise.all([
+            const [members, rows, me] = await Promise.all([
                 this.store.listMembers ? this.store.listMembers() : [],
                 this._fetchPage(0),
+                // The main Feed nudges a member without a name (e.g. just invited) to complete the profile.
+                !this.owner && this.store.getMyProfile ? this.store.getMyProfile().catch(() => null) : null,
             ]);
             if (token !== this._token) return;
+            this.me = me ?? null;
             this.members = new Map((members ?? []).map(m => [m.id, m]));
             this.rows = rows;
             this.offset = rows.length;
             this.more = rows.length >= this.pageSize;
             this._render();
+            this._loadSocial(rows);
             await this._signUrls(rows, members ?? [], token);
         } catch (error) {
             if (token !== this._token) return;
@@ -163,6 +173,7 @@ export class CommunityFeed {
             this.loadingMore = false;
             this._render();
             if (fresh[0]) this.host.querySelector(`.tr-feed-link[href="${this._href(fresh[0])}"]`)?.focus({ preventScroll: true });
+            this._loadSocial(fresh);
             await this._signUrls(fresh, [], token);
         } catch (error) {
             if (token !== this._token) return;
@@ -171,6 +182,13 @@ export class CommunityFeed {
             this.moreFailed = true;
             this._render();
         }
+    }
+
+    /** Kudos and comment counts of these rows, when the backend has them. */
+    async _loadSocial(rows) {
+        if (!this.social || !rows.length) return;
+        this.socialOn ??= this.store.socialStatus().catch(() => false);
+        if (await this.socialOn) this.social.load(rows.map(r => r.id));
     }
 
     _fetchPage(offset) {
@@ -253,6 +271,7 @@ export class CommunityFeed {
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
             peopleText: people, notesText: descriptionExcerpt(entry.description), ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
             lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
+            socialHtml: this.social?.barHtml(row, { commentsHref: this._href(row) }) ?? '',
             badgeHtml: this.shareOn && isOwn(row, this.userId) ? shareButtonHtml(row.id, { shared: row.visibility === 'link' }) : '',
         });
     }
@@ -295,6 +314,18 @@ export class CommunityFeed {
         return months + more;
     }
 
+    /** "Complete your profile" for a member whose profile has no name yet. */
+    _nudgeHtml() {
+        const p = this.me;
+        const has = v => typeof v === 'string' && v.trim() !== '';
+        if (!p || has(p.display_name) || has(p.nickname)) return '';
+        const nick = Object.hasOwn(p, 'nickname');
+        return `<section class="tr-nudge" aria-labelledby="tr-nudge-h">
+            <h3 id="tr-nudge-h">${escHtml(tt('nudge.title', 'Complete your profile'))}</h3>
+            <p>${escHtml(nick ? tt('nudge.textNick', 'Add your name and a nickname so other members know whose dives they see.') : tt('nudge.text', 'Add your name so other members know whose dives they see.'))}</p>
+            <a class="btn btn-primary" href="${routeHref({ name: 'profile' })}">${escHtml(tt('nudge.go', 'Complete profile'))}</a></section>`;
+    }
+
     _render() {
         if (this.destroyed) return;
         // A re-render (photos arriving, a page appended) must not drop focus: find the same control again by position.
@@ -304,6 +335,7 @@ export class CommunityFeed {
         const key = focused && (focused.id || focused.getAttribute('href'));
         this.host.innerHTML = `<div class="tr-feed">
             ${this.title ? `<h2 class="tr-feed-title">${escHtml(tt('feed.title', 'Feed'))}</h2>` : ''}
+            ${this._nudgeHtml()}
             ${this._body()}</div>`;
         if (at >= 0) {
             const el = controls()[at];

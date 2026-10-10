@@ -4,7 +4,7 @@
  */
 
 import { routeHref } from './router.js';
-import { isOwn, countryName, memberStatsView } from './community.js';
+import { isOwn, countryName, memberStatsView, fullName } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
 import { memberName } from './MembersPage.js';
 import { CommunityFeed } from './CommunityFeed.js';
@@ -142,7 +142,8 @@ export class MemberPage {
         }
         const m = this.member;
         const own = isOwn(m, this.userId);
-        const name = memberName(m);
+        const name = memberName(m); // the nickname when set, big
+        const full = fullName(m); // the full name, small under it
         const country = countryName(m.home_country, currentLang());
         // The heading carries the name: the picture is decoration here.
         const avatar = avatarHtml({ preset: m.avatar_preset, url: this.avatarUrl, name, id: m.id, size: 96 });
@@ -154,6 +155,7 @@ export class MemberPage {
                 <span class="tr-member-head-av" aria-hidden="true">${avatar}</span>
                 <div class="tr-member-head-text">
                     <h2 class="tr-member-head-name">${escHtml(name)}${own ? ` <span class="tr-you-tag">${escHtml(tt('you', 'You'))}</span>` : ''}</h2>
+                    ${full && full !== name ? `<p class="tr-member-head-full">${escHtml(full)}</p>` : ''}
                     ${country ? `<p class="tr-member-head-country">${escHtml(country)}</p>` : ''}
                     ${badgesHtml(this.badges)}
                     ${own ? `<a class="btn btn-secondary tr-member-edit" href="${routeHref({ name: 'profile' })}">${escHtml(tt('member.editProfile', 'Edit profile'))}</a>` : ''}

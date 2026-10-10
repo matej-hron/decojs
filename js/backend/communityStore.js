@@ -6,7 +6,7 @@
 const AVATAR_BUCKET = 'avatars';
 const AVATAR_URL_SECONDS = 3600;
 const AVATAR_CACHE_MS = 50 * 60 * 1000;
-const PROFILE_KEYS = ['display_name', 'avatar_preset', 'avatar_path', 'default_visibility', 'home_country'];
+const PROFILE_KEYS = ['display_name', 'nickname', 'avatar_preset', 'avatar_path', 'default_visibility', 'home_country'];
 const QUIET_CODES = /^(PGRST205|PGRST202|42P01|42883)$/;
 
 /** Display name from Google metadata (never the email), trimmed and cut to 60 characters, else null. */

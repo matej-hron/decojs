@@ -8,7 +8,7 @@
  */
 
 import { AVATARS, AVATAR_KEYS, avatarHtml, avatarImgFallback, fallbackAvatarKey } from './avatars.js';
-import { COUNTRY_CODES, OFFERED_VISIBILITIES, countryName } from './community.js';
+import { COUNTRY_CODES, OFFERED_VISIBILITIES, countryName, NICKNAME_MAX } from './community.js';
 import { avatarBlob } from './photo.js';
 import { translate } from '../i18n.js';
 import { currentLang, fmtNum } from '../format.js';
@@ -176,11 +176,13 @@ export class ProfilePage {
         this.profile = profile;
         this.draft = {
             display_name: typeof profile.display_name === 'string' ? profile.display_name : '',
+            nickname: typeof profile.nickname === 'string' ? profile.nickname : '',
             avatar_preset: Object.hasOwn(AVATARS, profile.avatar_preset ?? '') ? profile.avatar_preset : null,
             default_visibility: OFFERED_VISIBILITIES.includes(profile.default_visibility) ? profile.default_visibility : 'members',
             home_country: typeof profile.home_country === 'string' ? profile.home_country : '',
         };
         if (!profile.avatar_path) this.photoUrl = null;
+        this.hasNickname = Object.hasOwn(profile, 'nickname'); // the column comes with migration 0010
     }
 
     async _signPhoto() {
@@ -210,14 +212,17 @@ export class ProfilePage {
     }
 
     _name() {
+        const nick = this.hasNickname ? (this.draft?.nickname ?? '').trim() : '';
         const name = (this.draft?.display_name ?? '').trim();
-        return name || tt('diver', 'Diver');
+        return nick || name || tt('diver', 'Diver');
     }
 
     _readDom() {
         const form = this.host.querySelector('form.tr-profile-form');
         if (!form || !this.draft) return;
         this.draft.display_name = form.querySelector('[name="display_name"]').value;
+        const nick = form.querySelector('[name="nickname"]');
+        if (nick) this.draft.nickname = nick.value;
         const preset = form.querySelector('[name="avatar_preset"]:checked')?.value;
         if (preset) this.draft.avatar_preset = preset;
         this.draft.default_visibility = form.querySelector('[name="default_visibility"]:checked')?.value ?? this.draft.default_visibility;
@@ -261,6 +266,7 @@ export class ProfilePage {
             default_visibility: this.draft.default_visibility,
             home_country: this.draft.home_country || null,
         };
+        if (this.hasNickname) patch.nickname = Array.from(this.draft.nickname.trim()).slice(0, NICKNAME_MAX).join('').trim() || null;
         const replacePhoto = this.pickedPreset && Boolean(this.profile?.avatar_path);
         this._setBusy('save');
         this._setStatus('', '');
@@ -428,6 +434,7 @@ export class ProfilePage {
     _previewHtml() {
         const lang = currentLang();
         const name = this._name();
+        const full = (this.draft?.display_name ?? '').trim();
         const preset = this.draft?.avatar_preset ?? fallbackAvatarKey(this.user?.id);
         const avatar = avatarHtml({ preset, url: this._photoShown() ? this.photoUrl : null, name, id: this.user?.id, size: 96 });
         const country = countryName(this.draft?.home_country, lang);
@@ -435,6 +442,7 @@ export class ProfilePage {
             <div class="tr-member-head-text">
                 <p class="tr-profile-preview-note">${escHtml(tp('previewNote', 'This is how other members see you.'))}</p>
                 <p class="tr-member-head-name">${escHtml(name)}</p>
+                ${full && full !== name ? `<p class="tr-member-head-full">${escHtml(full)}</p>` : ''}
                 ${country ? `<p class="tr-member-head-country">${escHtml(country)}</p>` : ''}
                 ${badgesHtml(this.quals?.shownBadges() ?? [])}
             </div>`;
@@ -504,9 +512,14 @@ export class ProfilePage {
                         ${hasPhoto ? `<button type="button" class="btn btn-secondary" id="tr-avatar-remove">${escHtml(tp('remove', 'Remove photo'))}</button>` : ''}
                     </div>
                 </fieldset>
+                <div class="tr-profile-names${this.hasNickname ? ' tr-profile-names--two' : ''}">
                 <label class="lb-field tr-profile-name"><span>${escHtml(tp('name', 'Display name'))}</span>
-                    <input type="text" name="display_name" maxlength="${NAME_MAX}" value="${escHtml(d.display_name)}" placeholder="${escHtml(tt('diver', 'Diver'))}" autocomplete="nickname" aria-describedby="tr-name-help">
-                    <span class="tr-profile-hint" id="tr-name-help">${escHtml(tp('nameHelp', 'Shown next to your dives. Leave it empty to appear as “Diver”.'))}</span></label>
+                    <input type="text" name="display_name" maxlength="${NAME_MAX}" value="${escHtml(d.display_name)}" placeholder="${escHtml(tt('diver', 'Diver'))}" autocomplete="${this.hasNickname ? 'name' : 'nickname'}" aria-describedby="tr-name-help">
+                    <span class="tr-profile-hint" id="tr-name-help">${escHtml(this.hasNickname ? tp('nameHelpNick', 'Your full name, e.g. “Jaroslav Fiala”.') : tp('nameHelp', 'Shown next to your dives. Leave it empty to appear as “Diver”.'))}</span></label>
+                ${this.hasNickname ? `<label class="lb-field tr-profile-nick"><span>${escHtml(tp('nickname', 'Nickname'))}</span>
+                    <input type="text" name="nickname" maxlength="${NICKNAME_MAX}" value="${escHtml(d.nickname)}" autocomplete="nickname" aria-describedby="tr-nick-help">
+                    <span class="tr-profile-hint" id="tr-nick-help">${escHtml(tp('nicknameHelp', 'What friends call you, e.g. “Luis”. Shown instead of your name.'))}</span></label>` : ''}
+                </div>
                 <fieldset class="lb-field lb-visibility">
                     <legend>${escHtml(tp('defaultVisibility', 'Who sees your new dives'))}</legend>
                     <div class="lb-vis-options">${this._visibilityHtml()}</div>
@@ -640,7 +653,7 @@ export class ProfilePage {
         const form = this.host.querySelector('form.tr-profile-form');
         form.addEventListener('submit', e => { e.preventDefault(); this._save(); });
         form.addEventListener('input', e => {
-            if (e.target.name === 'display_name' || e.target.name === 'home_country') {
+            if (e.target.name === 'display_name' || e.target.name === 'nickname' || e.target.name === 'home_country') {
                 this._readDom();
                 this._renderPreview();
             }
