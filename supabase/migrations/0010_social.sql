@@ -5,7 +5,9 @@
 -- its visibility is 'members' or 'link'. Kudos and comments of any other dive (a private one, or one that became
 -- private later) are invisible: the read functions and the table policies both go through entry_visible().
 -- Clients write the two tables directly; the policies pin the author to auth.uid(), the triggers keep the
--- server's timestamps, and an update can only change a comment's body (column grant). Anonymous visitors get
+-- server's timestamps, and an update can only change a comment's body (column grant). Accepted: the owner and
+-- the author can still read (and delete) a comment through the table while comments are off — their own dive
+-- and their own words; the app shows none (entry_comments). Toggling kudos re-notifies the owner at most once per toggle. Anonymous visitors get
 -- nothing but the kudos count of a shared dive whose token they hold (shared_dive_kudos). Notes never appear.
 
 begin;
@@ -16,8 +18,15 @@ begin;
 
 -- The owner turns comments off per dive; existing comments are hidden while it is off.
 alter table public.log_entries add column if not exists comments_enabled boolean not null default true;
--- When the member last opened "New for you" (null: never).
-alter table public.profiles add column if not exists social_seen_at timestamptz;
+-- When each member last opened "New for you". Its own table, not a profiles column: every member can read
+-- profiles, and this would be a "last seen" tracker. Only the definer functions below touch it.
+create table if not exists public.social_seen (
+    member_id uuid primary key references auth.users (id) on delete cascade,
+    seen_at timestamptz not null
+);
+alter table public.social_seen enable row level security;
+revoke all on table public.social_seen from public, anon, authenticated;
+grant all on table public.social_seen to service_role;
 
 -- ---------------------------------------------------------------------------
 -- Tables
@@ -37,9 +46,12 @@ create table if not exists public.comments (
     author_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
     body text not null,
     created_at timestamptz not null default now(),
-    edited_at timestamptz,
-    constraint comments_body_check check (char_length(body) between 1 and 1000 and btrim(body) <> '')
+    edited_at timestamptz
 );
+-- Not blank, also not only tabs, line breaks or invisible spaces. Outside create table so a re-run updates it.
+alter table public.comments drop constraint if exists comments_body_check;
+alter table public.comments add constraint comments_body_check
+    check (char_length(body) between 1 and 1000 and btrim(body, U&' \0009\000A\000D\00A0\200B\FEFF') <> '');
 create index if not exists comments_entry_idx on public.comments (entry_id, created_at, id);
 create index if not exists comments_author_idx on public.comments (author_id, created_at);
 
@@ -127,7 +139,11 @@ language plpgsql set search_path = ''
 as $$
 begin
     if tg_op = 'INSERT' then
-        -- Rate sanity: a stuck client or a script cannot flood dives with comments.
+        -- Rate sanity: a stuck client or a script cannot flood dives with comments. The lock makes parallel
+        -- requests of one author wait for each other, so they cannot all pass the count at once.
+        if auth.uid() is not null then
+            perform pg_advisory_xact_lock(hashtext('decotrail-comments:' || auth.uid()::text));
+        end if;
         if auth.uid() is not null and (
             select count(*) from public.comments c
             where c.author_id = auth.uid() and c.created_at > now() - interval '1 minute'
@@ -251,7 +267,7 @@ returns table (
 language sql stable security definer set search_path = ''
 as $$
     with seen as (
-        select (select p.social_seen_at from public.profiles p where p.id = auth.uid()) as at
+        select (select ss.seen_at from public.social_seen ss where ss.member_id = auth.uid()) as at
     ), ev as (
         select 'kudos'::text as kind, k.entry_id, k.member_id as actor_id, k.created_at, null::text as excerpt
         from public.kudos k
@@ -282,7 +298,7 @@ returns integer
 language sql stable security definer set search_path = ''
 as $$
     with seen as (
-        select coalesce((select p.social_seen_at from public.profiles p where p.id = auth.uid()), '-infinity'::timestamptz) as at
+        select coalesce((select ss.seen_at from public.social_seen ss where ss.member_id = auth.uid()), '-infinity'::timestamptz) as at
     )
     select case when not public.is_member() then 0 else (
         (select count(*) from public.kudos k join public.log_entries e on e.id = k.entry_id, seen
@@ -297,9 +313,10 @@ create or replace function public.social_mark_seen()
 returns timestamptz
 language sql volatile security definer set search_path = ''
 as $$
-    update public.profiles set social_seen_at = now()
-    where id = auth.uid() and public.is_member()
-    returning social_seen_at;
+    insert into public.social_seen (member_id, seen_at)
+    select auth.uid(), now() where public.is_member()
+    on conflict (member_id) do update set seen_at = excluded.seen_at
+    returning seen_at;
 $$;
 
 -- Anon share page: the kudos count only (no names) of the 'link' dive whose token the caller holds.

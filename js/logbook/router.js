@@ -12,6 +12,7 @@ const STATIC = {
     '#/feed': 'feed',
     '#/community': 'community',
     '#/profile': 'profile',
+    '#/activity': 'activity',
 };
 
 /** @returns {{name: string, id?: string}} */
@@ -42,6 +43,7 @@ export function routeHref(route) {
         case 'feed': return '#/feed';
         case 'community': return '#/community';
         case 'profile': return '#/profile';
+        case 'activity': return '#/activity';
         case 'member': return `#/member/${route.id}`;
         case 'memberDive': return `#/m/${route.id}`;
         case 'memberAnalysis': return `#/m/${route.id}/analysis`;

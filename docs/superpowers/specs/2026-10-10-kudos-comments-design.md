@@ -14,7 +14,7 @@ carry a one-line "why".
   hidden from everyone (the owner sees "Comments are off" and can turn them on again). In-page confirmations only.
 - **Share page (anon):** kudos count only, no names, no comments.
 - **New for you (in-app only):** a badge with the number of kudos/comments on my dives since I last opened "New for you",
-  and the list (who, what, which dive, when; tap → dive). Last-seen time in `profiles.social_seen_at`.
+  and the list (who, what, which dive, when; tap → dive). Last-seen time in an owner-only table `social_seen` (not in `profiles`: every member can read profiles, so it would be a "last seen" tracker — found by the adversarial review).
 - Delete-all-my-data removes my kudos and comments (those on my dives go with my dives). Privacy page (en/cs/es).
 - Not now: buddy tagging, email/push. Nothing here blocks them (the inbox function returns a `kind`, so a `tag` kind can be added).
 
@@ -23,7 +23,7 @@ carry a one-line "why".
 One transaction, idempotent (`if not exists`, `create or replace`, `drop policy if exists`).
 
 - `log_entries.comments_enabled boolean not null default true`. Owner changes it through the existing owner-only RLS.
-- `profiles.social_seen_at timestamptz` (null = never opened).
+- `social_seen(member_id pk, seen_at)`: no grants to clients; only the definer functions read/write it.
 - `kudos(entry_id → log_entries on delete cascade, member_id → auth.users on delete cascade default auth.uid(),
   created_at default now(), primary key (entry_id, member_id))`.
 - `comments(id uuid pk default gen_random_uuid(), entry_id → log_entries on delete cascade, author_id → auth.users on delete
@@ -54,7 +54,7 @@ One transaction, idempotent (`if not exists`, `create or replace`, `drop policy 
     created_at, excerpt (first 140 chars of a comment), dive_date, site_name, is_new` — events by others on my dives,
     newest first, max 100; comments of dives with comments off are left out.
   - `social_unseen_count()` → integer, the badge: inbox events newer than `social_seen_at`.
-  - `social_mark_seen()` → sets my `social_seen_at = now()` (server time — why: the client clock may be wrong).
+  - `social_mark_seen()` → upserts my `seen_at = now()` (server time — why: the client clock may be wrong).
   - `shared_dive_kudos(p_token)` → integer for anon: the kudos count of the `link` dive with that token (same checks as
     `get_shared_dive`), null otherwise. Why separate: `get_shared_dive` belongs to 0009's parallel work.
 - Tests: `supabase/tests/0010_social.sql` (+ run twice in `run.sh`): visibility, spoofing, anon, comments off, owner delete,
@@ -89,3 +89,12 @@ One transaction, idempotent (`if not exists`, `create or replace`, `drop policy 
 
 Members who can see a dive see its kudos (who gave them) and comments; owners can turn comments off and delete any
 comment on their dives; the public link shows only the kudos count; deleting all data removes my kudos and comments.
+
+## Adversarial review (Opus) — applied
+
+- `social_seen_at` on profiles was readable by every member → moved to the owner-only `social_seen` table.
+- Blank check allowed only-whitespace/zero-width bodies → `btrim` with tabs, line breaks, NBSP, ZWSP, BOM.
+- Rate limit bypassable by parallel requests → per-author advisory transaction lock before the count.
+- Accepted: owner and author still read a comment through the table while comments are off (needed for delete with a
+  filter; their own dive/words; the app shows none). Kudos toggle can re-notify (one live event per member per dive).
+  Policy helpers are callable as RPCs but return false for private and missing dives alike.

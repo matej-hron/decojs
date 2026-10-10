@@ -12,7 +12,7 @@ export const SHELL_TABS = Object.freeze(['feed', 'list', 'community', 'sites', '
 
 /** Tabs and routes that exist only when the community backend (migration 0004) is available. */
 const COMMUNITY_TABS = new Set(['feed', 'community', 'profile']);
-const COMMUNITY_ROUTES = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
+const COMMUNITY_ROUTES = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'profile', 'activity']);
 
 const TAB_OF_ROUTE = {
     feed: 'feed',

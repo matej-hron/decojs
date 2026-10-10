@@ -57,6 +57,8 @@ select pg_temp.check(not has_column_privilege('authenticated', 'public.comments'
     and not has_column_privilege('authenticated', 'public.comments', 'created_at', 'update')
     and has_column_privilege('authenticated', 'public.comments', 'body', 'update'), 'only the body of a comment is updatable');
 select pg_temp.check(not has_table_privilege('authenticated', 'public.kudos', 'update'), 'kudos cannot be updated');
+select pg_temp.check(not has_table_privilege('authenticated', 'public.social_seen', 'select'), 'members cannot read when others last looked');
+select pg_temp.check(not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name like 'social%'), 'nothing social on profiles');
 select pg_temp.check(not exists (
     select 1 from pg_proc p where p.pronamespace = 'public'::regnamespace
       and p.proname in ('entry_visible', 'can_kudos', 'can_comment', 'owns_entry', 'social_counts', 'entry_kudos',
@@ -99,6 +101,7 @@ select pg_temp.check((select author_id = :'M' and edited_at is null from public.
 select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, author_id, body) values (%L, %L, %L)', :'PUB', :'N', 'spoof')), 'M cannot comment as N');
 select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, body) values (%L, %L)', :'PRIV', 'peek')), 'no comment on a private dive');
 select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, body) values (%L, %L)', :'PUB', '   ')), 'blank comment refused');
+select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, body) values (%L, %L)', :'PUB', E'\n\t \u200B')), 'invisible-only comment refused');
 select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, body) values (%L, %L)', :'PUB', repeat('x', 1001))), '1001 characters refused');
 select pg_temp.check(not pg_temp.refused(format('insert into public.comments (entry_id, body) values (%L, %L)', :'PUB', repeat('é', 1000))), '1000 characters accepted');
 select pg_temp.check(pg_temp.refused(format('insert into public.comments (entry_id, body, created_at) values (%L, %L, %L)', :'PUB', 'x', '2000-01-01'))
