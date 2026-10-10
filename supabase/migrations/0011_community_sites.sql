@@ -29,6 +29,15 @@ alter table public.sites add column if not exists visibility text not null defau
 alter table public.sites drop constraint if exists sites_visibility_check;
 alter table public.sites add constraint sites_visibility_check check (visibility in ('members', 'private'));
 
+-- Shared directory data: sane sizes. 'not valid' = checked for new and changed rows only, so an old odd row
+-- cannot block this migration.
+alter table public.sites drop constraint if exists sites_name_length;
+alter table public.sites add constraint sites_name_length check (char_length(btrim(name)) between 1 and 120) not valid;
+alter table public.sites drop constraint if exists sites_lat_range;
+alter table public.sites add constraint sites_lat_range check (lat between -90 and 90) not valid;
+alter table public.sites drop constraint if exists sites_lon_range;
+alter table public.sites add constraint sites_lon_range check (lon between -180 and 180) not valid;
+
 create index if not exists log_entries_site_idx on public.log_entries (site_id);
 
 -- ---------------------------------------------------------------------------
@@ -37,17 +46,25 @@ create index if not exists log_entries_site_idx on public.log_entries (site_id);
 
 -- A dive may point at its owner's own site or at a members site; the foreign key alone would let anyone attach
 -- a guessed id of a private site and read its name back. Checked on insert, and on update only when site_id
--- changes (merge_site and the FK's "set null" go through here too).
+-- changes (merge_site and the FK's "set null" go through here too). A member inserting a dive for someone else
+-- (or handing a dive over) gets the same DTS03 before RLS refuses it, so a spoofed owner cannot probe whether a
+-- private site exists. The site row is locked 'for share': a concurrent switch to private waits for this dive
+-- and then sees it (DTS01), or this check waits for the switch and sees the site private.
 create or replace function public.log_entries_site_check()
 returns trigger
 language plpgsql security definer set search_path = ''
 as $$
 begin
     if new.site_id is not null and (tg_op = 'INSERT' or new.site_id is distinct from old.site_id) then
-        if not exists (
-            select 1 from public.sites s
-            where s.id = new.site_id and (s.owner = new.owner or s.visibility = 'members')
-        ) then
+        -- merge_site moves other members' dives with the caller's auth.uid(): their owner does not change.
+        if auth.uid() is not null and new.owner is distinct from auth.uid()
+           and (tg_op = 'INSERT' or new.owner is distinct from old.owner) then
+            raise exception 'This site is not available' using errcode = 'DTS03';
+        end if;
+        perform 1 from public.sites s
+        where s.id = new.site_id and (s.owner = new.owner or s.visibility = 'members')
+        for share;
+        if not found then
             raise exception 'This site is not available' using errcode = 'DTS03';
         end if;
     end if;
@@ -94,6 +111,9 @@ create trigger sites_guard before update or delete on public.sites
 -- ---------------------------------------------------------------------------
 
 -- community_entries: 0006 shape and filters.
+-- Trust model: the creator of a members site controls its name and position for everyone's dives (directory
+-- data, like a shared map). Its link is shown only with the creator's own dives, so nobody can put a link on
+-- another member's dive or share page.
 create or replace function public.community_entries(
     p_owner uuid default null,
     p_id uuid default null,
@@ -124,7 +144,7 @@ as $$
            case when e.owner = auth.uid() or e.share_location then s.lon end,
            ph.path, coalesce(ph.n, 0)::integer,
            e.description,
-           case when e.owner = auth.uid() or e.share_location then s.url end
+           case when (e.owner = auth.uid() or e.share_location) and s.owner = e.owner then s.url end
     from public.log_entries e
     left join public.sites s on s.id = e.site_id and (s.visibility = 'members' or (s.owner = e.owner and s.owner = auth.uid()))
     left join lateral (
@@ -177,7 +197,8 @@ as $$
             'altitude_m', s.altitude_m,
             'lat', case when e.share_location then s.lat end,
             'lon', case when e.share_location then s.lon end,
-            'url', case when e.share_location then s.url end
+            -- Only the creator's own link (see community_entries above).
+            'url', case when e.share_location and s.owner = e.owner then s.url end
         ) end,
         'author', jsonb_build_object(
             'display_name', p.display_name,
@@ -323,7 +344,7 @@ $$;
 -- ---------------------------------------------------------------------------
 -- The site directory (members only). A site is visible when it is the caller's own or 'members'. Aggregates
 -- count only dives the caller may see that show the site (the join rule above). Surface temperature is
--- details.surfaceTempC when it is a JSON number; anything else is ignored, never cast.
+-- details.surfaceTempC when it is a JSON number within -5..45 °C; anything else is ignored (text never cast).
 -- ---------------------------------------------------------------------------
 
 -- New shapes: dropped first, so an older draft of them cannot block create.
@@ -359,8 +380,9 @@ as $$
                min(d.surface) as surface_min, max(d.surface) as surface_max
         from (
             select e.dive_date, e.vis_shallow_m, e.vis_deep_m, e.water_temp_c,
-                   case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number'
-                        then (e.details ->> 'surfaceTempC')::numeric end as surface
+                   case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number' then
+                        case when (e.details ->> 'surfaceTempC')::numeric between -5 and 45
+                             then (e.details ->> 'surfaceTempC')::numeric end end as surface
             from public.log_entries e
             where e.site_id = s.id
               and (s.visibility = 'members' or (s.owner = e.owner and s.owner = auth.uid()))
@@ -388,8 +410,9 @@ as $$
     ), d as (
         select e.id, e.owner, e.dive_date, e.entry_time, e.created_at,
                e.vis_shallow_m as shallow, e.vis_deep_m as deep, e.water_temp_c as bottom,
-               case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number'
-                    then (e.details ->> 'surfaceTempC')::numeric end as surface
+               case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number' then
+                    case when (e.details ->> 'surfaceTempC')::numeric between -5 and 45
+                         then (e.details ->> 'surfaceTempC')::numeric end end as surface
         from public.log_entries e
         join site s on s.id = e.site_id and (s.visibility = 'members' or (s.owner = e.owner and s.owner = auth.uid()))
         where e.owner = auth.uid() or e.visibility in ('members', 'link')
@@ -455,8 +478,9 @@ returns table (
 language sql stable security definer set search_path = ''
 as $$
     select e.id, e.owner, e.dive_date, e.entry_time, e.duration_s, e.max_depth_m, e.water_temp_c,
-           case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number'
-                then (e.details ->> 'surfaceTempC')::numeric end,
+           case when jsonb_typeof(e.details -> 'surfaceTempC') = 'number' then
+                case when (e.details ->> 'surfaceTempC')::numeric between -5 and 45
+                     then (e.details ->> 'surfaceTempC')::numeric end end,
            e.vis_shallow_m, e.vis_deep_m, e.visibility
     from public.log_entries e
     join public.sites s on s.id = e.site_id and (s.visibility = 'members' or (s.owner = e.owner and s.owner = auth.uid()))
@@ -471,7 +495,8 @@ $$;
 
 -- The creator merges a duplicate into another visible site: every dive (any owner) moves, then the duplicate
 -- goes. The dive trigger still applies, so others' dives cannot land on the caller's private site (the whole
--- merge then fails). Returns how many dives moved.
+-- merge then fails). Returns how many of the caller's own dives moved (others' counts would reveal their
+-- private dives). The target is locked 'for share' so it cannot turn private while dives land on it.
 create function public.merge_site(p_from uuid, p_into uuid)
 returns integer
 language plpgsql volatile security definer set search_path = ''
@@ -483,14 +508,19 @@ begin
     if not found or not public.is_member() then
         raise exception 'Only the creator merges a site' using errcode = '42501';
     end if;
-    if p_into is null or p_into = p_from or not exists (
-        select 1 from public.sites s
-        where s.id = p_into and (s.owner = auth.uid() or s.visibility = 'members')
-    ) then
+    if p_into is null or p_into = p_from then
         raise exception 'The target site is not available' using errcode = '42501';
     end if;
-    update public.log_entries set site_id = p_into where site_id = p_from;
-    get diagnostics moved = row_count;
+    perform 1 from public.sites s
+    where s.id = p_into and (s.owner = auth.uid() or s.visibility = 'members')
+    for share;
+    if not found then
+        raise exception 'The target site is not available' using errcode = '42501';
+    end if;
+    with m as (
+        update public.log_entries set site_id = p_into where site_id = p_from returning owner
+    )
+    select count(*) filter (where m.owner = auth.uid()) into moved from m;
     delete from public.sites where id = p_from;
     return moved;
 end $$;

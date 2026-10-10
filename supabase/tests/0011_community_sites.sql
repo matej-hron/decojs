@@ -14,6 +14,7 @@
 \set SA2 '5e000000-0000-0000-0000-000000000005'
 \set SA3 '5e000000-0000-0000-0000-000000000006'
 \set ZS '5e000000-0000-0000-0000-000000000007'
+\set ST '5e000000-0000-0000-0000-000000000008'
 -- Dives.
 \set A1 '6e000000-0000-0000-0000-000000000001'
 \set APRIV '6e000000-0000-0000-0000-000000000002'
@@ -24,6 +25,9 @@
 \set B3 '6e000000-0000-0000-0000-000000000007'
 \set A4 '6e000000-0000-0000-0000-000000000008'
 \set BX '6e000000-0000-0000-0000-000000000009'
+\set C2 '6e000000-0000-0000-0000-00000000000a'
+\set BT1 '6e000000-0000-0000-0000-00000000000b'
+\set BT2 '6e000000-0000-0000-0000-00000000000c'
 
 create function pg_temp.check(ok boolean, what text) returns void language plpgsql as $$
 begin
@@ -90,7 +94,9 @@ insert into public.sites (id, owner, name, lat, lon, notes, visibility) values
     (:'SA3', :'A', 'Unused', null, null, null, 'members'),
     (:'SB', :'B', 'Barbora duplicate', 50.11, 14.22, 'B-SECRET-SITE-NOTE', 'members'),
     (:'SBP', :'B', 'Boris private', null, null, null, 'private'),
-    (:'ZS', :'Z', 'Banned site', null, null, null, 'members');
+    (:'ZS', :'Z', 'Banned site', null, null, null, 'members'),
+    (:'ST', :'A', 'Hot Spring', null, null, null, 'members');
+update public.sites set url = 'https://example.com/barbora' where id = :'SM';
 insert into public.log_entries (id, owner, log_number, dive_date, entry_time, notes, site_id, visibility, share_location,
                                 water_temp_c, vis_shallow_m, vis_deep_m, details) values
     (:'A1', :'A', 1, '2026-07-10', '09:00', 'A-SECRET-NOTE', :'SM', 'members', true, 20, 8, 5, '{"surfaceTempC": 24}'),
@@ -112,7 +118,15 @@ reset role;
 set role authenticated;
 select set_config('request.jwt.claim.sub', :'C', false);
 insert into public.log_entries (id, log_number, dive_date, site_id, visibility, share_location) values
-    (:'C1', 1, '2026-05-01', :'SB', 'link', true);
+    (:'C1', 1, '2026-05-01', :'SB', 'link', true),
+    (:'C2', 2, '2026-05-03', :'SB', 'private', true);
+reset role;
+-- Surface temperature outside -5..45 °C is a typo, not data.
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
+insert into public.log_entries (id, log_number, dive_date, site_id, visibility, water_temp_c, details) values
+    (:'BT1', 5, '2026-03-01', :'ST', 'members', 10, '{"surfaceTempC": 60}'),
+    (:'BT2', 6, '2026-03-02', :'ST', 'members', 12, '{"surfaceTempC": -5}');
 reset role;
 select share_token as tb1 from public.log_entries where id = :'B1' \gset
 select share_token as ta3 from public.log_entries where id = :'A3' \gset
@@ -171,6 +185,40 @@ select pg_temp.check(coalesce((select string_agg(row_to_json(x)::text, '') from 
 select pg_temp.check((select site_id is null and site_name is null from public.community_entries(null, :'A3')), 'community_entries: A''s dive at a private site shows no site to B');
 select pg_temp.check((select site_name = 'Barbora CMAS' from public.community_entries(null, :'B1')), 'community_entries: own dive at another member''s site shows its name');
 select pg_temp.check(not ((select 'Secret Spring' = any (top_sites) from public.community_members(:'A'))), 'community_members: A''s private site not in top sites for B');
+
+-- ---- Hardening ----
+select pg_temp.check((select temp_min = -5 and temp_max = 12 from public.community_sites() where id = :'ST'), 'community_sites ignores a surface temperature of 60, keeps -5');
+select pg_temp.check(public.site_stats(:'ST') -> 'temp' -> 'surface' ->> 'n' = '1' and public.site_stats(:'ST') -> 'temp' -> 'surface' ->> 'max' = '-5'
+    and public.site_stats(:'ST') -> 'months' -> 0 -> 'surface' ->> 'n' = '1', 'site_stats ignores a surface temperature of 60');
+select pg_temp.check((select surface_temp_c is null from public.site_visits(:'ST') where id = :'BT1')
+    and (select surface_temp_c = -5 from public.site_visits(:'ST') where id = :'BT2'), 'site_visits: out-of-range surface temperature is null');
+select pg_temp.check(pg_temp.err(format('insert into public.log_entries (owner, log_number, dive_date, site_id) values (%L, 99, %L, %L)', :'A', '2026-01-01', :'SP')) = 'DTS03',
+    'spoofed owner + A''s private site: DTS03 (no existence oracle)');
+select pg_temp.check(pg_temp.err(format('insert into public.log_entries (owner, log_number, dive_date, site_id) values (%L, 99, %L, %L)', :'A', '2026-01-01', gen_random_uuid())) = 'DTS03',
+    'spoofed owner + unknown site: the same DTS03');
+select pg_temp.check(pg_temp.err(format('update public.log_entries set owner = %L, site_id = %L where id = %L', :'A', :'SP', :'B2')) = 'DTS03',
+    'handing a dive over with A''s private site: DTS03');
+select pg_temp.check(pg_temp.err(format('insert into public.sites (name) values (%L)', '   ')) = '23514', 'blank site name refused');
+select pg_temp.check(pg_temp.err(format('insert into public.sites (name) values (%L)', repeat('x', 121))) = '23514', '121-character site name refused');
+select pg_temp.check(pg_temp.err(format('insert into public.sites (name, lat, lon) values (%L, 91, 0)', 'x')) = '23514', 'latitude 91 refused');
+select pg_temp.check(pg_temp.err(format('insert into public.sites (name, lat, lon) values (%L, 0, -181)', 'x')) = '23514', 'longitude -181 refused');
+select pg_temp.check(pg_temp.err(format('insert into public.sites (name, lat, lon) values (%L, -90, 180)', repeat('x', 120))) is null, 'limits themselves accepted');
+delete from public.sites where name = repeat('x', 120);
+reset role;
+select pg_temp.check(pg_get_functiondef('public.log_entries_site_check()'::regprocedure) ~ 'for share'
+    and pg_get_functiondef('public.merge_site(uuid, uuid)'::regprocedure) ~ 'for share'
+    and pg_get_functiondef('public.merge_site(uuid, uuid)'::regprocedure) ~ 'for update', 'site rows locked against a concurrent switch to private');
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'C', false);
+select pg_temp.check((select site_url is null and site_name = 'Barbora CMAS' from public.community_entries(null, :'B1')), 'no site link on another member''s dive (name stays)');
+select pg_temp.check((select site_url = 'https://example.com/barbora' from public.community_entries(null, :'A1')), 'the creator''s link on the creator''s own dive');
+reset role;
+set role anon;
+select set_config('request.jwt.claim.sub', '', false);
+select pg_temp.check(public.get_shared_dive(:'tb1') -> 'site' ? 'url' and public.get_shared_dive(:'tb1') -> 'site' ->> 'url' is null, 'share page: no site link on another member''s dive');
+reset role;
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
 
 -- ---- B cannot change A's sites ----
 select pg_temp.check(pg_temp.affected(format('update public.sites set name = %L where id = %L', 'Hijack', :'SM')) = 0, 'B cannot rename A''s site');
@@ -264,11 +312,12 @@ select pg_temp.check(exists (select 1 from public.sites where id = :'SB')
     and (select site_id from public.log_entries where id = :'B3') = :'SB', 'failed merge rolled back');
 set role authenticated;
 select set_config('request.jwt.claim.sub', :'B', false);
-select pg_temp.check(public.merge_site(:'SB', :'SM') = 2, 'merge_site moves B''s and C''s dives and returns the count');
+select pg_temp.check(public.merge_site(:'SB', :'SM') = 1, 'merge_site returns only the count of the caller''s own dives');
 reset role;
 select pg_temp.check(not exists (select 1 from public.sites where id = :'SB')
     and (select site_id from public.log_entries where id = :'C1') = :'SM'
-    and (select site_id from public.log_entries where id = :'B3') = :'SM', 'merged site deleted, dives on the target');
+    and (select site_id from public.log_entries where id = :'B3') = :'SM'
+    and (select site_id from public.log_entries where id = :'C2') = :'SM', 'merged site deleted, all dives (also C''s private one) on the target');
 set role anon;
 select pg_temp.check(public.get_shared_dive(:'tc1') -> 'site' ->> 'name' = 'Barbora CMAS', 'C''s shared dive now names the merged site');
 reset role;
