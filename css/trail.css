@@ -81,6 +81,7 @@
 .lb-core, .lb-more { display: grid; gap: 0.75rem; min-width: 0; padding: 0; margin: 0; border: 0; box-shadow: none; background: none; }
 .lb-more summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .lb-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; align-items: end; min-width: 0; }
+.lb-row-pair { grid-template-columns: 1fr 1fr; align-items: start; }
 .lb-field { display: grid; gap: 0.25rem; min-width: 0; margin: 0; padding: 0; border: 0; }
 .lb-field > span, .lb-field > legend { font-size: 0.9rem; color: var(--text-subtle); padding: 0; }
 .lb-field input[type="text"], .lb-field input[type="date"], .lb-field input[type="time"], .lb-field input[type="number"], .lb-field select, .lb-field textarea {
@@ -149,6 +150,10 @@
 .lb-gas-summary { margin: 0; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .lb-gas-summary[hidden] { display: none; }
 .lb-gas-hint { display: block; color: var(--text-subtle); }
+.lb-link { background: none; border: 0; padding: 0.5rem 0.25rem; min-height: 44px; font: inherit; color: var(--link-color, var(--primary-color)); text-decoration: underline; cursor: pointer; }
+.lb-avg-error { color: var(--danger-color); }
+.lb-avg-error[hidden] { display: none; }
+.lb-form input[aria-invalid="true"] { border-color: var(--danger-color); }
 #lb-add-gas { min-height: 44px; justify-self: start; }
 .lb-site-position { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; font-variant-numeric: tabular-nums; }
 .lb-site-position .btn { min-height: 44px; }

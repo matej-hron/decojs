@@ -27,7 +27,7 @@ import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, photoFrame, FEED_VIEWS } from '../js/logbook/feed.js';
 import { mapyStaticMapUrl } from '../js/logbook/geo.js';
 import { gasesFromEntry, gasesFromRecording, primaryGas, gasUsage, formRowsFromGases, gasesFromFormRows, newGasRow, cylinderText } from '../js/logbook/gasModel.js';
-import { formValuesFromEntry, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
+import { formValuesFromEntry, recordingsOnDate, invalidNumberFields, avgDepthProblem, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -1262,6 +1262,18 @@ describe('entry form validation and races (jsdom)', () => {
     const tick = () => new Promise(r => setTimeout(r, 20));
     const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', site_id: 's1', buddies: [], details: {} };
 
+    test('avgDepthProblem: above 0 and not above the maximum depth', () => {
+        const v = (max, avg) => ({ max_depth_m: max, details: { avgDepthM: avg } });
+        assert.equal(avgDepthProblem(v('30', '')), null);
+        assert.equal(avgDepthProblem(v('30', '18,5')), null);
+        assert.equal(avgDepthProblem(v('30', '30')), null);
+        assert.equal(avgDepthProblem(v('30', '0')), 'avgDepthPositive');
+        assert.equal(avgDepthProblem(v('30', '-3')), 'avgDepthPositive');
+        assert.equal(avgDepthProblem(v('30', '31')), 'avgDepthAboveMax');
+        assert.equal(avgDepthProblem(v('', '31')), null);
+        assert.equal(avgDepthProblem(v('30', 'abc')), null);
+    });
+
     test('invalidNumberFields flags non-blank text that is not a number', () => {
         const base = formValuesFromEntry({});
         assert.deepEqual(invalidNumberFields(base), []);
@@ -1293,6 +1305,58 @@ describe('entry form validation and races (jsdom)', () => {
             assert.deepEqual(row.details.gases.map(g => [g.role, g.cylinder, g.startBar, g.endBar]), [['bottom', 's12', 200, 80], ['deco', 'al40', 200, 150]]);
             for (const k of ['cylinderL', 'cylinderMaterial', 'pressureStartBar', 'pressureEndBar']) assert.equal(k in row.details, false, k);
             assert.equal(row.details.weather, 'sun');
+        });
+    });
+
+    test('manual dive: average depth sits in the core section, hints at SAC, estimates and validates', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [],
+                saveEntry: async row => { saves.push(row); return { id: 'x', ...row }; } };
+            new EntryForm(root, { store, prefill: { dive_date: '2026-07-01' }, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.ok(root.querySelector('[name="d.avgDepthM"]').closest('.lb-core'), 'avg depth is in the core section');
+            assert.equal(root.querySelector('[name="d.avgDepthM"]').closest('details'), null);
+            const set = (name, value) => {
+                const el = root.querySelector(`[name="${name}"]`);
+                el.value = value;
+                el.dispatchEvent(new window.Event('input', { bubbles: true }));
+            };
+            set('duration_min', '50');
+            set('max_depth_m', '30');
+            root.querySelector('#lb-add-gas').click();
+            set('gas.startBar', '200');
+            set('gas.endBar', '80');
+            const summary = root.querySelector('.lb-gas-summary');
+            const avg = root.querySelector('[name="d.avgDepthM"]');
+            assert.ok(summary.querySelector('.lb-avg-focus'), 'hint with a link while the average depth is missing');
+            summary.querySelector('.lb-avg-estimate').click();
+            assert.equal(avg.value, '18');
+            assert.match(summary.textContent, /10[.,]3/);
+            assert.equal(summary.querySelector('.lb-avg-focus'), null);
+            set('d.avgDepthM', '35');
+            assert.equal(root.querySelector('.lb-avg-error').hidden, false);
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves.length, 0, 'avg depth above max depth blocks the save');
+            assert.equal(avg.value, '35', 'typed values are kept');
+            set('d.avgDepthM', '0');
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves.length, 0);
+            set('d.avgDepthM', '18');
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves[0].details.avgDepthM, 18);
+        });
+    });
+
+    test('recording dive keeps the average depth in More details', async () => {
+        await withDom(async root => {
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [] };
+            new EntryForm(root, { store, entry: { ...entry, recording_id: 'r1', details: { gases: [] } }, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.ok(root.querySelector('[name="d.avgDepthM"]').closest('details.lb-more'));
         });
     });
 
