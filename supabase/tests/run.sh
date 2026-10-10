@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004 and 0005 twice
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005 and 0006 twice
 # (idempotency), then the RLS assertions. Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -21,4 +21,9 @@ for f in tests/seed_before_0005.sql migrations/0005_share_link.sql migrations/00
     run < "$f"
 done
 run < tests/0005_share.sql
+for f in migrations/0006_sites_description.sql migrations/0006_sites_description.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0006_sites_description.sql
 echo "ALL RLS TESTS PASSED"
