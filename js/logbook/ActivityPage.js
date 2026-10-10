@@ -79,7 +79,7 @@ export class ActivityPage {
             <a class="tr-inbox-link" href="${routeHref({ name: 'detail', id: r.entry_id })}">
                 <span class="tr-inbox-av" aria-hidden="true">${avatarHtml({ preset: r.avatar_preset, url, name, id: r.actor_id, size: 40 })}<span class="tr-inbox-kind">${r.kind === 'comment' ? '💬' : '👏'}</span></span>
                 <span class="tr-inbox-text"><span class="tr-inbox-what">${r.is_new ? `<span class="rda-visually-hidden">${escHtml(ts('newItem', 'New:'))} </span>` : ''}${escHtml(text)}</span>
-                ${excerpt ? `<span class="tr-inbox-excerpt">“${escHtml(excerpt)}”</span>` : ''}
+                ${excerpt ? `<span class="tr-inbox-excerpt">${escHtml(ts('quote', '“{0}”').replace('{0}', excerpt))}</span>` : ''}
                 <span class="tr-inbox-when">${escHtml(when)}</span></span>
             </a></li>`;
     }

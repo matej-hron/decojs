@@ -2935,7 +2935,8 @@
                 "inboxKudos": "{0} dio un bravo a {1}",
                 "inboxComment": "{0} comentó en {1}",
                 "yourDive": "tu inmersión",
-                "newItem": "Nuevo:"
+                "newItem": "Nuevo:",
+                "quote": "«{0}»"
             },
             "tab": {
                 "feed": "Novedades",

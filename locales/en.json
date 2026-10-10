@@ -2985,7 +2985,8 @@
                 "inboxKudos": "{0} gave kudos to {1}",
                 "inboxComment": "{0} commented on {1}",
                 "yourDive": "your dive",
-                "newItem": "New:"
+                "newItem": "New:",
+                "quote": "“{0}”"
             },
             "tab": {
                 "feed": "Feed",

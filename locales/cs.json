@@ -2985,7 +2985,8 @@
                 "inboxKudos": "{0} dává bravo: {1}",
                 "inboxComment": "{0} komentuje: {1}",
                 "yourDive": "váš ponor",
-                "newItem": "Nové:"
+                "newItem": "Nové:",
+                "quote": "„{0}“"
             },
             "tab": {
                 "feed": "Přehled",
