@@ -18,7 +18,7 @@ import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
-import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
+import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame, descriptionExcerpt } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { MembersPage } from './MembersPage.js';
@@ -366,7 +366,7 @@ export class LogbookApp {
     _showSites(siteId) {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new SitesPage(this.view.firstChild, {
-            store: this.store, siteId,
+            store: this.store, siteId, userId: this.user?.id ?? null,
             onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
             onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
         });
@@ -513,14 +513,14 @@ export class LogbookApp {
             store: this.store, ready: this.ensured,
             onChoose: async ({ prefill, recordingId }) => {
                 const community = await this._communityForForm();
-                const share = await this._shareForForm(community);
+                const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
                 const defaultVisibility = community && this.store.defaultVisibility
                     ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
                     : null;
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId, community, defaultVisibility, share,
+                    store: this.store, prefill, recordingId, community, defaultVisibility, share, describe,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
@@ -539,6 +539,12 @@ export class LogbookApp {
             clearTimeout(timer);
         }
         return this.community;
+    }
+
+    /** Whether the form offers the description for members (migration 0006); no answer means no offer. */
+    async _describeForForm() {
+        if (typeof this.store.descriptionStatus !== 'function') return false;
+        return this.store.descriptionStatus().catch(error => { console.warn(error); return false; });
     }
 
     /** Whether the form offers "Public link" (migration 0005); no answer means no offer. */
@@ -562,11 +568,11 @@ export class LogbookApp {
             return;
         }
         const community = await this._communityForForm();
-        const share = await this._shareForForm(community);
+        const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
         if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, describe, onSaved: back, onCancel: back });
     }
 
     /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */
@@ -936,7 +942,8 @@ export class LogbookApp {
         const buddies = (entry.buddies ?? []).join(', ');
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
-        const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
+        // The description written for members; dives without one keep showing the owner's notes here.
+        const notes = descriptionExcerpt(entry.description) || descriptionExcerpt(entry.notes);
         return feedCardHtml({
             entry, href: routeHref({ name: 'detail', id: entry.id }),
             pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),

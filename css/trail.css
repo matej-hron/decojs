@@ -849,6 +849,62 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .tr-share-analysis .rda-chain-toggle { display: none; } /* earlier dives are never shared */
 .tr-share-missing a { color: var(--tr-accent, var(--brand)); }
 
+/* ---- Site page: summary, water by month, visits ---- */
+.lb-root { --lb-cold: #24529e; --lb-warm: #0e7f76; }
+.lb-sv-head { display: grid; gap: 0.75rem; }
+.lb-sv-titlebar { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.lb-root .lb-sv-name-h { margin: 0; font-size: var(--text-2xl); overflow-wrap: anywhere; }
+.lb-sv-own { margin: -0.5rem 0 0; }
+.lb-site-info { display: inline-flex; align-items: center; min-height: 44px; color: var(--brand); font-weight: 500; text-decoration: none; }
+.lb-site-info:hover { text-decoration: underline; }
+.lb-site-info:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.lb-d-title .lb-site-info { min-height: 36px; font-size: var(--text-sm); }
+:root[data-theme="dark"] .lb-site-info { color: var(--blue-300); }
+.lb-sv-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1.25rem; }
+.lb-sv-sub { margin: 0.1rem 0 0; font-size: var(--text-xs); color: var(--text-subtle); }
+.lb-sv-h { margin: 0 0 0.4rem; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); }
+.lb-sv-months { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+.lb-sv-month { display: grid; align-content: space-between; min-height: 3.4rem; padding: 0.3rem 0.2rem; border-radius: var(--radius-sm); text-align: center; color: #fff;
+    background: color-mix(in oklab, var(--lb-warm) var(--warmth, 50%), var(--lb-cold)); }
+.lb-sv-month--none { color: var(--text-subtle); background: var(--surface-sunken); }
+.lb-sv-mname { font-size: var(--text-xs); }
+.lb-sv-month:not(.lb-sv-month--none) .lb-sv-mname { opacity: 0.85; }
+.lb-sv-mtemp { font-size: var(--text-sm); letter-spacing: -0.01em; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lb-sv-card { display: grid; gap: 0.5rem; }
+.lb-root .lb-sv-title { margin: 0; }
+.lb-sv-list { list-style: none; margin: 0; padding: 0; }
+.lb-sv-list > li + li { border-top: 1px solid var(--border); }
+.lb-sv-visit { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.25rem 0.75rem; padding: 0.6rem 0.25rem; min-height: 44px; color: inherit; text-decoration: none; border-radius: var(--radius-sm); }
+.lb-sv-visit:hover { background: var(--surface-sunken); }
+.lb-sv-visit:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.lb-sv-av { display: flex; }
+.lb-sv-who { display: grid; min-width: 0; }
+.lb-sv-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-sv-date { font-size: var(--text-sm); color: var(--text-subtle); }
+.lb-sv-facts { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.15rem 0.75rem; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+.lb-sv-fact { white-space: nowrap; }
+.lb-sv-all { justify-self: start; min-height: 44px; }
+.lb-sv-capped { margin: 0; }
+.lb-hint { display: block; color: var(--text-subtle); font-size: var(--text-xs); }
+/* The dive story: the diver's own words, set as reading text right under the title */
+.lb-d-story { max-width: 65ch; font-size: var(--text-lg); line-height: 1.55; overflow-wrap: anywhere; }
+.lb-root .lb-d-story { padding: 0; background: none; border: 0; box-shadow: none; }
+.lb-root .lb-d-story-h { margin: 0 0 0.35rem; padding: 0; border: 0; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); line-height: 1.3; }
+.lb-d-story p { margin: 0; }
+.lb-d-story p + p { margin-top: 0.75em; }
+.lb-d-story a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+:root[data-theme="dark"] .lb-d-story a { color: var(--blue-300); }
+.lb-form textarea.lb-story-input { field-sizing: content; min-height: 7.5rem; max-height: 70vh; resize: vertical; line-height: 1.5; }
+.lb-d-notes { padding: 0.6rem 0.8rem; border-left: 3px solid var(--border); background: var(--surface-sunken); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.lb-d-notes-label { margin: 0 0 0.2rem; font-size: var(--text-xs); color: var(--text-subtle); }
+.lb-d-notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.lb-feed-notes { -webkit-line-clamp: 3; }
+@media (max-width: 600px) {
+    .lb-sv-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lb-sv-months { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .lb-sv-visit { grid-template-columns: auto minmax(0, 1fr); }
+    .lb-sv-facts { grid-column: 2; justify-content: flex-start; }
+}
 /* Profile: qualifications and medical checks (ProfileDocuments.js). Owner-only cards below the profile form. */
 .tr-docs-card { display: grid; gap: 0.85rem; min-width: 0; }
 .tr-docs-card[hidden] { display: none; }

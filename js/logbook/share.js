@@ -50,8 +50,8 @@ export function visibilityAfterSharing(before) {
 
 const pick = (obj, keys) => Object.fromEntries(keys.filter(k => obj && Object.hasOwn(obj, k)).map(k => [k, obj[k]]));
 const ENTRY_KEYS = ['id', 'dive_date', 'entry_time', 'duration_s', 'max_depth_m', 'buddies', 'gas', 'water_temp_c',
-    'vis_shallow_m', 'vis_deep_m', 'details', 'share_location'];
-const SITE_KEYS = ['id', 'name', 'country', 'water', 'altitude_m', 'lat', 'lon'];
+    'vis_shallow_m', 'vis_deep_m', 'details', 'share_location', 'description'];
+const SITE_KEYS = ['id', 'name', 'country', 'water', 'altitude_m', 'lat', 'lon', 'url'];
 const MEDIA_KEYS = ['id', 'kind', 'path', 'url', 'width', 'height', 'taken_at', 'lat', 'lon', 'caption', 'created_at'];
 
 /**

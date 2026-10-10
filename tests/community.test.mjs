@@ -78,7 +78,7 @@ test('entryFromCommunityRow splits site fields and never carries notes', () => {
     assert.equal(entry.max_depth_m, 30);
     assert.equal(entry.site_id, 's1');
     for (const k of ['site_name', 'site_country', 'site_lat', 'site_lon', 'photo_path', 'photo_count']) assert.ok(!(k in entry), k);
-    assert.deepEqual(site, { id: 's1', name: 'Lom', country: 'CZ', water: 'fresh', altitude_m: 400, lat: 50.1, lon: 14.2 });
+    assert.deepEqual(site, { id: 's1', name: 'Lom', country: 'CZ', water: 'fresh', altitude_m: 400, lat: 50.1, lon: 14.2, url: null });
     const noCoords = entryFromCommunityRow({ ...row, site_lat: undefined, site_lon: undefined }).site;
     assert.equal(noCoords.lat, null);
     assert.equal(noCoords.lon, null);

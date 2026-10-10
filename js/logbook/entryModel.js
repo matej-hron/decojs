@@ -200,7 +200,8 @@ function cleanDetails(details) {
 /**
  * Turn form values into a log_entries row.
  * @param {Object} form - raw form values (strings), `duration_min` as `m:ss` or minutes;
- *   optional `visibility` (one of VISIBILITIES) and `share_location` (boolean) pass through when valid
+ *   optional `visibility` (one of VISIBILITIES) and `share_location` (boolean) pass through when valid;
+ *   `description` (string) only when given
  * @param {Object} [previousDetails] - details stored before; unknown keys are kept
  */
 export function normalizeEntry(form, previousDetails = {}) {
@@ -211,6 +212,8 @@ export function normalizeEntry(form, previousDetails = {}) {
     const sharing = {};
     if (typeof form.visibility === 'string' && VISIBILITIES.includes(form.visibility)) sharing.visibility = form.visibility;
     if (typeof form.share_location === 'boolean') sharing.share_location = form.share_location;
+    // The description for members: sent only when the form offers it (migration 0006 ran).
+    if (typeof form.description === 'string') sharing.description = emptyText(form.description);
     return {
         log_number: number === null ? null : Math.round(number),
         dive_date: emptyText(form.dive_date),
