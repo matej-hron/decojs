@@ -9,6 +9,7 @@ import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
 import { createSocialApi } from './socialStore.js';
 import { createDocumentsApi } from './documentsStore.js';
+import { createSitesApi } from './sitesStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
 
@@ -142,6 +143,7 @@ export function createSupabaseStore(client) {
         async signOut() {
             store.resetCommunityCache();
             store.resetSocialCache();
+            store.resetSitesCache();
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
         },
@@ -153,6 +155,7 @@ export function createSupabaseStore(client) {
                 if (lastId !== undefined && id !== lastId) {
                     store.resetCommunityCache();
                     store.resetSocialCache();
+                    store.resetSitesCache();
                 }
                 lastId = id;
                 listener(session?.user ? { id: session.user.id, email: session.user.email } : null);
@@ -450,7 +453,19 @@ export function createSupabaseStore(client) {
                 report.media = await deleteIn(MEDIA, 'entry_id', entryIds);
             });
             await step('entries', async () => { report.entries = await deleteIn(ENTRIES, 'id', entryIds); });
-            await step('sites', async () => { report.sites = await deleteIn(SITES, 'id', await idsOf(SITES, 'id', [['owner', user.id]])); });
+            await step('sites', async () => {
+                const own = await idsOf(SITES, 'id', [['owner', user.id]]);
+                // Community sites (0011): a site other members' dives use stays (deleting it is refused), without notes and link.
+                const kept = await store.sitesAvailability() === 'yes'
+                    ? new Set((await store.listCommunitySites()).filter(s => s.own && s.used_by_others).map(s => s.id)) : new Set();
+                if (kept.size) {
+                    const { error } = await client.from(SITES).update({ notes: null, url: null, updated_at: new Date().toISOString() })
+                        .in('id', [...kept]).eq('owner', user.id);
+                    if (error) throw fail(error);
+                    report.sitesKept = kept.size;
+                }
+                report.sites = await deleteIn(SITES, 'id', own.filter(id => !kept.has(id)));
+            });
             await step('recordings', async () => {
                 const rows = [];
                 for (let from = 0; ; from += PAGE) {
@@ -499,13 +514,40 @@ export function createSupabaseStore(client) {
             return data;
         },
 
+        /**
+         * Own sites (with notes) and, with the community directory (0011), every other site the user may see
+         * (no notes). Each row has `own`; directory rows carry the visible dives' aggregates. Without 0011 (or when
+         * the directory cannot be read) the own sites only.
+         */
+        async listAllSites() {
+            const own = await store.listSites();
+            let community = [];
+            try {
+                if (await store.sitesAvailability() === 'yes') community = await store.listCommunitySites();
+            } catch (error) {
+                console.warn('Community sites unavailable right now', error?.message ?? error);
+            }
+            const byId = new Map(community.map(s => [s.id, s]));
+            const mine = own.map(s => ({ ...(byId.get(s.id) ?? {}), ...s, own: true }));
+            const ownIds = new Set(own.map(s => s.id));
+            return [...mine, ...community.filter(s => !ownIds.has(s.id)).map(s => ({ ...s, own: false }))];
+        },
+
         async saveSite(input, id) {
-            const row = await withoutMissingColumns(input, ['url']);
+            let row = await withoutMissingColumns(input, ['url']);
+            if ('visibility' in row) {
+                const availability = await store.sitesAvailability();
+                if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check the database version; nothing was saved');
+                if (availability === 'no') {
+                    const { visibility, ...rest } = row; // eslint-disable-line no-unused-vars
+                    row = rest;
+                }
+            }
             const q = id
                 ? client.from(SITES).update({ ...row, updated_at: new Date().toISOString() }).eq('id', id)
                 : client.from(SITES).insert(row);
             const { data, error } = await q.select().single();
-            if (error) throw fail(error);
+            if (error) throw store.siteFail(error);
             return data;
         },
 
@@ -520,13 +562,20 @@ export function createSupabaseStore(client) {
             }
         },
 
-        /** Move every dive of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses the link. */
+        /**
+         * Move the user's dives of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses
+         * the link. With 0011 a site other members' dives still use is kept (their dives are never moved).
+         * @returns {Promise<{moved: number|null, deleted: boolean}>}
+         */
         async mergeSite(fromId, intoId) {
             if (!fromId || !intoId || fromId === intoId) throw new DiveStoreError('unknown', 'Cannot merge a site into itself');
+            // 0011: one server call; it keeps the site when other members' dives still use it.
+            if (await store.sitesAvailability() === 'yes') return store.mergeSiteInto(fromId, intoId);
             const moved = await client.from(ENTRIES).update({ site_id: intoId }).eq('site_id', fromId);
             if (moved.error) throw fail(moved.error);
             const { error } = await client.from(SITES).delete().eq('id', fromId);
             if (error) throw fail(error);
+            return { moved: null, deleted: true };
         },
 
         async deleteSite(id) {
@@ -535,7 +584,7 @@ export function createSupabaseStore(client) {
             if (used.error) throw fail(used.error);
             if (used.data.length) throw new DiveStoreError('site-in-use', 'Dives still use this site');
             const { error } = await client.from(SITES).delete().eq('id', id);
-            if (error) throw fail(error);
+            if (error) throw store.siteFail(error); // 0011 refuses while other members' dives use it
         },
 
         async listBuddies() {
@@ -780,6 +829,7 @@ export function createSupabaseStore(client) {
     Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
     Object.assign(store, createSocialApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     Object.assign(store, createDocumentsApi(client, { requireUser, fail }));
+    Object.assign(store, createSitesApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     const resetCommunity = store.resetCommunityCache;
     store.resetCommunityCache = () => { resetCommunity(); store.resetDocumentsCache(); }; // both are per user
     return store;

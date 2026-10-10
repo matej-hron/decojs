@@ -28,6 +28,9 @@ export const MAPY_MIN_INTERVAL_MS = 250;
 export const DUPLICATE_RADIUS_M = 300;
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const DEFAULT_VIEW = Object.freeze({ lat: 49.8, lon: 15.5, zoom: 6 });
+/** Pin colours: the user's own sites and other members' sites. */
+export const OWN_PIN = '#2980b9';
+export const OTHER_PIN = '#0e7f76';
 
 const readLayerChoice = () => { try { return localStorage.getItem(LAYER_STORAGE_KEY) === 'aerial' ? 'aerial' : 'map'; } catch { return 'map'; } };
 const saveLayerChoice = choice => { try { localStorage.setItem(LAYER_STORAGE_KEY, choice); } catch { /* storage unavailable */ } };
@@ -69,6 +72,52 @@ export function siteFromForm(form, pin) {
     };
 }
 
+/**
+ * Base layers of an interactive map: Mapy.com outdoor/aerial with the layer switch and logo when a key is set
+ * (falling back to OpenStreetMap when the key is refused), else OpenStreetMap.
+ * @param {Object} L - Leaflet
+ * @param {Object} map - the Leaflet map
+ * @param {{isClosed?: () => boolean, onMapyChange?: (on: boolean) => void, labels?: {map: string, aerial: string}}} [options]
+ */
+export function setupMapLayers(L, map, { isClosed = () => false, onMapyChange = () => {}, labels = { map: 'Map', aerial: 'Aerial' } } = {}) {
+    const osm = L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION });
+    if (!MAPY_API_KEY) { osm.addTo(map); return; }
+    const mapyLayer = (mapset, extra = {}) => L.tileLayer(mapyTileUrl(mapset, MAPY_API_KEY), { maxZoom: 20, attribution: MAPY_ATTRIBUTION, ...extra });
+    const outdoor = mapyLayer('outdoor');
+    const aerial = L.layerGroup([mapyLayer('aerial'), mapyLayer('names-overlay', { attribution: '' })]);
+    const logo = L.control({ position: 'bottomleft' });
+    logo.onAdd = () => {
+        const a = L.DomUtil.create('a', 'lb-mapy-logo');
+        a.href = 'https://mapy.com/';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.innerHTML = `<img src="${MAPY_LOGO}" alt="Mapy.com" height="30">`;
+        L.DomEvent.disableClickPropagation(a); // a click on the logo must not place a pin
+        return a;
+    };
+    const switcher = L.control.layers({ [labels.map]: outdoor, [labels.aerial]: aerial }, null, { position: 'topright', collapsed: true });
+    (readLayerChoice() === 'aerial' ? aerial : outdoor).addTo(map);
+    switcher.addTo(map);
+    logo.addTo(map);
+    onMapyChange(true);
+    map.on('baselayerchange', ev => saveLayerChoice(ev.layer === aerial ? 'aerial' : 'map'));
+    let fellBack = false;
+    const fallBack = () => {
+        if (fellBack || isClosed()) return;
+        fellBack = true;
+        onMapyChange(false);
+        switcher.remove();
+        logo.remove();
+        map.removeLayer(outdoor);
+        map.removeLayer(aerial);
+        if (map.getZoom() > 19) map.setZoom(19); // OSM tiles stop at 19
+        osm.addTo(map);
+    };
+    // Tiles answer 401/403 with an error picture, which Leaflet sees as success: probe the key once.
+    fetch(mapyProbeUrl('outdoor', MAPY_API_KEY)).then(r => { if (!r.ok) fallBack(); }, fallBack);
+    // Single tile errors (e.g. no aerial imagery at that zoom abroad) are not a reason to drop Mapy.
+}
+
 /** Nominatim usage policy: at most one request per second. */
 export const SEARCH_MIN_INTERVAL_MS = 1000;
 export const nominatimUrl = (query, lang) =>
@@ -76,13 +125,16 @@ export const nominatimUrl = (query, lang) =>
 
 /**
  * Open the picker.
- * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, editSite?: Object|null, signal?: AbortSignal}} options
+ * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, editSite?: Object|null, signal?: AbortSignal,
+ *   ownerName?: (site: Object) => string|null}} options
+ * `sites` may include other members' sites (`own: false`, community directory): they are shown and can be chosen,
+ * never changed. `ownerName` names who added such a site.
  * `signal` closes the picker (as a cancel) when aborted.
  * `editSite` opens the picker in edit mode: the form is prefilled from that site, other sites are not selectable,
  * and saving updates that very site (no duplicate guard, no merge by name).
  * @returns {Promise<Object|null>} the chosen or saved site, or null when cancelled
  */
-export function openSitePicker({ store, sites = [], initial = null, initialName = '', editSite = null, signal = null }) {
+export function openSitePicker({ store, sites = [], initial = null, initialName = '', editSite = null, signal = null, ownerName = () => null }) {
     return new Promise(resolve => {
         const previousFocus = document.activeElement;
         const overlay = document.createElement('div');
@@ -109,7 +161,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             <form class="lb-picker-form" novalidate>
                 <p class="lb-picker-hint">${escHtml(ts('hint', 'Tap an existing site to choose it, or tap the map to place a new one.'))}</p>
                 <div class="lb-row">
-                    <label class="lb-field"><span>${escHtml(ts('name', 'Site name'))}</span><input type="text" name="name" autocomplete="off"></label>
+                    <label class="lb-field"><span>${escHtml(ts('name', 'Site name'))}</span><input type="text" name="name" maxlength="120" autocomplete="off"></label>
                     <label class="lb-field"><span>${escHtml(ts('water', 'Water'))}</span>
                         <select name="water"><option value="">–</option>
                             <option value="salt">${escHtml(ts('salt', 'Salt'))}</option><option value="fresh">${escHtml(ts('fresh', 'Fresh'))}</option></select></label>
@@ -315,9 +367,11 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             if (!editSite && !skipGuard) {
                 const near = nearbySameNameSite(sites, row.name, pin, DUPLICATE_RADIUS_M);
                 if (near) {
+                    const by = near.site.own === false ? ownerName(near.site) : null;
                     dupEl.querySelector('.lb-dup-text').textContent = fill(
                         ts('duplicateText', 'A site named {0} is already here ({1}\u00a0m away).'), near.site.name, Math.round(near.distance));
-                    dupEl.querySelector('[data-act="dup-use"]').textContent = ts('duplicateUse', 'Use it');
+                    dupEl.querySelector('[data-act="dup-use"]').textContent = by
+                        ? fill(ts('duplicateUseBy', 'Use {0} (added by {1})'), near.site.name, by) : ts('duplicateUse', 'Use it');
                     dupUse = near.site;
                     dupEl.hidden = false;
                     return;
@@ -329,7 +383,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             submit.disabled = true;
             try {
                 // A known site that only lacks coordinates gets them instead of a duplicate.
-                const known = editSite ? null : sites.find(s => s.name.toLocaleLowerCase() === row.name.toLocaleLowerCase() && !(Number.isFinite(s.lat) && Number.isFinite(s.lon)));
+                const known = editSite ? null : sites.find(s => s.own !== false && s.name.toLocaleLowerCase() === row.name.toLocaleLowerCase() && !(Number.isFinite(s.lat) && Number.isFinite(s.lon)));
                 const saved = editSite ? await store.saveSite(row, editSite.id)
                     : known ? await store.saveSite(row, known.id) : await store.saveSite(row);
                 close(saved);
@@ -341,45 +395,11 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             }
         });
 
-        const setupLayers = L => {
-            const osm = L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION });
-            if (!MAPY_API_KEY) { osm.addTo(map); return; }
-            const mapyLayer = (mapset, extra = {}) => L.tileLayer(mapyTileUrl(mapset, MAPY_API_KEY), { maxZoom: 20, attribution: MAPY_ATTRIBUTION, ...extra });
-            const outdoor = mapyLayer('outdoor');
-            const aerial = L.layerGroup([mapyLayer('aerial'), mapyLayer('names-overlay', { attribution: '' })]);
-            const logo = L.control({ position: 'bottomleft' });
-            logo.onAdd = () => {
-                const a = L.DomUtil.create('a', 'lb-mapy-logo');
-                a.href = 'https://mapy.com/';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<img src="${MAPY_LOGO}" alt="Mapy.com" height="30">`;
-                L.DomEvent.disableClickPropagation(a); // a click on the logo must not place a pin
-                return a;
-            };
-            const choices = { [ts('layerMap', 'Map')]: outdoor, [ts('layerAerial', 'Aerial')]: aerial };
-            const switcher = L.control.layers(choices, null, { position: 'topright', collapsed: true });
-            (readLayerChoice() === 'aerial' ? aerial : outdoor).addTo(map);
-            switcher.addTo(map);
-            logo.addTo(map);
-            mapyActive = true;
-            map.on('baselayerchange', ev => saveLayerChoice(ev.layer === aerial ? 'aerial' : 'map'));
-            let fellBack = false;
-            const fallBack = () => {
-                if (fellBack || closed) return;
-                fellBack = true;
-                mapyActive = false;
-                switcher.remove();
-                logo.remove();
-                map.removeLayer(outdoor);
-                map.removeLayer(aerial);
-                if (map.getZoom() > 19) map.setZoom(19); // OSM tiles stop at 19
-                osm.addTo(map);
-            };
-            // Tiles answer 401/403 with an error picture, which Leaflet sees as success: probe the key once.
-            fetch(mapyProbeUrl('outdoor', MAPY_API_KEY)).then(r => { if (!r.ok) fallBack(); }, fallBack);
-            // Single tile errors (e.g. no aerial imagery at that zoom abroad) are not a reason to drop Mapy.
-        };
+        const setupLayers = L => setupMapLayers(L, map, {
+            isClosed: () => closed,
+            onMapyChange: on => { mapyActive = on; },
+            labels: { map: ts('layerMap', 'Map'), aerial: ts('layerAerial', 'Aerial') },
+        });
 
         loadLeaflet().then(L => {
             if (closed) return;
@@ -391,8 +411,9 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             const located = sites.filter(s => Number.isFinite(s.lat) && Number.isFinite(s.lon));
             for (const site of located) {
                 if (editSite && site.id === editSite.id) continue; // the pin stands for it
-                const marker = L.circleMarker([site.lat, site.lon], { radius: 10, color: '#fff', weight: 2, fillColor: '#2980b9', fillOpacity: 0.95, interactive: !editSite })
-                    .bindTooltip(escHtml(site.name)).addTo(map);
+                const by = site.own === false ? ownerName(site) : null;
+                const marker = L.circleMarker([site.lat, site.lon], { radius: 10, color: '#fff', weight: 2, fillColor: site.own === false ? OTHER_PIN : OWN_PIN, fillOpacity: 0.95, interactive: !editSite })
+                    .bindTooltip(escHtml(by ? fill(ts('addedBy', '{0} · added by {1}'), site.name, by) : site.name)).addTo(map);
                 if (!editSite) marker.on('click', ev => { L.DomEvent.stopPropagation(ev); close(site); });
             }
             map.on('click', ev => placePin(L, ev.latlng.lat, ev.latlng.lng));

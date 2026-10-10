@@ -454,7 +454,7 @@ export class LogbookApp {
         else {
             this.view.innerHTML = '<div class="lb-form-host"></div>';
             this.form = new EntryDetail(this.view.firstChild, {
-                store: this.store, entry, social: this._social(),
+                store: this.store, entry, social: this._social(), sitePage: true,
                 onDeleted: () => { this.entries = null; location.hash = routeHref({ name: 'list' }); },
             });
         }
@@ -609,9 +609,12 @@ export class LogbookApp {
         const author = await this._memberAuthor(row.owner);
         if (token !== this._viewToken) return;
         const { entry, adapter } = memberEntryStore(this.store, row);
+        // Another member's site has a page only with the community directory (0011).
+        const sitePage = await Promise.resolve(this.store.communitySitesStatus?.()).catch(() => false) === true;
+        if (token !== this._viewToken) return;
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new EntryDetail(this.view.firstChild, {
-            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner), social: this._social(),
+            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner), social: this._social(), sitePage,
         });
     }
 
@@ -759,7 +762,7 @@ export class LogbookApp {
         try {
             await this.ensured;
             const [entries, sites, photos] = await Promise.all([
-                this.store.listEntries(), this.store.listSites(), this.store.listPhotoMedia().catch(error => { console.error(error); return []; }),
+                this.store.listEntries(), typeof this.store.listAllSites === 'function' ? this.store.listAllSites() : this.store.listSites(), this.store.listPhotoMedia().catch(error => { console.error(error); return []; }),
             ]);
             if (token !== this._viewToken) return;
             this.entries = entries;
