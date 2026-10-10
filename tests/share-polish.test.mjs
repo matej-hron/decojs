@@ -342,3 +342,31 @@ test('strings: new keys exist in en, cs and es', () => {
         assert.ok(d.trail.profile.shareLocationDefault, `${lang} profile.shareLocationDefault`);
     }
 });
+
+test('ProfilePage: "Show the exact location by default" (on when unset) is saved with Save', async () => {
+    const { ProfilePage } = await import('../js/logbook/ProfilePage.js');
+    await withDom(async host => {
+        const log = [];
+        let def = true;
+        const store = {
+            getMyProfile: async () => ({ id: 'me', display_name: 'M', default_visibility: 'members' }),
+            saveProfile: async patch => { log.push(['save', patch]); return { id: 'me', ...patch }; },
+            defaultShareLocation: async () => def,
+            setDefaultShareLocation: async on => { log.push(['default', on]); def = on; return on; },
+        };
+        const page = new ProfilePage(host, { store, user: { id: 'me', email: 'm@x' } });
+        await tick();
+        const box = host.querySelector('[name="share_location_default"]');
+        assert.equal(box.checked, true);
+        box.checked = false;
+        host.querySelector('form.tr-profile-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+        await tick();
+        assert.deepEqual(log.map(l => l[0]), ['save', 'default']);
+        assert.deepEqual(log[1], ['default', false]);
+        page.destroy();
+        const bare = new ProfilePage(host, { store: { ...store, defaultShareLocation: undefined }, user: { id: 'me' } });
+        await tick();
+        assert.equal(host.querySelector('[name="share_location_default"]'), null, 'hidden without the store method');
+        bare.destroy();
+    });
+});

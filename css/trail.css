@@ -960,7 +960,7 @@ section.lb-detail { padding: 0; margin: 0; background: none; border: 0; border-r
 .lb-share-btn:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 1px; }
 .lb-share-wrap { position: relative; min-width: 0; }
 .lb-share-wrap > .lb-share-btn { position: absolute; z-index: 2; top: 0.55rem; right: 0.55rem; }
-.lb-share-wrap .lb-feed-head { padding-right: 2.75rem; }
+.lb-share-wrap .lb-feed-head { padding-right: 3rem; }
 .lb-share-wrap--tile > .lb-share-btn { top: 0.4rem; right: 0.4rem; background: rgba(0, 0, 0, 0.5); color: #fff; }
 .lb-share-wrap--tile > .lb-share-btn:hover { background: rgba(0, 0, 0, 0.7); color: #fff; }
 .lb-share-wrap--tile > .lb-tile { height: 100%; }
