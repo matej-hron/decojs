@@ -222,7 +222,7 @@ export class CommunityFeed {
         const name = own ? tt('you', 'You') : displayName(member, key => translate(`diveLog.${key}`, 'Diver'));
         const url = member?.avatar_path ? this.avatars.get(member.avatar_path) : null;
         // The name follows in the same link: the picture is decoration there.
-        const avatar = avatarHtml({ preset: member?.avatar_preset, url, name, id: row.owner, size: 40 });
+        const avatar = avatarHtml({ preset: member?.avatar_preset, url, name, id: row.owner, size: 40, zoom: true });
         return {
             name, own, href: routeHref({ name: 'member', id: row.owner }),
             avatarHtml: `<span class="tr-author-av" aria-hidden="true">${avatar}</span>`,

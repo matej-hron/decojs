@@ -102,9 +102,10 @@ export function fallbackAvatarKey(id) {
  * Avatar markup: the uploaded photo when `url`, else the preset SVG (unknown
  * preset → deterministic fallback from `id`, else from `name`). Without a name the
  * accessible label is the preset's English label.
- * @param {{preset?: string, url?: string, name?: string, id?: string, size?: number}} opts
+ * @param {{preset?: string, url?: string, name?: string, id?: string, size?: number, zoom?: boolean}} opts
+ * `zoom` marks an uploaded photo as tappable (see avatarLightbox.js); presets never zoom.
  */
-export function avatarHtml({ preset, url, name, id, size = 40 } = {}) {
+export function avatarHtml({ preset, url, name, id, size = 40, zoom = false } = {}) {
     const n = Number(size);
     const px = Number.isFinite(n) && n > 0 ? n : 40;
     const key = typeof preset === 'string' && Object.hasOwn(AVATARS, preset) ? preset : fallbackAvatarKey(id ?? name);
@@ -114,7 +115,8 @@ export function avatarHtml({ preset, url, name, id, size = 40 } = {}) {
         ? `<img src="${escHtml(url)}" alt="" loading="lazy" decoding="async">`
         : AVATARS[key].svg;
     // data-avatar: the preset an uploaded photo falls back to when it fails to load (see avatarImgFallback).
-    return `<span class="tr-avatar" style="--size:${px}px" role="img" aria-label="${label}" data-avatar="${key}">${inner}</span>`;
+    const z = zoom && url ? ' data-zoom' : '';
+    return `<span class="tr-avatar" style="--size:${px}px" role="img" aria-label="${label}" data-avatar="${key}"${z}>${inner}</span>`;
 }
 
 /**

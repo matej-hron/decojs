@@ -2942,6 +2942,8 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
         "trail": {
+            "avatarEnlarge": "Enlarge picture",
+            "avatarEnlarged": "Profile picture",
             "social": {
                 "kudos": "Kudos",
                 "kudosCount": "{0} kudos, show who",

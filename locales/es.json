@@ -2891,6 +2891,8 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
         "trail": {
+            "avatarEnlarge": "Ampliar imagen",
+            "avatarEnlarged": "Imagen de perfil",
             "social": {
                 "kudos": "Bravo",
                 "kudosCount": "{0} bravos, ver quién",
