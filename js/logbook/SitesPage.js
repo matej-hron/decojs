@@ -6,6 +6,7 @@
 
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { parseDecimal } from './entryModel.js';
+import { mapLinkButtonHtml } from './mapLinks.js';
 import { duplicateNameCounts, siteNameKey, mapyStaticMapUrl, parseSiteUrl, siteInfoLinkHtml } from './geo.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { routeHref } from './router.js';
@@ -267,10 +268,10 @@ export class SitesPage {
                     ? `<div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-delete"${disabled}>${escHtml(ts('delete', 'Delete'))}</button></div>`
                     : `<p class="lb-muted">${escHtml(ts('mergeFirst', 'Merge it into another site first.'))}</p>`}
             </div>`;
-        const preview = hasPosition(this.site) && MAPY_API_KEY ? `<img class="lb-site-preview" src="${escHtml(mapyStaticMapUrl({
+        const preview = hasPosition(this.site) && MAPY_API_KEY ? `<div class="lb-site-preview-wrap lb-map"><img class="lb-site-preview" src="${escHtml(mapyStaticMapUrl({
             lat: this.site.lat, lon: this.site.lon, apiKey: MAPY_API_KEY, width: 640, height: 240, zoom: 13,
             scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1, lang: currentLang(),
-        }))}" width="640" height="240" alt="${escHtml(this.site.name)}">` : '';
+        }))}" width="640" height="240" alt="${escHtml(this.site.name)}">${mapLinkButtonHtml({ lat: this.site.lat, lon: this.site.lon, label: this.site.name, exact: true })}</div>` : '';
         const info = siteInfoLinkHtml(this.site.url, ts('siteInfo', 'Site info'));
         const summary = this.visits?.rows ? visitSummaryHtml(this.visits.rows) : '';
         // The user's own dives here (the visits below also count other members' dives and same-name sites).
