@@ -1,7 +1,7 @@
 /**
  * Dive detail screen, laid out like an activity page: a hero (first photo, else the site map), the title
  * block and big stats, then two columns — main: an optional slot (the share page puts the profile and
- * analysis there), photos, description, notes and details; side: map, gases, conditions, buddies and the
+ * analysis there), photos, notes and details; the dive story sits full width under the stats; side: map, gases, conditions, buddies and the
  * owner's share card. On phones it is one column in reading order (CSS `order`).
  * Owner actions: Edit / Analysis / Add photos / Add video link / Delete.
  * With `readOnly` (another member's dive) it shows an author row instead and
@@ -95,6 +95,16 @@ export function detailRows(entry, t) {
     }
     const notes = typeof entry.notes === 'string' && entry.notes.trim() ? entry.notes.trim() : null;
     return { core, groups, notes };
+}
+
+/**
+ * Paragraphs of a dive story: split at blank lines, trimmed, empty ones dropped (single line breaks stay).
+ * @param {unknown} text
+ * @returns {string[]}
+ */
+export function storyParagraphs(text) {
+    if (typeof text !== 'string') return [];
+    return text.replace(/\r\n?/g, '\n').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
 }
 
 /**
@@ -208,6 +218,7 @@ export class EntryDetail {
         this.container.innerHTML = `<section class="lb-detail">
             <div class="lb-d-hero"></div>
             <div class="lb-d-main"></div>
+            <div class="lb-d-story"></div>
             <div class="lb-d-actions"></div><div class="lb-d-panel"></div>
             <div class="lb-d-grid">
                 <div class="lb-d-col lb-d-col--main"><div class="lb-d-slot"></div><div class="lb-d-media"></div><div class="lb-d-text"></div></div>
@@ -216,6 +227,7 @@ export class EntryDetail {
         this.heroEl = this.container.querySelector('.lb-d-hero');
         this.main = this.container.querySelector('.lb-d-main');
         this.sideEl = this.container.querySelector('.lb-d-side');
+        this.storyEl = this.container.querySelector('.lb-d-story');
         this.textEl = this.container.querySelector('.lb-d-text');
         /** Empty element in the main column for a caller's content (the share page's analysis); never re-rendered. */
         this.slot = this.container.querySelector('.lb-d-slot');
@@ -400,6 +412,7 @@ export class EntryDetail {
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}`;
         this.renderHero();
+        this.renderStory();
         this.renderSide();
         this.renderText();
         this._renderActions();
@@ -441,19 +454,25 @@ export class EntryDetail {
         }
     }
 
-    /** Main column below the photos: description (for others), notes (owner only), the remaining details. */
+    /** The dive story (`description`, written for others): right under the stats, in paragraphs; hidden when empty. */
+    renderStory() {
+        const paras = storyParagraphs(this.entry.description);
+        this.storyEl.hidden = !paras.length;
+        this._put(this.storyEl, paras.length ? `<section class="lb-d-story-in" aria-label="${escHtml(td('description', 'Dive story'))}">
+            ${paras.map(t => `<p>${escHtml(t)}</p>`).join('')}</section>` : '');
+    }
+
+    /** Main column below the photos: notes (owner only) and the remaining details. */
     renderText() {
         const e = this.entry;
         const { groups, notes: ownNotes } = detailRows(e, label);
         const notes = this.readOnly ? null : ownNotes; // notes are private, whatever the entry object carries
-        const description = typeof e.description === 'string' && e.description.trim() ? e.description.trim() : null;
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
         // The stat row has the average depth and the title block the rating; conditions are in the side column.
         const details = groups.filter(g => g.group !== 'conditions')
             .map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM' && r.key !== 'rating') }))
             .filter(g => g.rows.length);
         const out = [];
-        if (description) out.push(`<section class="lb-d-card lb-d-desc"><h3 class="lb-d-card-h">${escHtml(td('description', 'Description'))}</h3><p class="lb-d-prose">${escHtml(description)}</p></section>`);
         if (notes) {
             out.push(`<section class="lb-d-card lb-d-notes-card"><h3 class="lb-d-card-h">${escHtml(td('notes', 'Notes'))}<span class="lb-d-card-tag">${escHtml(td('onlyYou', 'Only you'))}</span></h3>
                 <p class="lb-d-notes">${escHtml(notes)}</p></section>`);
@@ -510,7 +529,7 @@ export class EntryDetail {
             ${this.readOnly ? '' : `<button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button>`}</li>`).join('');
         this.mediaEl.innerHTML = `${photos.length ? `<section class="lb-d-card lb-d-photos"><h3 class="lb-d-card-h">${escHtml(td('photos', 'Photos'))}<span class="lb-d-card-tag">${escHtml(String(photos.length))}</span></h3>
                 <div class="lb-photos${photos.length === 1 ? ' lb-photos--one' : ''}">${grid}</div></section>` : ''}
-            ${videos.length ? `<section class="lb-d-card lb-d-videos"><h3 class="lb-d-card-h">${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul></section>` : ''}`;
+            ${videos.length ? `<section class="lb-d-card lb-d-videos"><h3 class="lb-d-card-h">${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul></section>` : ''}`.trim();
         for (const img of this.mediaEl.querySelectorAll('.lb-photo img')) {
             img.addEventListener('load', () => { this._urlRetried = false; });
             img.addEventListener('error', () => this._retryUrls());

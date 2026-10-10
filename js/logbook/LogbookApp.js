@@ -21,6 +21,7 @@ import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
 import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
+import { shareDive, shareButtonHtml, confirmSheet, toast, isLinkShared } from './shareAction.js';
 import { MembersPage } from './MembersPage.js';
 import { MemberPage } from './MemberPage.js';
 import { ProfilePage } from './ProfilePage.js';
@@ -83,6 +84,8 @@ export class LogbookApp {
         this.community = false; // whether the community backend (migration 0004) is available
         this._communityKnown = false; // false while the probe has not answered 'yes' or 'no'
         this._probe = null; // the probe in flight
+        this.shareOn = false; // public share links exist (0005): own dives in the lists get a Share button
+        this._shareAsked = false;
         this._probeAttempts = 0;
         this._probeTimer = null;
         this._probeTimeoutMs = probeTimeoutMs;
@@ -255,6 +258,47 @@ export class LogbookApp {
         this._probeAttempts = 0;
         this._communityKnown = false;
         this.community = false;
+        this.shareOn = false;
+        this._shareAsked = false;
+    }
+
+    /** Ask once (after the community probe said yes) whether share links exist; re-render the list when they do. */
+    _probeShare() {
+        if (this._shareAsked || !this.community || typeof this.store.shareStatus !== 'function') return;
+        this._shareAsked = true;
+        const session = this._session;
+        Promise.resolve().then(() => this.store.shareStatus()).catch(error => { console.warn(error); return false; }).then(on => {
+            if (this.destroyed || session !== this._session) return;
+            if (!on) { this._shareAsked = false; return; } // a transient failure is asked again on the next render
+            this.shareOn = true;
+            if (this._route().name === 'list') this._renderList();
+        });
+    }
+
+    /** The Share button of an own dive in a list (none while selecting or without share links). */
+    _shareBtn(entry) {
+        return this.shareOn && !this.selecting ? shareButtonHtml(entry.id, { shared: isLinkShared(entry) }) : '';
+    }
+
+    /** Share an own dive from a list: create the link after a confirmation, then the share sheet or copy. */
+    async _shareFromList(id) {
+        const entry = this.entries?.find(e => e.id === id);
+        if (!entry || this._sharing) return;
+        this._sharing = true;
+        try {
+            const { entry: saved } = await shareDive({
+                store: this.store, entry, confirm: () => confirmSheet(), notify: toast, pageHref: location.href,
+            });
+            if (saved !== entry && this.entries) {
+                this.entries = this.entries.map(e => (e.id === id ? saved : e));
+                if (this._route().name === 'list') {
+                    this._renderList();
+                    this.view.querySelector(`[data-share="${CSS.escape(id)}"]`)?.focus();
+                }
+            }
+        } finally {
+            this._sharing = false;
+        }
     }
 
     _leaveLogbook() {
@@ -905,7 +949,8 @@ export class LogbookApp {
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
         const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
-        return feedCardHtml({
+        const share = this._shareBtn(entry);
+        const card = feedCardHtml({
             entry, href: routeHref({ name: 'detail', id: entry.id }),
             pick: this.selecting ? { id: entry.id, selected: this.selected.has(entry.id) } : null, selectHtml: this._pick(entry),
             title: diveTitle(entry, site?.name, tt), untitled: !site, whenText: this._whenText(entry),
@@ -914,6 +959,8 @@ export class LogbookApp {
             badgeHtml: needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : '',
             visualHtml: this._visual(entry, 'feed'), lockHtml: this._lock(entry),
         });
+        // The card is one link; the button sits next to it, never inside (links must not nest).
+        return share ? `<div class="lb-share-wrap">${card}${share}</div>` : card;
     }
 
     _renderFeed() {
@@ -929,12 +976,14 @@ export class LogbookApp {
         const stats = feedStats(entry, fmtNum).filter(s => s.key === 'depth' || s.key === 'duration')
             .map(s => `${s.value}${NB}${s.unit}`);
         const [open, close] = this._wrap(entry, 'lb-tile');
-        return `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
+        const share = this._shareBtn(entry);
+        const tile = `${open}${this._visual(entry, 'tile')}${this._pick(entry)}
             <div class="lb-tile-body">
                 <strong class="lb-tile-title${site ? '' : ' lb-untitled'}">${escHtml(diveTitle(entry, site?.name, tt))}${this._lock(entry)}</strong>
                 <span class="lb-date">${escHtml([fill(tl('number', '#{0}'), entry.log_number ?? '–'), formatDiveDate(entry.dive_date, currentLang())].filter(Boolean).join(', '))}</span>
                 ${stats.length ? `<span class="lb-tile-stats">${stats.map(t => `<span>${escHtml(t)}</span>`).join('')}</span>` : ''}
             </div>${close}`;
+        return share ? `<div class="lb-share-wrap lb-share-wrap--tile">${tile}${share}</div>` : tile;
     }
 
     _renderTable() {
@@ -946,7 +995,7 @@ export class LogbookApp {
             const aria = active ? (this.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none';
             return `<th scope="col" aria-sort="${aria}"${numeric ? ' class="lb-num"' : ''}>
                 <button type="button" class="lb-sort" data-sort="${key}" title="${escHtml(fill(tl('views.sortBy', 'Sort by {0}'), label))}">${escHtml(label)}<span class="lb-sort-mark" aria-hidden="true">${active ? (this.sort.dir === 'asc' ? '▲' : '▼') : ''}</span></button></th>`;
-        }).join('');
+        }).join('') + (this.shareOn && !this.selecting ? `<th scope="col" class="lb-share-col"><span class="rda-visually-hidden">${escHtml(translate('diveLog.trail.share.shareDive', 'Share this dive'))}</span></th>` : '');
         const lang = currentLang();
         const dash = '–';
         const rows = sorted.map(e => {
@@ -966,7 +1015,7 @@ export class LogbookApp {
                 <td class="lb-num">${escHtml(dur)}</td>
                 <td class="lb-num">${escHtml(m(e.details?.avgDepthM))}</td>
                 <td class="lb-num">${escHtml(temp)}</td>
-                <td>${escHtml((e.buddies ?? []).join(', ') || dash)}</td></tr>`;
+                <td>${escHtml((e.buddies ?? []).join(', ') || dash)}</td>${this.shareOn && !this.selecting ? `<td class="lb-share-col">${this._shareBtn(e)}</td>` : ''}</tr>`;
         }).join('');
         return `<div class="lb-table-wrap" tabindex="0"><table class="lb-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
@@ -1033,6 +1082,10 @@ export class LogbookApp {
         this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));
         this.view.querySelectorAll('.lb-sort').forEach(b => b.addEventListener('click', () => this._sortBy(b.dataset.sort)));
+        for (const b of this.view.querySelectorAll('[data-share]')) {
+            b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this._shareFromList(b.dataset.share); });
+        }
+        this._probeShare();
         this.view.querySelector('.lb-table tbody')?.addEventListener('click', e => {
             if (this.selecting) return;
             const row = e.target.closest('tr[data-href]');

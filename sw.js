@@ -124,6 +124,8 @@ const STATIC_ASSETS = [
   './js/logbook/memberEntryStore.js',
   './js/logbook/share.js',
   './js/logbook/ShareCard.js',
+  './js/logbook/shareAction.js',
+  './js/logbook/siteMap.js',
   './js/logbook/SharedDivePage.js',
   './js/backend/shareStore.js',
   './js/ndlPreview.js',

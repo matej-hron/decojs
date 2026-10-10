@@ -169,15 +169,12 @@
 .lb-pick { width: 100%; min-height: 44px; text-align: left; }
 .lb-file { cursor: pointer; }
 .lb-file:focus-within { outline: 2px solid var(--primary-color, #2980b9); outline-offset: 2px; }
-.lb-detail { display: grid; gap: 1rem; min-width: 0; }
-.lb-d-main, .lb-d-media, .lb-d-panel { display: grid; gap: 0.75rem; min-width: 0; }
-.lb-d-media:empty, .lb-d-panel:empty, .lb-d-actions:empty { display: none; }
+.lb-detail { display: grid; gap: 1.25rem; min-width: 0; }
+.lb-d-main, .lb-d-media, .lb-d-panel, .lb-d-side, .lb-d-text, .lb-d-col { display: grid; gap: 1rem; min-width: 0; align-content: start; }
+.lb-d-media:empty, .lb-d-panel:empty, .lb-d-actions:empty, .lb-d-slot:empty, .lb-d-side:empty, .lb-d-text:empty, .lb-d-hero[hidden] { display: none; }
 .lb-d-head, .lb-d-media h3, .lb-d-more h3 { margin: 0; }
 .lb-d-map, .lb-picker-map { background: var(--surface-sunken); }
-.lb-d-gases { margin: 1rem 0; }
-.lb-d-gases h3 { margin: 0 0 0.5rem; font-size: 1rem; }
 .lb-d-gas-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
-@media (min-width: 700px) { .lb-d-gas-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .lb-d-gas { --gauge: var(--brand); position: relative; min-width: 0; padding: 0.6rem 0.75rem 0.6rem 1.6rem;
     border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
 .lb-d-gas--deco { --gauge: var(--amber-500); }
@@ -189,7 +186,6 @@
 .lb-d-gas-role, .lb-d-gas-use { font-size: 0.85rem; color: var(--text-subtle); }
 .lb-d-gas-line, .lb-d-gas-use, .lb-d-gas-summary { font-variant-numeric: tabular-nums; }
 .lb-d-gas-summary { margin: 0.5rem 0 0; font-size: 0.9rem; }
-.lb-d-map { height: 220px; border-radius: var(--radius-md); z-index: 0; }
 .lb-d-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .lb-d-backlink { min-height: 44px; display: inline-flex; align-items: center; color: var(--brand); font-weight: 500; text-decoration: none; }
 .lb-d-backlink:hover { text-decoration: underline; }
@@ -212,8 +208,6 @@
 .lb-dl > div { min-width: 0; }
 .lb-dl dt { font-size: 0.85rem; color: var(--text-subtle); }
 .lb-dl dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.lb-d-more summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
-.lb-d-more h3 { margin-top: 0.75rem; font-size: 1rem; }
 .lb-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.5rem; }
 .lb-photo { position: relative; margin: 0; aspect-ratio: 1; min-width: 0; }
 .lb-photo-open { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 6px; overflow: hidden; }
@@ -357,7 +351,6 @@ a.lb-feed-card:hover .lb-feed-title, a.lb-tile:hover .lb-tile-title { color: var
     .lb-d-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem 0.75rem; }
     .lb-d-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .lb-d-actions .btn-danger { grid-column: 1 / -1; margin: 0.5rem 0 0; }
-    .lb-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; }
     .rda-summary dl { grid-template-columns: minmax(0, 1fr); gap: 0; }
     .rda-summary dd { margin: 0 0 0.6rem; }
     form.lb-form, section.lb-form, section.lb-newdive { padding: 0; background: none; border: 0; box-shadow: none; }
@@ -823,13 +816,158 @@ body:not(.tr-logged-in) .rda-account > strong { flex-basis: 100%; font-family: v
 span.tr-author-link { cursor: default; }
 
 body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
-.tr-share-root { max-width: 960px; }
 .tr-share-intro { margin: 0; color: var(--text-subtle); font-size: var(--text-sm); }
-.tr-share-analysis { display: grid; gap: 0.5rem; min-width: 0; }
-.tr-share-analysis-h { margin: 0.5rem 0 0; font-family: var(--font-display); font-size: var(--text-xl); }
 .tr-share-missing { display: grid; gap: 0.75rem; max-width: 34rem; margin: clamp(1.5rem, 8vh, 4rem) auto 0; padding: 1.5rem; }
 .tr-share-missing h1 { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
 .tr-share-missing p { margin: 0; }
 .tr-share-missing .btn { justify-self: start; min-height: 44px; }
 .tr-share-analysis .rda-chain-toggle { display: none; } /* earlier dives are never shared */
 .tr-share-missing a { color: var(--tr-accent, var(--brand)); }
+
+/* ---- Dive detail as an activity page (owner, member and share views) ----
+   Hero → title block → stat strip → two columns (main: analysis slot, photos, text; side: map, gases,
+   conditions, buddies, share). Phones: one column, cards re-ordered with `order` (the column wrappers
+   become display: contents). */
+.lb-d-hero { position: relative; overflow: hidden; border-radius: var(--radius-lg); background: var(--surface-sunken); }
+.lb-d-hero-photo { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.lb-d-hero-photo img, .lb-d-hero-wait { display: block; width: 100%; height: clamp(14rem, 38vw, 26rem); object-fit: cover; object-position: 50% 35%; }
+.lb-d-hero-count { position: absolute; right: 0.75rem; bottom: 0.75rem; padding: 0.2rem 0.7rem; border-radius: var(--radius-full); background: rgba(0, 0, 0, 0.6); color: #fff; font-size: var(--text-sm); font-weight: 600; }
+.lb-d-hero-photo:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: -3px; }
+
+.lb-d-title { display: grid; gap: 0.2rem; }
+.lb-detail .lb-d-head { font-family: var(--font-display); font-size: clamp(var(--text-2xl), 3.2vw, 2.6rem); line-height: 1.1; }
+.lb-d-title .lb-feed-rating { margin: 0.15rem 0 0; }
+.lb-d-main { gap: 0.9rem; }
+/* The stat strip: big numerals between hairlines, divided like an instrument panel */
+.lb-detail .lb-d-stats { display: flex; flex-wrap: wrap; gap: 0; padding: 0.9rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.lb-d-stats .lb-stat { padding: 0 1.75rem; border-left: 1px solid var(--border); }
+.lb-d-stats .lb-stat:first-child { padding-left: 0; border-left: 0; }
+.lb-d-stats .lb-stat dt { font-size: var(--text-sm); }
+.lb-d-stats .lb-stat dd { font-family: var(--font-display); font-size: clamp(var(--text-xl), 2.6vw, 2.1rem); font-weight: 600; letter-spacing: -0.01em; }
+.lb-d-actions { padding-top: 0; border-top: 0; }
+/* The dive story: the diver's own words, given room right under the stats */
+.lb-d-story[hidden] { display: none; }
+.lb-d-story-in { max-width: 68ch; font-size: var(--text-lg); line-height: 1.6; color: var(--text); }
+.lb-d-story-in p { margin: 0 0 0.8em; white-space: pre-line; overflow-wrap: anywhere; }
+.lb-d-story-in p:last-child { margin-bottom: 0; }
+@media (max-width: 720px) { .lb-d-story-in { font-size: var(--text-base); } }
+
+.lb-d-grid { display: grid; gap: 1rem; min-width: 0; }
+@media (min-width: 900px) {
+    .lb-d-grid { grid-template-columns: minmax(0, 1.75fr) minmax(17rem, 1fr); gap: 1.25rem; align-items: start; }
+    .lb-d-grid:not(:has(.lb-d-col--main > :not(:empty))) { grid-template-columns: minmax(0, 1fr); }
+    .lb-d-grid:not(:has(.lb-d-col--main > :not(:empty))) .lb-d-side { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+}
+
+.lb-d-card { min-width: 0; padding: 1rem 1.1rem 1.1rem; background: var(--surface-elevated, var(--surface)); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.lb-d-card-h { display: flex; align-items: baseline; gap: 0.5rem; margin: 0 0 0.75rem; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; line-height: 1.2; }
+.lb-d-card-tag { margin-left: auto; font-family: var(--font-body, inherit); font-size: var(--text-sm); font-weight: 500; color: var(--text-subtle); }
+.lb-d-group-h { margin: 0.9rem 0 0.4rem; font-size: var(--text-sm); font-weight: 600; color: var(--text-subtle); }
+.lb-d-group-h:first-of-type { margin-top: 0; }
+.lb-d-prose { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; max-width: 70ch; }
+.lb-d-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.lb-d-chips li { padding: 0.25rem 0.75rem; border-radius: var(--radius-full); background: var(--surface-sunken); font-weight: 500; }
+.lb-d-card .lb-dl { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+.lb-d-gases .lb-d-gas-list { grid-template-columns: minmax(0, 1fr); }
+
+/* Map card and hero map */
+.lb-map { position: relative; overflow: hidden; border-radius: var(--radius-md); background: var(--surface-sunken); z-index: 0; }
+.lb-d-mapcard .lb-map { aspect-ratio: 16 / 9; }
+.lb-d-hero-map { height: clamp(12rem, 30vw, 20rem); border-radius: 0; }
+.lb-map-static, .lb-map-leaflet { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.lb-map-area { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.lb-map-area circle { fill: rgba(41, 128, 185, 0.16); stroke: #2980b9; stroke-width: 2; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
+.lb-map-label { position: absolute; left: 0.6rem; top: 0.6rem; z-index: 500; padding: 0.15rem 0.6rem; border-radius: var(--radius-full); background: rgba(255, 255, 255, 0.92); color: #1f2d3a; font-size: var(--text-xs); font-weight: 600; }
+
+/* Photos: big thumbnails, one photo shown wide */
+.lb-d-photos .lb-photos { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.5rem; }
+.lb-d-photos .lb-photo { aspect-ratio: 4 / 3; }
+.lb-d-photos .lb-photos--one { grid-template-columns: minmax(0, 1fr); }
+.lb-d-photos .lb-photos--one .lb-photo { aspect-ratio: 16 / 9; }
+.lb-d-photos .lb-photo-open { border-radius: var(--radius-md); }
+
+/* Viewer: previous / next and a counter */
+.lb-viewer-nav { position: absolute; top: 50%; transform: translateY(-50%); min-width: 48px; min-height: 64px; border: 0; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.16); color: #fff; font-size: 2rem; line-height: 1; cursor: pointer; }
+.lb-viewer-prev { left: 0.5rem; }
+.lb-viewer-next { right: 0.5rem; }
+.lb-viewer-nav:hover, .lb-viewer-x:hover { background: rgba(255, 255, 255, 0.3); }
+.lb-viewer-nav:focus-visible, .lb-viewer-x:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.lb-viewer-count { position: absolute; bottom: calc(0.75rem + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); margin: 0; color: #fff; font-variant-numeric: tabular-nums; }
+
+/* Share card in the side column, with its location switch */
+.lb-d-share .lb-share { border-radius: var(--radius-lg); }
+.lb-share-location { min-height: 44px; align-items: center; }
+.lb-share-location input { width: 1.25rem; height: 1.25rem; margin: 0; flex: none; accent-color: var(--tr-accent, var(--brand)); }
+.lb-share-hint { margin: -0.4rem 0 0; color: var(--text-subtle); font-size: var(--text-sm); }
+
+/* The analysis in the main column: controls below the charts when the column is narrow */
+.lb-d-slot { display: grid; min-width: 0; container-type: inline-size; }
+.lb-d-slot .lb-analysis { padding: 0; }
+@container (max-width: 960px) { .lb-d-slot .rda-analysis { grid-template-columns: minmax(0, 1fr); } }
+.tr-share-analysis { display: grid; gap: 0.5rem; }
+.tr-share-analysis-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.tr-share-analysis-top .lb-d-card-h { margin: 0; }
+
+@media (max-width: 899px) {
+    .lb-d-grid { display: flex; flex-direction: column; }
+    .lb-d-col, .lb-d-side, .lb-d-text, .lb-d-media { display: contents; }
+    .lb-d-mapcard { order: 1; }
+    .lb-d-slot { order: 2; }
+    .lb-d-photos { order: 3; }
+    .lb-d-videos { order: 4; }
+    .lb-d-gases { order: 5; }
+    .lb-d-cond { order: 6; }
+    .lb-d-buddies { order: 7; }
+    .lb-d-notes-card { order: 9; }
+    .lb-d-details { order: 10; }
+    .lb-d-share { order: 11; }
+}
+@media (max-width: 720px) {
+    .lb-d-hero { margin: -1rem -1rem 0; border-radius: 0; }
+    .lb-detail .lb-d-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem 0; }
+    .lb-d-stats .lb-stat { padding: 0 0.75rem; }
+    .lb-d-stats .lb-stat:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+    .lb-d-card { padding: 0.9rem; }
+    .lb-d-photos .lb-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem; }
+    .lb-d-photos .lb-photos--one { grid-template-columns: minmax(0, 1fr); }
+    .lb-d-slot .lb-d-card { margin: 0 -1rem; border-radius: 0; border-left: 0; border-right: 0; }
+}
+
+/* ---- Share page: wider, and the invitation at the bottom ---- */
+.tr-share-root { max-width: 1200px; }
+.tr-share-cta { display: grid; gap: 1rem 2rem; margin-top: 1rem; padding: 1.5rem; border-radius: var(--radius-lg);
+    background: var(--tr-accent-soft, var(--surface-sunken)); border: 1px solid var(--border); }
+.tr-share-cta h2 { margin: 0 0 0.35rem; font-family: var(--font-display); font-size: var(--text-xl); }
+.tr-share-cta p { margin: 0 0 0.75rem; max-width: 60ch; color: var(--text-subtle); }
+.tr-share-cta .btn { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+.tr-share-cta-theory { align-self: end; }
+.tr-share-cta-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--tr-accent, var(--brand)); font-weight: 600; text-decoration: none; }
+.tr-share-cta-link:hover { text-decoration: underline; }
+@media (min-width: 760px) { .tr-share-cta { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); } .tr-share-cta-theory { padding-left: 2rem; border-left: 1px solid var(--border); } }
+
+/* ---- Share button on own dives in lists, its confirmation sheet and the toast ---- */
+.lb-share-btn { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 1px solid transparent; border-radius: 50%; background: none; color: var(--text-subtle); cursor: pointer; }
+.lb-share-btn:hover { color: var(--tr-accent, var(--brand)); background: var(--surface-sunken); }
+.lb-share-btn--on { color: var(--tr-accent, var(--brand)); }
+.lb-share-btn:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 1px; }
+.lb-share-wrap { position: relative; min-width: 0; }
+.lb-share-wrap > .lb-share-btn { position: absolute; z-index: 2; top: 0.55rem; right: 0.55rem; }
+.lb-share-wrap .lb-feed-head { padding-right: 2.75rem; }
+.lb-share-wrap--tile > .lb-share-btn { top: 0.4rem; right: 0.4rem; background: rgba(0, 0, 0, 0.5); color: #fff; }
+.lb-share-wrap--tile > .lb-share-btn:hover { background: rgba(0, 0, 0, 0.7); color: #fff; }
+.lb-share-wrap--tile > .lb-tile { height: 100%; }
+.tr-feed-card .lb-feed-head .lb-share-btn { position: relative; z-index: 2; margin: -0.5rem -0.5rem 0 0; } /* above the stretched title link */
+.lb-table .lb-share-col { width: 52px; padding: 0 0.25rem; text-align: center; }
+.lb-sheet { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; padding: 1rem; background: rgba(0, 0, 0, 0.45); }
+.lb-sheet-box { width: min(26rem, 100%); padding: 1.25rem; border-radius: var(--radius-lg); background: var(--surface-elevated, var(--surface)); color: var(--text); box-shadow: var(--shadow-lg); }
+.lb-sheet-title { margin: 0 0 0.4rem; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; }
+.lb-sheet-help { margin: 0 0 1rem; color: var(--text-subtle); font-size: var(--text-sm); }
+.lb-sheet-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.lb-sheet-actions .btn { min-height: 44px; flex: 1 1 8rem; }
+@media (max-width: 720px) {
+    .lb-sheet { place-items: end stretch; padding: 0; }
+    .lb-sheet-box { width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding-bottom: calc(1.25rem + env(safe-area-inset-bottom)); }
+}
+.lb-toast { position: fixed; z-index: 1200; left: 50%; bottom: calc(var(--tr-bottom-h, 0px) + 1.25rem + env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: min(32rem, calc(100% - 2rem));
+    margin: 0; padding: 0.65rem 1rem; border-radius: var(--radius-md); background: #1f2d3a; color: #fff; font-weight: 500; overflow-wrap: anywhere; box-shadow: var(--shadow-lg); }
+.lb-toast[hidden] { display: none; }
