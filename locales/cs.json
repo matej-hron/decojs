@@ -1731,6 +1731,7 @@
             "what": "<strong>Co se ukládá</strong>, když deník používáte: vaše e-mailová adresa (a jméno a e-mail účtu Google, pokud se přihlásíte přes Google), ponory a nahrávky z potápěčského počítače, které nahrajete, záznamy, které napíšete, fotky, které přidáte, lokality s jejich polohou, jména buddy, která zadáte, a váš profil.",
             "where": "<strong>Kde:</strong> v databázi a úložišti Supabase v EU (Frankfurt). Samotný statický web hostuje GitHub Pages. Přihlášení přes Google zajišťuje Google. Mapy a vyhledávání míst posílají hledaný text, oblast mapy nebo polohu lokality a vaši IP adresu službě Mapy.com (a záložně OpenStreetMap). Export načte knihovnu pro zip z cdnjs.cloudflare.com.",
             "why": "<strong>Proč:</strong> abyste měli svůj osobní potápěčský deník. Data jsou vaše. Ostatní pozvaní členové vidí vaše ponory, fotky, jména buddyů a profil (jméno, avatar, zemi), pokud ponor neoznačíte jako <em>Soukromý</em>; nikdy nevidí vaše poznámky ani e-mail a přesnou polohu lokality vidí jen tehdy, když ji u ponoru povolíte.",
+            "share": "<strong>Veřejné odkazy:</strong> když u ponoru zapnete veřejný odkaz, uvidí ho bez účtu kdokoli, kdo má odkaz: profil a analýzu, datum, hloubku, čas, plyn, název lokality, fotky, odkazy na videa, jména parťáků a průvodce a vaše jméno a avatar. Nikdy vaše poznámky, e‑mail ani další ponory; přesnou polohu jen pokud ji zaškrtnete. Stránky za odkazem vyhledávače neindexují. Vypnutím odkaz hned přestane fungovat; adresa fotky, kterou už někdo otevřel, může fungovat ještě až 10 minut.",
             "retention": "<strong>Jak dlouho:</strong> dokud je nesmažete. K ničemu jinému se nepoužívají.",
             "rights": "<strong>Vaše práva (GDPR):</strong> pro přístup ke kopii dat použijte <em>Export</em> v menu ⋯, stáhnete vše jako zip. Opravu provedete úpravou záznamů. Smazání: <em>Smazat všechna moje data</em> ve stejném menu odstraní všechny vaše ponory, nahrávky, fotky a lokality a vyprázdní váš profil. Odstranění samotného přihlášení vyžaduje mě, napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>. Můžete také podat stížnost u dozorového úřadu (v Česku Úřad pro ochranu osobních údajů, uoou.gov.cz).",
             "cookies": "<strong>Žádné sledovací ani reklamní cookies.</strong> Přihlášení uchovává token relace v místním úložišti prohlížeče."
@@ -2987,14 +2988,16 @@
                 "visibility": {
                     "private": "Soukromý",
                     "members": "Členové",
-                    "link": "Veřejný odkaz (připravujeme)"
+                    "link": "Veřejný odkaz"
                 },
                 "visibilityHelp": {
                     "private": "Jen vy.",
                     "members": "Všichni pozvaní do DecoTrailu. Vaše poznámky zůstanou soukromé.",
-                    "link": "Ponecháno beze změny: veřejná stránka zatím neexistuje."
+                    "link": "Kdokoli s odkazem, bez účtu. Vidí ho i členové. Poznámky nikdy.",
+                    "linkUnavailable": "Zůstává beze změny: veřejné odkazy zatím nejsou k dispozici."
                 },
-                "shareLocation": "Ukázat členům přesné místo"
+                "shareLocation": "Ukázat členům přesné místo",
+                "shareLocationAll": "Ukázat přesnou polohu"
             },
             "profile": {
                 "title": "Váš profil",
@@ -3049,7 +3052,30 @@
                 "signOut": "Odhlásit se"
             },
             "disclaimer": "Jen pro výuku — nenahrazuje váš potápěčský počítač.",
-            "footer": "DecoTrail — ponory vysvětlené pomocí"
+            "footer": "DecoTrail — ponory vysvětlené pomocí",
+            "share": {
+                "title": "Veřejný odkaz",
+                "helpOff": "Zapněte a dostanete odkaz, který otevře kdokoli i bez účtu. Vaše poznámky se nikdy nezobrazí.",
+                "helpOn": "Kdo má tento odkaz, uvidí ponor, fotky, parťáky a vaše jméno — bez účtu. Poznámky nikdy.",
+                "linkLabel": "Odkaz na tento ponor",
+                "copy": "Kopírovat odkaz",
+                "share": "Sdílet…",
+                "copied": "Odkaz zkopírován",
+                "copyFailed": "Označte odkaz a zkopírujte ho",
+                "offNote": "Vypnutím odkaz okamžitě přestane fungovat. Po novém zapnutí vznikne nový odkaz.",
+                "turnedOff": "Odkaz je vypnutý. Starý odkaz už nefunguje.",
+                "shareTitle": "Ponor z DecoTrail",
+                "formNew": "Odkaz vznikne po uložení.",
+                "formOffNote": "Volba Soukromý nebo Členové a uložení tento odkaz zruší.",
+                "pageIntro": "Ponor sdílený z DecoTrail.",
+                "analysisTitle": "Profil a analýza",
+                "missingTitle": "Tento odkaz nefunguje",
+                "missingText": "Potápěč možná odkaz vypnul, nebo se nezkopíroval celý. Požádejte ho o nový.",
+                "errorTitle": "Ponor se nepodařilo načíst",
+                "errorText": "Zkontrolujte připojení a zkuste to znovu.",
+                "retry": "Zkusit znovu",
+                "toDecoTheory": "Jak funguje dekomprese, vysvětluje DecoTheory"
+            }
         },
         "logbook": {
             "wipe": {

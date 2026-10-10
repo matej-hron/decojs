@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title>DecoTrail</title>
-    <link rel="manifest" href="../manifest.json">
+    <meta name="referrer" content="strict-origin">
+    <title>DecoTrail dive</title>
+    <meta name="description" content="A dive shared from DecoTrail.">
+    <meta property="og:title" content="DecoTrail dive">
+    <meta property="og:description" content="A dive shared from DecoTrail.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="DecoTrail">
     <meta name="theme-color" content="#2980b9">
     <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
     <link rel="stylesheet" href="../css/styles.css">
@@ -16,18 +21,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 </head>
-<body>
+<body class="tr-share-page">
     <header class="tr-top"><div class="tr-top-in nav-container">
-        <a class="tr-brand" href="#/"><svg class="tr-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
+        <a class="tr-brand" href="dive-log.html"><svg class="tr-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
             <path class="tr-mark-sea" d="M2 7.5h28"/>
             <path class="tr-mark-trail" d="M4 7.5 9.5 22.5h8l2.5-5.5h3.5l1.8-4.5"/>
             <circle class="tr-mark-dot" cx="27.2" cy="8.6" r="2.9"/>
         </svg><span>DecoTrail</span></a>
-        <nav class="tr-tabs" aria-label="DecoTrail" hidden></nav>
         <div class="tr-top-end"><span class="tr-lang"></span><a class="tr-sibling" href="../index.html"><svg class="tr-sibling-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg><span class="tr-sibling-text" data-i18n="diveLog.trail.decotheory">DecoTheory&nbsp;↗</span></a></div>
     </div></header>
-    <main class="tr-main"><div class="rda-root"></div></main>
-    <nav class="tr-bottom" aria-label="DecoTrail" hidden></nav>
+    <main class="tr-main"><div class="rda-root tr-share-root"></div></main>
     <footer class="tr-foot">
         <p class="tr-foot-line"><span data-i18n="diveLog.trail.footer">DecoTrail — dives explained by</span> <a href="../index.html" data-i18n="diveLog.trail.decotheory">DecoTheory&nbsp;↗</a></p>
         <p class="tr-foot-note" data-i18n="diveLog.trail.disclaimer">For education only — not a substitute for your dive computer.</p>
@@ -42,13 +45,12 @@
         initI18n();
     </script>
     <script type="module">
-        import { registerServiceWorker } from '../js/swRegister.js';
-        registerServiceWorker('../sw.js'); // offline use at the dive site
-    </script>
-    <script type="module">
-        import { LogbookApp } from '../js/logbook/LogbookApp.js';
-        import { getDiveStore } from '../js/backend/diveStore.js';
-        new LogbookApp(document.querySelector('.rda-root'), { store: getDiveStore() });
+        import { SharedDivePage } from '../js/logbook/SharedDivePage.js';
+        import { createShareStore } from '../js/backend/shareStore.js';
+        import { parseShareHash } from '../js/logbook/share.js';
+        const token = parseShareHash(location.hash);
+        new SharedDivePage(document.querySelector('.tr-share-root'), { store: token ? createShareStore(token) : null });
+        addEventListener('hashchange', () => location.reload()); // another link pasted into the address bar
     </script>
 </body>
 </html>
