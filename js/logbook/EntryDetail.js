@@ -1,6 +1,9 @@
 /**
- * Dive detail screen: facts, site with a small map, photos, video links and
- * the Edit / Analysis / Add photos / Add video link / Delete actions.
+ * Dive detail screen, laid out like an activity page: a hero (first photo, else the site map), the title
+ * block and big stats, then two columns — main: an optional slot (the share page puts the profile and
+ * analysis there), photos, notes and details; the dive story sits full width under the stats; side: map, gases, conditions, buddies and the
+ * owner's share card. On phones it is one column in reading order (CSS `order`).
+ * Owner actions: Edit / Analysis / Add photos / Add video link / Delete.
  * With `readOnly` (another member's dive) it shows an author row instead and
  * offers nothing that writes; notes are never shown then.
  *
@@ -13,6 +16,10 @@ import { DETAIL_KEYS, formatDiveDate, formatDuration } from './entryModel.js';
 import { routeHref } from './router.js';
 import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
+import { siteMapHtml, wireSiteMap } from './siteMap.js';
+import { ratingHtml } from './feedCard.js';
+import { ratingOf } from './entryModel.js';
+import { MAPY_API_KEY } from '../backend/config.js';
 import { gasName } from '../import/recordedDive.js';
 import { gasesFromEntry, gasUsage, cylinderText } from './gasModel.js';
 import { diveTitle, feedStats, storyHtml } from './feed.js';
@@ -83,6 +90,18 @@ export function detailRows(entry, t) {
 }
 
 /**
+ * What the hero at the top of the detail shows: the first photo, else the site map, else nothing.
+ * Nothing until the photos and the site are loaded, so the map does not jump from the hero to the side.
+ * @param {{loaded: boolean, photos: number, area: Object|null}} o
+ * @returns {'photo'|'map'|null}
+ */
+export function heroKind({ loaded, photos, area }) {
+    if (!loaded) return null;
+    if (photos > 0) return 'photo';
+    return area ? 'map' : null;
+}
+
+/**
  * Gas cards of the detail screen (new `details.gases` or the legacy single cylinder) and the
  * consumption summary. Empty strings for what is not known; `fill` is the remaining gas in %.
  * @param {Object} entry - log_entries row
@@ -141,8 +160,10 @@ export class EntryDetail {
      * @param {{name: string, avatarHtml: string, href: ?string}|null} [options.author] - author row (read-only view; no link without href)
      * @param {string|false} [options.backHref] - target of the back link (default: My dives; read-only: the Feed); false: none
      * @param {string|false} [options.analysisHref] - target of the Analysis button (default: the analysis route); false: none
+     * @param {{lat: number, lon: number, exact: boolean}|null} [options.area] - where the map points (share page);
+     *   default: the site's own position, exact
      */
-    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null }) {
+    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null, analysisHref = null, area }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -150,6 +171,7 @@ export class EntryDetail {
         this.author = author;
         this.backHref = backHref === false ? null : backHref ?? routeHref({ name: this.readOnly ? 'feed' : 'list' });
         this.analysisHref = analysisHref;
+        this.areaOverride = area;
         this.shareCard = null;
         this.onDeleted = onDeleted;
         this.onError = onError;
@@ -164,14 +186,35 @@ export class EntryDetail {
         this.status = ''; // progress line while uploading
         this.errors = []; // per-file failures
         this.busy = false;
-        this.map = null;
+        this._mapCleanup = { hero: null, side: null };
         this.viewer = null;
-        this._onKey = e => { if (e.key === 'Escape' && this.viewer) this._closeViewer(); };
+        this._onKey = e => {
+            if (!this.viewer) return;
+            if (e.key === 'Escape') this._closeViewer();
+            else if (e.key === 'ArrowRight') this._stepViewer(1);
+            else if (e.key === 'ArrowLeft') this._stepViewer(-1);
+        };
         document.addEventListener('keydown', this._onKey);
         this._onImgError = e => avatarImgFallback(e); // an author photo that fails falls back to the preset
         this.container.addEventListener('error', this._onImgError, true);
-        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-share"></div><div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
+        this.container.innerHTML = `<section class="lb-detail">
+            <div class="lb-d-top"></div>
+            <div class="lb-d-hero"></div>
+            <div class="lb-d-main"></div>
+            <div class="lb-d-story"></div>
+            <div class="lb-d-grid">
+                <div class="lb-d-col lb-d-col--main"><div class="lb-d-slot"></div><div class="lb-d-media"></div><div class="lb-d-text"></div></div>
+                <div class="lb-d-col lb-d-col--side"><div class="lb-d-side"></div><div class="lb-d-share"></div></div>
+            </div>
+            <div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
+        this.topEl = this.container.querySelector('.lb-d-top');
+        this.heroEl = this.container.querySelector('.lb-d-hero');
         this.main = this.container.querySelector('.lb-d-main');
+        this.sideEl = this.container.querySelector('.lb-d-side');
+        this.storyEl = this.container.querySelector('.lb-d-story');
+        this.textEl = this.container.querySelector('.lb-d-text');
+        /** Empty element in the main column for a caller's content (the share page's analysis); never re-rendered. */
+        this.slot = this.container.querySelector('.lb-d-slot');
         this.mediaEl = this.container.querySelector('.lb-d-media');
         this.actionsEl = this.container.querySelector('.lb-d-actions');
         this.panel = this.container.querySelector('.lb-d-panel');
@@ -206,7 +249,7 @@ export class EntryDetail {
         this.shareCard?.destroy();
         document.removeEventListener('keydown', this._onKey);
         this.container.removeEventListener('error', this._onImgError, true);
-        this._removeMap();
+        this._removeMaps();
         this._closeViewer();
         this.container.innerHTML = '';
     }
@@ -246,6 +289,7 @@ export class EntryDetail {
             console.error(error);
             this.urls = new Map();
         }
+        this.urlsLoaded = true;
         if (!this.destroyed) this.renderMedia();
     }
 
@@ -255,18 +299,82 @@ export class EntryDetail {
         this.renderPanel();
     }
 
-    // ---- Facts and site ----
+    // ---- Layout: hero, title block and stats, side cards, text cards ----
 
-    _removeMap() {
-        this.map?.remove();
-        this.map = null;
+    _removeMaps(which = ['hero', 'side']) {
+        for (const k of which) {
+            this._mapCleanup[k]?.();
+            this._mapCleanup[k] = null;
+        }
+    }
+
+    /** Where the map points: the caller's area (share page), else the site's own position (exact), else null. */
+    get area() {
+        if (this.areaOverride !== undefined) return this.entry.site_id ? this.areaOverride : null;
+        const s = this.site;
+        return s && Number.isFinite(s.lat) && Number.isFinite(s.lon) ? { lat: s.lat, lon: s.lon, exact: true } : null;
+    }
+
+    get photos() {
+        return this.media.filter(m => m.kind === 'photo');
+    }
+
+    _siteName() {
+        // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
+        return this.entry.site_id ? (this.site ? this.site.name : (this.loaded ? null : '…')) : null;
+    }
+
+    _mapHtml(area, { width, height, zoom, className }) {
+        const name = this._siteName();
+        return siteMapHtml({
+            area, apiKey: MAPY_API_KEY, width, height, zoom, className, lang: currentLang(),
+            scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1,
+            alt: name && name !== '…' ? fill(td('mapAlt', 'Map of {0}'), name) : td('mapAltNoName', 'Map of the dive site'),
+            areaLabel: td('approxArea', 'Approximate area'),
+        });
+    }
+
+    /** Set markup only when it changed (keeps a mounted map and a loaded image); true when it changed. */
+    _put(el, html) {
+        if (el._html === html) return false;
+        el._html = html;
+        el.innerHTML = html;
+        return true;
+    }
+
+    /** Photos count for the hero while their URLs load; once loaded, only photos that could be signed. */
+    _heroKind() {
+        const photos = this.urlsLoaded ? this._viewable().length : this.photos.length;
+        return heroKind({ loaded: this.loaded, photos, area: this.area });
+    }
+
+    renderHero() {
+        const kind = this._heroKind();
+        let html = '';
+        if (kind === 'photo') {
+            const first = this._viewable()[0] ?? this.photos[0];
+            const url = this.urls.get(first.path);
+            const more = this.photos.length - 1;
+            html = url
+                ? `<button type="button" class="lb-d-hero-photo" data-open="${escHtml(first.id)}" aria-label="${escHtml(td('enlarge', 'Enlarge photo'))}">
+                    <img src="${escHtml(url)}" alt="${escHtml(tp('alt', 'Photo'))}">
+                    ${more > 0 ? `<span class="lb-d-hero-count">${escHtml(fill(td('photoCount', '{0} photos'), this.photos.length))}</span>` : ''}</button>`
+                : '<div class="lb-d-hero-wait" aria-hidden="true"></div>';
+        } else if (kind === 'map') {
+            html = this._mapHtml(this.area, { width: 1024, height: 360, zoom: 12, className: 'lb-d-map lb-d-hero-map' });
+        }
+        this.heroEl.hidden = !html;
+        if (this._put(this.heroEl, html)) {
+            this._removeMaps(['hero']);
+            if (kind === 'map') this._mapCleanup.hero = wireSiteMap(this.heroEl, { loadLeaflet, tileUrl: TILE_URL, attribution: TILE_ATTRIBUTION });
+            this.heroEl.querySelector('[data-open]')?.addEventListener('click', e => this._openViewer(e.currentTarget.dataset.open));
+            const img = this.heroEl.querySelector('.lb-d-hero-photo img');
+            img?.addEventListener('error', () => this._retryUrls());
+        }
     }
 
     renderMain() {
-        this._removeMap();
         const e = this.entry;
-        const { core, groups, notes: ownNotes, description } = detailRows(e, label);
-        const notes = this.readOnly ? null : ownNotes; // notes are private, whatever the entry object carries
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
         // Another diver's log number is not shared.
         const number = this.readOnly && (e.log_number === null || e.log_number === undefined) ? '' : fill(label('number'), e.log_number ?? '–');
@@ -274,55 +382,104 @@ export class EntryDetail {
             ? translate(`diveLog.trail.visibility.${e.visibility}`, VISIBILITY_FALLBACK[e.visibility]) : '';
         const a = this.readOnly ? this.author : null;
         const sub = [number, formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(', ');
-        const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
-        const hasCoords = this.site && Number.isFinite(this.site.lat) && Number.isFinite(this.site.lon);
-        // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
-        const siteName = e.site_id ? (this.site ? this.site.name : (this.loaded ? null : '…')) : null;
+        const siteName = this._siteName();
         const stats = feedStats(e, fmtNum);
-        const statKeys = new Set(['duration', 'depth', 'gas', 'waterTemp']); // shown as big stats
-        const rest = core.filter(r => !statKeys.has(r.key));
-        // The average depth is in the stat row already; leave it out of "More details".
-        const moreGroups = stats.some(st => st.key === 'avgDepth')
-            ? groups.map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM') })).filter(g => g.rows.length)
-            : groups;
         const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
-        const gas = gasCards(e, label, fmtNum);
+        const rating = ratingOf(e.details?.rating);
+        this.topEl.innerHTML = `${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
+            ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}`.trim();
         this.main.innerHTML = `
-            <div class="lb-d-top">
-                ${this.backHref ? `<a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>` : ''}
-                ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}
-            </div>
             ${a ? `<div class="tr-author lb-d-author">${a.href
                 ? `<a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a>`
                 : `<span class="tr-author-link">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></span>`}</div>` : ''}
             <div class="lb-d-title">
                 <h2 class="lb-d-head${siteName ? '' : ' lb-untitled'}">${escHtml(siteName ?? diveTitle(e, null, k => translate(`diveLog.logbook.${k}`, TITLE_FALLBACK[k])))}</h2>
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
+                ${ratingHtml(rating, fill(label('form.ratingValue'), rating))}
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
                 ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
-            ${description ? `<section class="lb-d-story" aria-labelledby="lb-d-story-h"><h3 class="lb-d-story-h" id="lb-d-story-h">${escHtml(translate('diveLog.logbook.form.description', 'How was it?'))}</h3>${storyHtml(description)}</section>` : ''}
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
-                <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
-            ${gas.cards.length ? `<section class="lb-d-gases" aria-labelledby="lb-d-gases-h"><h3 id="lb-d-gases-h">${escHtml(label('detail.gases'))}</h3>
-                <ul class="lb-d-gas-list">${gas.cards.map(c => `<li class="lb-d-gas${c.role === 'deco' ? ' lb-d-gas--deco' : ''}${c.fill === null ? ' lb-d-gas--unknown' : ''}">
+                <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}`;
+        this.renderHero();
+        this.renderStory();
+        this.renderSide();
+        this.renderText();
+        this._renderActions();
+    }
+
+    /** Side column: map (unless it is the hero), gases, conditions, buddies. */
+    renderSide() {
+        const e = this.entry;
+        const { core, groups } = detailRows(e, label);
+        const area = this.area;
+        const kind = this._heroKind();
+        const gas = gasCards(e, label, fmtNum);
+        const card = (cls, title, body) => `<section class="lb-d-card ${cls}"><h3 class="lb-d-card-h">${escHtml(title)}</h3>${body}</section>`;
+        const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
+        const out = [];
+        if (this.loaded && area && kind !== 'map') {
+            out.push(card('lb-d-mapcard', td('location', 'Location'), // an approximate map says so on the map itself
+                this._mapHtml(area, { width: 640, height: 360, zoom: 13, className: 'lb-d-map' })));
+        }
+        if (gas.cards.length) {
+            out.push(card('lb-d-gases', label('detail.gases'), `<ul class="lb-d-gas-list">${gas.cards.map(c => `<li class="lb-d-gas${c.role === 'deco' ? ' lb-d-gas--deco' : ''}${c.fill === null ? ' lb-d-gas--unknown' : ''}">
                     <span class="lb-gas-gauge" aria-hidden="true"${c.fill === null ? '' : ` style="--fill: ${c.fill}%"`}></span>
                     <p class="lb-d-gas-head"><strong>${escHtml(c.mix)}</strong> <span class="lb-d-gas-role">${escHtml(c.roleLabel)}</span></p>
                     ${c.cylinder || c.pressures ? `<p class="lb-d-gas-line">${escHtml([c.cylinder, c.pressures].filter(Boolean).join(', '))}</p>` : ''}
                     ${c.used ? `<p class="lb-d-gas-use">${escHtml(c.used)}</p>` : ''}</li>`).join('')}</ul>
-                ${gas.summary ? `<p class="lb-d-gas-summary">${escHtml(gas.summary)}</p>` : ''}</section>` : ''}
-            ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
-            ${rest.length ? dl(rest) : ''}
-            ${notes ? `<div class="lb-d-notes"><p class="lb-d-notes-label">${escHtml(label('form.notesPrivate'))}</p><p class="lb-d-notes-text">${escHtml(notes)}</p></div>` : ''}
-            ${moreGroups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
-                ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
-`;
-        // Below the photos, right above the panel where Delete asks for confirmation.
+                ${gas.summary ? `<p class="lb-d-gas-summary">${escHtml(gas.summary)}</p>` : ''}`));
+        }
+        // Water temperature, maximum depth, time and gas are in the stat row; the weather group joins the conditions.
+        const conditions = [...core.filter(r => ['surfaceTempC', 'visShallow', 'visDeep'].includes(r.key)),
+            ...(groups.find(g => g.group === 'conditions')?.rows ?? [])];
+        if (conditions.length) out.push(card('lb-d-cond', td('conditions', 'Conditions'), dl(conditions)));
+        if (e.buddies?.length) {
+            out.push(card('lb-d-buddies', label('detail.label.buddies'),
+                `<ul class="lb-d-chips">${e.buddies.map(b => `<li>${escHtml(b)}</li>`).join('')}</ul>`));
+        }
+        if (this._put(this.sideEl, out.join(''))) {
+            this._removeMaps(['side']);
+            if (this.sideEl.querySelector('.lb-map')) this._mapCleanup.side = wireSiteMap(this.sideEl, { loadLeaflet, tileUrl: TILE_URL, attribution: TILE_ATTRIBUTION });
+        }
+    }
+
+    /** The dive story (`description`, written for others): right under the stats, in paragraphs; hidden when empty. */
+    renderStory() {
+        const { description } = detailRows(this.entry, label);
+        this.storyEl.hidden = !description;
+        this._put(this.storyEl, description
+            ? `<h3 class="lb-d-story-h">${escHtml(translate('diveLog.logbook.form.description', 'How was it?'))}</h3>${storyHtml(description)}` : '');
+    }
+
+    /** Main column below the photos: notes (owner only) and the remaining details. */
+    renderText() {
+        const e = this.entry;
+        const { groups, notes: ownNotes } = detailRows(e, label);
+        const notes = this.readOnly ? null : ownNotes; // notes are private, whatever the entry object carries
+        const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
+        // The stat row has the average depth and the title block the rating; conditions are in the side column.
+        const details = groups.filter(g => g.group !== 'conditions')
+            .map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM' && r.key !== 'rating') }))
+            .filter(g => g.rows.length);
+        const out = [];
+        if (notes) {
+            out.push(`<section class="lb-d-card lb-d-notes-card"><h3 class="lb-d-card-h">${escHtml(td('notes', 'Notes'))}<span class="lb-d-card-tag">${escHtml(td('onlyYou', 'Only you'))}</span></h3>
+                <p class="lb-d-notes">${escHtml(notes)}</p></section>`);
+        }
+        if (details.length) {
+            out.push(`<section class="lb-d-card lb-d-details"><h3 class="lb-d-card-h">${escHtml(td('details', 'Details'))}</h3>
+                ${details.map(g => `<h4 class="lb-d-group-h">${escHtml(label(`form.${g.group}`))}</h4>${dl(g.rows)}`).join('')}</section>`);
+        }
+        this._put(this.textEl, out.join(''));
+    }
+
+    _renderActions() {
+        const e = this.entry;
         const analysisLink = e.recording_id && this.analysisHref !== false
             ? `<a class="btn btn-secondary" href="${escHtml(this.analysisHref ?? routeHref({ name: this.readOnly ? 'memberAnalysis' : 'analysis', id: e.id }))}">${escHtml(td('analysis', 'Analysis'))}</a>` : '';
         if (this.readOnly) {
             this.actionsEl.innerHTML = analysisLink;
-            if (hasCoords) this._mountMap(this.site);
             return;
         }
         this.actionsEl.innerHTML = `
@@ -336,28 +493,18 @@ export class EntryDetail {
         photoInput.addEventListener('change', () => this._addPhotos(photoInput));
         this.actionsEl.querySelector('#lb-add-video').addEventListener('click', () => { this.videoOpen = true; this.confirm = null; this.renderPanel(); });
         this.actionsEl.querySelector('#lb-delete').addEventListener('click', () => { this.confirm = { kind: 'entry' }; this.videoOpen = false; this.renderPanel(); });
-        if (hasCoords) this._mountMap(this.site);
-    }
-
-    async _mountMap(site) {
-        const el = this.main.querySelector('.lb-d-map');
-        try {
-            const L = await loadLeaflet();
-            if (this.destroyed || this.main.querySelector('.lb-d-map') !== el) return;
-            this.map = L.map(el, { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false });
-            L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION }).addTo(this.map);
-            this.map.setView([site.lat, site.lon], 12);
-            L.circleMarker([site.lat, site.lon], { radius: 9, color: '#fff', weight: 3, fillColor: '#d62d20', fillOpacity: 1 }).addTo(this.map);
-        } catch (error) {
-            console.warn('Site map unavailable', error);
-            el.remove();
-        }
     }
 
     // ---- Media ----
 
+    _retryUrls() {
+        if (this._urlRetried || this.destroyed) return; // signed URLs expire
+        this._urlRetried = true;
+        this._loadUrls();
+    }
+
     renderMedia() {
-        const photos = this.media.filter(m => m.kind === 'photo');
+        const photos = this.photos;
         const videos = this.media.filter(m => m.kind === 'video_link');
         const grid = photos.map(m => {
             const url = this.urls.get(m.path);
@@ -370,15 +517,12 @@ export class EntryDetail {
             ? `<a href="${escHtml(m.url)}" target="_blank" rel="noopener noreferrer">${escHtml(m.caption || m.url)}</a>`
             : `<span>${escHtml(m.caption || m.url || '')}</span>`}
             ${this.readOnly ? '' : `<button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button>`}</li>`).join('');
-        this.mediaEl.innerHTML = `${photos.length ? `<h3>${escHtml(td('photos', 'Photos'))}</h3><div class="lb-photos">${grid}</div>` : ''}
-            ${videos.length ? `<h3>${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul>` : ''}`;
+        this.mediaEl.innerHTML = `${photos.length ? `<section class="lb-d-card lb-d-photos"><h3 class="lb-d-card-h">${escHtml(td('photos', 'Photos'))}<span class="lb-d-card-tag">${escHtml(String(photos.length))}</span></h3>
+                <div class="lb-photos${photos.length === 1 ? ' lb-photos--one' : ''}">${grid}</div></section>` : ''}
+            ${videos.length ? `<section class="lb-d-card lb-d-videos"><h3 class="lb-d-card-h">${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul></section>` : ''}`.trim();
         for (const img of this.mediaEl.querySelectorAll('.lb-photo img')) {
             img.addEventListener('load', () => { this._urlRetried = false; });
-            img.addEventListener('error', () => {
-                if (this._urlRetried || this.destroyed) return; // signed URLs expire after an hour
-                this._urlRetried = true;
-                this._loadUrls();
-            });
+            img.addEventListener('error', () => this._retryUrls());
         }
         for (const b of this.mediaEl.querySelectorAll('[data-open]')) b.addEventListener('click', () => this._openViewer(b.dataset.open));
         for (const b of this.mediaEl.querySelectorAll('[data-remove]')) {
@@ -388,23 +532,57 @@ export class EntryDetail {
                 this.renderPanel();
             });
         }
+        this.renderHero();
+        this.renderSide(); // the map moves between the hero and the side column as photos come and go
+    }
+
+    /** Photos that can be shown in the viewer (signed URL known), in gallery order. */
+    _viewable() {
+        return this.photos.filter(m => this.urls.get(m.path));
     }
 
     _openViewer(id) {
-        const m = this.media.find(x => x.id === id);
-        const url = m && this.urls.get(m.path);
-        if (!url) return;
+        const list = this._viewable();
+        const index = list.findIndex(m => m.id === id);
+        if (index < 0) return;
         this._closeViewer();
         const v = document.createElement('div');
         v.className = 'lb-viewer';
         v.setAttribute('role', 'dialog');
         v.setAttribute('aria-modal', 'true');
         v.setAttribute('aria-label', tp('alt', 'Photo'));
-        v.innerHTML = `<img src="${escHtml(url)}" alt="${escHtml(tp('alt', 'Photo'))}"><button type="button" class="lb-viewer-x" aria-label="${escHtml(td('close', 'Close'))}">×</button>`;
-        v.addEventListener('click', () => this._closeViewer());
+        const many = list.length > 1;
+        v.innerHTML = `<img alt="${escHtml(tp('alt', 'Photo'))}">
+            <button type="button" class="lb-viewer-x" aria-label="${escHtml(td('close', 'Close'))}">×</button>
+            ${many ? `<button type="button" class="lb-viewer-nav lb-viewer-prev" aria-label="${escHtml(td('prevPhoto', 'Previous photo'))}">‹</button>
+            <button type="button" class="lb-viewer-nav lb-viewer-next" aria-label="${escHtml(td('nextPhoto', 'Next photo'))}">›</button>
+            <p class="lb-viewer-count" aria-live="polite"></p>` : ''}`;
+        v.addEventListener('click', e => {
+            if (e.target.closest('.lb-viewer-prev')) this._stepViewer(-1);
+            else if (e.target.closest('.lb-viewer-next')) this._stepViewer(1);
+            else if (e.target.tagName !== 'IMG') this._closeViewer();
+        });
         document.body.appendChild(v);
-        v.querySelector('button').focus();
         this.viewer = v;
+        this._viewerIndex = index;
+        this._showViewer();
+        v.querySelector('.lb-viewer-x').focus();
+    }
+
+    _showViewer() {
+        const list = this._viewable();
+        if (!this.viewer || !list.length) return;
+        this._viewerIndex = (this._viewerIndex + list.length) % list.length;
+        const m = list[this._viewerIndex];
+        this.viewer.querySelector('img').src = this.urls.get(m.path);
+        const count = this.viewer.querySelector('.lb-viewer-count');
+        if (count) count.textContent = `${this._viewerIndex + 1} / ${list.length}`;
+    }
+
+    _stepViewer(delta) {
+        if (!this.viewer) return;
+        this._viewerIndex += delta;
+        this._showViewer();
     }
 
     _closeViewer() {

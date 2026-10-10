@@ -130,6 +130,8 @@ test('share store: loads the dive, signs photo and avatar URLs, maps a missing R
     const store = shareStoreFor(client, TOKEN);
     const parts = await store.loadSharedDive();
     assert.deepEqual(client.calls[0], ['rpc', 'get_shared_dive', { p_token: TOKEN }]);
+    assert.deepEqual(client.calls[1], ['rpc', 'get_shared_dive_area', { p_token: TOKEN }]);
+    client.calls.splice(0, 1); // the area call is covered in share-polish.test.mjs
     assert.equal(parts.entry.id, 'e1');
     const urls = await store.photoUrls(['u1/e1/m1.jpg']);
     assert.equal(urls.get('u1/e1/m1.jpg'), 'https://cdn.test/u1/e1/m1.jpg');

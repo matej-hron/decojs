@@ -40,15 +40,33 @@ export function shareStoreFor(client, token) {
         return urls;
     }
 
+    /** The map position (0009); null when the function is missing or fails: the page then shows what it has. */
+    async function loadArea() {
+        try {
+            const { data, error } = await client.rpc('get_shared_dive_area', { p_token: token });
+            if (error) {
+                if (!MISSING.test(error.code ?? '')) console.warn('Shared dive area unavailable', error.message ?? error);
+                return null;
+            }
+            return data ?? null;
+        } catch (error) {
+            console.warn('Shared dive area unavailable', error);
+            return null;
+        }
+    }
+
     return {
         /** The parts of the shared dive; null when the link does not work (unknown or revoked token). */
         async loadSharedDive() {
-            const { data, error, status } = await client.rpc('get_shared_dive', { p_token: token });
+            const [{ data, error, status }, area] = await Promise.all([
+                client.rpc('get_shared_dive', { p_token: token }),
+                loadArea(),
+            ]);
             if (error) {
                 if (MISSING.test(error.code ?? '') || status === 404) throw new DiveStoreError('unavailable', error.message ?? 'Sharing is not set up');
                 throw new DiveStoreError(kind(error), error.message ?? String(error));
             }
-            return sharedDiveParts(data);
+            return sharedDiveParts(data, area);
         },
         photoUrls: paths => signed(PHOTO_BUCKET, paths),
         async avatarUrl(path) {

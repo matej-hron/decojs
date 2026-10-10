@@ -291,6 +291,23 @@ export function createSupabaseStore(client) {
             return store.saveEntry({ visibility: on ? 'link' : visibilityAfterSharing(before) }, id);
         },
 
+        /** "Show the exact location" of one dive (members and the public link see the site's position). */
+        async setShareLocation(id, on) {
+            return store.saveEntry({ share_location: Boolean(on) }, id);
+        },
+
+        /** The owner's default for "Show the exact location" on new dives; kept in the account metadata, missing = on. */
+        async defaultShareLocation() {
+            return (await requireUser()).user_metadata?.share_location_default !== false;
+        },
+
+        async setDefaultShareLocation(on) {
+            const value = Boolean(on);
+            const { error } = await client.auth.updateUser({ data: { share_location_default: value } });
+            if (error) throw fail(error, 'auth');
+            return value;
+        },
+
         async deleteEntry(id) {
             // Dismiss the recording BEFORE deleting the entry: if the dismissal fails nothing is lost and the
             // user can retry; the other order could leave an entry-less, undismissed recording that
@@ -606,6 +623,14 @@ export function createSupabaseStore(client) {
             } catch (error) {
                 console.info('Default visibility unavailable; entries use the database default', error?.message ?? error);
             }
+            const shareLocation = user.user_metadata?.share_location_default !== false;
+            let community = Boolean(visibility);
+            if (!community && !shareLocation) {
+                // The owner turned exact location off: never let the database default (on) decide for them.
+                const availability = await store.communityAvailability().catch(() => 'unknown');
+                if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check community features; entries were not created');
+                community = availability === 'yes';
+            }
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;
@@ -623,6 +648,8 @@ export function createSupabaseStore(client) {
                 const insert = number => client.from(ENTRIES).insert({
                     ...fields, owner: user.id, recording_id: r.id, log_number: number,
                     ...(visibility ? { visibility } : {}),
+                    // Not tied to visibility: with community features the column exists, and its default (0009) is on.
+                    ...(community ? { share_location: shareLocation } : {}),
                 });
                 let { error } = await insert(next);
                 if (isUnique(error, NUMBER_KEY)) {

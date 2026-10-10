@@ -154,14 +154,20 @@ const clampPx = n => Math.min(1024, Math.max(10, Math.round(Number(n) || 10)));
  * Mapy.com static map (v1/static/map) centred on a site with one marker. The image carries the Mapy.com
  * logo and attribution itself. '' without a key or a valid position.
  */
-export function mapyStaticMapUrl({ lat, lon, apiKey, width, height, zoom = 12, scale = 1, lang = 'en', mapset = 'outdoor', color = '#2980b9' }) {
+export function mapyStaticMapUrl({ lat, lon, apiKey, width, height, zoom = 12, scale = 1, lang = 'en', mapset = 'outdoor', color = '#2980b9', marker = true }) {
     if (!apiKey || lat === null || lon === null || !Number.isFinite(lat) || !Number.isFinite(lon)) return '';
     const params = new URLSearchParams({
         lon: String(lon), lat: String(lat), zoom: String(zoom), width: String(clampPx(width)), height: String(clampPx(height)),
         scale: String(scale >= 2 ? 2 : 1), mapset, lang: MAPY_STATIC_LANGS.includes(lang) ? lang : 'en', format: 'jpg',
         markers: `color:${color};size:normal;${lon},${lat}`, apikey: apiKey,
     });
+    if (!marker) params.delete('markers');
     return `${MAPY_BASE}/static/map?${params}`;
+}
+
+/** Metres per CSS pixel of a Web Mercator map at `zoom` and latitude `lat` (256-px tiles). */
+export function metersPerPixel(lat, zoom) {
+    return (156543.03392 * Math.cos(toRad(lat))) / 2 ** zoom;
 }
 
 /** True for a well-formed https:// link without whitespace. */

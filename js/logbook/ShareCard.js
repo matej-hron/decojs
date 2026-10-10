@@ -1,7 +1,8 @@
 /**
  * "Public link" card on the owner's dive detail: a switch that turns the share link on
  * (visibility `link`, the database makes a new token) or off (the token is cleared at once),
- * and, while on, the link with Copy and the phone's share sheet.
+ * and, while on, the link with Copy and the phone's share sheet. Below, "Show the exact location"
+ * (share_location), saved at once.
  */
 
 import { translate } from '../i18n.js';
@@ -75,6 +76,9 @@ export class ShareCard {
                 </div>
                 <p class="lb-share-off-note">${escHtml(ts('offNote', 'Turning it off stops the link at once. Turning it on again makes a new link.'))}</p>
             </div>` : ''}
+            ${typeof this.store.setShareLocation === 'function' ? `<label class="lb-check lb-share-location"><input type="checkbox" name="share_location"${this.entry.share_location === true ? ' checked' : ''}${this.busy ? ' disabled' : ''}>
+                <span>${escHtml(ts('exactLocation', 'Show the exact location'))}</span></label>
+            <p class="lb-share-hint">${escHtml(ts('exactLocationHint', 'Off: the map shows only the approximate area'))}</p>` : ''}
             <p class="lb-share-status" role="status">${escHtml(this.note)}</p>
             ${this.error ? `<p class="lb-form-error" role="alert">${escHtml(this.error)}</p>` : ''}
         </section>`;
@@ -83,6 +87,32 @@ export class ShareCard {
         c.querySelector('.lb-share-copy')?.addEventListener('click', () => this.copy());
         c.querySelector('.lb-share-native')?.addEventListener('click', () => this.share());
         c.querySelector('.lb-share-url')?.addEventListener('focus', e => e.target.select());
+        c.querySelector('[name="share_location"]')?.addEventListener('change', e => this.setLocation(e.target.checked));
+    }
+
+    /** "Show the exact location": saved at once (members and the public link follow it). */
+    async setLocation(on) {
+        if (this.busy) return;
+        const before = this.entry.share_location;
+        this.entry = { ...this.entry, share_location: on }; // the box keeps the state just clicked while it saves
+        this.busy = true;
+        this.error = '';
+        this.note = '';
+        this.render();
+        try {
+            const saved = await this.store.setShareLocation(this.entry.id, on);
+            if (this.destroyed) return;
+            this.entry = { ...this.entry, ...saved };
+            this.onChange?.(this.entry);
+        } catch (error) {
+            console.error(error);
+            if (this.destroyed) return;
+            this.entry = { ...this.entry, share_location: before };
+            this.error = error?.kind === 'unreachable' ? tb('unreachable', 'Can\'t reach your dive log.') : tb('genericError', 'Something went wrong. Please try again.');
+        }
+        this.busy = false;
+        this.render();
+        this.container.querySelector('[name="share_location"]')?.focus();
     }
 
     async toggle() {

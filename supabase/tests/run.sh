@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006 and 0007 twice
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006, 0009 and 0007 twice
 # (idempotency), then the RLS assertions. 0008 is live before 0006; 0007 runs last because its test deletes user A. Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -34,6 +34,11 @@ run < tests/0006_sites_description.sql
 echo "applying 0006 again on data"
 run < migrations/0006_sites_description.sql
 run < tests/0008_share_avatar.sql # 0006 keeps 0008's author_key
+for f in migrations/0009_share_map.sql migrations/0009_share_map.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0009_share_map.sql
 # 0007 last: its test deletes user A at the end (cascade check).
 echo "applying migrations/0007_profile_documents.sql"
 run < migrations/0007_profile_documents.sql
