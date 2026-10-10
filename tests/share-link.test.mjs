@@ -408,3 +408,16 @@ test('share strings exist in en, cs and es', () => {
         assert.doesNotMatch(d.diveLog.trail.form.visibility.link, /soon|připravujeme|próximamente/i);
     }
 });
+
+test('share page fallback avatar is stable per author, not per dive', async () => {
+    const { authorKey } = await import('../js/logbook/SharedDivePage.js');
+    const { avatarHtml } = await import('../js/logbook/avatars.js');
+    const a = sharedDiveParts({ ...PAYLOAD, author: { display_name: 'Cyril', author_key: 'abc123def456' } }).author;
+    assert.equal(a.author_key, 'abc123def456');
+    assert.equal(authorKey(a, 'Cyril'), 'abc123def456');
+    assert.equal(authorKey({ display_name: 'Cyril' }, 'Cyril'), 'Cyril', 'older server: the name');
+    assert.equal(authorKey({}, 'Diver'), 'Diver');
+    const svgOf = (entryId) => avatarHtml({ preset: null, name: 'Cyril', id: authorKey(a, 'Cyril'), size: 40, entryId });
+    assert.equal(svgOf('dive-1'), svgOf('dive-2'));
+    assert.equal(sharedDiveParts({ ...PAYLOAD, author: { author_key: 42 } }).author.author_key, null);
+});

@@ -16,6 +16,11 @@ import { escHtml } from '../utils/escHtml.js';
 
 const ts = (key, fallback) => translate(`diveLog.trail.share.${key}`, fallback);
 
+/** Stable per author, never per dive: the server's one-way author key, else the display name. */
+export function authorKey(author, name) {
+    return author?.author_key || author?.display_name || name || '';
+}
+
 export class SharedDivePage {
     /**
      * @param {HTMLElement} root
@@ -127,7 +132,7 @@ export class SharedDivePage {
             get name() { return displayName(a, key => translate(`diveLog.${key}`, 'Diver')); },
             href: null,
             get avatarHtml() {
-                return `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: a.avatar_preset, url: page.avatarUrl, name: this.name, id: page.parts.entry.id, size: 40 })}</span>`;
+                return `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: a.avatar_preset, url: page.avatarUrl, name: this.name, id: authorKey(a, this.name), size: 40 })}</span>`;
             },
         };
     }
