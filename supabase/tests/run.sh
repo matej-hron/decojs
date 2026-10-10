@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008 and 0006 twice (0008 is live before 0006)
-# (idempotency), then the RLS assertions. Usage: bash supabase/tests/run.sh
+# Apply the Supabase stub and every migration to a throwaway Postgres in Docker, run 0004, 0005, 0008, 0006 and 0007 twice
+# (idempotency), then the RLS assertions. 0008 is live before 0006; 0007 runs last because its test deletes user A. Usage: bash supabase/tests/run.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 NAME="decotrail-rls-$$"
@@ -34,4 +34,12 @@ run < tests/0006_sites_description.sql
 echo "applying 0006 again on data"
 run < migrations/0006_sites_description.sql
 run < tests/0008_share_avatar.sql # 0006 keeps 0008's author_key
+# 0007 last: its test deletes user A at the end (cascade check).
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+# A project that auto-exposes tables would grant anon everything: running 0007 again must take it back.
+echo "grant all on public.qualifications, public.medical_checks to anon;" | run
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+run < tests/0007_documents.sql
 echo "ALL RLS TESTS PASSED"

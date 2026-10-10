@@ -7,6 +7,7 @@
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
+import { createDocumentsApi } from './documentsStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
 
@@ -355,15 +356,16 @@ export function createSupabaseStore(client) {
 
         /**
          * Delete everything the logged-in user owns: photo files and media rows, entries, sites, recording files
-         * and rows. Every query is filtered by owner (shared rows of other members may be readable), a failing
-         * step is recorded and the others still run. The login itself needs a server key and stays.
-         * @param {{onProgress?: (step: 'photos'|'entries'|'sites'|'recordings') => void}} [options]
-         * @returns {Promise<{entries: number, sites: number, recordings: number, photos: number, media: number,
+         * and rows, qualifications and medical checks with their scans. Every query is filtered by owner (shared
+         * rows of other members may be readable), a failing step is recorded and the others still run. The login
+         * itself needs a server key and stays.
+         * @param {{onProgress?: (step: 'photos'|'entries'|'sites'|'recordings'|'documents'|'profile') => void}} [options]
+         * @returns {Promise<{entries: number, sites: number, recordings: number, photos: number, media: number, documents: number,
          *   failed: {step: string, message: string}[]}>}
          */
         async deleteAllMyData({ onProgress } = {}) {
             const user = await requireUser();
-            const report = { entries: 0, sites: 0, recordings: 0, photos: 0, media: 0, failed: [] };
+            const report = { entries: 0, sites: 0, recordings: 0, photos: 0, media: 0, documents: 0, failed: [] };
             const CHUNK = 100;
 
             const idsOf = async (table, column = 'id', filters = []) => {
@@ -438,6 +440,13 @@ export function createSupabaseStore(client) {
                 await removeFiles(BUCKET, [...new Set([...rows.map(r => r.file_path).filter(Boolean), ...await filesUnder(BUCKET, user.id)])]);
                 report.recordings = await deleteIn(TABLE, 'id', rows.map(r => r.id));
             });
+            // Qualifications and medical checks (0007): every scan in the user's folder, then the rows.
+            if (await store.documentsAvailability?.() === 'yes') {
+                await step('documents', async () => {
+                    const done = await store.deleteAllDocuments();
+                    report.documents = done.rows;
+                });
+            }
             // DecoTrail profile: the row itself goes with the account; here it is emptied and the avatar files removed.
             if (await store.communityAvailability?.() === 'yes') {
                 await step('profile', async () => {
@@ -726,5 +735,8 @@ export function createSupabaseStore(client) {
         },
     };
     Object.assign(store, createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }));
+    Object.assign(store, createDocumentsApi(client, { requireUser, fail }));
+    const resetCommunity = store.resetCommunityCache;
+    store.resetCommunityCache = () => { resetCommunity(); store.resetDocumentsCache(); }; // both are per user
     return store;
 }

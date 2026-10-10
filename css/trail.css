@@ -733,6 +733,21 @@ body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: col
 .tr-profile-status:empty { display: none; }
 .tr-profile-status--ok { color: var(--success-color, #1e8e5a); }
 .tr-profile-status--error { color: var(--error-color, #c0392b); }
+.tr-sac { display: grid; gap: 0.75rem; }
+.tr-sac[hidden] { display: none; }
+.tr-sac .tr-section-head { margin: 0; }
+.tr-sac-stats { gap: 0.5rem 2rem; }
+.tr-sac-chart { display: block; width: 100%; height: auto; max-height: 14rem; overflow: visible; }
+.tr-sac-grid { stroke: var(--border); stroke-width: 1; }
+.tr-sac-tick { fill: var(--text-subtle); font-size: 10px; font-variant-numeric: tabular-nums; }
+.tr-sac-line { fill: none; stroke: var(--tr-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.tr-sac-hit { fill: transparent; }
+.tr-sac-pt { fill: var(--tr-accent); stroke: var(--surface); stroke-width: 1.5; }
+.tr-sac-dot-off .tr-sac-pt { fill: var(--surface); stroke: var(--text-subtle); stroke-width: 1.5; }
+.tr-sac-dot:focus-visible { outline: none; }
+.tr-sac-dot:focus-visible .tr-sac-pt, .tr-sac-dot:hover .tr-sac-pt { stroke: var(--text); stroke-width: 2.5; }
+.tr-sac-axis { display: flex; justify-content: space-between; margin: -0.4rem 0 0; color: var(--text-subtle); font-size: var(--text-xs); }
+.tr-sac-plan { color: var(--tr-accent); justify-self: start; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
 .tr-numbering { display: grid; gap: 0.75rem; }
 .tr-numbering[hidden] { display: none; }
 .tr-numbering .tr-section-head { margin: 0; }
@@ -871,7 +886,6 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
 .lb-sv-all { justify-self: start; min-height: 44px; }
 .lb-sv-capped { margin: 0; }
 .lb-hint { display: block; color: var(--text-subtle); font-size: var(--text-xs); }
-/* Dive description (for members) and the owner's private notes */
 /* The dive story: the diver's own words, set as reading text right under the title */
 .lb-d-story { max-width: 65ch; font-size: var(--text-lg); line-height: 1.55; overflow-wrap: anywhere; }
 .lb-root .lb-d-story { padding: 0; background: none; border: 0; box-shadow: none; }
@@ -891,3 +905,96 @@ body.tr-share-page .tr-main { max-width: none; padding-top: 0; }
     .lb-sv-visit { grid-template-columns: auto minmax(0, 1fr); }
     .lb-sv-facts { grid-column: 2; justify-content: flex-start; }
 }
+/* Profile: qualifications and medical checks (ProfileDocuments.js). Owner-only cards below the profile form. */
+.tr-docs-card { display: grid; gap: 0.85rem; min-width: 0; }
+.tr-docs-card[hidden] { display: none; }
+.tr-docs-card .tr-section-head { margin: 0; }
+.tr-doc-lead { margin-top: -0.4rem; }
+.tr-doc-private { display: flex; gap: 0.5rem; align-items: flex-start; margin: 0; padding: 0.6rem 0.75rem; border-radius: 10px;
+    background: var(--surface-sunken); color: var(--text-subtle); font-size: var(--text-sm); }
+.tr-doc-private .tr-doc-icon { flex: none; margin-top: 0.05rem; color: var(--tr-accent); }
+.tr-med-status { margin: 0; padding: 0.55rem 0.75rem; border-left: 4px solid var(--success-color, #1e8e5a); border-radius: 6px;
+    background: var(--surface-sunken); font-weight: 600; }
+.tr-med-status--soon { border-left-color: var(--amber-500, #f39c12); }
+.tr-med-status--expired { border-left-color: var(--error-color, #c0392b); color: var(--error-color, #c0392b); }
+.tr-med-status--none { border-left-color: var(--border); color: var(--text-subtle); font-weight: 500; }
+.tr-doc-empty { margin: 0; color: var(--text-subtle); }
+.tr-doc-list { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+.tr-doc { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "body edit" "thumbs thumbs";
+    gap: 0.6rem 0.75rem; align-items: start; min-width: 0; padding: 0.8rem; border: 1px solid var(--border);
+    border-radius: var(--radius-md, 12px); background: var(--surface-elevated); }
+.tr-doc-body { grid-area: body; display: grid; gap: 0.3rem; min-width: 0; }
+.tr-doc-body p { margin: 0; }
+.tr-doc-thumbs { grid-area: thumbs; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tr-doc-edit { grid-area: edit; min-height: 44px; }
+.tr-doc-title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; }
+.tr-agency { padding: 0.1rem 0.5rem; border: 1px solid var(--tr-accent); border-radius: var(--radius-full); color: var(--tr-accent);
+    font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; overflow-wrap: anywhere; }
+.tr-doc-level { font-weight: 600; overflow-wrap: anywhere; }
+.tr-doc-meta { display: grid; gap: 0.1rem; color: var(--text-subtle); font-size: var(--text-sm); }
+.tr-doc-meta span { overflow-wrap: anywhere; }
+.tr-doc-notes { color: var(--text-subtle); font-size: var(--text-sm); white-space: pre-line; overflow-wrap: anywhere;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tr-doc-shown { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--success-color, #1e8e5a); font-size: var(--text-sm); font-weight: 600; }
+.tr-doc-shown::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor; }
+.tr-thumb { position: relative; display: grid; place-items: center; width: 76px; aspect-ratio: 1.586; overflow: hidden;
+    border: 1px solid var(--border); border-radius: 6px; background: var(--surface-sunken); color: var(--text-subtle); }
+a.tr-thumb:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.tr-thumb img, .tr-scan-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tr-thumb-file { display: grid; justify-items: center; gap: 0.1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+.tr-doc-add { justify-self: start; min-height: 44px; }
+.tr-doc--editing { display: block; border-color: var(--tr-accent); box-shadow: 0 0 0 1px var(--tr-accent); }
+.tr-doc-form { gap: 1rem; }
+.tr-doc-form-title { margin: 0; font-size: var(--text-base); }
+.tr-doc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem 1rem; }
+.tr-doc-grid .lb-field[hidden] { display: none; }
+.lb-field > .tr-doc-err { color: var(--error-color, #c0392b); font-size: var(--text-sm); font-weight: 600; }
+.tr-doc-form .lb-field [aria-invalid="true"] { border-color: var(--error-color, #c0392b); }
+.tr-doc-check { display: flex; gap: 0.65rem; align-items: flex-start; min-height: 44px; cursor: pointer; }
+.tr-doc-check input { flex: none; width: 1.3rem; height: 1.3rem; margin: 0.1rem 0 0; accent-color: var(--tr-accent); }
+.tr-doc-check > span { display: grid; gap: 0.15rem; }
+.tr-doc-check-label { font-weight: 600; }
+.tr-scans { display: grid; gap: 0.6rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+.tr-scans > legend { padding: 0; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--text-subtle); }
+.tr-scan-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.tr-scan-slot { display: grid; gap: 0.4rem; min-width: 0; align-content: start; }
+.tr-scan-label { font-size: var(--text-sm); font-weight: 600; }
+.tr-scan-box { position: relative; display: grid; place-items: center; aspect-ratio: 1.586; overflow: hidden;
+    border: 1px solid var(--border); border-radius: 10px; background: var(--surface-sunken); color: var(--text-subtle); }
+.tr-scan-box--empty { border-style: dashed; border-width: 2px; }
+.tr-scan-empty { display: grid; justify-items: center; gap: 0.2rem; font-size: var(--text-sm); }
+.tr-scan-busy { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--surface-elevated) 80%, transparent);
+    color: var(--text); font-size: var(--text-sm); font-weight: 600; }
+.tr-scan-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tr-scan-actions .btn { flex: 1 1 6rem; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding-left: 0.6rem; padding-right: 0.6rem; }
+.tr-scan-pick { cursor: pointer; }
+.tr-scan-pick:has(input:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.tr-scan-pick.lb-disabled { opacity: 0.6; cursor: progress; }
+.tr-scan-slot .lb-form-error { font-size: var(--text-sm); }
+.tr-doc-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tr-doc-actions .btn { min-height: 44px; }
+.tr-doc-actions .tr-doc-del { margin-left: auto; color: var(--error-color, #c0392b); }
+@media (min-width: 560px) {
+    .tr-doc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tr-doc-grid .tr-doc-wide { grid-column: 1 / -1; }
+    .tr-doc { grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "body thumbs edit"; }
+    .tr-scan-grid--1 { grid-template-columns: minmax(0, 18rem); }
+}
+@media (max-width: 559px) {
+    .tr-doc-actions .btn { flex: 1 1 7rem; }
+    .tr-doc-actions .tr-doc-del { margin-left: 0; }
+}
+/* Badges (agency · level) in the water band of a member page and of the own profile preview. */
+.tr-qual-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.15rem 0 0; padding: 0; list-style: none; }
+.tr-qual-badge { padding: 0.15rem 0.6rem; border: 1px solid rgba(255, 255, 255, 0.55); border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.14); color: #fff; font-size: var(--text-sm); font-weight: 600; overflow-wrap: anywhere; }
+/* My dives: quiet notice when the dive medical expires within 30 days or has expired. */
+.lb-med-banner { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem; padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+    border: 1px solid var(--border); border-left: 4px solid var(--amber-500, #f39c12); border-radius: 8px;
+    background: var(--surface-elevated); font-size: var(--text-sm); }
+.lb-med-banner--expired { border-left-color: var(--error-color, #c0392b); }
+.lb-med-banner p { flex: 1; margin: 0; }
+.lb-med-banner a { color: var(--tr-accent); font-weight: 600; white-space: nowrap; }
+.lb-med-close { flex: none; width: 44px; height: 44px; border: 0; border-radius: 6px; background: transparent; color: var(--text-subtle); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.lb-med-close:hover { background: var(--surface-sunken); color: var(--text); }
+.lb-med-close:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: -3px; }

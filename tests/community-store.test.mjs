@@ -139,6 +139,10 @@ function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tab
                         }
                         return { data: [...names].map(name => ({ name, id: files.has(`${bucket}/${prefix}/${name}`) ? name : null })), error: null };
                     },
+                    async download(path) {
+                        const body = files.get(`${bucket}/${path}`);
+                        return body ? { data: new Blob([body]), error: null } : { data: null, error: { message: 'Object not found', statusCode: '404' } };
+                    },
                     async remove(paths) { calls.push(['remove', bucket, paths]); paths.forEach(p => files.delete(`${bucket}/${p}`)); return { data: [], error: null }; },
                     async createSignedUrls(paths, seconds) {
                         calls.push(['sign', bucket, paths, seconds]);
@@ -508,4 +512,94 @@ test('ensureEntries numbers new imports after the offset', async () => {
     await store.ensureEntries();
     assert.equal(db.log_entries.length, 1);
     assert.equal(db.log_entries[0].log_number, 29);
+});
+
+
+// ---- Profile documents: qualifications and medical checks (0007) ----
+
+test('documents: probe hides the feature without 0007, and the medical banner query returns null', async () => {
+    const { client } = wrap({ failTables: ['qualifications'] });
+    const store = createSupabaseStore(client);
+    assert.equal(await store.documentsStatus(), false);
+    assert.equal(await store.medicalValidity(), null);
+    assert.equal(await store.exportDocuments(), null);
+});
+
+test('documents: save sends only the allowed keys; upload goes to the own folder as JPEG or PDF', async () => {
+    const { client, calls, db } = wrap({ tables: { qualifications: [], medical_checks: [] } });
+    const store = createSupabaseStore(client);
+    assert.equal(await store.documentsStatus(), true);
+    const saved = await store.saveQualification({ agency: 'CMAS', level: 'P2', owner: 'evil', id: 'x', created_at: '2000' });
+    const ins = calls.find(c => c[0] === 'insert' && c[1] === 'qualifications');
+    assert.ok(!('created_at' in ins[2]) && ins[2].owner === 'u1' && ins[2].id !== 'x', 'owner/id/created_at never sent');
+    await store.saveQualification({ scan_front: 'u1/qualifications/a.jpg' }, saved.id);
+    assert.equal(db.qualifications[0].scan_front, 'u1/qualifications/a.jpg');
+    await store.uploadDocument('u1/medical/m.pdf', new Uint8Array(2));
+    await store.uploadDocument('u1/qualifications/q.jpg', new Uint8Array(2));
+    const ups = calls.filter(c => c[0] === 'upload');
+    assert.deepEqual(ups.map(c => [c[1], c[2], c[3].contentType, c[3].upsert]), [
+        ['documents', 'u1/medical/m.pdf', 'application/pdf', false],
+        ['documents', 'u1/qualifications/q.jpg', 'image/jpeg', false],
+    ]);
+    await assert.rejects(store.uploadDocument('u2/medical/m.pdf', new Uint8Array(1)));
+});
+
+test('documents: delete removes the scans, then the row; URLs are signed for 5 minutes', async () => {
+    const row = { id: 'q1', owner: 'u1', agency: 'PADI', level: 'OW', scan_front: 'u1/qualifications/f.jpg', scan_back: 'u1/qualifications/b.pdf' };
+    const { client, calls, db } = wrap({ tables: { qualifications: [row], medical_checks: [] } });
+    const store = createSupabaseStore(client);
+    const urls = await store.documentUrls([row.scan_front, row.scan_front]);
+    assert.equal(urls.size, 1);
+    assert.deepEqual(calls.find(c => c[0] === 'sign').slice(1), ['documents', [row.scan_front], 300]);
+    await store.deleteQualification(row);
+    const removeIdx = calls.findIndex(c => c[0] === 'remove' && c[1] === 'documents');
+    const deleteIdx = calls.findIndex(c => c[0] === 'delete' && c[1] === 'qualifications');
+    assert.ok(removeIdx >= 0 && removeIdx < deleteIdx);
+    assert.deepEqual(calls[removeIdx][2], [row.scan_front, row.scan_back]);
+    assert.equal(db.qualifications.length, 0);
+});
+
+test('documents: memberQualifications calls the badge RPC; a missing function gives []', async () => {
+    const badges = [{ agency: 'CMAS', agency_other: null, level: 'P2' }];
+    const { client, calls } = wrap({ rpcResults: { community_qualifications: badges } });
+    assert.deepEqual(await createSupabaseStore(client).memberQualifications('m1'), badges);
+    assert.deepEqual(calls.find(c => c[0] === 'rpc').slice(1), ['community_qualifications', { p_owner: 'm1' }]);
+    const missing = wrap({ rpcErrors: { community_qualifications: { code: 'PGRST202', message: 'not found' } } });
+    assert.deepEqual(await createSupabaseStore(missing.client).memberQualifications('m1'), []);
+});
+
+test('documents: export has both tables and the scan files without the user folder', async () => {
+    const q = { id: 'q1', owner: 'u1', agency: 'PADI', level: 'OW', scan_front: 'u1/qualifications/f.jpg' };
+    const m = { id: 'm1', owner: 'u1', checked_on: '2026-01-01', scan_path: 'u1/medical/m.pdf' };
+    const { client } = wrap({ tables: { qualifications: [q], medical_checks: [m] } });
+    await client.storage.from('documents').upload('u1/qualifications/f.jpg', new Uint8Array([1, 2]));
+    await client.storage.from('documents').upload('u1/medical/m.pdf', new Uint8Array([3]));
+    const out = await createSupabaseStore(client).exportDocuments();
+    assert.equal(out.qualifications.length, 1);
+    assert.equal(out.medical_checks.length, 1);
+    assert.deepEqual(out.files.map(f => [f.name, [...f.bytes]]), [['qualifications/f.jpg', [1, 2]], ['medical/m.pdf', [3]]]);
+});
+
+test('deleteAllMyData: documents step removes every scan (also orphans) and both tables', async () => {
+    const q = { id: 'q1', owner: 'u1', agency: 'PADI', level: 'OW', scan_front: 'u1/qualifications/f.jpg' };
+    const m = { id: 'm1', owner: 'u1', checked_on: '2026-01-01', scan_path: 'u1/medical/m.pdf' };
+    const { client, db } = wrap({ tables: { qualifications: [q], medical_checks: [m] } });
+    await client.storage.from('documents').upload('u1/qualifications/f.jpg', new Uint8Array(1));
+    await client.storage.from('documents').upload('u1/medical/m.pdf', new Uint8Array(1));
+    await client.storage.from('documents').upload('u1/medical/orphan.jpg', new Uint8Array(1));
+    const steps = [];
+    const report = await createSupabaseStore(client).deleteAllMyData({ onProgress: s => steps.push(s) });
+    assert.deepEqual(report.failed, []);
+    assert.ok(steps.includes('documents'));
+    assert.equal(db.qualifications.length, 0);
+    assert.equal(db.medical_checks.length, 0);
+    assert.equal([...client.files.keys()].filter(k => k.startsWith('documents/')).length, 0);
+});
+
+test('deleteAllMyData skips the documents step without 0007', async () => {
+    const { client } = wrap({ failTables: ['qualifications'] });
+    const steps = [];
+    const report = await createSupabaseStore(client).deleteAllMyData({ onProgress: s => steps.push(s) });
+    assert.deepEqual(report.failed, []);
+    assert.ok(!steps.includes('documents'));
 });
