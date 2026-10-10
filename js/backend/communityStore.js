@@ -20,6 +20,7 @@ export function nameFromMetadata(user) {
 
 export function createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }) {
     let status = null; // 'yes' | 'no' once known
+    let shareState = null; // 'yes' | 'no' once known: migration 0005 (public share links) ran
     let profile; // undefined = not loaded
     let epoch = 0; // bumped on reset: a request that started before it must not write the cache
     const avatarCache = new Map(); // path -> { url, at }
@@ -61,8 +62,31 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
     function resetCommunityCache() {
         epoch++;
         status = null;
+        shareState = null;
         profile = undefined;
         avatarCache.clear();
+    }
+
+    /** Whether public share links exist (0005): probes `get_shared_dive` once; a transient failure is not cached. */
+    async function shareStatus() {
+        if (shareState) return shareState === 'yes';
+        if (!await communityStatus()) return false;
+        const started = epoch;
+        let result = null;
+        try {
+            const { error, status: http } = await client.rpc('get_shared_dive', { p_token: '0'.repeat(64) });
+            if (!error) result = 'yes';
+            else if (QUIET_CODES.test(error.code ?? '') || http === 404) {
+                result = 'no';
+                console.info('Share links unavailable', error.message ?? error);
+            } else {
+                console.warn('Share link probe failed', error.message ?? error);
+            }
+        } catch (error) {
+            console.warn('Share link probe failed', error?.message ?? error);
+        }
+        if (result && started === epoch) shareState = result;
+        return result === 'yes';
     }
 
     async function ensureProfile() {
@@ -161,6 +185,7 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
     return {
         communityStatus,
         communityAvailability,
+        shareStatus,
         resetCommunityCache,
         ensureProfile,
         getMyProfile,
