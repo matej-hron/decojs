@@ -138,6 +138,6 @@ export function siteSummaryLine(site, { lang = currentLang(), now = new Date(), 
     const last = fmtShortDate(site?.last_visit, lang, now);
     const line = parts.join(' · ');
     if (!last) return line;
-    const lastText = fill(tr('last', 'last: {0}'), last);
+    const lastText = fill(tr('last', 'last: {0}'), last).replace(/ /g, NB); // the date never breaks across lines
     return line ? `${line} (${lastText})` : lastText;
 }

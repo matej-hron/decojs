@@ -89,6 +89,17 @@ const valuesFromSite = site => ({
     visibility: site.visibility === 'private' ? 'private' : 'members',
 });
 
+/**
+ * Remove a Mapy.com static map that failed. A key refused here (another referrer, quota) answers with a small
+ * error picture and no error event: anything but the requested size (or its 2× version) counts as failed.
+ */
+function watchMapImage(img) {
+    const wrong = () => { const w = Number(img.getAttribute('width')); return img.naturalWidth === 0 || ![w, w * 2].includes(img.naturalWidth); };
+    if (img.complete && img.getAttribute('src')) { if (wrong()) img.remove(); return; }
+    img.addEventListener('error', () => img.remove(), { once: true });
+    img.addEventListener('load', () => { if (wrong()) img.remove(); }, { once: true });
+}
+
 const LOCK = '<svg class="lb-lock-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
 export class SitesPage {
@@ -372,7 +383,7 @@ export class SitesPage {
             ${intro}${near}${failed}${body}`;
         const regionLabel = ts('mapTitle', 'Map of the sites');
         this.container.querySelector('.lb-sites-map')?.setAttribute('aria-label', regionLabel);
-        for (const img of this.container.querySelectorAll('img.lb-site-map')) img.addEventListener('error', () => img.remove()); // key not valid here, offline
+        for (const img of this.container.querySelectorAll('img.lb-site-map')) watchMapImage(img);
         for (const b of this.container.querySelectorAll('[data-scope]')) b.addEventListener('click', () => this._setPrefs({ scope: b.dataset.scope }, `[data-scope="${b.dataset.scope}"]`));
         for (const b of this.container.querySelectorAll('[data-view]')) b.addEventListener('click', () => this._setPrefs({ view: b.dataset.view }, `[data-view="${b.dataset.view}"]`));
         this.container.querySelector('#lb-sites-near')?.addEventListener('click', () => this._locate());
@@ -452,7 +463,8 @@ export class SitesPage {
             ${this._visitsHtml()}
             ${owner}`;
         const q = sel => this.container.querySelector(sel);
-        q('.lb-site-preview')?.addEventListener('error', e => e.target.remove());
+        const preview = q('.lb-site-preview');
+        if (preview) watchMapImage(preview);
         q('#lb-sv-all')?.addEventListener('click', () => { this._readDom(); this.showAllVisits = true; this.render(); });
         if (site.own === false) return;
         q('.lb-site-form').addEventListener('submit', e => { e.preventDefault(); this._save(); });

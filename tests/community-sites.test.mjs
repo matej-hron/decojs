@@ -65,14 +65,14 @@ describe('summary line', () => {
     const t = (_key, fallback) => fallback;
     test('English: vis range, temperature range, last visit this year', () => {
         assert.equal(siteSummaryLine({ vis_min: 4, vis_max: 8, temp_min: 6, temp_max: 21, last_visit: '2026-09-27' }, { lang: 'en', now, t }),
-            `vis 4–8${NB}m · 6–21${NB}°C (last: Sep 27)`);
+            `vis 4–8${NB}m · 6–21${NB}°C (last:${NB}Sep${NB}27)`);
     });
     test('Czech: decimal comma and day-first date', () => {
         const line = siteSummaryLine({ vis_min: 4.5, vis_max: 8, temp_min: 6.4, temp_max: 21.2, last_visit: '2026-09-27' }, { lang: 'cs', now, t });
-        assert.match(line, /^vis 4,5–8 m · 6–21 °C \(last: 27\. 9\.\)$/);
+        assert.match(line, /^vis 4,5–8\u00a0m · 6–21\u00a0°C \(last:\u00a027\.\u00a09\.\)$/);
     });
     test('another year shows the year; parts without data are left out', () => {
-        assert.match(siteSummaryLine({ temp_min: 10, temp_max: 10, last_visit: '2025-03-02' }, { lang: 'en', now, t }), /^10 °C \(last: Mar 2, 2025\)$/);
+        assert.match(siteSummaryLine({ temp_min: 10, temp_max: 10, last_visit: '2025-03-02' }, { lang: 'en', now, t }), /^10\u00a0°C \(last:\u00a0Mar\u00a02,\u00a02025\)$/);
         assert.equal(siteSummaryLine({ last_visit: null }, { lang: 'en', now, t }), '');
         assert.equal(siteSummaryLine({ vis_min: 3, vis_max: 3 }, { lang: 'en', now, t }), `vis 3${NB}m`);
     });
