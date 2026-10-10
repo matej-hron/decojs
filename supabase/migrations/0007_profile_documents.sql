@@ -12,6 +12,15 @@
 --  * Scans live in the private bucket 'documents' under '<owner>/qualifications/…' or '<owner>/medical/…'.
 --    Only the owner can read, upload or delete there. There is no update policy (see 0004: an update could
 --    move a file between buckets past their limits). Rows can only point into the owner's own folder.
+--    Uploads must be named '<owner>/(qualifications|medical)/<uuid>.(jpg|pdf)' and come from a member.
+--
+-- Known limits (owner-only, never a leak to someone else):
+--  * Storage copy (and move on versioned buckets) checks SELECT/DELETE on the source and INSERT on the
+--    destination, not UPDATE, and skips the destination bucket's size/type limits. So the owner's own session
+--    could copy their own scan into their own avatars folder (members-readable). The app never calls copy or
+--    move; this is self-disclosure only.
+--  * on delete cascade removes the rows with the login, but not the files: before deleting a user in the
+--    dashboard, remove documents/<uid>/ (see supabase/README.md). In-app "Delete all my data" removes both.
 
 begin;
 
@@ -75,13 +84,13 @@ drop policy if exists "owner reads and writes own qualifications" on public.qual
 create policy "owner reads and writes own qualifications" on public.qualifications
     for all to authenticated
     using (owner = auth.uid())
-    with check (owner = auth.uid());
+    with check (owner = auth.uid() and public.is_member());
 
 drop policy if exists "owner reads and writes own medical checks" on public.medical_checks;
 create policy "owner reads and writes own medical checks" on public.medical_checks
     for all to authenticated
     using (owner = auth.uid())
-    with check (owner = auth.uid());
+    with check (owner = auth.uid() and public.is_member());
 
 -- The server keeps the timestamps; the owner of a row never changes.
 create or replace function public.profile_documents_touch()
@@ -123,7 +132,9 @@ as $$
     where q.owner = p_owner
       and q.show_on_profile
       and public.is_member()
-    order by q.issued_on desc nulls last, q.created_at desc, q.id
+      and public.share_owner_active(p_owner)
+    -- not by issued_on: the order would reveal the hidden dates
+    order by q.created_at desc, q.id
     limit 20;
 $$;
 
@@ -147,8 +158,8 @@ create policy "owner reads own documents" on storage.objects
 drop policy if exists "owner uploads own documents" on storage.objects;
 create policy "owner uploads own documents" on storage.objects
     for insert to authenticated
-    with check (bucket_id = 'documents' and (storage.foldername(name))[1] = auth.uid()::text
-        and (storage.foldername(name))[2] in ('qualifications', 'medical'));
+    with check (bucket_id = 'documents' and public.is_member()
+        and name ~ ('^' || auth.uid()::text || '/(qualifications|medical)/[0-9a-f-]{36}\.(jpg|pdf)$'));
 
 drop policy if exists "owner updates own documents" on storage.objects;
 

@@ -34,7 +34,10 @@ select pg_temp.check(not exists (
     select 1 from pg_views where definition ilike '%medical_checks%' or definition ilike '%qualifications%'), 'no view exposes the tables');
 select pg_temp.check(not exists (
     select 1 from pg_policies where tablename in ('qualifications', 'medical_checks')
-      and (qual not like '%auth.uid()%' or 'anon' = any(roles) or 'public' = any(roles))), 'table policies are owner-only, authenticated only');
+      and (qual not like '%auth.uid()%' or coalesce(with_check, '') not like '%auth.uid()%'
+           or 'anon' = any(roles) or 'public' = any(roles))), 'table policies are owner-only (using and with check), authenticated only');
+select pg_temp.check(not has_table_privilege('authenticated', 'public.medical_checks', 'truncate')
+    and not has_table_privilege('anon', 'public.qualifications', 'update'), 'no truncate for members, nothing for anon');
 select pg_temp.check(not exists (
     select 1 from pg_policies where schemaname = 'storage' and tablename = 'objects'
       and coalesce(qual, '') || coalesce(with_check, '') like '%documents%' and cmd in ('UPDATE', 'ALL')), 'no update policy on documents');
@@ -96,6 +99,25 @@ do $$ begin
     raise exception 'FAILED: upload outside qualifications/medical accepted';
 exception when insufficient_privilege then raise notice 'ok: uploads only into qualifications/ or medical/';
 end $$;
+do $$ begin
+    insert into storage.objects (bucket_id, name) values ('documents', '00000000-0000-0000-0000-00000000000a/medical/x.html');
+    raise exception 'FAILED: a free file name accepted';
+exception when insufficient_privilege then raise notice 'ok: uploads must be <uuid>.jpg|pdf';
+end $$;
+-- Upsert / move of a document into a members-readable bucket, and of other files into documents.
+do $$ begin
+    insert into storage.objects (bucket_id, name) values ('documents', '00000000-0000-0000-0000-00000000000a/medical/71000000-0000-0000-0000-000000000001.pdf')
+        on conflict (bucket_id, name) do update set bucket_id = 'avatars';
+    raise exception 'FAILED: upsert moved a document';
+exception when insufficient_privilege then raise notice 'ok: upsert cannot move a document';
+end $$;
+insert into storage.objects (bucket_id, name) values ('dive-photos', :'A' || '/x/p.jpg');
+do $$ begin
+    update storage.objects set bucket_id = 'documents', name = '00000000-0000-0000-0000-00000000000a/medical/71000000-0000-0000-0000-000000000005.pdf'
+        where bucket_id = 'dive-photos' and name = '00000000-0000-0000-0000-00000000000a/x/p.jpg';
+    raise exception 'FAILED: a photo moved into documents';
+exception when insufficient_privilege then raise notice 'ok: nothing moves into documents';
+end $$;
 
 -- Server-kept fields: owner and created_at cannot be changed.
 update public.medical_checks set owner = :'B', created_at = '2000-01-01' where id = :'M1';
@@ -130,6 +152,34 @@ with u as (update storage.objects set bucket_id = 'avatars' where bucket_id = 'd
 select pg_temp.check((select count(*) from u) = 0, 'B cannot move a document into the members-readable avatars bucket');
 reset role;
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'documents' and name like :'B' || '/%') = 1, 'B''s document stayed in documents');
+
+-- Badge order does not follow the hidden issue dates.
+reset role;
+insert into public.qualifications (id, owner, agency, level, issued_on, show_on_profile, created_at) values
+    ('70000000-0000-0000-0000-000000000003', :'A', 'SSI', 'AOW', '2010-01-01', true, now());
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
+select pg_temp.check((select array_agg(agency) from public.community_qualifications(:'A')) = array['SSI', 'CMAS'], 'badges ordered by entry, not by issue date');
+reset role;
+-- An anonymous sign-in gets no badges and cannot write rows.
+update auth.users set is_anonymous = true where id = :'B';
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
+select pg_temp.check((select count(*) from public.community_qualifications(:'A')) = 0, 'an anonymous sign-in sees no badges');
+do $$ begin
+    insert into public.medical_checks (checked_on) values ('2026-01-01');
+    raise exception 'FAILED: an anonymous sign-in wrote a medical check';
+exception when insufficient_privilege then raise notice 'ok: an anonymous sign-in cannot write';
+end $$;
+reset role;
+update auth.users set is_anonymous = false where id = :'B';
+-- A banned owner's badges disappear.
+update auth.users set banned_until = now() + interval '1 day' where id = :'A';
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
+select pg_temp.check((select count(*) from public.community_qualifications(:'A')) = 0, 'a banned owner shows no badges');
+reset role;
+update auth.users set banned_until = null where id = :'A';
 
 -- A non-member (banned) caller gets no badges.
 update auth.users set banned_until = now() + interval '1 day' where id = :'B';

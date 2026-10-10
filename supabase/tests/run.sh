@@ -21,9 +21,11 @@ for f in tests/seed_before_0005.sql migrations/0005_share_link.sql migrations/00
     run < "$f"
 done
 run < tests/0005_share.sql
-for f in migrations/0007_profile_documents.sql migrations/0007_profile_documents.sql; do
-    echo "applying $f"
-    run < "$f"
-done
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
+# A project that auto-exposes tables would grant anon everything: running 0007 again must take it back.
+echo "grant all on public.qualifications, public.medical_checks to anon;" | run
+echo "applying migrations/0007_profile_documents.sql"
+run < migrations/0007_profile_documents.sql
 run < tests/0007_documents.sql
 echo "ALL RLS TESTS PASSED"

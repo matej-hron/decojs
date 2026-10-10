@@ -73,4 +73,15 @@ email, OCR of card numbers.
 
 ## Adversarial review
 
-See the end of this file (filled after the Opus review).
+Opus review (2026-10-10), focus health-data leakage: **no cross-user path to medical rows or scans found**
+(every storage policy is bucket-scoped, the share header gives nothing in `documents`, UPDATE/upsert moves into
+or out of `documents` are blocked, no function or view reads `medical_checks`). Applied:
+
+- Upload policy now requires the exact name `<uid>/(qualifications|medical)/<uuid>.(jpg|pdf)` and `is_member()`;
+  table writes require `is_member()` too (no anonymous sign-ins).
+- Badges are ordered by entry, not `issued_on` (the order revealed hidden dates); a banned/deleted owner shows none.
+- Known limits documented in the migration header: Storage *copy* checks only SELECT + INSERT and skips the
+  destination's limits, so the owner's own session could copy a scan into their avatars folder (self-disclosure
+  only; the app never calls copy/move). Deleting a user in the dashboard leaves files: runbook in `supabase/README.md`.
+- Tests: rerun revokes anon grants added between runs, `with_check` checked, upsert/move attacks, anonymous
+  sign-in, badge order, banned owner.

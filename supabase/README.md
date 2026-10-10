@@ -77,3 +77,15 @@ Run it once in the **SQL Editor** after 0001–0003; running it again is safe.
 
 Test it locally first (needs Docker): `bash supabase/tests/run.sh` applies a small Supabase stub and every
 migration to a throwaway Postgres, runs 0004 twice and checks the access rules as two different users.
+
+## Profile documents migration (0007, DecoTrail)
+
+`supabase/migrations/0007_profile_documents.sql` adds `qualifications` and `medical_checks` (owner-only), the
+private `documents` bucket (10 MiB, JPEG/PDF, owner folder only) and `community_qualifications()`, which gives
+members only the agency + level of cards the owner chose to show. Run it after 0001–0005 (it needs 0005's
+`share_owner_active`); it does not depend on 0006. Running it again is safe. Test: `bash supabase/tests/run.sh`.
+
+**Deleting a user in the dashboard:** the rows go with the login (`on delete cascade`), the scans do not.
+First remove the user's folder in Storage → `documents` → `<user id>/` (also `dive-logs`, `dive-photos`,
+`avatars`). Orphans can be found with
+`select name from storage.objects where bucket_id = 'documents' and split_part(name, '/', 1)::uuid not in (select id from auth.users);`
