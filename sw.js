@@ -98,6 +98,7 @@ const STATIC_ASSETS = [
   './js/logbook/DeleteData.js',
   './js/logbook/entryModel.js',
   './js/logbook/gasModel.js',
+  './js/logbook/sacStats.js',
   './js/logbook/router.js',
   './js/logbook/listViews.js',
   './js/logbook/feed.js',

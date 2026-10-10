@@ -5,6 +5,7 @@
 
 import { formatDuration } from './entryModel.js';
 import { gasLabel } from './listViews.js';
+import { diveSac } from './sacStats.js';
 
 const NB = '\u00a0';
 const has = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
@@ -26,7 +27,7 @@ export function diveTitle(entry, siteName, t) {
 }
 
 /**
- * The stat row of a card: max depth, duration (m:ss), average depth, water temperature, gas. Missing values are left out.
+ * The stat row of a card: max depth, duration (m:ss), average depth, water temperature, gas, SAC (when the dive has pressures). Missing values are left out.
  * @param {(value: number, decimals: number) => string} num - number formatter (decimal comma in Czech)
  * @returns {{key: string, value: string, unit: string}[]}
  */
@@ -39,6 +40,8 @@ export function feedStats(entry, num) {
     if (has(entry.water_temp_c)) out.push({ key: 'temp', value: num(Number(entry.water_temp_c), 1), unit: '°C' });
     const gas = gasLabel(entry.gas);
     if (gas) out.push({ key: 'gas', value: gas, unit: '' });
+    const sac = diveSac(entry);
+    if (sac !== null) out.push({ key: 'sac', value: num(sac, 1), unit: 'l/min' });
     return out;
 }
 

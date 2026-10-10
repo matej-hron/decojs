@@ -51,7 +51,7 @@ const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => v
 const NB = '\u00A0';
 const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
 const tt = key => tl(key, TITLE_FALLBACK[key] ?? key);
-const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas', sac: 'SAC' };
 
 const VIEW_KEY = 'decojs.logbook.view';
 const TABLE_COLUMNS = [
