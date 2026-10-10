@@ -656,7 +656,7 @@ export class LogbookApp {
     _medicalBanner() {
         const n = this.medNotice;
         if (!n || this.medDismissed) return '';
-        const date = formatDiveDate(n.validUntil, currentLang());
+        const date = formatDiveDate(n.validUntil, currentLang()).replace(/ /g, '\u00a0');
         const text = n.state === 'expired'
             ? fill(td('banner.expired', 'Your dive medical expired on {0}.'), date)
             : fill(td('banner.soon', 'Your dive medical expires on {0}.'), date);

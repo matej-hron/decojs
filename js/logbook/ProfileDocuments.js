@@ -24,7 +24,7 @@ import { escHtml } from '../utils/escHtml.js';
 const td = (key, fallback) => translate(`diveLog.trail.docs.${key}`, fallback);
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
-const fmtDate = iso => formatDiveDate(iso, currentLang());
+const fmtDate = iso => formatDiveDate(iso, currentLang()).replace(/ /g, '\u00a0'); // cs "22. 10. 2026" never breaks
 const ACCEPT = 'image/*,application/pdf';
 
 const ICON_LOCK = '<svg class="tr-doc-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>';
