@@ -75,7 +75,8 @@ export async function uploadDivelog(store, files, onProgress = () => {}) {
 
 /**
  * Download the whole dive log as a zip: the DIVELOG files, dives.json and logbook.json
- * (entries, sites and media rows).
+ * (entries, sites and media rows), and with migration 0007 documents.json (qualifications and
+ * medical checks) with the scans under documents/.
  *
  * @param {Object} store - Dive store
  * @param {{loadZip?: Function, download?: Function, now?: Date}} [deps] - replaceable for tests
@@ -86,11 +87,16 @@ export async function exportZip(store, { loadZip = loadJsZip, download = downloa
     const sites = await store.listSites();
     const media = [];
     for (const entry of entries) media.push(...await store.listMedia(entry.id));
+    const docs = typeof store.exportDocuments === 'function' ? await store.exportDocuments() : null;
     const JSZip = await loadZip();
     const zip = new JSZip();
     for (const f of files) zip.file(`DIVELOG/${f.name}`, f.bytes);
     zip.file('dives.json', JSON.stringify(dives, null, 1));
     zip.file('logbook.json', JSON.stringify({ entries, sites, media }, null, 1));
+    if (docs) {
+        zip.file('documents.json', JSON.stringify({ qualifications: docs.qualifications, medical_checks: docs.medical_checks }, null, 1));
+        for (const f of docs.files) zip.file(`documents/${f.name}`, f.bytes);
+    }
     const blob = await zip.generateAsync({ type: 'blob' });
     download(blob, `dive-log-${now.toISOString().slice(0, 10)}.zip`);
 }

@@ -10,6 +10,7 @@
  * `detailRows` and `isHttpsUrl` are pure and covered by tests.
  */
 
+import { isHttpsUrl, siteInfoLinkHtml } from './geo.js';
 import { CHOICES, TAGS } from './EntryForm.js';
 import { DETAIL_KEYS, formatDiveDate, formatDuration } from './entryModel.js';
 import { routeHref } from './router.js';
@@ -21,7 +22,7 @@ import { ratingOf } from './entryModel.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { gasName } from '../import/recordedDive.js';
 import { gasesFromEntry, gasUsage, cylinderText } from './gasModel.js';
-import { diveTitle, feedStats } from './feed.js';
+import { diveTitle, feedStats, storyHtml } from './feed.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -38,25 +39,16 @@ const DETAIL_UNITS = Object.freeze({
 });
 const NUMERIC = new Set(Object.keys(DETAIL_UNITS));
 
-const present = v => (Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && !(typeof v === 'string' && v.trim() === ''));
+/** Kept here for older imports; lives in geo.js with the site link helpers. */
+export { isHttpsUrl };
 
-/** True for a well-formed https:// link without whitespace. */
-export function isHttpsUrl(text) {
-    const s = String(text ?? '');
-    if (s === '' || /\s/.test(s)) return false;
-    try {
-        const u = new URL(s);
-        return u.protocol === 'https:' && u.hostname !== '';
-    } catch {
-        return false;
-    }
-}
+const present = v => (Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && !(typeof v === 'string' && v.trim() === ''));
 
 /**
  * Rows of the detail card. Empty values are left out.
  * @param {Object} entry - log_entries row
  * @param {(key: string) => string} t - label lookup below `diveLog.logbook.`
- * @returns {{core: {key: string, label: string, value: string}[], groups: {group: string, rows: Object[]}[], notes: string|null}}
+ * @returns {{core: {key: string, label: string, value: string}[], groups: {group: string, rows: Object[]}[], notes: string|null, description: string|null}}
  */
 export function detailRows(entry, t) {
     const core = [];
@@ -93,18 +85,8 @@ export function detailRows(entry, t) {
         }
         if (rows.length) groups.push({ group, rows });
     }
-    const notes = typeof entry.notes === 'string' && entry.notes.trim() ? entry.notes.trim() : null;
-    return { core, groups, notes };
-}
-
-/**
- * Paragraphs of a dive story: split at blank lines, trimmed, empty ones dropped (single line breaks stay).
- * @param {unknown} text
- * @returns {string[]}
- */
-export function storyParagraphs(text) {
-    if (typeof text !== 'string') return [];
-    return text.replace(/\r\n?/g, '\n').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    const text = v => (typeof v === 'string' && v.trim() ? v.trim() : null);
+    return { core, groups, notes: text(entry.notes), description: text(entry.description) };
 }
 
 /**
@@ -415,6 +397,7 @@ export class EntryDetail {
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
                 ${ratingHtml(rating, fill(label('form.ratingValue'), rating))}
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
+                ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}`;
@@ -463,10 +446,10 @@ export class EntryDetail {
 
     /** The dive story (`description`, written for others): right under the stats, in paragraphs; hidden when empty. */
     renderStory() {
-        const paras = storyParagraphs(this.entry.description);
-        this.storyEl.hidden = !paras.length;
-        this._put(this.storyEl, paras.length ? `<section class="lb-d-story-in" aria-label="${escHtml(td('description', 'Dive story'))}">
-            ${paras.map(t => `<p>${escHtml(t)}</p>`).join('')}</section>` : '');
+        const { description } = detailRows(this.entry, label);
+        this.storyEl.hidden = !description;
+        this._put(this.storyEl, description
+            ? `<h3 class="lb-d-story-h">${escHtml(translate('diveLog.logbook.form.description', 'How was it?'))}</h3>${storyHtml(description)}` : '');
     }
 
     /** Main column below the photos: notes (owner only) and the remaining details. */

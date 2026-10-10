@@ -9,7 +9,7 @@ import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './fee
 import { SparkLoader } from './sparks.js';
 import { displayName, isOwn, chooseCommunityVisual, entryFromCommunityRow } from './community.js';
 import { avatarHtml, avatarImgFallback } from './avatars.js';
-import { diveTitle, feedStats } from './feed.js';
+import { diveTitle, feedStats, descriptionExcerpt } from './feed.js';
 import { groupByMonth, formatWeekdayDate } from './listViews.js';
 import { TAGS } from './EntryForm.js';
 import { mapyStaticMapUrl } from './geo.js';
@@ -27,7 +27,7 @@ const tt = (key, fallback) => translate(`diveLog.trail.${key}`, fallback);
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
-const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas', sac: 'SAC' };
 
 export class CommunityFeed {
     /**
@@ -251,7 +251,7 @@ export class CommunityFeed {
             title: diveTitle(entry, site?.name, key => tl(key, TITLE_FALLBACK[key] ?? key)), untitled: !site?.name,
             whenText: when, numberLabel: numbered ? fill(tl('number', '#{0}'), entry.log_number) : null,
             statsHtml: statsHtml(feedStats(entry, fmtNum), key => tl(`feed.stats.${key}`, STAT_FALLBACK[key])),
-            peopleText: people, ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
+            peopleText: people, notesText: descriptionExcerpt(entry.description), ratingHtml: this._rating(entry), visualHtml: this._visual(row, entry, site),
             lockHtml: isOwn(row, this.userId) && row.visibility === 'private' ? lockHtml(tt('visibility.private', 'Private')) : '',
             badgeHtml: this.shareOn && isOwn(row, this.userId) ? shareButtonHtml(row.id, { shared: row.visibility === 'link' }) : '',
         });

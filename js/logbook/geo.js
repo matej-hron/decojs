@@ -4,6 +4,8 @@
  * API reference: https://api.mapy.com/v1/docs/geocode/ and /v1/docs/maptiles/
  */
 
+import { escHtml } from '../utils/escHtml.js';
+
 /**
  * Parse pasted coordinates such as `49.7856, 13.4012`, `49,7856 13,4012` or
  * `49.7856N 13.4012E`. Decimal commas and N/S/E/W prefixes or suffixes are accepted;
@@ -166,4 +168,38 @@ export function mapyStaticMapUrl({ lat, lon, apiKey, width, height, zoom = 12, s
 /** Metres per CSS pixel of a Web Mercator map at `zoom` and latitude `lat` (256-px tiles). */
 export function metersPerPixel(lat, zoom) {
     return (156543.03392 * Math.cos(toRad(lat))) / 2 ** zoom;
+}
+
+/** True for a well-formed https:// link without whitespace. */
+export function isHttpsUrl(text) {
+    const s = String(text ?? '');
+    if (s === '' || /\s/.test(s)) return false;
+    try {
+        const u = new URL(s);
+        return u.protocol === 'https:' && u.hostname !== '';
+    } catch {
+        return false;
+    }
+}
+
+const SITE_URL_CHARS = /^https:\/\/[A-Za-z0-9._~:/?#@!$&'()*+,;=%[\]-]+$/; // as the 0006 check constraint
+const SITE_URL_MAX = 500;
+
+/**
+ * Parse the site link field: empty is none, otherwise an https:// address, normalised the way the browser
+ * writes it (lowercase scheme and host, punycode, percent-encoded path) so it passes the database check.
+ * @returns {{ok: true, value: string|null}|{ok: false}}
+ */
+export function parseSiteUrl(text) {
+    const s = String(text ?? '').trim();
+    if (s === '') return { ok: true, value: null };
+    if (!isHttpsUrl(s)) return { ok: false };
+    const href = new URL(s).href;
+    return SITE_URL_CHARS.test(href) && href.length <= SITE_URL_MAX ? { ok: true, value: href } : { ok: false };
+}
+
+/** "Site info ↗": a link that opens in a new tab, or '' when `url` is not a safe https address. */
+export function siteInfoLinkHtml(url, text) {
+    if (!isHttpsUrl(url) || !SITE_URL_CHARS.test(url)) return '';
+    return `<a class="lb-site-info" href="${escHtml(url)}" target="_blank" rel="noopener noreferrer">${escHtml(text)}<span aria-hidden="true">\u00a0↗</span></a>`;
 }

@@ -11,7 +11,7 @@ import { shareStoreFor } from '../js/backend/shareStore.js';
 import { createSupabaseStore } from '../js/backend/supabaseStore.js';
 import { siteMapHtml, AREA_RADIUS_M } from '../js/logbook/siteMap.js';
 import { metersPerPixel, mapyStaticMapUrl } from '../js/logbook/geo.js';
-import { heroKind, storyParagraphs, EntryDetail } from '../js/logbook/EntryDetail.js';
+import { heroKind, EntryDetail } from '../js/logbook/EntryDetail.js';
 import { shareDive, shareButtonHtml, isLinkShared } from '../js/logbook/shareAction.js';
 import { ShareCard } from '../js/logbook/ShareCard.js';
 
@@ -108,12 +108,6 @@ test('heroKind: photo first, else the map, nothing before loading', () => {
     assert.equal(heroKind({ loaded: true, photos: 0, area: null }), null);
 });
 
-test('storyParagraphs: blank lines split paragraphs, single breaks stay, empty → none', () => {
-    assert.deepEqual(storyParagraphs('a\nb\n\n \n c \r\n\r\nd'), ['a\nb', 'c', 'd']);
-    assert.deepEqual(storyParagraphs('  '), []);
-    assert.deepEqual(storyParagraphs(null), []);
-});
-
 const ownStore = (extra = {}) => ({
     listSites: async () => [{ id: 's1', name: 'Wall', lat: 49.66431, lon: 13.46682 }],
     listMedia: async () => [], photoUrls: async () => new Map(), ...extra,
@@ -128,6 +122,7 @@ test('EntryDetail: story under the stats in paragraphs (hidden when empty); card
         const story = host.querySelector('.lb-d-story');
         assert.equal(story.hidden, false);
         assert.deepEqual([...story.querySelectorAll('p')].map(p => p.textContent), ['First <b>.', 'Second.']);
+        assert.ok(story.querySelector('h3.lb-d-story-h'), 'headed like the form field');
         assert.ok(story.compareDocumentPosition(host.querySelector('.lb-d-grid')) & 4, 'the story comes before the columns');
         assert.ok(host.querySelector('.lb-d-hero .lb-d-map'), 'no photos: the map is the hero');
         assert.equal(host.querySelector('.lb-d-mapcard'), null, 'and not repeated in the side column');

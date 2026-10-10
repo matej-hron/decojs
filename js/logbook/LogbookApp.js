@@ -18,7 +18,7 @@ import { EntryDetail } from './EntryDetail.js';
 import { gasesFromEntry } from './gasModel.js';
 import { SitesPage, diveCountText } from './SitesPage.js';
 import { groupByMonth, sortEntries, formatWeekdayDate } from './listViews.js';
-import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame } from './feed.js';
+import { FEED_VIEWS, migrateView, diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, photoIndex, photoFrame, descriptionExcerpt } from './feed.js';
 import { mapyStaticMapUrl } from './geo.js';
 import { feedCardHtml, statsHtml, visualHtml, lockHtml, ratingHtml } from './feedCard.js';
 import { shareDive, shareButtonHtml, confirmSheet, toast, isLinkShared } from './shareAction.js';
@@ -34,6 +34,7 @@ import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { medicalStatus, isoDate } from './documents.js';
 
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
@@ -45,12 +46,13 @@ const FORM_PROBE_WAIT_MS = 3000;
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
+const td = (key, fallback) => translate(`diveLog.trail.docs.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 
 const NB = '\u00A0';
 const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
 const tt = key => tl(key, TITLE_FALLBACK[key] ?? key);
-const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas', sac: 'SAC' };
 
 const VIEW_KEY = 'decojs.logbook.view';
 const TABLE_COLUMNS = [
@@ -233,6 +235,8 @@ export class LogbookApp {
     _enterLogbook() {
         this.entries = null;
         this.msg = [];
+        this.medNotice = null; // {state: 'soon'|'expired', validUntil} of the own medical checks (0007)
+        this.medDismissed = false; // closed for this session
         this.root.innerHTML = '';
         this.view = document.createElement('div');
         this.view.className = 'lb-root';
@@ -406,7 +410,7 @@ export class LogbookApp {
     _showSites(siteId) {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new SitesPage(this.view.firstChild, {
-            store: this.store, siteId,
+            store: this.store, siteId, userId: this.user?.id ?? null,
             onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
             onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
         });
@@ -553,7 +557,7 @@ export class LogbookApp {
             store: this.store, ready: this.ensured,
             onChoose: async ({ prefill, recordingId }) => {
                 const community = await this._communityForForm();
-                const share = await this._shareForForm(community);
+                const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
                 const defaultVisibility = community && this.store.defaultVisibility
                     ? await Promise.resolve().then(() => this.store.defaultVisibility()).catch(error => { console.error(error); return null; })
                     : null;
@@ -563,7 +567,7 @@ export class LogbookApp {
                 if (token !== this._viewToken) return;
                 this._unmountForm();
                 this.form = new EntryForm(host, {
-                    store: this.store, prefill, recordingId, community, defaultVisibility, share, defaultShareLocation,
+                    store: this.store, prefill, recordingId, community, defaultVisibility, share, describe, defaultShareLocation,
                     onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
                     onCancel: () => { location.hash = routeHref({ name: 'list' }); },
                 });
@@ -582,6 +586,12 @@ export class LogbookApp {
             clearTimeout(timer);
         }
         return this.community;
+    }
+
+    /** Whether the form offers the description for members (migration 0006); no answer means no offer. */
+    async _describeForForm() {
+        if (typeof this.store.descriptionStatus !== 'function') return false;
+        return this.store.descriptionStatus().catch(error => { console.warn(error); return false; });
     }
 
     /** Whether the form offers "Public link" (migration 0005); no answer means no offer. */
@@ -605,11 +615,11 @@ export class LogbookApp {
             return;
         }
         const community = await this._communityForForm();
-        const share = await this._shareForForm(community);
+        const [share, describe] = await Promise.all([this._shareForForm(community), this._describeForForm()]);
         if (token !== this._viewToken) return;
         const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
         this.view.innerHTML = '<div class="lb-form-host"></div>';
-        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, onSaved: back, onCancel: back });
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, community, share, describe, onSaved: back, onCancel: back });
     }
 
     /** Back link, "Learn why", (a member's author row,) and the embedded analysis of one recorded dive. */
@@ -658,6 +668,7 @@ export class LogbookApp {
 
     async _showList(token) {
         this._renderList();
+        this._loadMedical(token);
         try {
             await this.ensured;
             const [entries, sites, photos] = await Promise.all([
@@ -676,6 +687,36 @@ export class LogbookApp {
         } catch (error) {
             if (token === this._viewToken) this._storeError(error);
         }
+    }
+
+    /** Whether the own dive medical expires within 30 days or has expired: a quiet notice above My dives. */
+    async _loadMedical(token) {
+        if (this.medDismissed || typeof this.store?.medicalValidity !== 'function') return;
+        let rows;
+        try {
+            rows = await this.store.medicalValidity();
+        } catch (error) {
+            console.error(error); // no notice
+            return;
+        }
+        const st = rows ? medicalStatus(rows, isoDate()) : null;
+        const notice = st && (st.state === 'soon' || st.state === 'expired') ? { state: st.state, validUntil: st.validUntil } : null;
+        const changed = JSON.stringify(notice) !== JSON.stringify(this.medNotice);
+        this.medNotice = notice;
+        if (changed && token === this._viewToken && this.user && this._route().name === 'list') this._renderList();
+    }
+
+    _medicalBanner() {
+        const n = this.medNotice;
+        if (!n || this.medDismissed) return '';
+        const date = formatDiveDate(n.validUntil, currentLang()).replace(/ /g, '\u00a0');
+        const text = n.state === 'expired'
+            ? fill(td('banner.expired', 'Your dive medical expired on {0}.'), date)
+            : fill(td('banner.soon', 'Your dive medical expires on {0}.'), date);
+        const link = this.community ? ` <a href="${routeHref({ name: 'profile' })}">${escHtml(td('banner.open', 'Update in Profile'))}</a>` : '';
+        return `<div class="lb-med-banner lb-med-banner--${n.state}" role="status">
+            <p>${escHtml(text)}${link}</p>
+            <button type="button" class="lb-med-close" aria-label="${escHtml(td('banner.dismiss', 'Dismiss'))}">×</button></div>`;
     }
 
     /** Title, totals, Sites, New dive and the "⋯" menu with the rarely used account actions. */
@@ -948,7 +989,8 @@ export class LogbookApp {
         const buddies = (entry.buddies ?? []).join(', ');
         const tags = (Array.isArray(entry.details?.tags) ? entry.details.tags : []).map(t => this._tagText(t)).join(', ');
         const people = [buddies ? fill(tl('views.with', 'with {0}'), buddies) : '', tags].filter(Boolean).join(' · ');
-        const notes = typeof entry.notes === 'string' ? entry.notes.trim() : '';
+        // The description written for members; dives without one keep showing the owner's notes here.
+        const notes = descriptionExcerpt(entry.description) || descriptionExcerpt(entry.notes);
         const share = this._shareBtn(entry);
         const card = feedCardHtml({
             entry, href: routeHref({ name: 'detail', id: entry.id }),
@@ -1077,7 +1119,11 @@ export class LogbookApp {
         const docked = this.selecting && this.entries?.length; // the bulk panel then lives in the select dock
         this.view.classList.toggle('lb-selecting', !!docked);
         const menuOpen = !!this.view.querySelector('.lb-menu[open]'); // a re-render (photos arriving) must not close it
-        this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        this.view.innerHTML = `${this._renderBar()}<div class="lb-list-main">${this._medicalBanner()}${docked ? '' : '<div class="lb-bulk"></div>'}${body}</div>`;
+        this.view.querySelector('.lb-med-close')?.addEventListener('click', () => {
+            this.medDismissed = true;
+            this.view.querySelector('.lb-med-banner')?.remove();
+        });
         if (menuOpen) this.view.querySelector('.lb-menu').open = true;
         this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));

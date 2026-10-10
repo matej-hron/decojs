@@ -1183,7 +1183,7 @@ describe('entry form helpers', () => {
         const entry = {
             log_number: 12, dive_date: '2026-10-01', entry_time: '09:30:00', duration_s: 2700,
             max_depth_m: 18.4, site_id: 's1', buddies: ['Petr'], gas: { o2: 0.32, he: 0 },
-            water_temp_c: 14.5, vis_shallow_m: 8, vis_deep_m: null, notes: 'ok',
+            water_temp_c: 14.5, vis_shallow_m: 8, vis_deep_m: null, notes: 'ok', description: 'For everyone',
             details: { weather: 'sun', tags: ['night'], rating: 4, futureKey: 'kept' },
         };
         const form = formValuesFromEntry(entry);
@@ -2445,5 +2445,85 @@ describe('DeleteDataPanel (jsdom)', () => {
             assert.deepEqual(calls, []);
             assert.ok(win.document.querySelector('#lb-wipe-retry'));
         });
+    });
+});
+
+describe('sacStats', async () => {
+    const { diveSac, sacSummary } = await import('../js/logbook/sacStats.js');
+    // 12 l cylinder, avg depth 10 m (2 bar ambient): SAC = used bar × 12 ÷ (min × 2)
+    const dive = (id, date, usedBar, minutes = 50, extra = {}) => ({
+        id, dive_date: date, duration_s: minutes * 60,
+        details: { avgDepthM: 10, gases: [{ role: 'bottom', o2: 0.21, he: 0, cylinder: 's12', volumeL: 12, material: 'steel', startBar: 200, endBar: 200 - usedBar }] },
+        ...extra,
+    });
+    // usedBar 100 over 50 min at 2 bar: 100 × 12 ÷ 100 = 12 l/min
+    test('diveSac: from pressures, volume, depth and time', () => {
+        assert.equal(diveSac(dive('a', '2026-01-01', 100)), 12);
+    });
+    test('diveSac: null without pressures', () => {
+        assert.equal(diveSac({ id: 'x', duration_s: 3000, details: { avgDepthM: 10 } }), null);
+    });
+    test('no data: empty summary', () => {
+        const s = sacSummary([]);
+        assert.equal(s.count, 0);
+        assert.equal(s.overallLpm, null);
+        assert.equal(s.recentLpm, null);
+        assert.deepEqual(s.points, []);
+        assert.equal(sacSummary(undefined).count, 0);
+    });
+    test('weights by dive time', () => {
+        // 12 l/min for 50 min and 18 l/min for 25 min (usedBar 75 over 25 min: 75 × 12 ÷ 50 = 18)
+        const s = sacSummary([dive('a', '2026-01-01', 100, 50), dive('b', '2026-01-02', 75, 25)]);
+        assert.equal(s.count, 2);
+        assert.ok(Math.abs(s.overallLpm - (12 * 50 + 18 * 25) / 75) < 1e-9);
+    });
+    test('implausible and short dives are listed but not counted', () => {
+        const s = sacSummary([dive('a', '2026-01-01', 100), dive('b', '2026-01-02', 5), dive('c', '2026-01-03', 12, 6), dive('d', '2026-01-04', 100)]);
+        assert.equal(s.points.length, 4);
+        assert.equal(s.count, 2);
+        assert.deepEqual(s.points.map(p => p.reason), ['', 'implausible', 'short', '']);
+        assert.equal(s.overallLpm, 12);
+    });
+    test('an outlier is rejected once there are enough dives', () => {
+        const base = [10, 11, 12, 12, 13, 14].map((v, i) => dive(`d${i}`, `2026-02-0${i + 1}`, v * 100 / 12));
+        const s = sacSummary([...base, dive('big', '2026-02-09', 55 * 100 / 12)]);
+        const big = s.points.find(p => p.id === 'big');
+        assert.equal(big.used, false);
+        assert.equal(big.reason, 'outlier');
+        assert.equal(s.count, 6);
+        // few dives: nothing is rejected as an outlier
+        assert.equal(sacSummary([dive('a', '2026-01-01', 100), dive('b', '2026-01-02', 300)]).count, 2);
+    });
+    test('recent average uses the last five counted dives by date', () => {
+        const entries = [16, 16, 12, 12, 12, 12, 12].map((v, i) => dive(`d${i}`, `2026-03-0${i + 1}`, v * 100 / 12));
+        const s = sacSummary(entries.reverse()); // input order does not matter
+        assert.equal(s.recentCount, 5);
+        assert.ok(Math.abs(s.recentLpm - 12) < 1e-9);
+        assert.ok(s.overallLpm > 12);
+        assert.equal(s.points[0].id, 'd0');
+    });
+    test('recent average needs two dives', () => {
+        assert.equal(sacSummary([dive('a', '2026-01-01', 100)]).recentLpm, null);
+    });
+});
+
+describe('sacChartModel', async () => {
+    const { sacChartModel } = await import('../js/logbook/sacStats.js');
+    const pts = [{ id: 'a', sacLpm: 14, used: true }, { id: 'b', sacLpm: 40, used: false }, { id: 'c', sacLpm: 18, used: true }];
+    test('dots span the plot, the line skips unused dives, higher SAC is higher up', () => {
+        const m = sacChartModel(pts);
+        assert.equal(m.dots.length, 3);
+        assert.equal(m.dots[0].x, m.plotLeft);
+        assert.equal(m.dots[2].x, m.plotRight);
+        assert.ok(m.dots[1].y < m.dots[2].y && m.dots[2].y < m.dots[0].y);
+        assert.equal((m.line.match(/M/g) ?? []).length, 1);
+        assert.equal((m.line.match(/L/g) ?? []).length, 1);
+        assert.ok(m.ticks.every(t => t.y >= 0 && t.y <= m.height));
+        assert.ok(m.ticks.at(-1).value < 40); // the axis follows the counted dives
+        assert.equal(m.dots[1].y, 24); // the uncounted 40 l/min is pinned to the top edge
+    });
+    test('a single dive sits in the middle', () => {
+        const m = sacChartModel([{ id: 'a', sacLpm: 15, used: true }]);
+        assert.equal(m.dots[0].x, (m.plotLeft + m.plotRight) / 2);
     });
 });
