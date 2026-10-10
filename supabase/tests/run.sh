@@ -21,6 +21,12 @@ for f in tests/seed_before_0005.sql migrations/0005_share_link.sql migrations/00
     run < "$f"
 done
 run < tests/0005_share.sql
+for f in migrations/0008_share_avatar_fix.sql migrations/0008_share_avatar_fix.sql; do
+    echo "applying $f"
+    run < "$f"
+done
+run < tests/0008_share_avatar.sql
+# 0007 last: its test deletes user A at the end (cascade check).
 echo "applying migrations/0007_profile_documents.sql"
 run < migrations/0007_profile_documents.sql
 # A project that auto-exposes tables would grant anon everything: running 0007 again must take it back.
