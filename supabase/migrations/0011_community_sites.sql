@@ -13,7 +13,8 @@
 -- the caller may see (own, or 'members'/'link'). Triggers keep the rules on writes: a dive can only point at its
 -- owner's own site or a members site (DTS03), a site cannot change owner, cannot turn private while another
 -- member's dive uses it (DTS01), and cannot be deleted while any dive uses it (DTS02; account deletion cascades
--- still pass and leave others' dives without a site). Only the creator merges a site into another visible one.
+-- still pass and leave others' dives without a site). Only the creator merges a site into another visible one,
+-- and a merge moves only the creator's own dives.
 
 begin;
 
@@ -56,7 +57,7 @@ language plpgsql security definer set search_path = ''
 as $$
 begin
     if new.site_id is not null and (tg_op = 'INSERT' or new.site_id is distinct from old.site_id) then
-        -- merge_site moves other members' dives with the caller's auth.uid(): their owner does not change.
+        -- Only the caller's own dives (or, on an update, a dive whose owner does not change).
         if auth.uid() is not null and new.owner is distinct from auth.uid()
            and (tg_op = 'INSERT' or new.owner is distinct from old.owner) then
             raise exception 'This site is not available' using errcode = 'DTS03';
@@ -493,16 +494,18 @@ as $$
     offset least(greatest(coalesce(p_offset, 0), 0), 10000);
 $$;
 
--- The creator merges a duplicate into another visible site: every dive (any owner) moves, then the duplicate
--- goes. The dive trigger still applies, so others' dives cannot land on the caller's private site (the whole
--- merge then fails). Returns how many of the caller's own dives moved (others' counts would reveal their
--- private dives). The target is locked 'for share' so it cannot turn private while dives land on it.
+-- The creator merges a duplicate into another visible site. Other members' dives are never touched: only the
+-- caller's own dives move, and the duplicate is deleted only when no dive (anyone's) uses it any more; otherwise
+-- it stays for the members who still dive there. Returns {"moved": own dives moved, "deleted": boolean}, never
+-- how many other dives remain. p_from is locked 'for update' (no dive can be attached to it meanwhile), the
+-- target 'for share' (it cannot turn private while dives land on it).
 create function public.merge_site(p_from uuid, p_into uuid)
-returns integer
+returns jsonb
 language plpgsql volatile security definer set search_path = ''
 as $$
 declare
     moved integer;
+    gone boolean := false;
 begin
     perform 1 from public.sites s where s.id = p_from and s.owner = auth.uid() for update;
     if not found or not public.is_member() then
@@ -517,12 +520,13 @@ begin
     if not found then
         raise exception 'The target site is not available' using errcode = '42501';
     end if;
-    with m as (
-        update public.log_entries set site_id = p_into where site_id = p_from returning owner
-    )
-    select count(*) filter (where m.owner = auth.uid()) into moved from m;
-    delete from public.sites where id = p_from;
-    return moved;
+    update public.log_entries set site_id = p_into where site_id = p_from and owner = auth.uid();
+    get diagnostics moved = row_count;
+    if not exists (select 1 from public.log_entries e where e.site_id = p_from) then
+        delete from public.sites where id = p_from;
+        gone := true;
+    end if;
+    return jsonb_build_object('moved', moved, 'deleted', gone);
 end $$;
 
 -- ---------------------------------------------------------------------------

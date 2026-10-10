@@ -50,10 +50,11 @@ visibility (shallow/deep) and water temperature (bottom/surface), both by month.
   - `site_visits(p_site_id, p_limit default 50, p_offset default 0)` → `id, owner, dive_date, entry_time,
     duration_s, max_depth_m, water_temp_c, surface_temp_c, vis_shallow_m, vis_deep_m, visibility` newest first,
     limit clamped 1..200. Same filter.
-  - `merge_site(p_from, p_into) → integer` (volatile): caller owns `p_from`; `p_into` is visible to the caller
-    and different; moves **every** dive (any owner) from → into, deletes `p_from`, returns moved count. Trigger
-    rules still apply (others' dives cannot be moved onto the caller's private site). *Why:* merging a duplicate
-    used by others would otherwise fail on the delete guard.
+  - `merge_site(p_from, p_into) → jsonb {moved, deleted}` (volatile): caller owns `p_from`; `p_into` is visible
+    to the caller and different; moves **only the caller's own** dives from → into, then deletes `p_from` only
+    when no dive (anyone's) uses it any more, otherwise keeps it. `moved` = the caller's own dives moved,
+    `deleted` = whether `p_from` went; how many other dives remain is never revealed. *Why:* the user's rule —
+    a merge never touches other members' dives; a duplicate others still use stays for them.
 - Idempotent (`if not exists`, `create or replace`, drop+create where the shape is new), one transaction,
   `lock_timeout 5s`, `notify pgrst`. Docker RLS suite `supabase/tests/0011_community_sites.sql`.
 

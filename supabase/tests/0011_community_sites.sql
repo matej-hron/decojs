@@ -15,6 +15,8 @@
 \set SA3 '5e000000-0000-0000-0000-000000000006'
 \set ZS '5e000000-0000-0000-0000-000000000007'
 \set ST '5e000000-0000-0000-0000-000000000008'
+\set SB4 '5e000000-0000-0000-0000-000000000009'
+\set SBX '5e000000-0000-0000-0000-00000000000a'
 -- Dives.
 \set A1 '6e000000-0000-0000-0000-000000000001'
 \set APRIV '6e000000-0000-0000-0000-000000000002'
@@ -28,6 +30,7 @@
 \set C2 '6e000000-0000-0000-0000-00000000000a'
 \set BT1 '6e000000-0000-0000-0000-00000000000b'
 \set BT2 '6e000000-0000-0000-0000-00000000000c'
+\set B5 '6e000000-0000-0000-0000-00000000000d'
 
 create function pg_temp.check(ok boolean, what text) returns void language plpgsql as $$
 begin
@@ -95,7 +98,11 @@ insert into public.sites (id, owner, name, lat, lon, notes, visibility) values
     (:'SB', :'B', 'Barbora duplicate', 50.11, 14.22, 'B-SECRET-SITE-NOTE', 'members'),
     (:'SBP', :'B', 'Boris private', null, null, null, 'private'),
     (:'ZS', :'Z', 'Banned site', null, null, null, 'members'),
-    (:'ST', :'A', 'Hot Spring', null, null, null, 'members');
+    (:'ST', :'A', 'Hot Spring', null, null, null, 'members'),
+    (:'SB4', :'B', 'Barbora third copy', null, null, null, 'members'),
+    (:'SBX', :'B', 'Barbora empty copy', null, null, null, 'members');
+insert into public.log_entries (id, owner, log_number, dive_date, site_id, visibility) values
+    (:'B5', :'B', 7, '2026-02-01', :'SB4', 'private');
 update public.sites set url = 'https://example.com/barbora' where id = :'SM';
 insert into public.log_entries (id, owner, log_number, dive_date, entry_time, notes, site_id, visibility, share_location,
                                 water_temp_c, vis_shallow_m, vis_deep_m, details) values
@@ -302,24 +309,32 @@ select set_config('request.jwt.claim.sub', :'B', false);
 select pg_temp.check(not exists (select 1 from public.community_sites() where id = :'SA2'), 'a site turned private leaves B''s directory');
 reset role;
 
--- ---- Merge ----
+-- ---- Merge: only the caller's own dives move ----
+-- Refusals change nothing (checked above as B: non-owner, invisible, itself, unknown target).
+select pg_temp.check(exists (select 1 from public.sites where id = :'SB')
+    and (select site_id from public.log_entries where id = :'B3') = :'SB'
+    and (select site_id from public.log_entries where id = :'C1') = :'SB', 'refused merges changed nothing');
 set role authenticated;
 select set_config('request.jwt.claim.sub', :'B', false);
-select pg_temp.check(pg_temp.err(format('select public.merge_site(%L, %L)', :'SB', :'SBP')) = 'DTS03', 'merge onto own private site with C''s dive refused');
+-- Onto B's own private site: allowed now, C's dives stay where they are.
+select pg_temp.check(public.merge_site(:'SB', :'SBP') = '{"moved": 1, "deleted": false}'::jsonb, 'merge moves only B''s dive; the site others use stays');
 reset role;
 select pg_temp.check(exists (select 1 from public.sites where id = :'SB')
+    and (select site_id from public.log_entries where id = :'B3') = :'SBP'
     and (select site_id from public.log_entries where id = :'C1') = :'SB'
-    and (select site_id from public.log_entries where id = :'B3') = :'SB', 'failed merge rolled back');
+    and (select site_id from public.log_entries where id = :'C2') = :'SB', 'others'' dives untouched, also C''s private one');
 set role authenticated;
 select set_config('request.jwt.claim.sub', :'B', false);
-select pg_temp.check(public.merge_site(:'SB', :'SM') = 1, 'merge_site returns only the count of the caller''s own dives');
+select pg_temp.check(public.merge_site(:'SB', :'SM') = '{"moved": 0, "deleted": false}'::jsonb, 'merging again: nothing of B''s left, site kept, no count of others');
+select pg_temp.check((select used_by_others from public.community_sites() where id = :'SB'), 'the kept duplicate is still used by others');
+select pg_temp.check(public.merge_site(:'SB4', :'SM') = '{"moved": 1, "deleted": true}'::jsonb, 'nobody else uses it: own private dive moved, duplicate deleted');
+select pg_temp.check(public.merge_site(:'SBX', :'SM') = '{"moved": 0, "deleted": true}'::jsonb, 'an unused duplicate is deleted');
+select pg_temp.check(pg_temp.err(format('select public.merge_site(%L, %L)', :'SB4', :'SM')) = '42501', 'a merged-away site cannot be merged again');
 reset role;
-select pg_temp.check(not exists (select 1 from public.sites where id = :'SB')
-    and (select site_id from public.log_entries where id = :'C1') = :'SM'
-    and (select site_id from public.log_entries where id = :'B3') = :'SM'
-    and (select site_id from public.log_entries where id = :'C2') = :'SM', 'merged site deleted, all dives (also C''s private one) on the target');
+select pg_temp.check(not exists (select 1 from public.sites where id in (:'SB4', :'SBX'))
+    and (select site_id from public.log_entries where id = :'B5') = :'SM', 'deleted duplicates gone, B''s dive on the target');
 set role anon;
-select pg_temp.check(public.get_shared_dive(:'tc1') -> 'site' ->> 'name' = 'Barbora CMAS', 'C''s shared dive now names the merged site');
+select pg_temp.check(public.get_shared_dive(:'tc1') -> 'site' ->> 'name' = 'Barbora duplicate', 'C''s shared dive still names the site C chose');
 reset role;
 
 -- ---- Non-members ----
@@ -339,4 +354,5 @@ reset role;
 select pg_temp.check(pg_temp.err(format('delete from auth.users where id = %L', :'A')) is null, 'deleting A''s account passes');
 select pg_temp.check(not exists (select 1 from public.sites where owner = :'A'), 'A''s sites are gone');
 select pg_temp.check((select site_id is null from public.log_entries where id = :'B1')
-    and (select site_id is null from public.log_entries where id = :'C1'), 'others'' dives keep going without a site');
+    and (select site_id is null from public.log_entries where id = :'B5')
+    and (select site_id from public.log_entries where id = :'C1') = :'SB', 'others'' dives keep going without a site (and keep B''s site)');
