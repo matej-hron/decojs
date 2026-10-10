@@ -103,6 +103,7 @@ const STATIC_ASSETS = [
   './js/logbook/listViews.js',
   './js/logbook/feed.js',
   './js/logbook/geo.js',
+  './js/logbook/mapLinks.js',
   './js/logbook/SitePicker.js',
   './js/logbook/SitesPage.js',
   './js/logbook/SiteVisits.js',

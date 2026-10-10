@@ -4,7 +4,7 @@
   "description": "Decompression theory learning tool",
   "type": "module",
   "scripts": {
-    "test": "node tests/run-tests.mjs && node --test tests/divesoft-dlf.test.mjs tests/recorded-dive.test.mjs tests/dive-chain.test.mjs tests/dive-log-backend.test.mjs tests/logbook.test.mjs tests/community-store.test.mjs tests/community.test.mjs tests/build-pages.test.mjs tests/sw-routing.test.mjs tests/chart-narrow-layout.test.mjs tests/chart-touch-readout.test.mjs tests/share-link.test.mjs tests/profile-documents.test.mjs tests/site-visits.test.mjs tests/share-polish.test.mjs tests/social.test.mjs",
+    "test": "node tests/run-tests.mjs && node --test tests/divesoft-dlf.test.mjs tests/recorded-dive.test.mjs tests/dive-chain.test.mjs tests/dive-log-backend.test.mjs tests/logbook.test.mjs tests/community-store.test.mjs tests/community.test.mjs tests/build-pages.test.mjs tests/sw-routing.test.mjs tests/chart-narrow-layout.test.mjs tests/chart-touch-readout.test.mjs tests/share-link.test.mjs tests/profile-documents.test.mjs tests/site-visits.test.mjs tests/share-polish.test.mjs tests/social.test.mjs tests/map-links.test.mjs",
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   },

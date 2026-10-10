@@ -420,6 +420,7 @@ export class EntryDetail {
             scale: (globalThis.devicePixelRatio ?? 1) >= 1.5 ? 2 : 1,
             alt: name && name !== '…' ? fill(td('mapAlt', 'Map of {0}'), name) : td('mapAltNoName', 'Map of the dive site'),
             areaLabel: td('approxArea', 'Approximate area'),
+            label: name && name !== '…' ? name : '',
         });
     }
 
