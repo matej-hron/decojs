@@ -40,6 +40,7 @@ set client_min_messages = notice;
 insert into auth.users (id, is_anonymous, banned_until) values
     (:'O', false, null), (:'M', false, null), (:'N', false, null), (:'X', true, null), (:'Z', false, now() + interval '1 day');
 insert into public.profiles (id, display_name, avatar_preset) values (:'O', 'Olga', 'reef-01'), (:'M', 'Milan', 'reef-02'), (:'N', 'Nora', null);
+update public.profiles set nickname = 'Olí' where id = :'O';
 insert into public.sites (id, owner, name) values ('2d000000-0000-0000-0000-000000000001', :'O', 'Blue Hole');
 insert into public.log_entries (id, owner, log_number, dive_date, notes, site_id, visibility) values
     (:'PUB', :'O', 1, '2026-09-20', 'O-SECRET-NOTE', '2d000000-0000-0000-0000-000000000001', 'members'),
@@ -64,11 +65,22 @@ select pg_temp.check(not exists (
       and p.proname in ('entry_visible', 'can_kudos', 'can_comment', 'owns_entry', 'social_counts', 'entry_kudos',
                         'entry_comments', 'social_inbox', 'social_unseen_count', 'social_mark_seen', 'kudos_touch', 'comments_touch')
       and has_function_privilege('anon', p.oid, 'execute')), 'anon cannot execute the social functions');
-select pg_temp.check(has_function_privilege('anon', 'public.shared_dive_kudos(text)', 'execute'), 'anon can read a shared dive''s kudos count');
+select pg_temp.check(has_function_privilege('anon', 'public.shared_dive_social(text)', 'execute'), 'anon can read a shared dive''s kudos count');
 select pg_temp.check(not exists (
     select 1 from pg_proc p where p.pronamespace = 'public'::regnamespace
       and p.proname in ('social_counts', 'entry_kudos', 'entry_comments', 'social_inbox')
       and pg_get_function_result(p.oid) ~* '\m(notes|share_token|email)\M'), 'no social function returns notes/share_token/email');
+
+-- ---- Nickname ----
+select pg_temp.check(pg_temp.refused(format('update public.profiles set nickname = %L where id = %L', ' Luis ', :'O')), 'untrimmed nickname refused');
+select pg_temp.check(pg_temp.refused(format('update public.profiles set nickname = %L where id = %L', repeat('x', 41), :'O')), '41-character nickname refused');
+select pg_temp.check(pg_temp.refused(format('update public.profiles set nickname = %L where id = %L', '', :'O')), 'empty nickname refused (null clears it)');
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'M', false);
+select pg_temp.check((select nickname from public.community_members(:'O')) = 'Olí', 'members see the nickname');
+select pg_temp.check((select dive_count from public.community_members(:'O')) = 2, 'member stats still exclude the private dive');
+select pg_temp.check(pg_temp.affected(format('update public.profiles set nickname = %L where id = %L', 'Hijack', :'O')) = 0, 'M cannot set O''s nickname');
+reset role;
 
 -- ---- Anon: nothing ----
 set role anon;
@@ -120,8 +132,12 @@ select set_config('request.jwt.claim.sub', :'N', false);
 select pg_temp.check((select kudos_count = 1 and not kudoed and comment_count = 3 and comments_enabled from public.social_counts(array[:'PUB']::uuid[])), 'N sees counts of a members dive');
 select pg_temp.check(not exists (select 1 from public.social_counts(array[:'PRIV']::uuid[])), 'no counts of a private dive');
 select pg_temp.check((select count(*) from public.entry_kudos(:'PUB')) = 1 and (select display_name from public.entry_kudos(:'PUB')) = 'Milan', 'N sees who gave kudos');
+reset role;
+update public.profiles set nickname = 'Míla' where id = :'M';
+set role authenticated;
 select pg_temp.check((select count(*) from public.entry_comments(:'PUB')) = 3, 'N reads the comments');
 select pg_temp.check((select body from public.entry_comments(:'PUB') limit 1) = 'edited text', 'comments oldest first');
+select pg_temp.check((select nickname from public.entry_comments(:'PUB') limit 1) = 'Míla', 'comments carry the nickname');
 select pg_temp.check((select string_agg(row_to_json(c)::text, '') from public.entry_comments(:'PUB') c) !~ 'O-SECRET-NOTE', 'no notes in comments');
 select pg_temp.check(pg_temp.affected(format('update public.comments set body = %L where id = %L', 'hijack', :'c1')) = 0, 'N cannot edit M''s comment');
 select pg_temp.check(pg_temp.affected(format('delete from public.comments where id = %L', :'c1')) = 0, 'N cannot delete M''s comment');
@@ -207,13 +223,13 @@ reset role;
 -- ---- Share page: anon gets the count, nothing else ----
 set role anon;
 select set_config('request.jwt.claim.sub', '', false);
-select pg_temp.check(public.shared_dive_kudos(:'tok') = 1, 'anon sees the kudos count of the shared dive');
-select pg_temp.check(public.shared_dive_kudos(repeat('0', 64)) is null, 'wrong token: null');
-select pg_temp.check(public.shared_dive_kudos('x') is null, 'malformed token: null');
+select pg_temp.check((public.shared_dive_social(:'tok') ->> 'kudos_count')::int = 1 and public.shared_dive_social(:'tok') ->> 'author_nickname' = 'Olí', 'anon sees the kudos count and nickname of the shared dive');
+select pg_temp.check(public.shared_dive_social(repeat('0', 64)) is null, 'wrong token: null');
+select pg_temp.check(public.shared_dive_social('x') is null, 'malformed token: null');
 reset role;
 update public.log_entries set visibility = 'members' where id = :'LNK';
 set role anon;
-select pg_temp.check(public.shared_dive_kudos(:'tok') is null, 'revoked link: null');
+select pg_temp.check(public.shared_dive_social(:'tok') is null, 'revoked link: null');
 reset role;
 
 -- ---- Deleting a dive deletes its kudos and comments ----

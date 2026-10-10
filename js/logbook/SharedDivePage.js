@@ -93,13 +93,20 @@ export class SharedDivePage {
         }
     }
 
-    /** Kudos count only: the public page never shows who gave them, nor comments. */
+    /** Kudos count only (the public page never shows who gave them, nor comments) and the author's nickname. */
     async _loadKudos() {
-        if (typeof this.store.kudosCount !== 'function') return;
-        const n = await this.store.kudosCount().catch(() => null);
-        if (this.destroyed || n === null) return;
-        this.kudos = n;
-        this.detail?.setKudosCount(n);
+        if (typeof this.store.socialExtras !== 'function') return;
+        const parts = this.parts;
+        const { kudos, nickname } = await this.store.socialExtras().catch(() => ({ kudos: null, nickname: null }));
+        if (this.destroyed || this.parts !== parts) return;
+        if (nickname) {
+            parts.author = { ...parts.author, nickname };
+            this.detail?.relabel();
+        }
+        if (kudos !== null) {
+            this.kudos = kudos;
+            this.detail?.setKudosCount(kudos);
+        }
     }
 
     relabel() {
@@ -119,11 +126,12 @@ export class SharedDivePage {
     /** Author row: display name (else "Diver") and avatar; no link, the visitor has no member pages. */
     _author() {
         const page = this;
-        const a = this.parts.author;
+        const parts = this.parts; // its author gains the nickname later (read live: getters)
         return {
-            get name() { return displayName(a, key => translate(`diveLog.${key}`, 'Diver')); },
+            get name() { return displayName(parts.author, key => translate(`diveLog.${key}`, 'Diver')); },
             href: null,
             get avatarHtml() {
+                const a = parts.author;
                 return `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: a.avatar_preset, url: page.avatarUrl, name: this.name, id: authorKey(a, this.name), size: 40 })}</span>`;
             },
         };

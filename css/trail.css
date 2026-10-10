@@ -923,3 +923,14 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
 @media (max-width: 720px) {
     .tr-inbox { margin: 0 -1rem; border-radius: 0; border-left: 0; border-right: 0; }
 }
+
+/* Nickname: big name, full name small; the profile form puts Name and Nickname side by side */
+.tr-member-head-full { margin: 0; color: var(--text-subtle); font-size: var(--text-sm); }
+.tr-profile-names { display: grid; gap: 1rem; }
+@media (min-width: 600px) { .tr-profile-names--two { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
+/* "Complete your profile" in the Feed */
+.tr-nudge { display: grid; gap: 0.5rem; justify-items: start; padding: 1rem; border: 1px solid color-mix(in srgb, var(--tr-accent) 40%, var(--border));
+    border-radius: var(--radius-lg); background: var(--tr-accent-soft); }
+.tr-nudge h3 { margin: 0; font-size: var(--text-lg); }
+.tr-nudge p { margin: 0; max-width: 36rem; }
+.tr-nudge .btn { min-height: 44px; }

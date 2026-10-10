@@ -98,3 +98,16 @@ comment on their dives; the public link shows only the kudos count; deleting all
 - Accepted: owner and author still read a comment through the table while comments are off (needed for delete with a
   filter; their own dive/words; the app shows none). Kudos toggle can re-notify (one live event per member per dive).
   Policy helpers are callable as RPCs but return false for private and missing dives alike.
+
+## Addition: nickname (coordinator request, 2026-10-10)
+
+- `profiles.nickname` in 0010: trimmed, 1–40 characters or null (check constraint). Owner writes it through the
+  existing profile policies; members read it from `community_members` (redefined in 0010 with the extra column; same
+  filters — no other migration touches it), `entry_kudos`, `entry_comments`, `social_inbox`.
+- Share page: the author's nickname comes from the anon `shared_dive_social(token)` (with the kudos count) — why not
+  `get_shared_dive`: 0006 redefines it in parallel.
+- Display rule everywhere (`displayName`): nickname, else display name, else "Diver". Member page and profile preview:
+  nickname big, full name small under it.
+- Profile form: "Nickname" next to "Name" (only once the column exists — the profile row then has the key).
+- Buddy input: suggestions add other members by nickname (full name as the option label); buddies stay free text.
+- Feed: "Complete your profile" card while the own profile has no name (new invitees).

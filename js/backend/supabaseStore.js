@@ -412,6 +412,7 @@ export function createSupabaseStore(client) {
                     await removeFiles(AVATAR_BUCKET, await filesUnder(AVATAR_BUCKET, user.id));
                     const { error } = await client.from('profiles').update({
                         display_name: null, avatar_preset: null, avatar_path: null, home_country: null, updated_at: new Date().toISOString(),
+                        ...(await store.socialAvailability?.() === 'yes' ? { nickname: null } : {}), // the column comes with 0010
                     }).eq('id', user.id);
                     if (error) throw fail(error);
                 });

@@ -2941,6 +2941,12 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
         "trail": {
+            "nudge": {
+                "title": "Complete your profile",
+                "text": "Add your name so other members know whose dives they see.",
+                "textNick": "Add your name and a nickname so other members know whose dives they see.",
+                "go": "Complete profile"
+            },
             "social": {
                 "kudos": "Kudos",
                 "kudosCount": "{0} kudos, show who",
@@ -3041,6 +3047,9 @@
                 "shareLocationAll": "Show the exact location"
             },
             "profile": {
+                "nickname": "Nickname",
+                "nicknameHelp": "What friends call you, e.g. “Luis”. Shown instead of your name.",
+                "nameHelpNick": "Your full name, e.g. “Jaroslav Fiala”.",
                 "title": "Your profile",
                 "previewNote": "This is how other members see you.",
                 "avatar": "Avatar",

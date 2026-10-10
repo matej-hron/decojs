@@ -2891,6 +2891,12 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
         "trail": {
+            "nudge": {
+                "title": "Completa tu perfil",
+                "text": "Añade tu nombre para que los demás miembros sepan de quién son las inmersiones.",
+                "textNick": "Añade tu nombre y un apodo para que los demás miembros sepan de quién son las inmersiones.",
+                "go": "Completar perfil"
+            },
             "social": {
                 "kudos": "Bravo",
                 "kudosCount": "{0} bravos, ver quién",
@@ -2991,6 +2997,9 @@
                 "shareLocationAll": "Mostrar la ubicación exacta"
             },
             "profile": {
+                "nickname": "Apodo",
+                "nicknameHelp": "Cómo te llaman tus amigos, p. ej. «Luis». Se muestra en lugar de tu nombre.",
+                "nameHelpNick": "Tu nombre completo, p. ej. «Jaroslav Fiala».",
                 "title": "Tu perfil",
                 "previewNote": "Así te ven los demás miembros.",
                 "avatar": "Avatar",

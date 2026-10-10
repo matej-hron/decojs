@@ -8,10 +8,44 @@ export const OFFERED_VISIBILITIES = Object.freeze(['private', 'members']);
 
 const finiteNum = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
 
-/** Public name of a member: trimmed display_name, else the translated "Diver". Never the email. */
+/** Public name of a member: the nickname, else the display name, else the translated "Diver". Never the email. */
 export function displayName(member, t) {
-    const name = typeof member?.display_name === 'string' ? member.display_name.trim() : '';
-    return name || t('trail.diver');
+    const nick = typeof member?.nickname === 'string' ? member.nickname.trim() : '';
+    return nick || fullName(member) || t('trail.diver');
+}
+
+/** The trimmed display name ('' when none): shown small under a nickname. */
+export function fullName(member) {
+    return typeof member?.display_name === 'string' ? member.display_name.trim() : '';
+}
+
+/** Longest nickname the server accepts. */
+export const NICKNAME_MAX = 40;
+
+/**
+ * Buddy suggestions: the names typed before, then other members by nickname (their full name as the hint).
+ * Only suggestions — buddies stay free text. Case-insensitive duplicates are dropped.
+ * @param {string[]} typed - earlier buddy names
+ * @param {Object[]} members - community_members rows
+ * @param {string} userId - left out
+ * @returns {{value: string, label?: string}[]}
+ */
+export function buddySuggestions(typed, members, userId) {
+    const out = [];
+    const seen = new Set();
+    const add = (value, label) => {
+        const key = value.toLocaleLowerCase();
+        if (!value || seen.has(key)) return;
+        seen.add(key);
+        out.push(label && label !== value ? { value, label } : { value });
+    };
+    for (const name of typed ?? []) if (typeof name === 'string') add(name.trim());
+    for (const m of members ?? []) {
+        if (!m || m.id === userId) continue;
+        const nick = typeof m.nickname === 'string' ? m.nickname.trim() : '';
+        if (nick) add(nick, fullName(m));
+    }
+    return out;
 }
 
 /** Whether an entry (by `owner`) or member (by `id`) belongs to `userId`. */

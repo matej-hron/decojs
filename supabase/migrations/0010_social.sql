@@ -8,7 +8,7 @@
 -- server's timestamps, and an update can only change a comment's body (column grant). Accepted: the owner and
 -- the author can still read (and delete) a comment through the table while comments are off — their own dive
 -- and their own words; the app shows none (entry_comments). Toggling kudos re-notifies the owner at most once per toggle. Anonymous visitors get
--- nothing but the kudos count of a shared dive whose token they hold (shared_dive_kudos). Notes never appear.
+-- nothing but the kudos count of a shared dive whose token they hold and the author's nickname (shared_dive_social). Notes never appear.
 
 begin;
 
@@ -18,6 +18,12 @@ begin;
 
 -- The owner turns comments off per dive; existing comments are hidden while it is off.
 alter table public.log_entries add column if not exists comments_enabled boolean not null default true;
+-- A nickname ("Luis"), shown instead of the name wherever members appear; trimmed, 1–40 characters.
+alter table public.profiles add column if not exists nickname text;
+alter table public.profiles drop constraint if exists profiles_nickname_check;
+alter table public.profiles add constraint profiles_nickname_check
+    check (nickname is null or (char_length(nickname) between 1 and 40 and nickname = btrim(nickname)));
+
 -- When each member last opened "New for you". Its own table, not a profiles column: every member can read
 -- profiles, and this would be a "last seen" tracker. Only the definer functions below touch it.
 create table if not exists public.social_seen (
@@ -210,6 +216,12 @@ create policy "authors and dive owners delete comments" on public.comments
 -- Read functions
 -- ---------------------------------------------------------------------------
 
+-- The result columns grew (nickname); a re-run or an older copy must not block create or replace.
+drop function if exists public.entry_kudos(uuid);
+drop function if exists public.entry_comments(uuid);
+drop function if exists public.social_inbox(integer);
+drop function if exists public.shared_dive_kudos(text);
+
 -- Counts for feed cards and the detail: only for dives the caller may see; 0 comments while they are off.
 create or replace function public.social_counts(p_entry_ids uuid[])
 returns table (entry_id uuid, kudos_count integer, kudoed boolean, comment_count integer, comments_enabled boolean)
@@ -229,10 +241,10 @@ $$;
 
 -- Who gave kudos to a dive the caller may see, newest first.
 create or replace function public.entry_kudos(p_entry_id uuid)
-returns table (member_id uuid, display_name text, avatar_preset text, avatar_path text, created_at timestamptz)
+returns table (member_id uuid, display_name text, nickname text, avatar_preset text, avatar_path text, created_at timestamptz)
 language sql stable security definer set search_path = ''
 as $$
-    select k.member_id, p.display_name, p.avatar_preset, p.avatar_path, k.created_at
+    select k.member_id, p.display_name, p.nickname, p.avatar_preset, p.avatar_path, k.created_at
     from public.kudos k
     left join public.profiles p on p.id = k.member_id
     where k.entry_id = p_entry_id
@@ -244,12 +256,12 @@ $$;
 -- The comments of a dive the caller may see, oldest first; none while comments are off.
 create or replace function public.entry_comments(p_entry_id uuid)
 returns table (
-    id uuid, entry_id uuid, author_id uuid, display_name text, avatar_preset text, avatar_path text,
+    id uuid, entry_id uuid, author_id uuid, display_name text, nickname text, avatar_preset text, avatar_path text,
     body text, created_at timestamptz, edited_at timestamptz
 )
 language sql stable security definer set search_path = ''
 as $$
-    select c.id, c.entry_id, c.author_id, p.display_name, p.avatar_preset, p.avatar_path, c.body, c.created_at, c.edited_at
+    select c.id, c.entry_id, c.author_id, p.display_name, p.nickname, p.avatar_preset, p.avatar_path, c.body, c.created_at, c.edited_at
     from public.comments c
     left join public.profiles p on p.id = c.author_id
     where c.entry_id = p_entry_id
@@ -261,7 +273,7 @@ $$;
 -- "New for you": kudos and comments by others on the caller's dives, newest first.
 create or replace function public.social_inbox(p_limit integer default 50)
 returns table (
-    kind text, entry_id uuid, actor_id uuid, display_name text, avatar_preset text, avatar_path text,
+    kind text, entry_id uuid, actor_id uuid, display_name text, nickname text, avatar_preset text, avatar_path text,
     created_at timestamptz, excerpt text, dive_date date, site_name text, is_new boolean
 )
 language sql stable security definer set search_path = ''
@@ -279,7 +291,7 @@ as $$
         join public.log_entries e on e.id = c.entry_id
         where e.owner = auth.uid() and c.author_id <> auth.uid() and e.comments_enabled
     )
-    select ev.kind, ev.entry_id, ev.actor_id, p.display_name, p.avatar_preset, p.avatar_path,
+    select ev.kind, ev.entry_id, ev.actor_id, p.display_name, p.nickname, p.avatar_preset, p.avatar_path,
            ev.created_at, ev.excerpt, e.dive_date, s.name,
            (seen.at is null or ev.created_at > seen.at)
     from ev
@@ -319,17 +331,61 @@ as $$
     returning seen_at;
 $$;
 
--- Anon share page: the kudos count only (no names) of the 'link' dive whose token the caller holds.
-create or replace function public.shared_dive_kudos(p_token text)
-returns integer
+-- Anon share page, for the 'link' dive whose token the caller holds: the kudos count only (no names) and the
+-- author's nickname. Separate from get_shared_dive, which other migrations redefine.
+create or replace function public.shared_dive_social(p_token text)
+returns jsonb
 language sql stable security definer set search_path = ''
 as $$
-    select (select count(*) from public.kudos k where k.entry_id = e.id)::integer
+    select jsonb_build_object(
+        'kudos_count', (select count(*) from public.kudos k where k.entry_id = e.id),
+        'author_nickname', (select p.nickname from public.profiles p where p.id = e.owner)
+    )
     from public.log_entries e
     where p_token ~ '^[0-9a-f]{64}$'
       and e.share_token = p_token
       and e.visibility = 'link'
       and public.share_owner_active(e.owner);
+$$;
+
+
+-- ---------------------------------------------------------------------------
+-- Members directory with the nickname (0004's function plus one column; same filters)
+-- ---------------------------------------------------------------------------
+
+drop function if exists public.community_members(uuid);
+create function public.community_members(p_id uuid default null)
+returns table (
+    id uuid, display_name text, nickname text, avatar_preset text, avatar_path text, home_country text,
+    created_at timestamptz, dive_count integer, deepest_m numeric, total_s bigint,
+    last_dive_date date, top_sites text[]
+)
+language sql stable security definer set search_path = ''
+as $$
+    select p.id, p.display_name, p.nickname, p.avatar_preset, p.avatar_path, p.home_country, p.created_at,
+           coalesce(st.n, 0)::integer, st.deepest, coalesce(st.total, 0)::bigint, st.last,
+           coalesce(ts.names, '{}')
+    from public.profiles p
+    left join lateral (
+        select count(*) as n, max(e.max_depth_m) as deepest, sum(e.duration_s) as total, max(e.dive_date) as last
+        from public.log_entries e
+        where e.owner = p.id and (e.owner = auth.uid() or e.visibility in ('members', 'link'))
+    ) st on true
+    left join lateral (
+        select array_agg(x.name order by x.n desc, x.name) as names
+        from (
+            select s.name, count(*) as n
+            from public.log_entries e
+            join public.sites s on s.id = e.site_id and s.owner = e.owner
+            where e.owner = p.id and (e.owner = auth.uid() or e.visibility in ('members', 'link'))
+            group by s.name
+            order by count(*) desc, s.name
+            limit 3
+        ) x
+    ) ts on true
+    where public.is_member()
+      and (p_id is null or p.id = p_id)
+    order by (p.id = auth.uid()) desc, st.last desc nulls last, coalesce(p.nickname, p.display_name), p.id;
 $$;
 
 do $$
@@ -347,7 +403,8 @@ begin
         'public.entry_comments(uuid)',
         'public.social_inbox(integer)',
         'public.social_unseen_count()',
-        'public.social_mark_seen()'
+        'public.social_mark_seen()',
+        'public.community_members(uuid)'
     ] loop
         execute format('revoke all on function %s from public, anon', f);
         execute format('grant execute on function %s to authenticated', f);
@@ -355,8 +412,8 @@ begin
     foreach f in array array['public.kudos_touch()', 'public.comments_touch()'] loop
         execute format('revoke all on function %s from public, anon, authenticated', f);
     end loop;
-    execute 'revoke all on function public.shared_dive_kudos(text) from public';
-    execute 'grant execute on function public.shared_dive_kudos(text) to anon, authenticated';
+    execute 'revoke all on function public.shared_dive_social(text) from public';
+    execute 'grant execute on function public.shared_dive_social(text) to anon, authenticated';
 end $$;
 
 commit;

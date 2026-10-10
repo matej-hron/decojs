@@ -95,11 +95,14 @@ export class CommunityFeed {
     async _loadFirst() {
         const token = ++this._token;
         try {
-            const [members, rows] = await Promise.all([
+            const [members, rows, me] = await Promise.all([
                 this.store.listMembers ? this.store.listMembers() : [],
                 this._fetchPage(0),
+                // The main Feed nudges a member without a name (e.g. just invited) to complete the profile.
+                !this.owner && this.store.getMyProfile ? this.store.getMyProfile().catch(() => null) : null,
             ]);
             if (token !== this._token) return;
+            this.me = me ?? null;
             this.members = new Map((members ?? []).map(m => [m.id, m]));
             this.rows = rows;
             this.offset = rows.length;
@@ -276,6 +279,17 @@ export class CommunityFeed {
         return months + more;
     }
 
+    /** "Complete your profile" for a member whose profile has no name yet. */
+    _nudgeHtml() {
+        const p = this.me;
+        if (!p || (typeof p.display_name === 'string' && p.display_name.trim())) return '';
+        const nick = Object.hasOwn(p, 'nickname');
+        return `<section class="tr-nudge" aria-labelledby="tr-nudge-h">
+            <h3 id="tr-nudge-h">${escHtml(tt('nudge.title', 'Complete your profile'))}</h3>
+            <p>${escHtml(nick ? tt('nudge.textNick', 'Add your name and a nickname so other members know whose dives they see.') : tt('nudge.text', 'Add your name so other members know whose dives they see.'))}</p>
+            <a class="btn btn-primary" href="${routeHref({ name: 'profile' })}">${escHtml(tt('nudge.go', 'Complete profile'))}</a></section>`;
+    }
+
     _render() {
         if (this.destroyed) return;
         // A re-render (photos arriving, a page appended) must not drop focus: find the same control again by position.
@@ -285,6 +299,7 @@ export class CommunityFeed {
         const key = focused && (focused.id || focused.getAttribute('href'));
         this.host.innerHTML = `<div class="tr-feed">
             ${this.title ? `<h2 class="tr-feed-title">${escHtml(tt('feed.title', 'Feed'))}</h2>` : ''}
+            ${this._nudgeHtml()}
             ${this._body()}</div>`;
         if (at >= 0) {
             const el = controls()[at];

@@ -50,14 +50,21 @@ export function shareStoreFor(client, token) {
             }
             return sharedDiveParts(data);
         },
-        /** The kudos count of the shared dive (no names); null when unknown or before migration 0010. */
-        async kudosCount() {
-            const { data, error } = await client.rpc('shared_dive_kudos', { p_token: token });
+        /**
+         * Migration 0010's extras of the shared dive: the kudos count (never names) and the author's nickname.
+         * @returns {Promise<{kudos: number|null, nickname: string|null}>} nulls when unknown or before 0010
+         */
+        async socialExtras() {
+            const none = { kudos: null, nickname: null };
+            const { data, error } = await client.rpc('shared_dive_social', { p_token: token });
             if (error) {
                 if (!MISSING.test(error.code ?? '')) console.warn('Kudos count unavailable', error.message ?? error);
-                return null;
+                return none;
             }
-            return Number.isFinite(Number(data)) && data !== null ? Number(data) : null;
+            if (!data || typeof data !== 'object') return none;
+            const n = Number(data.kudos_count);
+            const nick = typeof data.author_nickname === 'string' && data.author_nickname.trim() ? data.author_nickname.trim() : null;
+            return { kudos: Number.isFinite(n) ? n : null, nickname: nick };
         },
         photoUrls: paths => signed(PHOTO_BUCKET, paths),
         async avatarUrl(path) {

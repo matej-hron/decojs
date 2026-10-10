@@ -2941,6 +2941,12 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
         "water": {"salt": "Slaná", "fresh": "Sladká"},
         "trail": {
+            "nudge": {
+                "title": "Doplňte svůj profil",
+                "text": "Doplňte jméno, ať ostatní členové vědí, čí ponory vidí.",
+                "textNick": "Doplňte jméno a přezdívku, ať ostatní členové vědí, čí ponory vidí.",
+                "go": "Doplnit profil"
+            },
             "social": {
                 "kudos": "Bravo",
                 "kudosCount": "{0}× bravo, zobrazit kdo",
@@ -3041,6 +3047,9 @@
                 "shareLocationAll": "Ukázat přesnou polohu"
             },
             "profile": {
+                "nickname": "Přezdívka",
+                "nicknameHelp": "Jak vám říkají kamarádi, třeba „Luis“. Zobrazí se místo jména.",
+                "nameHelpNick": "Vaše celé jméno, třeba „Jaroslav Fiala“.",
                 "title": "Váš profil",
                 "previewNote": "Takhle vás vidí ostatní členové.",
                 "avatar": "Avatar",
