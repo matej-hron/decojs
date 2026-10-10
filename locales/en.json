@@ -3001,6 +3001,18 @@
             },
             "profile": {
                 "title": "Your profile",
+                "sac": {
+                    "title": "Gas consumption",
+                    "overall": "Your SAC",
+                    "recent": "Last {0} dives",
+                    "counted": "Dives counted: {0}",
+                    "note": "Litres per minute at the surface, from your cylinder pressures and weighted by dive time. Dives under 10 min, outside 3–60 l/min or far from your usual are left out.",
+                    "none": "Add cylinder pressures and an average depth to your dives and your SAC shows up here.",
+                    "chart": "SAC per dive",
+                    "notCounted": "Hollow dots are not counted.",
+                    "dot": "{0}, {1}",
+                    "plan": "Plan a dive with this SAC →"
+                },
                 "previewNote": "This is how other members see you.",
                 "avatar": "Avatar",
                 "upload": "Upload photo",
@@ -3418,7 +3430,8 @@
                     "duration": "Time",
                     "avgDepth": "Avg depth",
                     "temp": "Water",
-                    "gas": "Gas"
+                    "gas": "Gas",
+                    "sac": "SAC"
                 },
                 "morePhotos": "{0} more photos",
                 "mapAlt": "Map of {0}",

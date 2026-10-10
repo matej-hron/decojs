@@ -733,6 +733,21 @@ body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: col
 .tr-profile-status:empty { display: none; }
 .tr-profile-status--ok { color: var(--success-color, #1e8e5a); }
 .tr-profile-status--error { color: var(--error-color, #c0392b); }
+.tr-sac { display: grid; gap: 0.75rem; }
+.tr-sac[hidden] { display: none; }
+.tr-sac .tr-section-head { margin: 0; }
+.tr-sac-stats { gap: 0.5rem 2rem; }
+.tr-sac-chart { display: block; width: 100%; height: auto; max-height: 14rem; overflow: visible; }
+.tr-sac-grid { stroke: var(--border); stroke-width: 1; }
+.tr-sac-tick { fill: var(--text-subtle); font-size: 10px; font-variant-numeric: tabular-nums; }
+.tr-sac-line { fill: none; stroke: var(--tr-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.tr-sac-hit { fill: transparent; }
+.tr-sac-pt { fill: var(--tr-accent); stroke: var(--surface); stroke-width: 1.5; }
+.tr-sac-dot-off .tr-sac-pt { fill: var(--surface); stroke: var(--text-subtle); stroke-width: 1.5; }
+.tr-sac-dot:focus-visible { outline: none; }
+.tr-sac-dot:focus-visible .tr-sac-pt, .tr-sac-dot:hover .tr-sac-pt { stroke: var(--text); stroke-width: 2.5; }
+.tr-sac-axis { display: flex; justify-content: space-between; margin: -0.4rem 0 0; color: var(--text-subtle); font-size: var(--text-xs); }
+.tr-sac-plan { color: var(--tr-accent); justify-self: start; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
 .tr-numbering { display: grid; gap: 0.75rem; }
 .tr-numbering[hidden] { display: none; }
 .tr-numbering .tr-section-head { margin: 0; }
