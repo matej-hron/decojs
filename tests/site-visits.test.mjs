@@ -260,3 +260,238 @@ describe('store: description and site link (migration 0006)', () => {
         assert.equal(client.writes.length, 2);
     });
 });
+
+// ---- Dive description through the model and the read paths ----
+
+import { normalizeEntry } from '../js/logbook/entryModel.js';
+import { formValuesFromEntry } from '../js/logbook/EntryForm.js';
+import { entryFromCommunityRow } from '../js/logbook/community.js';
+import { sharedDiveParts } from '../js/logbook/share.js';
+import { detailRows } from '../js/logbook/EntryDetail.js';
+import { parseSiteUrl, siteInfoLinkHtml } from '../js/logbook/geo.js';
+
+describe('dive description', () => {
+    test('normalizeEntry sends a trimmed description only when the form offers one', () => {
+        assert.equal(normalizeEntry({ dive_date: '2026-06-01', description: '  Wall at 20 m \n' }).description, 'Wall at 20 m');
+        assert.equal(normalizeEntry({ dive_date: '2026-06-01', description: '   ' }).description, null);
+        assert.equal('description' in normalizeEntry({ dive_date: '2026-06-01' }), false);
+    });
+    test('the form starts from the stored description', () => {
+        assert.equal(formValuesFromEntry({ description: 'Nice' }).description, 'Nice');
+        assert.equal(formValuesFromEntry({}).description, '');
+    });
+    test('a community row keeps the description and the shared site link, never notes', () => {
+        const { entry, site } = entryFromCommunityRow({ id: 'e', description: 'Hi', notes: 'secret', site_id: 's', site_name: 'X', site_url: 'https://x.example/' });
+        assert.equal(entry.description, 'Hi');
+        assert.equal(entry.notes, null);
+        assert.equal('site_url' in entry, false);
+        assert.equal(site.url, 'https://x.example/');
+    });
+    test('the share payload keeps the description and the site link', () => {
+        const parts = sharedDiveParts({ entry: { id: 'e', description: 'Hi', notes: 'secret' }, site: { id: 's', name: 'X', url: 'https://x.example/' } });
+        assert.equal(parts.entry.description, 'Hi');
+        assert.equal(parts.entry.notes, null);
+        assert.equal(parts.site.url, 'https://x.example/');
+    });
+    test('detailRows returns the trimmed description apart from the notes', () => {
+        const r = detailRows({ description: ' For you all ', notes: 'mine', details: {} }, k => k);
+        assert.equal(r.description, 'For you all');
+        assert.equal(r.notes, 'mine');
+        assert.equal(detailRows({ description: '  ', details: {} }, k => k).description, null);
+    });
+});
+
+describe('site link', () => {
+    test('parseSiteUrl: empty is none, https only, normalised to ASCII', () => {
+        assert.deepEqual(parseSiteUrl('  '), { ok: true, value: null });
+        assert.deepEqual(parseSiteUrl('http://example.com'), { ok: false });
+        assert.deepEqual(parseSiteUrl('javascript:alert(1)'), { ok: false });
+        assert.deepEqual(parseSiteUrl('https://example.com/a b'), { ok: false });
+        assert.deepEqual(parseSiteUrl('HTTPS://Příklad.cz/lom-hořice?a=1#x'), { ok: true, value: 'https://xn--pklad-zsa96e.cz/lom-ho%C5%99ice?a=1#x' });
+        assert.deepEqual(parseSiteUrl(`https://example.com/${'x'.repeat(500)}`), { ok: false });
+    });
+    test('siteInfoLinkHtml opens a new tab without the opener, and refuses unsafe values', () => {
+        const html = siteInfoLinkHtml('https://example.com/x', 'Site info');
+        assert.match(html, /target="_blank" rel="noopener noreferrer"/);
+        assert.match(html, /href="https:\/\/example\.com\/x"/);
+        assert.equal(siteInfoLinkHtml('https://example.com/"><b>', 'x'), '');
+        assert.equal(siteInfoLinkHtml('http://example.com/', 'x'), '');
+        assert.equal(siteInfoLinkHtml(null, 'x'), '');
+    });
+});
+
+// ---- jsdom: the entry form and the site page ----
+
+import { EntryForm } from '../js/logbook/EntryForm.js';
+import { SitesPage } from '../js/logbook/SitesPage.js';
+import { EntryDetail } from '../js/logbook/EntryDetail.js';
+
+async function withDom(fn) {
+    const { JSDOM } = await import('jsdom');
+    const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html' });
+    const saved = {};
+    for (const k of ['window', 'document', 'location', 'history']) {
+        saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+        Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+    }
+    try {
+        return await fn(dom.window.document.getElementById('root'), dom.window);
+    } finally {
+        for (const [k, d] of Object.entries(saved)) {
+            if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+        }
+    }
+}
+const tick = () => new Promise(r => setTimeout(r, 20));
+
+describe('entry form: description (jsdom)', () => {
+    const formStore = saves => ({
+        listSites: async () => [], listBuddies: async () => [], listEntries: async () => [], listMedia: async () => [], photoUrls: async () => new Map(),
+        saveEntry: async (row, id) => { saves.push(row); return { id: id ?? 'n', ...row }; },
+    });
+    const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', buddies: [], details: {}, description: 'Old story', notes: 'mine' };
+
+    test('with 0006: the description field sits before the gases and is saved', async () => {
+        await withDom(async (root, window) => {
+            const saves = [];
+            new EntryForm(root, { store: formStore(saves), entry, describe: true, onSaved() {}, onCancel() {} });
+            await tick();
+            const desc = root.querySelector('textarea[name="description"]');
+            assert.ok(desc);
+            assert.equal(desc.value, 'Old story');
+            assert.ok(desc.compareDocumentPosition(root.querySelector('.lb-gases')) & window.Node.DOCUMENT_POSITION_FOLLOWING);
+            desc.value = '  New story  ';
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves[0].description, 'New story');
+            assert.equal(saves[0].notes, 'mine');
+        });
+    });
+
+    test('notes live in More details, which opens when there are notes', async () => {
+        await withDom(async root => {
+            new EntryForm(root, { store: formStore([]), entry, describe: true, onSaved() {}, onCancel() {} });
+            await tick();
+            const notes = root.querySelector('textarea[name="notes"]');
+            assert.ok(notes.closest('details.lb-more'));
+            assert.equal(notes.closest('details').open, true);
+        });
+    });
+
+    test('without 0006: no description field and nothing sent for it', async () => {
+        await withDom(async (root, window) => {
+            const saves = [];
+            new EntryForm(root, { store: formStore(saves), entry, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(root.querySelector('[name="description"]'), null);
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal('description' in saves[0], false);
+        });
+    });
+});
+
+describe('entry detail: description and site link (jsdom)', () => {
+    test('own dive: description, labelled private notes and the site link', async () => {
+        await withDom(async root => {
+            const store = { listSites: async () => [{ id: 's1', name: 'Borek', url: 'https://example.com/borek' }], listMedia: async () => [], photoUrls: async () => new Map() };
+            new EntryDetail(root, { store, entry: { id: 'e1', log_number: 1, dive_date: '2026-06-01', site_id: 's1', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
+            await tick();
+            assert.equal(root.querySelector('.lb-d-desc').textContent, 'For all');
+            assert.match(root.querySelector('.lb-d-notes').textContent, /Mine/);
+            assert.equal(root.querySelector('.lb-site-info').getAttribute('href'), 'https://example.com/borek');
+        });
+    });
+
+    test('read-only dive: description shown, notes never', async () => {
+        await withDom(async root => {
+            const store = { listSites: async () => [], listMedia: async () => [], photoUrls: async () => new Map() };
+            new EntryDetail(root, { store, readOnly: true, entry: { id: 'e1', dive_date: '2026-06-01', buddies: [], details: {}, description: 'For all', notes: 'Mine' } });
+            await tick();
+            assert.equal(root.querySelector('.lb-d-desc').textContent, 'For all');
+            assert.equal(root.querySelector('.lb-d-notes'), null);
+        });
+    });
+});
+
+describe('site page: visits and link (jsdom)', () => {
+    const site = { id: 's1', name: 'Lom Borek', lat: 50, lon: 14, url: 'https://example.com/borek' };
+    const rows = [
+        { id: 'a', owner: 'me', dive_date: '2026-06-10', site_id: 's1', site_name: 'Lom Borek', max_depth_m: 20, duration_s: 2400, vis_shallow_m: 8, vis_deep_m: 4, water_temp_c: 12 },
+        { id: 'b', owner: 'm2', dive_date: '2026-07-01', site_id: 'x', site_name: 'lom borek', max_depth_m: 30, water_temp_c: 16, notes: 'NOPE' },
+        { id: 'c', owner: 'm2', dive_date: '2026-07-02', site_id: 'y', site_name: 'Elsewhere' },
+    ];
+    const pageStore = (over = {}) => ({
+        listSites: async () => [site], siteUsage: async () => new Map([['s1', 1]]), descriptionStatus: async () => true,
+        communityStatus: async () => true, listCommunityEntries: async () => rows,
+        listMembers: async () => [{ id: 'm2', display_name: 'Jana' }], avatarUrls: async () => new Map(), saveSite: async () => site,
+        ...over,
+    });
+
+    test('summary, newest-first visits with names and links, no notes', async () => {
+        await withDom(async root => {
+            new SitesPage(root, { store: pageStore(), siteId: 's1', userId: 'me' });
+            await tick();
+            const items = [...root.querySelectorAll('.lb-sv-visit')];
+            assert.deepEqual(items.map(a => a.getAttribute('href')), ['#/m/b', '#/dive/a']);
+            assert.match(items[0].textContent, /Jana/);
+            assert.match(items[1].textContent, /You/);
+            assert.doesNotMatch(root.textContent, /NOPE/);
+            assert.match(root.querySelector('.lb-sv-stats').textContent, /2/);
+            assert.equal(root.querySelectorAll('.lb-sv-month').length, 12);
+            assert.equal(root.querySelectorAll('.lb-sv-month:not(.lb-sv-month--none)').length, 2);
+            assert.equal(root.querySelector('.lb-sv-head .lb-site-info').getAttribute('rel'), 'noopener noreferrer');
+        });
+    });
+
+    test('an invalid link is refused; a good one is saved normalised', async () => {
+        await withDom(async (root, window) => {
+            const saved = [];
+            new SitesPage(root, { store: pageStore({ saveSite: async (row, id) => { saved.push(row); return { ...site, ...row, id }; } }), siteId: 's1', userId: 'me' });
+            await tick();
+            const form = root.querySelector('.lb-site-form');
+            form.elements.url.value = 'http://example.com';
+            form.dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saved.length, 0);
+            assert.match(root.querySelector('.lb-form-error').textContent, /https:\/\//);
+            root.querySelector('.lb-site-form').elements.url.value = 'HTTPS://Example.com/x';
+            root.querySelector('.lb-site-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saved[0].url, 'https://example.com/x');
+        });
+    });
+
+    test('without 0006 the link field is hidden and nothing is sent for it', async () => {
+        await withDom(async (root, window) => {
+            const saved = [];
+            new SitesPage(root, { store: pageStore({ descriptionStatus: async () => false, listSites: async () => [{ ...site, url: undefined }],
+                saveSite: async row => { saved.push(row); return site; } }), siteId: 's1', userId: 'me' });
+            await tick();
+            assert.equal(root.querySelector('[name="url"]'), null);
+            root.querySelector('.lb-site-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal('url' in saved[0], false);
+        });
+    });
+
+    test('visits that fail to load leave the edit form working', async () => {
+        await withDom(async root => {
+            new SitesPage(root, { store: pageStore({ listCommunityEntries: async () => { throw new Error('down'); } }), siteId: 's1', userId: 'me' });
+            await tick();
+            assert.ok(root.querySelector('.lb-sv-card [role="alert"]'));
+            assert.ok(root.querySelector('.lb-site-form'));
+        });
+    });
+
+    test('more than 20 visits: "Show all" reveals the rest', async () => {
+        await withDom(async root => {
+            const many = Array.from({ length: 25 }, (_, i) => ({ id: `v${i}`, owner: 'me', dive_date: `2026-05-${String(i + 1).padStart(2, '0')}`, site_id: 's1', site_name: 'Lom Borek' }));
+            new SitesPage(root, { store: pageStore({ listCommunityEntries: async () => many }), siteId: 's1', userId: 'me' });
+            await tick();
+            assert.equal(root.querySelectorAll('.lb-sv-visit').length, 20);
+            root.querySelector('#lb-sv-all').click();
+            assert.equal(root.querySelectorAll('.lb-sv-visit').length, 25);
+        });
+    });
+});

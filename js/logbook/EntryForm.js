@@ -102,6 +102,7 @@ export function formValuesFromEntry(entry, { comma = false } = {}) {
         vis_shallow_m: num(entry.vis_shallow_m),
         vis_deep_m: num(entry.vis_deep_m),
         notes: text(entry.notes),
+        description: text(entry.description),
         details: { ...(entry.details ?? {}) },
     };
 }
@@ -132,10 +133,11 @@ export class EntryForm {
      * @param {boolean} [options.community] - the community backend exists: offer "Who can see this dive"
      * @param {string|null} [options.defaultVisibility] - the profile default for a new entry (else members)
      * @param {boolean} [options.share] - public share links exist (migration 0005): offer "Public link"
+     * @param {boolean} [options.describe] - dives have a description for members (migration 0006): offer it
      * @param {(entry: Object) => void} options.onSaved
      * @param {() => void} options.onCancel
      */
-    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, share = false, onSaved, onCancel }) {
+    constructor(container, { store, entry = null, prefill = {}, recordingId = null, community = false, defaultVisibility = null, share = false, describe = false, onSaved, onCancel }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
@@ -156,6 +158,7 @@ export class EntryForm {
         this.gasTouched = false; // true once the user edits the gas block
         // Without the community backend nothing is shown and nothing is sent.
         this.share = Boolean(community && share);
+        this.describe = Boolean(describe);
         this.sharing = community ? {
             visibility: entry?.visibility ?? (OFFERED_VISIBILITIES.includes(defaultVisibility) ? defaultVisibility : 'members'),
             share_location: entry?.share_location === true,
@@ -250,7 +253,8 @@ export class EntryForm {
     }
 
     _detailsOpen() {
-        return hasUserDetails(this.values.details);
+        // Notes live in "More details": open it when there are some, so they are never hidden.
+        return hasUserDetails(this.values.details) || this.values.notes.trim() !== '';
     }
 
     render() {
@@ -295,12 +299,12 @@ export class EntryForm {
                         </div>
                         <datalist id="lb-buddy-names"></datalist>
                     </div>
+                    ${this._descriptionHtml()}
                     ${this._gasesHtml()}
                     <div class="lb-row">
                         ${this._input('vis_shallow_m', 'visShallow', v.vis_shallow_m, { mode: 'decimal' })}
                         ${this._input('vis_deep_m', 'visDeep', v.vis_deep_m, { mode: 'decimal' })}
                     </div>
-                    <label class="lb-field"><span>${escHtml(tf('notes'))}</span><textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
                     <div class="lb-field lb-media-field">
                         <span>${escHtml(tf('photosTitle'))}</span>
                         ${this.media ? '<div class="lb-media-host"></div>' : `<p class="lb-muted">${escHtml(tf('photosAfterSave'))}</p>`}
@@ -310,6 +314,7 @@ export class EntryForm {
                 </section>
                 <details class="lb-more"${this._detailsOpen() ? ' open' : ''}>
                     <summary>${escHtml(tf('more'))}</summary>
+                    <label class="lb-field lb-notes-field"><span>${escHtml(tf('notesPrivate'))}</span><textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
                     <h3>${escHtml(tf('conditions'))}</h3>
                     <div class="lb-row">
                         ${detailNum('airTempC')}
@@ -421,6 +426,15 @@ export class EntryForm {
         this.container.querySelector('[name="buddy"]').value = '';
         this.render();
         this.container.querySelector('[name="buddy"]')?.focus();
+    }
+
+    // ---- Description for members ----
+
+    _descriptionHtml() {
+        if (!this.describe) return '';
+        return `<label class="lb-field lb-desc-field"><span>${escHtml(tf('description'))}</span>
+                        <textarea name="description" rows="4" maxlength="4000" aria-describedby="lb-desc-hint">${escHtml(this.values.description)}</textarea>
+                        <small class="lb-hint" id="lb-desc-hint">${escHtml(tf('descriptionHint'))}</small></label>`;
     }
 
     // ---- Who can see this dive ----
@@ -645,6 +659,7 @@ export class EntryForm {
         const v = this.values;
         for (const k of ['log_number', 'dive_date', 'entry_time', 'duration_min', 'max_depth_m', 'water_temp_c',
             'vis_shallow_m', 'vis_deep_m', 'notes']) v[k] = get(k);
+        if (c.querySelector('[name="description"]')) v.description = get('description');
         if (c.querySelector('.lb-gases')) v.gases = this._gasRowsFromDom();
         this.siteName = get('site');
         const pending = get('buddy').trim();
@@ -770,7 +785,8 @@ export class EntryForm {
             this.siteId = siteId;
             const time = this.entry?.entry_time && String(this.entry.entry_time).slice(0, 5) === v.entry_time
                 ? this.entry.entry_time : v.entry_time;
-            const row = normalizeEntry({ ...v, ...(this.sharing ?? {}), entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
+            // The description is sent only when the form shows it (never cleared by a form that cannot see it).
+            const row = normalizeEntry({ ...v, description: this.describe ? v.description : undefined, ...(this.sharing ?? {}), entry_time: time, site_id: siteId, gas, details }, this.entry?.details);
             if (!this.entry && row.log_number === null) {
                 row.log_number = nextLogNumber(await this.store.listEntries(), await this._logOffset());
                 this.container.querySelector('[name="log_number"]').value = String(row.log_number);

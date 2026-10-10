@@ -7,6 +7,7 @@
  * `detailRows` and `isHttpsUrl` are pure and covered by tests.
  */
 
+import { isHttpsUrl, siteInfoLinkHtml } from './geo.js';
 import { CHOICES, TAGS } from './EntryForm.js';
 import { DETAIL_KEYS, formatDiveDate, formatDuration } from './entryModel.js';
 import { routeHref } from './router.js';
@@ -31,25 +32,16 @@ const DETAIL_UNITS = Object.freeze({
 });
 const NUMERIC = new Set(Object.keys(DETAIL_UNITS));
 
-const present = v => (Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && !(typeof v === 'string' && v.trim() === ''));
+/** Kept here for older imports; lives in geo.js with the site link helpers. */
+export { isHttpsUrl };
 
-/** True for a well-formed https:// link without whitespace. */
-export function isHttpsUrl(text) {
-    const s = String(text ?? '');
-    if (s === '' || /\s/.test(s)) return false;
-    try {
-        const u = new URL(s);
-        return u.protocol === 'https:' && u.hostname !== '';
-    } catch {
-        return false;
-    }
-}
+const present = v => (Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && !(typeof v === 'string' && v.trim() === ''));
 
 /**
  * Rows of the detail card. Empty values are left out.
  * @param {Object} entry - log_entries row
  * @param {(key: string) => string} t - label lookup below `diveLog.logbook.`
- * @returns {{core: {key: string, label: string, value: string}[], groups: {group: string, rows: Object[]}[], notes: string|null}}
+ * @returns {{core: {key: string, label: string, value: string}[], groups: {group: string, rows: Object[]}[], notes: string|null, description: string|null}}
  */
 export function detailRows(entry, t) {
     const core = [];
@@ -86,8 +78,8 @@ export function detailRows(entry, t) {
         }
         if (rows.length) groups.push({ group, rows });
     }
-    const notes = typeof entry.notes === 'string' && entry.notes.trim() ? entry.notes.trim() : null;
-    return { core, groups, notes };
+    const text = v => (typeof v === 'string' && v.trim() ? v.trim() : null);
+    return { core, groups, notes: text(entry.notes), description: text(entry.description) };
 }
 
 /**
@@ -273,7 +265,7 @@ export class EntryDetail {
     renderMain() {
         this._removeMap();
         const e = this.entry;
-        const { core, groups, notes: ownNotes } = detailRows(e, label);
+        const { core, groups, notes: ownNotes, description } = detailRows(e, label);
         const notes = this.readOnly ? null : ownNotes; // notes are private, whatever the entry object carries
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
         // Another diver's log number is not shared.
@@ -307,7 +299,9 @@ export class EntryDetail {
                 <h2 class="lb-d-head${siteName ? '' : ' lb-untitled'}">${escHtml(siteName ?? diveTitle(e, null, k => translate(`diveLog.logbook.${k}`, TITLE_FALLBACK[k])))}</h2>
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
                 ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
+                ${siteInfoLinkHtml(this.site?.url, translate('diveLog.logbook.sites.siteInfo', 'Site info'))}
             </div>
+            ${description ? `<p class="lb-d-desc">${escHtml(description)}</p>` : ''}
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
             ${gas.cards.length ? `<section class="lb-d-gases" aria-labelledby="lb-d-gases-h"><h3 id="lb-d-gases-h">${escHtml(label('detail.gases'))}</h3>
@@ -319,7 +313,7 @@ export class EntryDetail {
                 ${gas.summary ? `<p class="lb-d-gas-summary">${escHtml(gas.summary)}</p>` : ''}</section>` : ''}
             ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
             ${rest.length ? dl(rest) : ''}
-            ${notes ? `<p class="lb-d-notes">${escHtml(notes)}</p>` : ''}
+            ${notes ? `<div class="lb-d-notes"><p class="lb-d-notes-label">${escHtml(label('form.notesPrivate'))}</p><p class="lb-d-notes-text">${escHtml(notes)}</p></div>` : ''}
             ${moreGroups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
                 ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
 `;
