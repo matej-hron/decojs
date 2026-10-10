@@ -3129,8 +3129,8 @@
                 "shareLocationAll": "Show the exact location"
             },
             "profile": {
-                "nameHelpNick": "Your full name, e.g. “Jaroslav Fiala”.",
-                "nicknameHelp": "What friends call you, e.g. “Luis”. Shown instead of your name.",
+                "nameHelpNick": "Your full name, e.g. “Alex Diver”.",
+                "nicknameHelp": "What friends call you, e.g. “Ace”. Shown instead of your name.",
                 "nickname": "Nickname",
                 "shareLocationDefault": "Show the exact location by default",
                 "shareLocationDefaultHelp": "Off: members don’t see the site’s position, and a public link shows only the approximate area.",

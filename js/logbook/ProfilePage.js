@@ -515,10 +515,10 @@ export class ProfilePage {
                 <div class="tr-profile-names${this.hasNickname ? ' tr-profile-names--two' : ''}">
                 <label class="lb-field tr-profile-name"><span>${escHtml(tp('name', 'Display name'))}</span>
                     <input type="text" name="display_name" maxlength="${NAME_MAX}" value="${escHtml(d.display_name)}" placeholder="${escHtml(tt('diver', 'Diver'))}" autocomplete="${this.hasNickname ? 'name' : 'nickname'}" aria-describedby="tr-name-help">
-                    <span class="tr-profile-hint" id="tr-name-help">${escHtml(this.hasNickname ? tp('nameHelpNick', 'Your full name, e.g. “Jaroslav Fiala”.') : tp('nameHelp', 'Shown next to your dives. Leave it empty to appear as “Diver”.'))}</span></label>
+                    <span class="tr-profile-hint" id="tr-name-help">${escHtml(this.hasNickname ? tp('nameHelpNick', 'Your full name, e.g. “Alex Diver”.') : tp('nameHelp', 'Shown next to your dives. Leave it empty to appear as “Diver”.'))}</span></label>
                 ${this.hasNickname ? `<label class="lb-field tr-profile-nick"><span>${escHtml(tp('nickname', 'Nickname'))}</span>
                     <input type="text" name="nickname" maxlength="${NICKNAME_MAX}" value="${escHtml(d.nickname)}" autocomplete="nickname" aria-describedby="tr-nick-help">
-                    <span class="tr-profile-hint" id="tr-nick-help">${escHtml(tp('nicknameHelp', 'What friends call you, e.g. “Luis”. Shown instead of your name.'))}</span></label>` : ''}
+                    <span class="tr-profile-hint" id="tr-nick-help">${escHtml(tp('nicknameHelp', 'What friends call you, e.g. “Ace”. Shown instead of your name.'))}</span></label>` : ''}
                 </div>
                 <fieldset class="lb-field lb-visibility">
                     <legend>${escHtml(tp('defaultVisibility', 'Who sees your new dives'))}</legend>

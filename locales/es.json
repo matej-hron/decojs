@@ -3077,8 +3077,8 @@
                 "shareLocationAll": "Mostrar la ubicación exacta"
             },
             "profile": {
-                "nameHelpNick": "Tu nombre completo, p. ej. «Jaroslav Fiala».",
-                "nicknameHelp": "Cómo te llaman tus amigos, p. ej. «Luis». Se muestra en lugar de tu nombre.",
+                "nameHelpNick": "Tu nombre completo, p. ej. «Ana García».",
+                "nicknameHelp": "Cómo te llaman tus amigos, p. ej. «Anita». Se muestra en lugar de tu nombre.",
                 "nickname": "Apodo",
                 "shareLocationDefault": "Mostrar la ubicación exacta por defecto",
                 "shareLocationDefaultHelp": "Desactivado: los miembros no ven la posición del sitio y un enlace público muestra solo la zona aproximada.",
