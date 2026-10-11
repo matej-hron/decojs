@@ -10,7 +10,7 @@ const SITE_ERRORS = { DTS01: 'site-shared', DTS02: 'site-in-use', DTS03: 'site-u
 const toNum = v => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
 
 /** A `community_sites` row with numbers as numbers (PostgREST sends numeric as strings in some setups). */
-function directoryRow(r, userId) {
+export function directoryRow(r, userId) {
     return {
         ...r,
         lat: toNum(r.lat), lon: toNum(r.lon), altitude_m: toNum(r.altitude_m),

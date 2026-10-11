@@ -1726,6 +1726,7 @@
         },
         "logbook": {
             "social": "<strong>Kudos and comments:</strong> members who can see a dive can give it kudos (👏) and comment on it. Members who can see the dive see who gave kudos and read the comments, with the commenter’s name and avatar. You can edit or delete your own comments; the owner of a dive can delete any comment on it and turn comments off. Making a dive private hides its kudos and comments. You see new kudos and comments on your dives in <em>New for you</em> (in the app only, no emails); the time you last opened it is visible only to you. On a public link, visitors see only the number of kudos, never names or comments.",
+            "public": "<strong>Public profile (off by default):</strong> if you switch on <em>Public profile</em>, anyone can see, without an account, your display name, nickname, avatar, home country and dive statistics, and every dive you have not marked <em>Private</em>: date, depth, time, gas, dive story, site name, photos, video links and the dive profile with its analysis. Never your notes, your email, your buddies’ names or your dive computer’s serial number, and a site’s position only when <em>Show the exact location</em> is ticked for that dive. Switching it off hides everything at once; a photo address someone already opened can keep working for up to an hour. Visitors also see the shared site directory (name, position, water, altitude, info link) with visibility and water temperature summed up from members’ dives, but never who added a site, and among the visits only dives of public profiles.",
             "sites": "<strong>Dive sites:</strong> the sites you add (name, position, water, altitude and info link) are shared with all invited members as a common site directory, with your name as the one who added them and the visibility and water temperature of the dives members may see there. Your site notes stay private. Set a site to <em>Only me</em> to keep a secret spot to yourself. Only you can change a site you added. If you delete all your data, a site that other members’ dives still use stays in the directory, without your notes and link.",
             "title": "Dive logbook (optional, invite-only)",
             "hobby": "The logbook is a personal hobby project, not a company or a commercial service. It is offered to invited friends as is, without guarantees.",
@@ -3084,6 +3085,16 @@
             "diver": "Diver",
             "you": "You",
             "toFeed": "Back to the Feed",
+            "guest": {
+                "login": "Log in",
+                "loginTitle": "Log in to DecoTrail",
+                "loginText": "Members keep their dive log here and see every member’s dives. Without logging in you see only public profiles.",
+                "introTitle": "Dives from DecoTrail members",
+                "introText": "These members made their profile public. Every recorded dive opens DecoTheory’s decompression analysis. DecoTrail is invite-only: log in to keep your own dive log.",
+                "feedEmpty": "No public dives yet.",
+                "noMembers": "No member has a public profile yet.",
+                "communityIntro": "Members who made their profile public. DecoTrail is invite-only; members see more."
+            },
             "visibility": {
                 "private": "Private",
                 "members": "Visible to members",
@@ -3162,6 +3173,9 @@
                 "nameHelp": "Shown next to your dives. Leave it empty to appear as “Diver”.",
                 "defaultVisibility": "Who sees your new dives",
                 "defaultVisibilityHelp": "You can change it for each dive.",
+                "publicTitle": "Public profile",
+                "publicLabel": "Show my profile and dives to everyone, without logging in",
+                "publicHelp": "Visitors then see your name, avatar, home country, stats and your dives that aren’t Private. Your notes, your buddies’ names and your dive computer’s serial number stay hidden.",
                 "country": "Home country",
                 "save": "Save",
                 "saving": "Saving…",
@@ -3399,6 +3413,8 @@
                 "sortByDistance": "Sort by distance",
                 "locationFailed": "Your location is not available, so the sites stay sorted by name.",
                 "directoryIntro": "Sites added by all members. Pick one for your dive instead of adding it again.",
+                "guestIntro": "Dive sites of the DecoTrail community, with the visibility and water temperature members logged there.",
+                "guestEmpty": "No sites yet.",
                 "mapTitle": "Map of the sites",
                 "altitudeFact": "altitude {0}",
                 "privateNote": "Only you can see this site.",

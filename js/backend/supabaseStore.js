@@ -10,6 +10,7 @@ import { createCommunityApi } from './communityStore.js';
 import { createSocialApi } from './socialStore.js';
 import { createDocumentsApi } from './documentsStore.js';
 import { createSitesApi } from './sitesStore.js';
+import { createPublicApi } from './publicStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
 
@@ -830,6 +831,9 @@ export function createSupabaseStore(client) {
     Object.assign(store, createSocialApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     Object.assign(store, createDocumentsApi(client, { requireUser, fail }));
     Object.assign(store, createSitesApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
+    Object.assign(store, createPublicApi(client, {
+        fail, toSummaryRow, DiveStoreError, photoUrls: paths => store.photoUrls(paths), avatarUrls: paths => store.avatarUrls(paths),
+    }));
     const resetCommunity = store.resetCommunityCache;
     store.resetCommunityCache = () => { resetCommunity(); store.resetDocumentsCache(); }; // both are per user
     return store;

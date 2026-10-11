@@ -180,9 +180,11 @@ export class ProfilePage {
             avatar_preset: Object.hasOwn(AVATARS, profile.avatar_preset ?? '') ? profile.avatar_preset : null,
             default_visibility: OFFERED_VISIBILITIES.includes(profile.default_visibility) ? profile.default_visibility : 'members',
             home_country: typeof profile.home_country === 'string' ? profile.home_country : '',
+            is_public: profile.is_public === true,
         };
         if (!profile.avatar_path) this.photoUrl = null;
         this.hasNickname = Object.hasOwn(profile, 'nickname'); // the column comes with migration 0010
+        this.hasPublic = Object.hasOwn(profile, 'is_public'); // the column comes with migration 0012
     }
 
     async _signPhoto() {
@@ -229,6 +231,8 @@ export class ProfilePage {
         this.draft.home_country = form.querySelector('[name="home_country"]').value;
         const loc = form.querySelector('[name="share_location_default"]');
         if (loc) this.shareLocDraft = loc.checked;
+        const pub = form.querySelector('[name="is_public"]');
+        if (pub) this.draft.is_public = pub.checked;
     }
 
     _setStatus(kind, text) {
@@ -267,6 +271,7 @@ export class ProfilePage {
             home_country: this.draft.home_country || null,
         };
         if (this.hasNickname) patch.nickname = Array.from(this.draft.nickname.trim()).slice(0, NICKNAME_MAX).join('').trim() || null;
+        if (this.hasPublic) patch.is_public = this.draft.is_public;
         const replacePhoto = this.pickedPreset && Boolean(this.profile?.avatar_path);
         this._setBusy('save');
         this._setStatus('', '');
@@ -529,6 +534,12 @@ export class ProfilePage {
                         <span>${escHtml(tp('shareLocationDefault', 'Show the exact location by default'))}</span></label>
                     <p class="tr-profile-hint">${escHtml(tp('shareLocationDefaultHelp', 'Off: members don’t see the site’s position, and a public link shows only the approximate area.'))}</p>`}
                 </fieldset>
+                ${this.hasPublic ? `<fieldset class="lb-field tr-profile-public">
+                    <legend>${escHtml(tp('publicTitle', 'Public profile'))}</legend>
+                    <label class="lb-check"><input type="checkbox" name="is_public" aria-describedby="tr-public-help"${d.is_public ? ' checked' : ''}>
+                        <span>${escHtml(tp('publicLabel', 'Show my profile and dives to everyone, without logging in'))}</span></label>
+                    <p class="tr-profile-hint" id="tr-public-help">${escHtml(tp('publicHelp', 'Visitors then see your name, avatar, home country, stats and your dives that aren’t Private. Your notes, your buddies’ names and your dive computer’s serial number stay hidden.'))}</p>
+                </fieldset>` : ''}
                 <label class="lb-field"><span>${escHtml(tp('country', 'Home country'))}</span>
                     <select name="home_country" autocomplete="country">${countries}</select></label>
                 <div class="lb-actions tr-profile-actions">

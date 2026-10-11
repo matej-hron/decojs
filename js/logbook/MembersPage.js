@@ -42,9 +42,11 @@ export class MembersPage {
      * @param {Object} options.store - DiveStore with the community API
      * @param {string} options.userId - the signed-in user
      * @param {(error: Error) => void} [options.onError] - loading failed (default: a message in place)
+     * @param {boolean} [options.guest] - a visitor who is not logged in: only public profiles are listed
      */
-    constructor(host, { store, userId, onError = null }) {
+    constructor(host, { store, userId, onError = null, guest = false }) {
         this.host = host;
+        this.guest = guest;
         this.store = store;
         this.userId = userId;
         this.onError = onError;
@@ -121,6 +123,7 @@ export class MembersPage {
     _body() {
         if (this.failed) return `<p class="rda-account-msg" role="alert">${escHtml(tb('genericError', 'Something went wrong. Please try again.'))}</p>`;
         if (!this.members) return `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        if (!this.members.length && this.guest) return `<p class="rda-account-msg">${escHtml(tt('guest.noMembers', 'No member has a public profile yet.'))}</p>`;
         return `<ul class="tr-members" role="list">${this.members.map(m => this._card(m)).join('')}</ul>`;
     }
 
@@ -130,7 +133,8 @@ export class MembersPage {
         this.host.innerHTML = `<div class="tr-community">
             <div class="tr-page-head">
                 <h2 class="tr-feed-title">${escHtml(tt('community.title', 'Community'))}</h2>
-                <p class="tr-page-intro">${escHtml(tt('community.intro', 'Everyone here was invited. They see your dives unless you make them private.'))}</p>
+                <p class="tr-page-intro">${escHtml(this.guest ? tt('guest.communityIntro', 'Members who made their profile public. DecoTrail is invite-only; members see more.')
+                    : tt('community.intro', 'Everyone here was invited. They see your dives unless you make them private.'))}</p>
             </div>
             ${this._body()}</div>`;
         if (focusedHref) [...this.host.querySelectorAll('a')].find(a => a.getAttribute('href') === focusedHref)?.focus({ preventScroll: true });
