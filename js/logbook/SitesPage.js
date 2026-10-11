@@ -110,10 +110,12 @@ export class SitesPage {
      * @param {HTMLElement} container
      * @param {{store: Object, siteId?: string|null, userId?: string|null, siteLink?: boolean, onDone?: () => void, onMissing?: () => void}} options
      * `siteId` null shows the list, otherwise the page of that site. `siteLink`: the database has site links
-     * (migration 0006). `onDone` is called after save, merge or delete.
+     * (migration 0006). `onDone` is called after save, merge or delete. `guest`: a visitor who is not logged in
+     * (public profiles, 0012) reads the directory only: no "My sites", no edit form.
      */
-    constructor(container, { store, siteId = null, userId = null, siteLink = false, onDone = () => {}, onMissing = () => {} }) {
+    constructor(container, { store, siteId = null, userId = null, siteLink = false, onDone = () => {}, onMissing = () => {}, guest = false }) {
         this.container = container;
+        this.guest = guest;
         this.store = store;
         this.siteId = siteId;
         this.userId = userId;
@@ -315,7 +317,8 @@ export class SitesPage {
         this._mapCleanup = null;
         if (this.loadFailed) {
             this.container.innerHTML = `<section class="rda-card lb-message"><p role="alert">${escHtml(this.error)}</p>
-                ${this._back(routeHref({ name: 'list' }), ts('backToLogbook', '← Back to the logbook'))}</section>`;
+                ${this.guest ? this._back(routeHref({ name: 'feed' }), translate('diveLog.trail.toFeed', 'Back to the Feed'))
+                    : this._back(routeHref({ name: 'list' }), ts('backToLogbook', '← Back to the logbook'))}</section>`;
             return;
         }
         if (!this.sites) {
@@ -358,12 +361,12 @@ export class SitesPage {
     }
 
     _renderList() {
-        const scope = this.community ? this.prefs.scope : 'mine';
+        const scope = this.guest ? 'all' : this.community ? this.prefs.scope : 'mine';
         const view = this.prefs.view;
         const sites = orderSites(this.sites, { scope, here: this.here });
         const dupes = duplicateNameCounts(this.sites.filter(s => s.own !== false));
         const seg = (attr, value, label, current) => `<button type="button" class="lb-seg" data-${attr}="${value}" aria-pressed="${value === current}">${escHtml(label)}</button>`;
-        const scopeSeg = this.community ? `<div class="lb-switch" role="group" aria-label="${escHtml(ts('scopeLabel', 'Which sites'))}">
+        const scopeSeg = this.community && !this.guest ? `<div class="lb-switch" role="group" aria-label="${escHtml(ts('scopeLabel', 'Which sites'))}">
                 ${seg('scope', 'all', ts('allSites', 'All sites'), scope)}${seg('scope', 'mine', ts('mySites', 'My sites'), scope)}</div>` : '';
         const viewSeg = `<div class="lb-switch" role="group" aria-label="${escHtml(ts('viewLabel', 'Show as'))}">
                 ${seg('view', 'list', ts('viewList', 'List'), view)}${seg('view', 'map', ts('viewMap', 'Map'), view)}</div>`;
@@ -374,10 +377,11 @@ export class SitesPage {
         }
         const failed = this.locateFailed ? `<p class="lb-muted" role="status">${escHtml(ts('locationFailed', 'Your location is not available, so the sites stay sorted by name.'))}</p>` : '';
         const intro = this.community && scope === 'all'
-            ? `<p class="lb-muted lb-sites-intro">${escHtml(ts('directoryIntro', 'Sites added by all members. Pick one for your dive instead of adding it again.'))}</p>` : '';
+            ? `<p class="lb-muted lb-sites-intro">${escHtml(this.guest ? ts('guestIntro', 'Dive sites of the DecoTrail community, with the visibility and water temperature members logged there.')
+                : ts('directoryIntro', 'Sites added by all members. Pick one for your dive instead of adding it again.'))}</p>` : '';
         let body;
         if (!sites.length) {
-            body = `<p class="rda-account-msg">${escHtml(ts('empty', 'No sites yet. Sites are created when you pick a place for a dive.'))}</p>`;
+            body = `<p class="rda-account-msg">${escHtml(this.guest ? ts('guestEmpty', 'No sites yet.') : ts('empty', 'No sites yet. Sites are created when you pick a place for a dive.'))}</p>`;
         } else if (view === 'map') {
             body = '<div class="lb-sites-map" role="region"></div>';
         } else {
@@ -486,7 +490,8 @@ export class SitesPage {
     _renderSite() {
         const site = this.site;
         const statsHtml = conditionsCardHtml(this.stats?.failed ? null : this.stats, { failed: this.stats?.failed === true });
-        const owner = site.own !== false ? this._ownerSectionsHtml() : `<p class="lb-muted lb-site-readonly">${escHtml(ts('readOnly', 'Only the member who added this site can change it.'))}</p>`;
+        const owner = site.own !== false ? this._ownerSectionsHtml()
+            : this.guest ? '' : `<p class="lb-muted lb-site-readonly">${escHtml(ts('readOnly', 'Only the member who added this site can change it.'))}</p>`;
         this.container.innerHTML = `${this._back(routeHref({ name: 'sites' }), ts('backToSites', '← Back to the sites'))}
             ${this.notice ? `<p class="rda-card lb-site-notice" role="status">${escHtml(this.notice)}</p>` : ''}
             ${this._headHtml()}

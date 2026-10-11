@@ -779,8 +779,8 @@ footer.tr-foot { flex: none; padding: 1.5rem calc(1rem + env(safe-area-inset-rig
 
 /* Logged out: just the bar and the login card */
 body:not(.tr-logged-in) .tr-main { max-width: 34rem; padding-top: clamp(1.5rem, 8vh, 4rem); }
-body:not(.tr-logged-in) .rda-root > .rda-account { padding: 1.5rem; gap: 1rem; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-body:not(.tr-logged-in) .rda-account > strong { flex-basis: 100%; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--text); }
+:is(body:not(.tr-logged-in), .tr-guest-login) .rda-root > .rda-account { padding: 1.5rem; gap: 1rem; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+:is(body:not(.tr-logged-in), .tr-guest-login) .rda-account > strong { flex-basis: 100%; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--text); }
 
 @media (max-width: 960px) and (min-width: 721px) {
     .tr-top .tr-top-in.nav-container { gap: 0.75rem; }
@@ -1261,6 +1261,20 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
 .tr-nudge h3 { margin: 0; font-size: var(--text-lg); }
 .tr-nudge p { margin: 0; max-width: 36rem; }
 .tr-nudge .btn { min-height: 44px; }
+
+/* ---- Visitors who are not logged in (public profiles, 0012) ---- */
+.tr-login-btn { display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.9rem; white-space: nowrap; }
+.tr-login-btn[aria-current="page"] { visibility: hidden; } /* the login form is already open */
+.tr-guest-intro { display: grid; gap: 0.5rem; justify-items: start; margin-bottom: 1rem; padding: 1rem; border: 1px solid color-mix(in srgb, var(--tr-accent) 40%, var(--border));
+    border-radius: var(--radius-lg); background: var(--tr-accent-soft); }
+.tr-guest-intro h3 { margin: 0; font-size: var(--text-lg); }
+.tr-guest-intro p { margin: 0; max-width: 40rem; }
+.tr-guest-intro .btn { min-height: 44px; }
+.tr-guest-login { display: grid; gap: 0.75rem; max-width: 34rem; margin: 0 auto; }
+.tr-guest-login > p { margin: 0; }
+.tr-guest-login .rda-root { padding-inline: 0; }
+.tr-profile-public .lb-check { margin-top: 0.25rem; }
+@media (max-width: 720px) { .tr-login-btn { min-height: 36px; padding: 0 0.7rem; font-size: var(--text-sm); } }
 
 /* ---- Community site directory (SitesPage, SiteConditions, SitesMap; migration 0011) ---- */
 .lb-sites-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }

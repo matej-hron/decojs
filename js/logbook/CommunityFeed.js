@@ -40,9 +40,11 @@ export class CommunityFeed {
      * @param {boolean} [options.title] - show the "Feed" heading
      * @param {(error: Error) => void} [options.onError] - the first page failed (default: a message in place)
      * @param {number} [options.pageSize]
+     * @param {boolean} [options.guest] - a visitor who is not logged in: public dives, an intro, no "New dive"
      */
-    constructor(host, { store, userId, owner = null, title = true, onError = null, pageSize = FEED_PAGE_SIZE }) {
+    constructor(host, { store, userId, owner = null, title = true, onError = null, pageSize = FEED_PAGE_SIZE, guest = false }) {
         this.host = host;
+        this.guest = guest;
         this.store = store;
         this.userId = userId;
         this.owner = owner;
@@ -302,8 +304,10 @@ export class CommunityFeed {
         if (this.failed) return `<p class="rda-account-msg" role="alert">${escHtml(tb('genericError', 'Something went wrong. Please try again.'))}</p>`;
         if (!this.rows) return `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         if (!this.rows.length) {
-            return `<div class="lb-empty"><p class="rda-account-msg">${escHtml(this.owner ? tt('member.noDives', 'No dives to show yet.') : tt('feed.empty', 'No dives from members yet.'))}</p>
-                ${this.owner ? '' : `<a class="btn btn-primary lb-empty-upload" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>`}</div>`;
+            const empty = this.owner ? tt('member.noDives', 'No dives to show yet.')
+                : this.guest ? tt('guest.feedEmpty', 'No public dives yet.') : tt('feed.empty', 'No dives from members yet.');
+            return `<div class="lb-empty"><p class="rda-account-msg">${escHtml(empty)}</p>
+                ${this.owner || this.guest ? '' : `<a class="btn btn-primary lb-empty-upload" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>`}</div>`;
         }
         // Month heads carry no count: with paging the count of a month is only what is loaded so far.
         const months = groupByMonth(this.rows, localeTag(currentLang())).map(g => `<section class="lb-month">
@@ -313,6 +317,15 @@ export class CommunityFeed {
             ${this.moreFailed ? `<p class="lb-form-error" role="alert">${escHtml(tt('feed.moreFailed', 'Couldn’t load more dives. Try again.'))}</p>` : ''}
             <button type="button" class="btn btn-secondary tr-feed-more" id="tr-feed-more"${this.loadingMore ? ' aria-disabled="true" aria-busy="true"' : ''}>${escHtml(this.loadingMore ? tb('loading', 'Loading…') : tt('feed.loadMore', 'Load more'))}</button></div>` : '';
         return months + more;
+    }
+
+    /** What a visitor is looking at, with the way in. */
+    _guestIntroHtml() {
+        if (!this.guest || this.owner) return '';
+        return `<section class="tr-guest-intro" aria-labelledby="tr-guest-intro-h">
+            <h3 id="tr-guest-intro-h">${escHtml(tt('guest.introTitle', 'Dives from DecoTrail members'))}</h3>
+            <p>${escHtml(tt('guest.introText', 'These members made their profile public. Every recorded dive opens DecoTheory’s decompression analysis. DecoTrail is invite-only: log in to keep your own dive log.'))}</p>
+            <a class="btn btn-primary" href="${routeHref({ name: 'login' })}">${escHtml(tt('guest.login', 'Log in'))}</a></section>`;
     }
 
     /** "Complete your profile" for a member whose profile has no name yet. */
@@ -336,6 +349,7 @@ export class CommunityFeed {
         const key = focused && (focused.id || focused.getAttribute('href'));
         this.host.innerHTML = `<div class="tr-feed">
             ${this.title ? `<h2 class="tr-feed-title">${escHtml(tt('feed.title', 'Feed'))}</h2>` : ''}
+            ${this._guestIntroHtml()}
             ${this._nudgeHtml()}
             ${this._body()}</div>`;
         if (at >= 0) {

@@ -3,14 +3,16 @@
  *
  * Logged out (or without a store) the page is the plain dive analysis. Once the
  * user is logged in it shows the logbook: a list of entries, routed by location.hash.
+ * With public profiles (migration 0012) a visitor who is not logged in browses as a guest instead: the public
+ * Feed, members and Sites, read through the store's read-only `publicStore()`, and a "Log in" route.
  */
 
-import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiveAnalysis.js';
+import { RecordedDiveAnalysis, translateStatic, authRedirectMessage } from '../components/RecordedDiveAnalysis.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
-import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute } from './AppShell.js';
+import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute, GUEST_TABS, resolveGuestRoute } from './AppShell.js';
 import { needsDetails, formatDiveDate, formatDuration, ratingOf } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
@@ -88,6 +90,8 @@ export class LogbookApp {
         this.store = store;
         this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;
+        this.guest = false; // browsing without logging in (public profiles, 0012)
+        this.publicReader = null; // the read-only store of a guest
         this.community = false; // whether the community backend (migration 0004) is available
         this.socialOn = false; // whether kudos and comments (migration 0010) are available
         this.unseen = 0; // the "New for you" badge
@@ -159,7 +163,10 @@ export class LogbookApp {
 
     _renderShell() {
         if (!this.shell) return;
-        if (!this.user) this.shell.render({ tabs: [] });
+        if (this.guest) {
+            const name = resolveGuestRoute(parseRoute(location.hash)).name;
+            this.shell.render({ tabs: this.publicReader ? GUEST_TABS : [], active: activeTab(name), login: { active: name === 'login' } });
+        } else if (!this.user) this.shell.render({ tabs: [] });
         else {
             const name = this._route().name;
             this.shell.render({
@@ -175,7 +182,7 @@ export class LogbookApp {
      * and once on a later route change.
      */
     _probeCommunity() {
-        if (this._communityKnown || this._probe || this._probeAttempts >= PROBE_ATTEMPTS) return;
+        if (!this.user || this._communityKnown || this._probe || this._probeAttempts >= PROBE_ATTEMPTS) return;
         const store = this.store;
         const ask = typeof store.communityAvailability === 'function' ? () => store.communityAvailability()
             : typeof store.communityStatus === 'function' ? async () => ((await store.communityStatus()) === true ? 'yes' : 'no')
@@ -266,12 +273,86 @@ export class LogbookApp {
         if (same) return;
         this.user = user;
         if (user) {
+            if (this.guest) this._leaveLogbook(); // logged in while browsing as a guest
             this._unmountAnalysis();
             this._enterLogbook();
         } else {
             this._leaveLogbook();
-            this._mountAnalysis();
+            this._enterGuest();
         }
+    }
+
+    // ---- Browsing without logging in (public profiles, migration 0012) ----
+
+    /**
+     * Show the public Feed, members and Sites when the backend has public profiles; otherwise (or while a login
+     * link came back with an error, which the login form explains) the login form alone, as before.
+     */
+    _enterGuest() {
+        const loginError = authRedirectMessage(globalThis.location?.hash, globalThis.location?.search);
+        if (typeof this.store.publicAvailability !== 'function' || loginError) {
+            this._mountAnalysis();
+            return;
+        }
+        this._enterView();
+        this.guest = true;
+        document.body.classList.add('lb-in', 'tr-logged-in', 'tr-guest'); // the app layout, with the tab bars
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        const session = this._session;
+        let giveUp;
+        const timeout = new Promise(resolve => { giveUp = setTimeout(() => resolve('unknown'), this._probeTimeoutMs); });
+        Promise.race([Promise.resolve().then(() => this.store.publicAvailability()).catch(error => { console.error(error); return 'unknown'; }), timeout])
+            .then(result => {
+                clearTimeout(giveUp);
+                if (this.destroyed || session !== this._session || !this.guest) return;
+                if (result !== 'yes') {
+                    this._leaveLogbook();
+                    this._mountAnalysis();
+                    return;
+                }
+                this.publicReader = this.store.publicStore();
+                this._renderRoute();
+            });
+    }
+
+    /** The store the community views read through: the guest's read-only one, else the member's. */
+    _reads() {
+        return this.guest ? this.publicReader : this.store;
+    }
+
+    _renderGuestRoute() {
+        this._unmountAnalysis();
+        this._unmountForm();
+        const token = ++this._viewToken;
+        if (location.hash !== this._hash) {
+            this._prevHash = this._hash;
+            this._hash = location.hash;
+        }
+        this._renderShell();
+        if (!this.publicReader) return; // still asking whether public profiles exist
+        const route = resolveGuestRoute(parseRoute(location.hash));
+        this.view.classList.remove('lb-list-view', 'lb-selecting');
+        switch (route.name) {
+            case 'feed': this._showFeed(); break;
+            case 'community': this._showCommunity(); break;
+            case 'member': this._showMember(route.id); break;
+            case 'memberDive': this._showMemberDive(route.id, token); break;
+            case 'memberAnalysis': this._showMemberAnalysis(route.id, token); break;
+            case 'sites': this._showSites(null); break;
+            case 'site': this._showSites(route.id); break;
+            case 'login': this._showLogin(); break;
+            default: this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
+        }
+    }
+
+    /** The login form inside the guest shell (Google or an email link). */
+    _showLogin() {
+        // A plain div: the site styles every <section> as a card, and the login form is one already.
+        this.view.innerHTML = `<div class="tr-guest-login">
+            <h2 class="tr-feed-title">${escHtml(translate('diveLog.trail.guest.loginTitle', 'Log in to DecoTrail'))}</h2>
+            <p class="lb-muted">${escHtml(translate('diveLog.trail.guest.loginText', 'Members keep their dive log here and see every member’s dives. Without logging in you see only public profiles.'))}</p>
+            <div class="rda-root rda-login-only"></div></div>`;
+        this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.rda-root'), { store: this.store });
     }
 
     _mountAnalysis() {
@@ -292,6 +373,16 @@ export class LogbookApp {
         this.msg = [];
         this.medNotice = null; // {state: 'soon'|'expired', validUntil} of the own medical checks (0007)
         this.medDismissed = false; // closed for this session
+        this._enterView();
+        document.body.classList.add('lb-in', 'tr-logged-in');
+        this._resetProbe(); // another user may have signed in directly: forget the previous one's answer
+        this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
+        this._probeCommunity();
+        this._renderRoute();
+    }
+
+    /** The routed view and its listeners (members and guests). */
+    _enterView() {
         this.root.innerHTML = '';
         this.view = document.createElement('div');
         this.view.className = 'lb-root';
@@ -301,11 +392,6 @@ export class LogbookApp {
         document.addEventListener('click', this._onDocClick);
         document.addEventListener('keydown', this._onDocKey);
         this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
-        document.body.classList.add('lb-in', 'tr-logged-in');
-        this._resetProbe(); // another user may have signed in directly: forget the previous one's answer
-        this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
-        this._probeCommunity();
-        this._renderRoute();
     }
 
     /** Forget the community probe and its answer (new login, other user, logout); a probe in flight is ignored. */
@@ -369,7 +455,9 @@ export class LogbookApp {
         document.removeEventListener('languagechange', this._onLanguage);
         document.removeEventListener('click', this._onDocClick);
         document.removeEventListener('keydown', this._onDocKey);
-        document.body.classList.remove('lb-in', 'tr-logged-in');
+        document.body.classList.remove('lb-in', 'tr-logged-in', 'tr-guest');
+        this.guest = false;
+        this.publicReader = null;
         this._resetProbe();
         this.shell?.render({ tabs: [] });
         this._viewToken++;
@@ -386,6 +474,12 @@ export class LogbookApp {
 
     _onLanguageChange() {
         this._renderShell();
+        if (this.guest) {
+            if (this.form) this.form.relabel();
+            else if (!this.analysis) this._renderRoute(); // the login form and an analysis follow the language themselves
+            else this._renderAnalysisAuthor();
+            return;
+        }
         const name = this._route().name;
         if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive' || name === 'profile' || name === 'activity')) this.form.relabel(); // keep what was typed / loaded
         else if (this.user && name !== 'analysis' && name !== 'memberAnalysis') this._renderRoute();
@@ -398,7 +492,12 @@ export class LogbookApp {
     // ---- Routing ----
 
     _renderRoute() {
-        if (this.destroyed || !this.user) return;
+        if (this.destroyed) return;
+        if (this.guest) {
+            this._renderGuestRoute();
+            return;
+        }
+        if (!this.user) return;
         this._unmountAnalysis();
         this._unmountForm();
         const token = ++this._viewToken;
@@ -471,7 +570,7 @@ export class LogbookApp {
     _showSites(siteId) {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new SitesPage(this.view.firstChild, {
-            store: this.store, siteId, userId: this.user?.id ?? null,
+            store: this._reads(), siteId, userId: this.user?.id ?? null, guest: this.guest,
             onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
             onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
         });
@@ -482,7 +581,7 @@ export class LogbookApp {
     _showFeed() {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new CommunityFeed(this.view.firstChild, {
-            store: this.store, userId: this.user.id,
+            store: this._reads(), userId: this.user?.id ?? null, guest: this.guest,
             onError: error => this._viewError(error),
         });
     }
@@ -492,7 +591,7 @@ export class LogbookApp {
     _showCommunity() {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new MembersPage(this.view.firstChild, {
-            store: this.store, userId: this.user.id,
+            store: this._reads(), userId: this.user?.id ?? null, guest: this.guest,
             onError: error => this._viewError(error),
         });
     }
@@ -500,14 +599,14 @@ export class LogbookApp {
     _showMember(memberId) {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new MemberPage(this.view.firstChild, {
-            store: this.store, userId: this.user.id, memberId,
+            store: this._reads(), userId: this.user?.id ?? null, memberId, guest: this.guest,
             onError: error => this._viewError(error),
         });
     }
 
     /** What the dive detail needs for kudos and comments (it checks availability itself). */
     _social() {
-        return typeof this.store.socialStatus === 'function' ? { store: this.store, userId: this.user.id } : null;
+        return !this.guest && typeof this.store.socialStatus === 'function' ? { store: this.store, userId: this.user.id } : null;
     }
 
     // ---- New for you ----
@@ -554,7 +653,7 @@ export class LogbookApp {
         this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
         let row;
         try {
-            row = await this.store.getCommunityEntry(id);
+            row = await this._reads().getCommunityEntry(id);
         } catch (error) {
             if (token === this._viewToken) this._storeError(error);
             return null;
@@ -564,7 +663,7 @@ export class LogbookApp {
             this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
             return null;
         }
-        if (row.owner === this.user.id) {
+        if (row.owner === this.user?.id) {
             location.replace(routeHref({ name: ownRoute, id })); // the own dive has the full, editable view
             return null;
         }
@@ -588,9 +687,9 @@ export class LogbookApp {
         let member = null;
         let avatarUrl = null;
         try {
-            member = await this.store.getMember(owner);
-            if (member?.avatar_path && this.store.avatarUrls) {
-                avatarUrl = (await this.store.avatarUrls([member.avatar_path]).catch(error => { console.error(error); return null; }))?.get(member.avatar_path) ?? null;
+            member = await this._reads().getMember(owner);
+            if (member?.avatar_path && this._reads().avatarUrls) {
+                avatarUrl = (await this._reads().avatarUrls([member.avatar_path]).catch(error => { console.error(error); return null; }))?.get(member.avatar_path) ?? null;
             }
         } catch (error) {
             console.error(error); // the author row falls back to "Diver" and a preset
@@ -610,9 +709,9 @@ export class LogbookApp {
         if (!row) return;
         const author = await this._memberAuthor(row.owner);
         if (token !== this._viewToken) return;
-        const { entry, adapter } = memberEntryStore(this.store, row);
+        const { entry, adapter } = memberEntryStore(this._reads(), row);
         // Another member's site has a page only with the community directory (0011).
-        const sitePage = await Promise.resolve(this.store.communitySitesStatus?.()).catch(() => false) === true;
+        const sitePage = await Promise.resolve(this._reads().communitySitesStatus?.()).catch(() => false) === true;
         if (token !== this._viewToken) return;
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new EntryDetail(this.view.firstChild, {
@@ -623,7 +722,7 @@ export class LogbookApp {
     async _showMemberAnalysis(id, token) {
         const row = await this._memberRow(id, token, 'analysis');
         if (!row) return;
-        const { entry, adapter } = memberEntryStore(this.store, row);
+        const { entry, adapter } = memberEntryStore(this._reads(), row);
         if (!entry.recording_id) {
             this._showNotFound({ href: routeHref({ name: 'memberDive', id }), text: tl('back', '← Back') });
             return;
@@ -1263,8 +1362,8 @@ export class LogbookApp {
             : error instanceof DiveStoreError && error.kind === 'unreachable'
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
-        if (this.destroyed || !this.user) return;
-        if (this._route().name === 'list') this._renderList();
+        if (this.destroyed || (!this.user && !this.guest)) return;
+        if (!this.guest && this._route().name === 'list') this._renderList();
         else if (background) this._showBanner(this.msg[0]);
         else this._showMessage(this.msg[0]);
     }
@@ -1286,8 +1385,9 @@ export class LogbookApp {
         this._unmountForm();
         this.analysis?.destroy();
         this.analysis = null;
+        const back = this.guest ? [routeHref({ name: 'feed' }), translate('diveLog.trail.toFeed', 'Back to the Feed')] : [routeHref({ name: 'list' }), tl('toList', 'Back to the list')];
         this.view.innerHTML = `<section class="rda-card lb-message"><p>${escHtml(text)}</p>
-            <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
+            <p><a href="${back[0]}">${escHtml(back[1])}</a></p></section>`;
     }
 
     _setWorking(on) {

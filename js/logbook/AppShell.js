@@ -34,6 +34,18 @@ const ICONS = {
     profile: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.6 18.4a6.5 6.5 0 0 1 10.8 0"/>',
 };
 
+/** Tabs of a visitor who is not logged in (public profiles, migration 0012). */
+export const GUEST_TABS = Object.freeze(['feed', 'community', 'sites']);
+
+/** Routes a visitor may open; every other route shows the login. */
+const GUEST_ROUTES = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'sites', 'site', 'login', 'notFound']);
+
+/** The route a visitor sees: `home` → Feed, member-only routes (own dives, profile, …) → the login. */
+export function resolveGuestRoute(route) {
+    if (route.name === 'home') return { name: 'feed' };
+    return GUEST_ROUTES.has(route.name) ? route : { name: 'login' };
+}
+
 /** The tabs to show: without the community feature only My dives and Sites. */
 export function shellTabs(communityOn) {
     return SHELL_TABS.filter(tab => communityOn || !COMMUNITY_TABS.has(tab));
@@ -50,9 +62,9 @@ export function isCommunityRoute(name) {
     return COMMUNITY_ROUTES.has(name);
 }
 
-/** The route to show: `home` picks Feed or My dives; community routes fall back to My dives when the feature is off. */
+/** The route to show: `home` (and `login`, once logged in) picks Feed or My dives; community routes fall back to My dives when the feature is off. */
 export function resolveRoute(route, communityOn) {
-    if (route.name === 'home') return { name: communityOn ? 'feed' : 'list' };
+    if (route.name === 'home' || route.name === 'login') return { name: communityOn ? 'feed' : 'list' };
     if (!communityOn && COMMUNITY_ROUTES.has(route.name)) return { name: 'list' };
     return route;
 }
@@ -70,6 +82,12 @@ export function bellHtml({ count = 0, active = false } = {}) {
     return `<a class="tr-bell" href="${routeHref({ name: 'activity' })}" aria-label="${escHtml(label)}" title="${escHtml(name)}"${active ? ' aria-current="page"' : ''}>`
         + `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${BELL_ICON}</svg>`
         + `${n ? `<span class="tr-badge" aria-hidden="true">${escHtml(n)}</span>` : ''}</a>`;
+}
+
+/** The "Log in" button of a visitor's top bar. */
+export function loginHtml({ active = false } = {}) {
+    const label = translate('diveLog.trail.guest.login', 'Log in');
+    return `<a class="btn btn-primary tr-login-btn" href="${routeHref({ name: 'login' })}"${active ? ' aria-current="page"' : ''}>${escHtml(label)}</a>`;
 }
 
 function tabHtml(tab, active) {
@@ -100,10 +118,10 @@ export class AppShell {
 
     /**
      * Show `tabs` with `active` marked; no tabs hides the navigation. `bell` shows the "New for you" link
-     * (null hides it).
+     * (null hides it); `login` shows a visitor's "Log in" button in its place.
      */
-    render({ tabs = [], active = null, bell = null } = {}) {
-        if (this.bellSlot) this.bellSlot.innerHTML = bell ? bellHtml(bell) : '';
+    render({ tabs = [], active = null, bell = null, login = null } = {}) {
+        if (this.bellSlot) this.bellSlot.innerHTML = bell ? bellHtml(bell) : login ? loginHtml(login) : '';
         const html = tabs.map(tab => tabHtml(tab, active)).join('');
         for (const nav of this.navs) {
             nav.innerHTML = html;

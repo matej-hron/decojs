@@ -99,3 +99,15 @@ sites read-only for you, stop a site from going private or being deleted while o
 attaching someone's private site to a dive. Run it once in the **SQL Editor** after 0010; running it again is safe.
 The app works without it (own sites only) and switches the directory on by itself once it ran.
 Test locally with `bash supabase/tests/run.sh` (Docker).
+
+## Public profiles (0012, DecoTrail)
+
+`supabase/migrations/0012_public_profiles.sql` adds `profiles.is_public` (off for everyone) and read functions for
+visitors who are not logged in: `public_entries()`, `public_media()`, `public_recordings()`, `public_recording()`,
+`public_members()`, `public_sites()`, `public_site_stats()`, `public_site_visits()`, plus anon storage policies for
+the photos of public dives and the avatars of public profiles. A public profile shows every dive that is not
+private, never notes, buddies' names, log numbers or the dive computer's serial number. The site directory is public
+(no creator named); its visits list only public profiles' dives. No table gets an anon grant and the member
+functions stay members-only. Run it once in the **SQL Editor** after 0011; running it again is safe.
+Until it runs, logged-out visitors see the login form as before; afterwards they land on the public Feed.
+Test locally with `bash supabase/tests/run.sh` (Docker).

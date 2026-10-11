@@ -27,7 +27,8 @@ export class MemberPage {
      * @param {string} options.memberId - whose page
      * @param {(error: Error) => void} [options.onError] - loading the member failed (default: a message in place)
      */
-    constructor(host, { store, userId, memberId, onError = null }) {
+    constructor(host, { store, userId, memberId, onError = null, guest = false }) {
+        this.guest = guest;
         this.host = host;
         this.store = store;
         this.userId = userId;
@@ -115,7 +116,7 @@ export class MemberPage {
         this.host.firstChild.appendChild(section);
         this._renderDivesHead();
         this.feed = new CommunityFeed(section.querySelector('.tr-member-feed'), {
-            store: this.store, userId: this.userId, owner: this.memberId, title: false,
+            store: this.store, userId: this.userId, owner: this.memberId, title: false, guest: this.guest,
         });
     }
 
