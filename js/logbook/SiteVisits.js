@@ -105,7 +105,15 @@ export function visitListHtml({ rows, showAll, userId, members, avatars, capped 
             const vis = `${has(r.vis_shallow_m) ? fmtNum(Number(r.vis_shallow_m), 1) : '–'}${NB}/${NB}${has(r.vis_deep_m) ? fmtNum(Number(r.vis_deep_m), 1) : '–'}${NB}m`;
             facts.push(`<span class="lb-sv-fact" title="${escHtml(tv('visTitle', 'Visibility shallow / deep'))}">${escHtml(fill(tv('vis', 'vis {0}'), vis))}</span>`);
         }
-        if (has(r.water_temp_c)) facts.push(`<span class="lb-sv-fact">${escHtml(`${fmtNum(Number(r.water_temp_c), 1)}${NB}°C`)}</span>`);
+        const surface = r.surface_temp_c;
+        if (has(r.water_temp_c) && has(surface)) {
+            const pair = `${fmtNum(Number(r.water_temp_c), 1)}${NB}/${NB}${fmtNum(Number(surface), 1)}${NB}°C`;
+            facts.push(`<span class="lb-sv-fact" title="${escHtml(tv('tempTitle', 'Water temperature bottom / surface'))}">${escHtml(pair)}</span>`);
+        } else if (has(r.water_temp_c)) {
+            facts.push(`<span class="lb-sv-fact">${escHtml(`${fmtNum(Number(r.water_temp_c), 1)}${NB}°C`)}</span>`);
+        } else if (has(surface)) {
+            facts.push(`<span class="lb-sv-fact">${escHtml(fill(tv('surfaceTemp', 'surface {0}'), `${fmtNum(Number(surface), 1)}${NB}°C`))}</span>`);
+        }
         return `<li><a class="lb-sv-visit" href="${escHtml(href)}">
             <span class="lb-sv-av" aria-hidden="true">${avatarHtml({ preset: member?.avatar_preset, url, name, id: r.owner, size: 36 })}</span>
             <span class="lb-sv-who"><span class="lb-sv-name">${escHtml(name)}</span>

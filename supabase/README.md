@@ -89,3 +89,13 @@ members only the agency + level of cards the owner chose to show. Run it after 0
 First remove the user's folder in Storage → `documents` → `<user id>/` (also `dive-logs`, `dive-photos`,
 `avatars`). Orphans can be found with
 `select name from storage.objects where bucket_id = 'documents' and split_part(name, '/', 1)::uuid not in (select id from auth.users);`
+
+## Community site directory (0011, DecoTrail)
+
+`supabase/migrations/0011_community_sites.sql` turns sites into a shared directory: `sites.visibility`
+(`members` | `private`, existing sites become `members`), read functions `community_sites()`, `site_stats()`,
+`site_visits()` (never notes, only dives the caller may see), `merge_site()`, and triggers that keep other members'
+sites read-only for you, stop a site from going private or being deleted while others' dives use it, and refuse
+attaching someone's private site to a dive. Run it once in the **SQL Editor** after 0010; running it again is safe.
+The app works without it (own sites only) and switches the directory on by itself once it ran.
+Test locally with `bash supabase/tests/run.sh` (Docker).
