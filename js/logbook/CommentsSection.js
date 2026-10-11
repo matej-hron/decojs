@@ -331,7 +331,7 @@ export class CommentsSection {
         const who = mine ? `<span class="tr-comment-name">${escHtml(name)}</span>`
             : `<a class="tr-comment-name" href="${routeHref({ name: 'member', id: r.author_id })}">${escHtml(name)}</a>`;
         return `<li class="tr-comment" data-comment="${id}">
-            <span class="tr-comment-av" aria-hidden="true">${avatarHtml({ preset: r.avatar_preset, url, name, id: r.author_id, size: 32 })}</span>
+            <span class="tr-comment-av" aria-hidden="true">${avatarHtml({ preset: r.avatar_preset, url, name, id: r.author_id, size: 32, zoom: true })}</span>
             <div class="tr-comment-main">
                 <p class="tr-comment-head">${who} <time datetime="${escHtml(dt)}" title="${escHtml(title)}">${escHtml(when)}</time>${r.edited_at ? ` <span class="tr-comment-edited">· ${escHtml(ts('edited', 'edited'))}</span>` : ''}</p>
                 ${body}${actions}

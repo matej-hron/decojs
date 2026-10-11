@@ -146,13 +146,13 @@ export class MemberPage {
         const full = fullName(m); // the full name, small under it
         const country = countryName(m.home_country, currentLang());
         // The heading carries the name: the picture is decoration here.
-        const avatar = avatarHtml({ preset: m.avatar_preset, url: this.avatarUrl, name, id: m.id, size: 96 });
+        const avatar = avatarHtml({ preset: m.avatar_preset, url: this.avatarUrl, name, id: m.id, size: 96, zoom: true });
         const tiles = memberStatsView(m, (n, d) => fmtNum(n, d)).map(s => `<div class="tr-tile tr-tile-${s.key}">
                 <dt>${escHtml(tt(`member.stats.${s.key}`, STAT_FALLBACK[s.key]))}</dt>
                 <dd>${escHtml(s.value)}${s.unit ? `<span class="tr-tile-unit">${NB}${escHtml(s.unit)}</span>` : ''}</dd></div>`).join('');
         const sites = (Array.isArray(m.top_sites) ? m.top_sites : []).filter(s => typeof s === 'string' && s.trim());
         this.top.innerHTML = `<div class="tr-member-head${own ? ' tr-member-head-own' : ''}">
-                <span class="tr-member-head-av" aria-hidden="true">${avatar}</span>
+                ${this.avatarUrl ? `<button type="button" class="tr-member-head-av tr-av-zoom" aria-label="${escHtml(tt('avatarEnlarge', 'Enlarge picture'))}">${avatar}</button>` : `<span class="tr-member-head-av" aria-hidden="true">${avatar}</span>`}
                 <div class="tr-member-head-text">
                     <h2 class="tr-member-head-name">${escHtml(name)}${own ? ` <span class="tr-you-tag">${escHtml(tt('you', 'You'))}</span>` : ''}</h2>
                     ${full && full !== name ? `<p class="tr-member-head-full">${escHtml(full)}</p>` : ''}

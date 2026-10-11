@@ -31,6 +31,7 @@ import { ActivityPage } from './ActivityPage.js';
 import { memberEntryStore } from './memberEntryStore.js';
 import { displayName } from './community.js';
 import { avatarHtml } from './avatars.js';
+import { installAvatarLightbox } from './avatarLightbox.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
@@ -83,6 +84,7 @@ export class LogbookApp {
      */
     constructor(root, { store = null, shell, probeTimeoutMs = PROBE_TIMEOUT_MS } = {}) {
         this.root = root;
+        installAvatarLightbox();
         this.store = store;
         this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;

@@ -436,9 +436,10 @@ export class ProfilePage {
         const name = this._name();
         const full = (this.draft?.display_name ?? '').trim();
         const preset = this.draft?.avatar_preset ?? fallbackAvatarKey(this.user?.id);
-        const avatar = avatarHtml({ preset, url: this._photoShown() ? this.photoUrl : null, name, id: this.user?.id, size: 96 });
+        const avatar = avatarHtml({ preset, url: this._photoShown() ? this.photoUrl : null, name, id: this.user?.id, size: 96, zoom: true });
         const country = countryName(this.draft?.home_country, lang);
-        return `<span class="tr-member-head-av" aria-hidden="true">${avatar}</span>
+        const shown = this._photoShown() && this.photoUrl;
+        return `${shown ? `<button type="button" class="tr-member-head-av tr-av-zoom" aria-label="${escHtml(tt('avatarEnlarge', 'Enlarge picture'))}">${avatar}</button>` : `<span class="tr-member-head-av" aria-hidden="true">${avatar}</span>`}
             <div class="tr-member-head-text">
                 <p class="tr-profile-preview-note">${escHtml(tp('previewNote', 'This is how other members see you.'))}</p>
                 <p class="tr-member-head-name">${escHtml(name)}</p>

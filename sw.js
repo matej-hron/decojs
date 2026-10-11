@@ -123,6 +123,7 @@ const STATIC_ASSETS = [
   './js/backend/documentsStore.js',
   './js/logbook/community.js',
   './js/logbook/avatars.js',
+  './js/logbook/avatarLightbox.js',
   './js/logbook/feedCard.js',
   './js/logbook/sparks.js',
   './js/logbook/CommunityFeed.js',

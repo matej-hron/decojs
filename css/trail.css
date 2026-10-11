@@ -674,7 +674,7 @@ body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: col
 
 /* Member profile: the header sits in a band of water, shallow to deep; tiles and chips stay quiet below. */
 .tr-member-top { display: grid; gap: 1.25rem; }
-.tr-member-head { display: flex; align-items: center; gap: 1.1rem; padding: 1.5rem 1.25rem; border-radius: var(--radius-lg); color: #fff;
+.tr-member-head { --lb-water-top: var(--blue-500); display: flex; align-items: center; gap: 1.1rem; padding: 1.5rem 1.25rem; border-radius: var(--radius-lg); color: #fff;
     background: linear-gradient(170deg, var(--lb-water-top), var(--lb-water-mid) 60%, var(--lb-water-deep)); }
 .tr-member-head-av { display: inline-flex; flex: none; padding: 3px; border-radius: 50%; background: rgba(255, 255, 255, 0.85); box-shadow: 0 6px 18px rgba(4, 22, 36, 0.35); }
 .tr-member-head-text { display: grid; gap: 0.3rem; min-width: 0; justify-items: start; }
@@ -1245,6 +1245,14 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
 
 /* Nickname: big name, full name small; the profile form puts Name and Nickname side by side */
 .tr-member-head-full { margin: 0; color: var(--text-subtle); font-size: var(--text-sm); }
+/* On the water band the full name needs a light token: --text-subtle is grey on blue (barely readable). White on blue-500 → blue-900 is ≥ 4.5:1 in both themes. */
+.tr-member-head .tr-member-head-full { color: #fff; }
+/* Uploaded avatar in a header: a button that opens the enlarged picture */
+.tr-av-zoom { border: 0; cursor: zoom-in; font: inherit; color: inherit; }
+.tr-av-zoom:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.tr-avatar[data-zoom] { cursor: zoom-in; }
+.lb-viewer-av { padding: 1rem; }
+.lb-viewer-av img { width: min(88vmin, 512px); height: min(88vmin, 512px); max-width: none; max-height: none; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
 .tr-profile-names { display: grid; gap: 1rem; }
 @media (min-width: 600px) { .tr-profile-names--two { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
 /* "Complete your profile" in the Feed */

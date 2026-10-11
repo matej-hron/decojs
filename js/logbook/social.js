@@ -105,7 +105,7 @@ export function kudosListHtml({ entryId, rows, avatarUrls = new Map(), nameOf, t
         body = `<ul class="tr-kudos-people">${rows.map(r => {
             const name = nameOf(r);
             const url = r.avatar_path ? avatarUrls.get(r.avatar_path) ?? null : null;
-            return `<li><a class="tr-kudos-person" href="#/member/${escHtml(r.member_id)}"><span aria-hidden="true">${avatarHtml({ preset: r.avatar_preset, url, name, id: r.member_id, size: 28 })}</span><span>${escHtml(name)}</span></a></li>`;
+            return `<li><a class="tr-kudos-person" href="#/member/${escHtml(r.member_id)}"><span aria-hidden="true">${avatarHtml({ preset: r.avatar_preset, url, name, id: r.member_id, size: 28, zoom: true })}</span><span>${escHtml(name)}</span></a></li>`;
         }).join('')}</ul>`;
     }
     return `<div class="tr-kudos-list" id="${id}" role="region" aria-label="${escHtml(text.title)}">${body}</div>`;
