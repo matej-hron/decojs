@@ -111,3 +111,14 @@ private, never notes, buddies' names, log numbers or the dive computer's serial 
 functions stay members-only. Run it once in the **SQL Editor** after 0011; running it again is safe.
 Until it runs, logged-out visitors see the login form as before; afterwards they land on the public Feed.
 Test locally with `bash supabase/tests/run.sh` (Docker).
+
+## Sending a dive to a buddy (0013, DecoTrail)
+
+`supabase/migrations/0013_dive_shares.sql` adds `dive_shares` (read-only for sender and recipient) and the functions
+`set_dive_shares()`, `incoming_dive_shares()`, `incoming_dive_share_count()`, `accept_dive_share()`,
+`decline_dive_share()`, `dive_share_media()`, plus a storage policy so a recipient can read the photos of a dive
+offered to them (the app re-uploads them into the recipient's own folder). Accepting copies the dive into the
+recipient's log (basics, dive story, a copy of the recording row; never notes, gas or rating) or links it to a dive
+they logged already. A copied recording keeps the sender's `file_path`; the app never reads, exports or deletes a file
+outside the user's own folder. Run it once in the **SQL Editor** after 0012; running it again is safe.
+Test locally with `bash supabase/tests/run.sh` (Docker).

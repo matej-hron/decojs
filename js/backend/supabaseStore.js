@@ -11,6 +11,7 @@ import { createSocialApi } from './socialStore.js';
 import { createDocumentsApi } from './documentsStore.js';
 import { createSitesApi } from './sitesStore.js';
 import { createPublicApi } from './publicStore.js';
+import { createSharesApi } from './sharesStore.js';
 import { visibilityAfterSharing } from '../logbook/share.js';
 import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording, normalizeLogOffset, planRenumber } from '../logbook/entryModel.js';
 
@@ -55,6 +56,14 @@ function toSummaryRow(r) {
         id: r.id, deviceSerial: r.device_serial, diveNumber: r.dive_number, startLocal: r.start_local,
         fileSha256: r.file_sha256, parserVersion: r.parser_version, summary: r.summary,
     };
+}
+
+/**
+ * Whether a recording's file is in the user's own folder. A recording copied from a buddy's dive (0013) keeps the
+ * buddy's file path: its samples are in `record`, the file itself is not readable (or deletable) by the user.
+ */
+export function ownFile(path, userId) {
+    return typeof path === 'string' && Boolean(userId) && path.startsWith(`${userId}/`);
 }
 
 /** `2026-09-27T12:01:01` becomes `20260927120101` (part of the storage path, so each dive has its own file). */
@@ -145,6 +154,7 @@ export function createSupabaseStore(client) {
             store.resetCommunityCache();
             store.resetSocialCache();
             store.resetSitesCache();
+            store.resetSharesCache();
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
         },
@@ -157,6 +167,7 @@ export function createSupabaseStore(client) {
                     store.resetCommunityCache();
                     store.resetSocialCache();
                     store.resetSitesCache();
+                    store.resetSharesCache();
                 }
                 lastId = id;
                 listener(session?.user ? { id: session.user.id, email: session.user.email } : null);
@@ -213,9 +224,12 @@ export function createSupabaseStore(client) {
 
         async reparseOutdated(rows) {
             let count = 0;
-            for (const row of rows.filter(r => r.parserVersion < PARSER_VERSION)) {
+            const outdated = rows.filter(r => r.parserVersion < PARSER_VERSION);
+            const user = outdated.length ? await requireUser() : null;
+            for (const row of outdated) {
                 const { data, error } = await client.from(TABLE).select('file_path').eq('id', row.id).single();
                 if (error) throw fail(error);
+                if (!ownFile(data.file_path, user.id)) continue; // a buddy's copy: no file to parse again
                 const name = data.file_path.split('/').pop();
                 const dive = parseDivesoftDLF(await readFile(data.file_path), { fileName: name });
                 const update = await client.from(TABLE).update({
@@ -228,12 +242,14 @@ export function createSupabaseStore(client) {
         },
 
         async exportAll() {
+            const user = await requireUser();
             const { data, error } = await client.from(TABLE).select('file_path, start_local, record')
                 .order('dive_number').order('start_local');
             if (error) throw fail(error);
             const files = [];
             const used = new Set();
             for (const r of data) {
+                if (!ownFile(r.file_path, user.id)) continue; // a buddy's copy: its samples are in dives.json
                 let name = r.record?.source?.fileName ?? r.file_path.split('/').pop();
                 if (used.has(name)) name = `${compactStart(r.start_local)}_${name}`;
                 used.add(name);
@@ -364,7 +380,7 @@ export function createSupabaseStore(client) {
                     if (recordingId) {
                         const rec = await client.from(TABLE).select('file_path').eq('id', recordingId).maybeSingle();
                         if (rec.error) throw fail(rec.error);
-                        if (rec.data?.file_path) {
+                        if (rec.data?.file_path && ownFile(rec.data.file_path, (await requireUser()).id)) {
                             const { error } = await client.storage.from(BUCKET).remove([rec.data.file_path]);
                             if (error && !/not.?found|404/i.test(`${error.message ?? ''} ${error.statusCode ?? ''}`)) throw fail(error, 'storage');
                         }
@@ -475,7 +491,7 @@ export function createSupabaseStore(client) {
                     rows.push(...data);
                     if (data.length < PAGE) break;
                 }
-                await removeFiles(BUCKET, [...new Set([...rows.map(r => r.file_path).filter(Boolean), ...await filesUnder(BUCKET, user.id)])]);
+                await removeFiles(BUCKET, [...new Set([...rows.map(r => r.file_path).filter(p => ownFile(p, user.id)), ...await filesUnder(BUCKET, user.id)])]);
                 report.recordings = await deleteIn(TABLE, 'id', rows.map(r => r.id));
             });
             // Qualifications and medical checks (0007): every scan in the user's folder, then the rows.
@@ -831,6 +847,10 @@ export function createSupabaseStore(client) {
     Object.assign(store, createSocialApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
     Object.assign(store, createDocumentsApi(client, { requireUser, fail }));
     Object.assign(store, createSitesApi(client, { requireUser, fail, communityAvailability: () => store.communityAvailability(), DiveStoreError }));
+    Object.assign(store, createSharesApi(client, {
+        fail, communityAvailability: () => store.communityAvailability(),
+        addPhoto: (id, photo) => store.addPhoto(id, photo), addVideoLink: (id, url, caption) => store.addVideoLink(id, url, caption),
+    }));
     Object.assign(store, createPublicApi(client, {
         fail, toSummaryRow, DiveStoreError, photoUrls: paths => store.photoUrls(paths), avatarUrls: paths => store.avatarUrls(paths),
     }));
