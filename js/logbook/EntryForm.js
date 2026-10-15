@@ -12,7 +12,9 @@ import { MediaSection } from './MediaSection.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator, fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
-import { OFFERED_VISIBILITIES, buddySuggestions, displayName } from './community.js';
+import { OFFERED_VISIBILITIES, displayName } from './community.js';
+import { matchBuddies, buddyKey, memberBuddyName } from './buddies.js';
+import { avatarHtml } from './avatars.js';
 import { findSiteByName, siteNameOptions, nearestSite } from './geo.js';
 import { shareUrl } from './share.js';
 import { STORY_MAX } from './feed.js';
@@ -47,6 +49,7 @@ const DETAIL_INPUT = Object.freeze({
 const tf = key => translate(`diveLog.logbook.form.${key}`, key);
 const tl = (key, fallback = key) => translate(`diveLog.logbook.${key}`, fallback);
 const tb = key => translate(`diveLog.backend.${key}`, key);
+const tbp = (key, fallback) => translate(`diveLog.logbook.form.buddyPick.${key}`, fallback);
 const tsg = (key, fallback) => translate(`diveLog.logbook.form.siteSuggest.${key}`, fallback);
 /** A community site this close to the diver (or a photo of the dive) is suggested. */
 export const SUGGEST_RADIUS_M = 1000;
@@ -175,6 +178,11 @@ export class EntryForm {
         this.sites = [];
         this.buddyNames = [];
         this.memberNames = []; // community_members rows: suggested by nickname
+        this.memberTags = new Map(); // buddyKey(name) -> member id: buddies picked as DecoTrail members
+        this.shareStates = new Map(); // member id -> 'pending' | 'accepted' | 'declined' (offers of this dive, 0013)
+        this.sharesOn = false; // offering the dive to member buddies is available (0013)
+        this.buddyMatches = []; // the open suggestion list
+        this.buddyActive = -1;
         this.nextNumber = null;
         this.siteName = '';
         this.siteTouched = false; // true once the user edits the site field
@@ -242,6 +250,8 @@ export class EntryForm {
                 this._suggestFromPhotos();
             }
             if (buddies.status === 'fulfilled') this.buddyNames = buddies.value;
+            await this._loadShares();
+            if (this.destroyed) return;
             this._fillBuddies();
             if (entries.status === 'fulfilled') {
                 this.nextNumber = nextLogNumber(entries.value, await this._logOffset());
@@ -336,9 +346,86 @@ export class EntryForm {
             .map(n => `<option value="${escHtml(n.value)}"${n.label ? ` label="${escHtml(n.label)}"` : ''}></option>`).join('');
     }
 
+    /** Whether member buddies get the dive offered (0013), and which buddies of a saved dive are members already. */
+    async _loadShares() {
+        if (!this.memberNames.length || typeof this.store.sharesStatus !== 'function') return;
+        try {
+            this.sharesOn = await this.store.sharesStatus();
+            if (!this.sharesOn || !this.entry) return;
+            const shares = await this.store.listDiveShares(this.entry.id);
+            for (const sh of shares) {
+                this.shareStates.set(sh.recipient, sh.status);
+                const member = this.memberNames.find(m => m.id === sh.recipient);
+                const name = member ? memberBuddyName(member) : null;
+                if (name && this.values.buddies.some(b => buddyKey(b) === buddyKey(name))) this.memberTags.set(buddyKey(name), member.id);
+            }
+        } catch (error) {
+            console.error(error); // the buddies stay plain names
+        }
+    }
+
+    /** Refresh the chips (members marked) once suggestions and offers are known. */
     _fillBuddies() {
-        this.buddySuggestions = buddySuggestions(this.buddyNames, this.memberNames, this.userId ?? null);
-        this._fillList('lb-buddy-names', this.buddySuggestions);
+        const chips = this.container.querySelector('.lb-buddies-field .lb-chips');
+        if (chips) chips.innerHTML = this._chipsHtml();
+        const hint = this.container.querySelector('.lb-buddy-hint');
+        if (hint) hint.hidden = !this.sharesOn;
+        this._wireChips();
+    }
+
+    _memberOf(name) {
+        const id = this.memberTags.get(buddyKey(name));
+        return id ? this.memberNames.find(m => m.id === id) ?? { id } : null;
+    }
+
+    _chipsHtml() {
+        return this.values.buddies.map((b, i) => {
+            const member = this._memberOf(b);
+            const state = member ? this.shareStates.get(member.id) : null;
+            const status = !member || !this.sharesOn ? ''
+                : state === 'accepted' ? tbp('stateAccepted', 'in their log')
+                    : state === 'declined' ? tbp('stateDeclined', 'declined')
+                        : state === 'pending' ? tbp('statePending', 'offered') : tbp('stateNew', 'will be offered');
+            return `<span class="lb-chip${member ? ' lb-chip-member' : ''}">${member ? `<span class="lb-chip-av" aria-hidden="true">${avatarHtml({ preset: member.avatar_preset, name: b, id: member.id, size: 24 })}</span>` : ''}`
+                + `<span class="lb-chip-name">${member ? '<span class="lb-chip-at" aria-hidden="true">@</span>' : ''}${escHtml(b)}</span>`
+                + `${status ? `<span class="lb-chip-status">${escHtml(status)}</span>` : ''}`
+                + `<button type="button" class="lb-chip-x" data-buddy="${i}" aria-label="${escHtml(fill(tf('buddyRemove'), b))}">×</button></span>`;
+        }).join('');
+    }
+
+    _buddyListHtml() {
+        return this.buddyMatches.map((m, i) => {
+            const full = m.member && typeof m.member.display_name === 'string' && m.member.display_name.trim() !== m.name ? m.member.display_name.trim() : '';
+            return `<li role="option" id="lb-buddy-opt-${i}" class="lb-suggest-opt${i === this.buddyActive ? ' is-active' : ''}" data-pick="${i}" aria-selected="${i === this.buddyActive}">`
+                + (m.member ? `<span class="lb-suggest-av" aria-hidden="true">${avatarHtml({ preset: m.member.avatar_preset, name: m.name, id: m.member.id, size: 28 })}</span>` : '<span class="lb-suggest-av lb-suggest-av--none" aria-hidden="true"></span>')
+                + `<span class="lb-suggest-text"><span class="lb-suggest-name">${m.member ? '<span class="lb-chip-at">@</span>' : ''}${escHtml(m.name)}</span>`
+                + `${full || m.member ? `<span class="lb-suggest-sub">${escHtml(full || tbp('member', 'DecoTrail member'))}</span>` : ''}</span></li>`;
+        }).join('');
+    }
+
+    /** Show the suggestions for what is typed (all of them on an empty, focused field). */
+    _updateBuddyList() {
+        const input = this.container.querySelector('[name="buddy"]');
+        const list = this.container.querySelector('#lb-buddy-list');
+        if (!input || !list) return;
+        this.buddyMatches = matchBuddies(input.value, {
+            names: this.buddyNames, members: this.memberNames, userId: this.userId ?? null, added: this.values.buddies,
+        });
+        if (this.buddyActive >= this.buddyMatches.length) this.buddyActive = this.buddyMatches.length - 1;
+        const open = document.activeElement === input && this.buddyMatches.length > 0;
+        list.innerHTML = open ? this._buddyListHtml() : '';
+        list.hidden = !open;
+        input.setAttribute('aria-expanded', String(open));
+        if (open && this.buddyActive >= 0) input.setAttribute('aria-activedescendant', `lb-buddy-opt-${this.buddyActive}`);
+        else input.removeAttribute('aria-activedescendant');
+    }
+
+    _closeBuddyList() {
+        this.buddyMatches = [];
+        this.buddyActive = -1;
+        const list = this.container.querySelector('#lb-buddy-list');
+        if (list) { list.hidden = true; list.innerHTML = ''; }
+        this.container.querySelector('[name="buddy"]')?.setAttribute('aria-expanded', 'false');
     }
 
     // ---- Rendering ----
@@ -423,12 +510,15 @@ export class EntryForm {
                     </div>
                     <div class="lb-field lb-buddies-field">
                         <span>${escHtml(tf('buddies'))}</span>
-                        <div class="lb-chips">${v.buddies.map((b, i) => `<span class="lb-chip">${escHtml(b)}<button type="button" class="lb-chip-x" data-buddy="${i}" aria-label="${escHtml(fill(tf('buddyRemove'), b))}">×</button></span>`).join('')}</div>
-                        <div class="lb-site-row">
-                            <input type="text" name="buddy" list="lb-buddy-names" autocomplete="off" placeholder="${escHtml(tf('buddyAdd'))}" aria-label="${escHtml(tf('buddyAdd'))}">
+                        <div class="lb-chips">${this._chipsHtml()}</div>
+                        <div class="lb-site-row lb-buddy-row">
+                            <div class="lb-suggest-wrap">
+                                <input type="text" name="buddy" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lb-buddy-list" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="${escHtml(tbp('placeholder', 'Add buddy — type @ for members'))}" aria-label="${escHtml(tf('buddyAdd'))}">
+                                <ul id="lb-buddy-list" class="lb-suggest" role="listbox" aria-label="${escHtml(tf('buddyAdd'))}" hidden></ul>
+                            </div>
                             <button type="button" class="btn btn-secondary" id="lb-add-buddy" aria-label="${escHtml(tf('buddyAdd'))}">+</button>
                         </div>
-                        <datalist id="lb-buddy-names"></datalist>
+                        <p class="tr-profile-hint lb-buddy-hint"${this.sharesOn ? '' : ' hidden'}>${escHtml(tbp('hint', 'Buddies who are DecoTrail members get this dive offered for their own log when you save.'))}</p>
                     </div>
                     ${this._descriptionHtml()}
                     ${this._gasesHtml()}
@@ -542,33 +632,97 @@ export class EntryForm {
         const buddyInput = c.querySelector('[name="buddy"]');
         c.querySelector('#lb-add-buddy').addEventListener('click', () => this._addBuddy());
         buddyInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ',') {
+            const n = this.buddyMatches.length;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                if (!n) { this._updateBuddyList(); return; }
                 e.preventDefault();
-                this._addBuddy();
+                this.buddyActive = e.key === 'ArrowDown' ? (this.buddyActive + 1) % n : (this.buddyActive <= 0 ? n - 1 : this.buddyActive - 1);
+                this._updateBuddyList();
+            } else if (e.key === 'Escape' && n) {
+                e.preventDefault();
+                this._closeBuddyList();
+            } else if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                // "@kr" + Enter takes the first member suggested; plain text is added as typed (it may be a new name).
+                const pick = this.buddyActive >= 0 ? this.buddyMatches[this.buddyActive]
+                    : e.key === 'Enter' && buddyInput.value.trim().startsWith('@') ? this.buddyMatches[0] : null;
+                if (pick) this._pickBuddy(pick);
+                else this._addBuddy();
             }
         });
-        buddyInput.addEventListener('change', () => {
-            if (buddyInput.value.trim() && (this.buddySuggestions ?? []).some(n => n.value === buddyInput.value.trim())) this._addBuddy();
+        buddyInput.addEventListener('input', () => { this.buddyActive = -1; this._updateBuddyList(); });
+        buddyInput.addEventListener('focus', () => this._updateBuddyList());
+        buddyInput.addEventListener('blur', () => setTimeout(() => {
+            if (!this.destroyed && document.activeElement !== this.container.querySelector('[name="buddy"]')) this._closeBuddyList();
+        }, 150));
+        const list = c.querySelector('#lb-buddy-list');
+        // pointerdown, not click: the field keeps the focus (and the phone keyboard stays open).
+        list.addEventListener('pointerdown', e => {
+            const opt = e.target.closest('[data-pick]');
+            if (!opt) return;
+            e.preventDefault();
+            const match = this.buddyMatches[Number(opt.dataset.pick)];
+            if (match) this._pickBuddy(match);
         });
-        for (const x of c.querySelectorAll('[data-buddy]')) {
+        list.addEventListener('click', e => {
+            const opt = e.target.closest('[data-pick]');
+            const match = opt ? this.buddyMatches[Number(opt.dataset.pick)] : null;
+            if (match) this._pickBuddy(match); // keyboard-less activation (screen readers)
+        });
+        this._wireChips();
+    }
+
+    _wireChips() {
+        for (const x of this.container.querySelectorAll('[data-buddy]')) {
+            if (x.dataset.wired) continue;
+            x.dataset.wired = '1';
             x.addEventListener('click', () => {
                 this._readDom();
-                this.values.buddies.splice(Number(x.dataset.buddy), 1);
+                const [removed] = this.values.buddies.splice(Number(x.dataset.buddy), 1);
+                if (removed) this.memberTags.delete(buddyKey(removed));
                 this.render();
                 this.container.querySelector('[name="buddy"]')?.focus();
             });
         }
     }
 
+    /** Add what is typed; a name that is exactly a member's (or "@name") becomes that member. */
     _addBuddy() {
         const input = this.container.querySelector('[name="buddy"]');
-        const name = input.value.trim().replace(/,$/, '').trim();
+        const typed = input.value.trim().replace(/,$/, '').trim();
+        if (!typed) return;
+        const key = buddyKey(typed.replace(/^@/, ''));
+        const member = (this.memberNames ?? []).find(m => m.id !== this.userId && buddyKey(memberBuddyName(m)) === key);
+        if (member) { this._pickBuddy({ name: memberBuddyName(member), member }); return; }
+        const name = typed.replace(/^@/, '').trim();
         if (!name) return;
+        this._commitBuddy(name, null);
+    }
+
+    _pickBuddy({ name, member }) {
+        this._commitBuddy(name, member);
+    }
+
+    _commitBuddy(name, member) {
+        const input = this.container.querySelector('[name="buddy"]');
+        input.value = '';
         this._readDom();
-        if (!this.values.buddies.some(b => b.toLocaleLowerCase() === name.toLocaleLowerCase())) this.values.buddies.push(name);
-        this.container.querySelector('[name="buddy"]').value = '';
+        if (!this.values.buddies.some(b => buddyKey(b) === buddyKey(name))) this.values.buddies.push(name);
+        if (member?.id) this.memberTags.set(buddyKey(name), member.id);
+        this.buddyActive = -1;
         this.render();
         this.container.querySelector('[name="buddy"]')?.focus();
+        this._closeBuddyList();
+    }
+
+    /** The members among the buddies (offered the dive on save). */
+    _memberRecipients() {
+        const ids = [];
+        for (const b of this.values.buddies) {
+            const id = this.memberTags.get(buddyKey(b));
+            if (id && id !== this.userId && !ids.includes(id)) ids.push(id);
+        }
+        return ids;
     }
 
     // ---- Dive story (log_entries.description), for members ----
@@ -990,6 +1144,10 @@ export class EntryForm {
             number = row.log_number;
             if (!this.entry && this.recordingId) row.recording_id = this.recordingId;
             const saved = await this.store.saveEntry(row, this.entry?.id);
+            if (this.sharesOn && saved?.id) {
+                // Offer the dive to member buddies; a failure must not lose the saved dive.
+                await this.store.setDiveShares(saved.id, this._memberRecipients()).catch(error => console.error(error));
+            }
             if (this.destroyed) return;
             this.onSaved?.(saved);
         } catch (error) {

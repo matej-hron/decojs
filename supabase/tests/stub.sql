@@ -11,7 +11,8 @@ create schema auth;
 grant usage on schema auth to anon, authenticated;
 create table auth.users (
     id uuid primary key, is_anonymous boolean not null default false,
-    deleted_at timestamptz, banned_until timestamptz
+    deleted_at timestamptz, banned_until timestamptz,
+    raw_user_meta_data jsonb not null default '{}'
 );
 -- Supabase reads the JWT subject; tests set it with set_config('request.jwt.claim.sub', …).
 create function auth.uid() returns uuid language sql stable

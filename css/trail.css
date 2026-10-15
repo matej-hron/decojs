@@ -1380,3 +1380,34 @@ a.tr-comment-name:hover { color: var(--tr-accent); text-decoration: underline; }
 .lb-site-suggest p { margin: 0 0 0.45rem; }
 p.lb-site-suggest { border-left-color: var(--border); }
 .lb-site-suggest .lb-actions { margin: 0; }
+
+/* ---- Buddy field: own suggestion list (a datalist shows only as keyboard chips on Android), @members (0013) ---- */
+.lb-buddy-row { align-items: flex-start; }
+.lb-suggest-wrap { position: relative; flex: 1 1 auto; min-width: 0; }
+.lb-suggest-wrap > input { width: 100%; }
+.lb-suggest { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 0.25rem; list-style: none;
+    max-height: min(18rem, 50vh); overflow-y: auto; background: var(--surface-elevated, var(--surface)); border: 1px solid var(--border);
+    border-radius: var(--radius-md, 10px); box-shadow: var(--shadow-md, 0 8px 24px rgba(0, 0, 0, 0.15)); }
+.lb-suggest-opt { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.3rem 0.5rem; border-radius: var(--radius-sm, 6px); cursor: pointer; }
+.lb-suggest-opt:hover, .lb-suggest-opt.is-active { background: var(--tr-accent-soft); }
+.lb-suggest-av { flex: none; display: inline-flex; width: 28px; height: 28px; }
+.lb-suggest-av--none { border-radius: 50%; background: var(--surface-sunken); }
+.lb-suggest-text { display: grid; min-width: 0; }
+.lb-suggest-name { font-weight: 600; overflow-wrap: anywhere; }
+.lb-suggest-sub { font-size: var(--text-xs); color: var(--text-muted); }
+.lb-chip-at { color: var(--tr-accent); font-weight: 600; }
+.lb-chip-member { padding-left: 0.3rem; border-color: color-mix(in srgb, var(--tr-accent) 45%, var(--border)); }
+.lb-chip-av { display: inline-flex; width: 24px; height: 24px; }
+.lb-chip-status { font-size: var(--text-xs); color: var(--text-muted); margin-left: 0.15rem; }
+.lb-buddy-hint { margin: 0.35rem 0 0; }
+
+/* Dives buddies sent, in "New for you" */
+.tr-offers { margin-bottom: 1.25rem; }
+.tr-offer { display: grid; gap: 0.5rem; padding: 0.9rem 1rem; border: 1px solid color-mix(in srgb, var(--tr-accent) 40%, var(--border));
+    border-radius: var(--radius-lg); background: var(--tr-accent-soft); list-style: none; }
+.tr-offer-head { display: flex; gap: 0.75rem; align-items: flex-start; }
+.tr-offer-dive { display: block; }
+.tr-offer-match { margin: 0; font-size: var(--text-sm); }
+.tr-offer-actions { flex-wrap: wrap; gap: 0.5rem; margin: 0; }
+.tr-offer-actions .btn { min-height: 44px; }
+.tr-offer-list { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }

@@ -244,7 +244,13 @@ export class LogbookApp {
         this._unseenAt = Date.now();
         const session = this._session;
         try {
-            const n = await this.store.socialUnseenCount();
+            const [kudos, offers] = await Promise.all([
+                this.store.socialUnseenCount(),
+                // Dives buddies sent (0013) wait in "New for you" until answered.
+                typeof this.store.sharesStatus === 'function' && await this.store.sharesStatus().catch(() => false)
+                    ? this.store.incomingDiveShareCount().catch(error => { console.error(error); return 0; }) : 0,
+            ]);
+            const n = kudos + offers;
             if (this.destroyed || session !== this._session) return;
             if (parseRoute(location.hash).name === 'activity') return; // the open page marks everything seen
             if (n !== this.unseen) {
@@ -623,8 +629,9 @@ export class LogbookApp {
         this.view.innerHTML = '<div class="lb-form-host"></div>';
         this.form = new ActivityPage(this.view.firstChild, {
             store: this.store,
-            onSeen: () => {
-                this.unseen = 0;
+            onSeen: (waiting = 0) => {
+                this.unseen = waiting; // buddy offers still waiting for an answer keep the badge
+                this.entries = null; // an accepted offer added a dive to My dives
                 this._unseenAt = Date.now();
                 this._renderShell();
             },
