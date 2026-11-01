@@ -3327,7 +3327,7 @@
             "cancel": "Cancel",
             "pick": "Select dive {0}",
             "confirm": "Delete {0} ({1})?",
-            "withRecordings": "Also delete the computer recordings. Uploading the DIVELOG again brings them back as new dives.",
+            "withRecordings": "Also delete the computer recordings. Uploading or downloading them again brings them back as new dives.",
             "confirmYes": "Delete",
             "progress": "Deleting {0} / {1}…",
             "done": "Deleted {0}.",

@@ -3271,7 +3271,7 @@
             "cancel": "Cancelar",
             "pick": "Seleccionar inmersión {0}",
             "confirm": "¿Eliminar {0} ({1})?",
-            "withRecordings": "Eliminar también las grabaciones del ordenador. Al subir de nuevo el DIVELOG volverán como inmersiones nuevas.",
+            "withRecordings": "Eliminar también las grabaciones del ordenador. Al subirlas o descargarlas de nuevo volverán como inmersiones nuevas.",
             "confirmYes": "Eliminar",
             "progress": "Eliminando {0} / {1}…",
             "done": "Eliminadas: {0}.",

@@ -1048,7 +1048,7 @@ export class LogbookApp {
             return `<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(tl('bulk.delete', 'Delete…'))}">
                 <p>${escHtml(fill(tl('bulk.confirm', 'Delete {0} ({1})?'), diveCountText(b.total), shown))}</p>
                 <label class="lb-check"><input type="checkbox" id="lb-bulk-rec"${b.withRecordings ? ' checked' : ''}>
-                    <span>${escHtml(tl('bulk.withRecordings', 'Also delete the computer recordings. Uploading the DIVELOG again brings them back as new dives.'))}</span></label>
+                    <span>${escHtml(tl('bulk.withRecordings', 'Also delete the computer recordings. Uploading or downloading them again brings them back as new dives.'))}</span></label>
                 <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-bulk-yes">${escHtml(tl('bulk.confirmYes', 'Delete'))}</button>
                 <button type="button" class="btn btn-secondary" id="lb-bulk-no">${escHtml(tl('bulk.cancel', 'Cancel'))}</button></div></div>`;
         }

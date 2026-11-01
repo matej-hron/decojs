@@ -1840,7 +1840,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 root.querySelector('#lb-bulk-delete').click();
                 const text = root.querySelector('.lb-bulk').textContent;
                 assert.match(text, /Delete 2 dives \(#2, #1\)\?/);
-                assert.match(text, /Uploading the DIVELOG again brings them back as new dives/);
+                assert.match(text, /Uploading or downloading them again brings them back as new dives/);
                 assert.equal(root.querySelector('#lb-bulk-rec').checked, false);
                 root.querySelector('#lb-bulk-no').click();
                 assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');

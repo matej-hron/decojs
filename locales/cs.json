@@ -3327,7 +3327,7 @@
             "cancel": "Zrušit",
             "pick": "Vybrat ponor {0}",
             "confirm": "Smazat {0} ({1})?",
-            "withRecordings": "Smazat také záznamy z počítače. Po opětovném nahrání DIVELOGu se vrátí jako nové ponory.",
+            "withRecordings": "Smazat také záznamy z počítače. Po opětovném nahrání nebo stažení se vrátí jako nové ponory.",
             "confirmYes": "Smazat",
             "progress": "Mažu {0} / {1}…",
             "done": "Smazáno: {0}.",
