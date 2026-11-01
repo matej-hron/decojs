@@ -3745,10 +3745,11 @@
                 "folderChoose": "Choose DIVELOG folder",
                 "folderAllow": "Allow access to the saved folder",
                 "folderError": "Could not read the folder.",
-                "inFolder": "in the folder, not saved yet"
+                "inFolder": "in the folder, not saved yet",
+                "sourcesHint": "Bluetooth works with the Mares Quad 2. The folder works with Divesoft computers (their DIVELOG folder)."
             },
             "dc": {
-                "menu": "Download from dive computer",
+                "menu": "Download via Bluetooth",
                 "title": "Download from dive computer",
                 "supported": "Works with the Mares Quad 2. New dives are downloaded; the ones you already have are skipped.",
                 "step1": "Turn on Bluetooth on this phone or computer.",

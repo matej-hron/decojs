@@ -3689,10 +3689,11 @@
                 "folderChoose": "Elegir la carpeta DIVELOG",
                 "folderAllow": "Permitir el acceso a la carpeta guardada",
                 "folderError": "No se pudo leer la carpeta.",
-                "inFolder": "en la carpeta, aún sin guardar"
+                "inFolder": "en la carpeta, aún sin guardar",
+                "sourcesHint": "Bluetooth funciona con el Mares Quad 2. La carpeta funciona con ordenadores Divesoft (su carpeta DIVELOG)."
             },
             "dc": {
-                "menu": "Descargar del ordenador de buceo",
+                "menu": "Descargar por Bluetooth",
                 "title": "Descargar del ordenador de buceo",
                 "supported": "Funciona con el Mares Quad 2. Se descargan las inmersiones nuevas; las que ya tienes se omiten.",
                 "step1": "Activa el Bluetooth en este teléfono u ordenador.",

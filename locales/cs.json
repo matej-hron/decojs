@@ -3745,10 +3745,11 @@
                 "folderChoose": "Vybrat složku DIVELOG",
                 "folderAllow": "Povolit přístup k uložené složce",
                 "folderError": "Složku se nepodařilo přečíst.",
-                "inFolder": "ve složce, zatím neuloženo"
+                "inFolder": "ve složce, zatím neuloženo",
+                "sourcesHint": "Bluetooth funguje s Mares Quad 2. Složka funguje s počítači Divesoft (jejich složka DIVELOG)."
             },
             "dc": {
-                "menu": "Stáhnout z počítače",
+                "menu": "Stáhnout přes Bluetooth",
                 "title": "Stáhnout ponory z počítače",
                 "supported": "Funguje s Mares Quad 2. Stáhnou se nové ponory, ty, které už máte, se přeskočí.",
                 "step1": "Zapněte Bluetooth v tomto telefonu nebo počítači.",

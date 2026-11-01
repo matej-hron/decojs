@@ -939,7 +939,7 @@ export class LogbookApp {
                     <summary class="btn btn-secondary lb-bar-btn lb-menu-btn" aria-label="${escHtml(more)}" title="${escHtml(more)}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></summary>
                     <div class="lb-menu-pop">
                         <p class="lb-menu-who">${escHtml(fill(tb('loggedInAs', 'Logged in as {0}'), this.user.email))}</p>
-                        <button type="button" class="lb-menu-item lb-dc-open" id="lb-dc"${busy ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download from dive computer'))}</button>
+                        <button type="button" class="lb-menu-item lb-dc-open" id="lb-dc"${busy ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download via Bluetooth'))}</button>
                         <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                             <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
                         <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
@@ -1308,7 +1308,7 @@ export class LogbookApp {
         else if (!this.entries.length) {
             // Upload lives in the "⋯" menu; an empty logbook offers it right here.
             body = `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>
-                <button type="button" class="btn btn-primary" id="lb-dc-empty"${this.working ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download from dive computer'))}</button>
+                <button type="button" class="btn btn-primary" id="lb-dc-empty"${this.working ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download via Bluetooth'))}</button>
                 <label class="btn btn-secondary rda-upload lb-empty-upload${this.working ? ' lb-disabled' : ''}"${this.working ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                     <input type="file" id="lb-upload-empty" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label></div>`;
         }

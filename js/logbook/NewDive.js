@@ -221,8 +221,9 @@ export class NewDive {
             ${loggedHtml}
             ${this.hint ? `<p class="lb-muted">${escHtml(this.hint)}</p>` : ''}
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
+            <p class="lb-muted lb-sources-hint">${escHtml(tn('sourcesHint'))}</p>
             <div class="lb-actions">
-                <button type="button" class="btn btn-secondary" id="nd-dc"${this.busy ? ' disabled' : ''}>${escHtml(translate('diveLog.logbook.dc.menu', 'Download from dive computer'))}</button>
+                <button type="button" class="btn btn-secondary" id="nd-dc"${this.busy ? ' disabled' : ''}>${escHtml(translate('diveLog.logbook.dc.menu', 'Download via Bluetooth'))}</button>
                 ${folderControl}
                 <button type="button" class="btn ${list.length ? 'btn-secondary' : 'btn-primary'}" id="nd-without"${this.busy ? ' disabled' : ''}>${escHtml(tn('without'))}</button>
                 <a class="btn btn-secondary lb-cancel" href="${routeHref({ name: 'list' })}">${escHtml(translate('diveLog.logbook.form.cancel', 'Cancel'))}</a>
