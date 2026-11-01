@@ -43,7 +43,7 @@ function record(tag, size, fill) {
  * @param {number} [o.number] - the computer's dive number (dive start record)
  * @returns {Uint8Array} header object followed by profile object
  */
-export function buildGeniusDive({ date, gases, samples, water = 'salt', surfaceMin = 3, atmosphericMbar = 1013, gf = [70, 80], number = 7 }) {
+export function buildGeniusDive({ date, gases, samples, water = 'salt', surfaceMin = 3, atmosphericMbar = 1013, gf = [70, 80], gfAlt = [85, 85], number = 7 }) {
     const header = new Uint8Array(0xb8 + 16);
     const h = new DataView(header.buffer);
     h.setUint16(0, 1, true); // object type 1
@@ -56,6 +56,7 @@ export function buildGeniusDive({ date, gases, samples, water = 'salt', surfaceM
     h.setUint32(0x0c, (mode | (waterCode << 5) | (surfaceMin << 13)) >>> 0, true);
     header[0x10] = 0; // log format: Genius
     h.setUint16(0x14, gf[0] | (gf[1] << 7), true);
+    h.setUint16(0x18, gfAlt[0] | (gfAlt[1] << 7), true);
     h.setUint16(0x20, samples.length, true);
     h.setUint16(0x22, Math.round(Math.max(...samples.map(s => s.depth)) * 10), true);
     h.setUint16(0x24, Math.round(samples.reduce((a, s) => a + s.depth, 0) / samples.length * 10), true);

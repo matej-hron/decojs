@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import { downloadDives, parseDive, libdcVersion, MARES_MODELS, LibdcError } from '../js/import/libdc.js';
 import { mapMaresDive, readMaresExtras, MARES_FORMAT } from '../js/import/maresDive.js';
-import { BleSerial } from '../js/import/bleSerial.js';
+import { BleSerial, BleError } from '../js/import/bleSerial.js';
 import { toDiveSetup } from '../js/import/recordedDive.js';
 import { buildGeniusDive, fingerprintOf, FakeQuad2 } from './helpers/maresFake.mjs';
 
@@ -86,10 +86,10 @@ describe('mapMaresDive', () => {
 
     it('reads the Quad 2 GF setting and dive number that libdivecomputer does not decode', async () => {
         const bytes = buildGeniusDive({ date: { year: 2026, month: 10, day: 26, hour: 17, minute: 0 }, gases: [{ o2: 21 }],
-            samples: [{ depth: 5 }, { depth: 0 }], gf: [70, 80], number: 3 });
-        assert.deepEqual(readMaresExtras(bytes), { gfLow: 70, gfHigh: 80, diveNumber: 3 });
+            samples: [{ depth: 5 }, { depth: 0 }], gf: [70, 80], gfAlt: [85, 85], number: 3 });
+        assert.deepEqual(readMaresExtras(bytes), { gfLow: 70, gfHigh: 80, gfAlt: [85, 85], diveNumber: 3 });
         const dive = mapMaresDive(await parseDive(bytes), { model: MARES_MODELS.QUAD2, data: bytes });
-        assert.deepEqual(dive.deco, { model: 'buhlmann', gfLow: 70, gfHigh: 80, gfAlt: null });
+        assert.deepEqual(dive.deco, { model: 'buhlmann', gfLow: 70, gfHigh: 80, gfAlt: [85, 85] });
         assert.equal(dive.source.diveNumber, 3);
         assert.equal(toDiveSetup(dive).gfLow, 70);
     });
@@ -104,7 +104,7 @@ describe('mapMaresDive', () => {
         const bytes = sampleDive();
         new DataView(bytes.buffer).setUint16(0x14, 90 | (40 << 7), true); // low > high
         assert.deepEqual([readMaresExtras(bytes).gfLow, readMaresExtras(bytes).gfHigh], [null, null]);
-        assert.deepEqual(readMaresExtras(new Uint8Array(10)), { gfLow: null, gfHigh: null, diveNumber: null });
+        assert.deepEqual(readMaresExtras(new Uint8Array(10)), { gfLow: null, gfHigh: null, gfAlt: null, diveNumber: null });
     });
 
     it('maps fresh and EN 13319 water', async () => {
@@ -197,5 +197,60 @@ describe('BleSerial packet queue', () => {
         s._onDisconnect();
         await assert.rejects(pending, e => e.kind === 'disconnected');
         s.purge();
+    });
+});
+
+describe('planDeviceImport and the remembered fingerprint', async () => {
+    const { planDeviceImport, loadFingerprint, saveFingerprint, explainDownloadError } = await import('../js/logbook/dcImport.js');
+    const { parserVersionOf } = await import('../js/backend/supabaseStore.js');
+    const item = (local, serial = '8190', diveNumber = 1) => ({ dive: { start: { local }, device: { serial }, source: { diveNumber, format: MARES_FORMAT } } });
+
+    it('marks stored recordings, dives already typed into the logbook, and new dives (newest first)', () => {
+        const items = [item('2026-10-18T11:33:00', '8190', 1), item('2026-10-18T14:33:00', '8190', 2), item('2026-10-26T17:00:00', '8190', 3)];
+        const rows = [{ deviceSerial: '8190', diveNumber: 1, startLocal: '2026-10-18T11:33:00' }];
+        const entries = [
+            { dive_date: '2026-10-18', entry_time: '14:40:00', recording_id: null, log_number: 12 },
+            { dive_date: '2026-10-26', entry_time: '09:00:00', recording_id: null, log_number: 13 },
+        ];
+        const plan = planDeviceImport(items, rows, entries);
+        assert.deepEqual(plan.map(p => [p.item.dive.start.local.slice(0, 16), p.status, p.selected]), [
+            ['2026-10-26T17:00', 'new', true],
+            ['2026-10-18T14:33', 'logged', false],
+            ['2026-10-18T11:33', 'stored', false],
+        ]);
+        assert.equal(plan[1].match.log_number, 12);
+    });
+
+    it('treats an entry without a time on the same day as the same dive', () => {
+        const plan = planDeviceImport([item('2026-10-26T17:00:00')], [], [{ dive_date: '2026-10-26', entry_time: null }]);
+        assert.equal(plan[0].status, 'logged');
+    });
+
+    it('remembers the newest fingerprint per computer and serial, and survives blocked storage', () => {
+        const mem = new Map();
+        const storage = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
+        assert.equal(loadFingerprint(storage, 'mares-quad2', 8190), null);
+        saveFingerprint(storage, 'mares-quad2', 8190, '11d0aa7e');
+        assert.equal(loadFingerprint(storage, 'mares-quad2', 8190), '11d0aa7e');
+        assert.equal(loadFingerprint(storage, 'mares-quad2', 1), null);
+        const blocked = { getItem() { throw new Error('denied'); }, setItem() { throw new Error('denied'); } };
+        assert.equal(loadFingerprint(blocked, 'mares-quad2', 8190), null);
+        saveFingerprint(blocked, 'mares-quad2', 8190, 'aa'); // must not throw
+    });
+
+    it('explains failures in words, and stays quiet when the chooser was closed', () => {
+        const ble = kind => Object.assign(new BleError(kind, 'x'));
+        assert.equal(explainDownloadError(ble('cancelled')), null);
+        assert.equal(explainDownloadError(ble('unsupported')).key, 'errUnsupported');
+        assert.equal(explainDownloadError(ble('off')).key, 'errOff');
+        assert.equal(explainDownloadError(ble('disconnected')).key, 'errDisconnected');
+        assert.equal(explainDownloadError(new LibdcError(-10)).key, 'errCancelled');
+        assert.equal(explainDownloadError(new LibdcError(-9)).key, 'errFormat');
+        assert.equal(explainDownloadError(new LibdcError(-7)).key, 'errConnect');
+    });
+
+    it('stores Mares dives with their own parser version', () => {
+        assert.equal(parserVersionOf({ source: { format: MARES_FORMAT } }), 1);
+        assert.equal(parserVersionOf({ source: { format: 'divesoft-dlf' } }), 1);
     });
 });

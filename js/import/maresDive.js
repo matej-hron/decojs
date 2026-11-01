@@ -43,27 +43,33 @@ export const MARES_MODEL_NAMES = Object.freeze({
 
 const HEADER_SIZE_V1 = 0xb8 + 16;
 const GF_WORD = 0x14;
+const GF_ALT_WORD = 0x18;
 const DSTR = 0x44535452; // "DSTR", the dive start record
 
 /**
  * What libdivecomputer does not decode from a Quad 2 dive, read from the raw bytes:
  * - GF low/high: header word at 0x14, low 7 bits = GF low, next 7 bits = GF high
  *   (verified on a Quad 2, firmware 01.02.00, set to GF custom 70/80: 0x2846);
+ * - the alternative GF the diver can switch to: header word at 0x18, same layout (85/85: 0x2ad5);
  * - the computer's own dive number: first field after the marker of the dive start record.
  * Returns nulls for anything that does not look right.
  *
  * @param {Uint8Array} data - Dive bytes as downloaded (header object + profile object)
- * @returns {{gfLow: ?number, gfHigh: ?number, diveNumber: ?number}}
+ * @returns {{gfLow: ?number, gfHigh: ?number, gfAlt: ?number[], diveNumber: ?number}}
  */
 export function readMaresExtras(data) {
-    const out = { gfLow: null, gfHigh: null, diveNumber: null };
+    const out = { gfLow: null, gfHigh: null, gfAlt: null, diveNumber: null };
     if (!(data instanceof Uint8Array) || data.length < HEADER_SIZE_V1 + 4 + 16) return out;
     const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
     if (view.getUint16(0, true) !== 1 || data[3] < 1 || data[0x10] !== 0) return out; // Genius v1.x header only
-    const gf = view.getUint16(GF_WORD, true);
-    const gfLow = gf & 0x7f;
-    const gfHigh = (gf >> 7) & 0x7f;
-    if (gfLow >= 1 && gfHigh >= gfLow && gfHigh <= 100) Object.assign(out, { gfLow, gfHigh });
+    const gfPair = offset => {
+        const word = view.getUint16(offset, true);
+        const low = word & 0x7f;
+        const high = (word >> 7) & 0x7f;
+        return low >= 1 && high >= low && high <= 100 ? [low, high] : null;
+    };
+    const gf = gfPair(GF_WORD);
+    if (gf) Object.assign(out, { gfLow: gf[0], gfHigh: gf[1], gfAlt: gfPair(GF_ALT_WORD) });
     const dstr = HEADER_SIZE_V1 + 4;
     if (view.getUint32(dstr, false) === DSTR) {
         const n = view.getUint32(dstr + 8, true);
@@ -169,7 +175,7 @@ export function mapMaresDive(record, { serial = null, model = null, fingerprint 
         deco = { model: DECOMODEL[decomodel.type] ?? null, gfLow: decomodel.gfLow || null, gfHigh: decomodel.gfHigh || null, gfAlt: null };
     } else if (model === QUAD2 && extras.gfLow !== null) {
         // Only where verified against the computer's own display (Quad 2).
-        deco = { model: 'buhlmann', gfLow: extras.gfLow, gfHigh: extras.gfHigh, gfAlt: null };
+        deco = { model: 'buhlmann', gfLow: extras.gfLow, gfHigh: extras.gfHigh, gfAlt: extras.gfAlt };
     }
 
     const temps = samples.map(s => s.temp).filter(Number.isFinite);
@@ -191,6 +197,7 @@ export function mapMaresDive(record, { serial = null, model = null, fingerprint 
         duration: Number.isFinite(fields.divetime) ? fields.divetime : (samples.at(-1)?.t ?? 0),
         maxDepth: Number.isFinite(fields.maxdepth) ? fields.maxdepth : Math.max(0, ...samples.map(s => s.depth)),
         minTemp,
+        avgDepth: Number.isFinite(fields.avgdepth) ? fields.avgdepth : null,
         mode: DIVEMODE[fields.divemode] ?? 'unknown',
         environment: environmentOf(fields),
         deco,

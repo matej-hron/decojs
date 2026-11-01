@@ -10,6 +10,7 @@
 import { RecordedDiveAnalysis, translateStatic, authRedirectMessage } from '../components/RecordedDiveAnalysis.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
+import { DeviceDownloadPanel } from './DeviceDownload.js';
 import { DeleteDataPanel } from './DeleteData.js';
 import { parseRoute, routeHref } from './router.js';
 import { AppShell, shellTabs, activeTab, resolveRoute, isCommunityRoute, GUEST_TABS, resolveGuestRoute } from './AppShell.js';
@@ -938,6 +939,7 @@ export class LogbookApp {
                     <summary class="btn btn-secondary lb-bar-btn lb-menu-btn" aria-label="${escHtml(more)}" title="${escHtml(more)}"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></summary>
                     <div class="lb-menu-pop">
                         <p class="lb-menu-who">${escHtml(fill(tb('loggedInAs', 'Logged in as {0}'), this.user.email))}</p>
+                        <button type="button" class="lb-menu-item lb-dc-open" id="lb-dc"${busy ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download from dive computer'))}</button>
                         <label class="lb-menu-item rda-upload${busy ? ' lb-disabled' : ''}"${busy ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                             <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
                         <button type="button" class="lb-menu-item" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
@@ -1306,7 +1308,8 @@ export class LogbookApp {
         else if (!this.entries.length) {
             // Upload lives in the "⋯" menu; an empty logbook offers it right here.
             body = `<div class="lb-empty"><p class="rda-account-msg">${escHtml(tl('emptyList', 'No dives yet.'))}</p>
-                <label class="btn btn-primary rda-upload lb-empty-upload${this.working ? ' lb-disabled' : ''}"${this.working ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
+                <button type="button" class="btn btn-primary" id="lb-dc-empty"${this.working ? ' disabled' : ''}>${escHtml(tl('dc.menu', 'Download from dive computer'))}</button>
+                <label class="btn btn-secondary rda-upload lb-empty-upload${this.working ? ' lb-disabled' : ''}"${this.working ? ' aria-disabled="true"' : ''}><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                     <input type="file" id="lb-upload-empty" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label></div>`;
         }
         else {
@@ -1345,6 +1348,8 @@ export class LogbookApp {
         if (this.viewMode !== 'table' && this.entries?.length) this._watchSparks();
         this.view.querySelector('#lb-upload').addEventListener('change', e => { this._closeMenu(); this._upload(e.target); });
         this.view.querySelector('#lb-upload-empty')?.addEventListener('change', e => this._upload(e.target));
+        this.view.querySelector('#lb-dc').addEventListener('click', () => { this._closeMenu(); this._openDeviceDownload(); });
+        this.view.querySelector('#lb-dc-empty')?.addEventListener('click', () => this._openDeviceDownload());
         this.view.querySelector('#lb-export').addEventListener('click', () => { this._closeMenu(); this._export(); });
         this.view.querySelector('#lb-wipe-open').addEventListener('click', () => { this._closeMenu(); this._openWipe(); });
         this.view.querySelector('#lb-logout').addEventListener('click', () => this._logout());
@@ -1434,6 +1439,19 @@ export class LogbookApp {
         } finally {
             this._setWorking(false);
         }
+    }
+
+    /** "Download from dive computer" (Bluetooth): saved dives become logbook entries like an uploaded DIVELOG. */
+    _openDeviceDownload() {
+        if (this.dcPanel || this.working) return;
+        this.dcPanel = new DeviceDownloadPanel({
+            store: this.store,
+            onImported: report => {
+                this.msg = this._reportLines({ saved: report.saved, updated: 0, unchanged: 0, failed: report.failed.map(f => ({ fileName: f.fileName, message: f.message })) });
+                if (this._route().name === 'list') this._showList(++this._viewToken);
+            },
+            onClosed: () => { this.dcPanel = null; },
+        });
     }
 
     _reportLines(r) {
