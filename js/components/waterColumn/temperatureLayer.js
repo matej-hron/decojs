@@ -225,7 +225,8 @@ export function createTemperatureLayer({
     if (typeof profile !== 'function') {
         throw new TypeError('createTemperatureLayer needs profile(depth, state) → °C');
     }
-    const gradId = `wc-temp-grad-${++gradientCounter}`;
+    // SVG id gradientu: z ctx.uid (kontrakt kostry, unikátní i pro víc sloupců na stránce).
+    let gradId = `wc-temp-grad-${++gradientCounter}`;
 
     function resolveStops(el) {
         if (Array.isArray(stops) && stops.length >= 2) return stops;
@@ -238,6 +239,7 @@ export function createTemperatureLayer({
     return {
         id,
         aside,
+        init(ctx) { gradId = `${ctx.uid}-grad`; },
         zIndex: -10, // background colouring: below the other layers
 
         readout(state) {

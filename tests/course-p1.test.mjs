@@ -83,11 +83,11 @@ test('v létě teplá voda nahoře, s hloubkou monotónně chladněji (termoklin
     assert.ok(steepest >= 3 && steepest <= 15, `nejstrmější pokles v ${steepest} m`);
 });
 
-test('při jarním a podzimním promíchání má sloupec skoro stejnou teplotu', () => {
+test('při jarním a podzimním promíchání má celý sloupec stejnou teplotu', () => {
     for (let m = 1; m <= 12; m++) {
         if (!lakePhase(m).endsWith('promichani')) continue;
         const p = profile(m);
-        assert.ok(Math.max(...p) - Math.min(...p) <= 2, `měsíc ${m}: ${Math.min(...p)}–${Math.max(...p)}`);
+        assert.equal(Math.max(...p) - Math.min(...p), 0, `měsíc ${m}: ${Math.min(...p)}–${Math.max(...p)}`);
     }
 });
 
@@ -207,15 +207,25 @@ test('stránky kurzu: otázky „Procvič si“ existují v kvízových datech',
     }
 });
 
-test('stránky kurzu a jejich moduly jsou v sw.js (offline na přednášce)', () => {
+test('stránky kurzu a vše, co (i nepřímo) načítají, je v sw.js (offline na přednášce)', () => {
     const sw = read('sw.js');
-    const needed = [
-        ...coursePages, 'css/course.css',
-        'js/course/p1Course.js', 'js/course/chapter.js', 'js/course/concepts.js', 'js/course/practice.js',
-        'js/course/modelParams.js', 'js/physics/waterDensity.js', 'js/physics/lakeProfiles.js',
-        'js/components/WaterColumn.js', 'js/components/waterColumn/temperatureLayer.js', 'js/components/DensityCurve.js',
-    ];
-    for (const f of needed) assert.ok(sw.includes(`'./${f}'`), `sw.js STATIC_ASSETS: chybí ./${f}`);
+    const seen = new Set();
+    const visit = (rel) => {
+        if (seen.has(rel)) return;
+        seen.add(rel);
+        const src = read(rel);
+        const refs = rel.endsWith('.html')
+            ? [...src.matchAll(/\b(?:src|href)="([^"#?:]+\.(?:js|css))"/g)].map(m => m[1])
+            : [...src.matchAll(/\bfrom\s+'(\.{1,2}\/[^']+)'|\bimport\(\s*'(\.{1,2}\/[^']+)'\s*\)/g)].map(m => m[1] || m[2]);
+        for (const r of refs) {
+            const abs = new URL(r, new URL(rel, ROOT)).pathname.slice(new URL(ROOT).pathname.length);
+            visit(abs);
+        }
+    };
+    for (const page of coursePages) visit(page);
+    const missing = [...seen].filter(f => !sw.includes(`'./${f}'`));
+    assert.deepEqual(missing, [], 'sw.js STATIC_ASSETS');
+    assert.ok(seen.has('js/components/WaterColumn.js') && seen.has('js/course/hustotaPage.js'), 'procházení importů funguje');
 });
 
 // --- graf hustoty ----------------------------------------------------------

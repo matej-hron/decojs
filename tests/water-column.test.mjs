@@ -269,3 +269,26 @@ test('temperature layer: shape and readout from its profile', () => {
     assert.equal(full.replaceAll('&nbsp;', NBSP), `hloubka 9${NBSP}m · teplota 14${NBSP}°C`);
     assert.throws(() => createTemperatureLayer({}), TypeError);
 });
+
+// --- rozesílání změn: setState v posluchači nesmí pozdějším posluchačům poslat starý stav ---
+test('createWaterColumn: setState v posluchači — poslední snímek je u všech aktuální', async () => {
+    const { JSDOM } = await import('jsdom');
+    const dom = new JSDOM('<!doctype html><div id="h"></div>');
+    const g = globalThis;
+    const saved = { document: g.document, window: g.window, getComputedStyle: g.getComputedStyle };
+    g.window = dom.window; g.document = dom.window.document;
+    g.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
+    try {
+        const { createWaterColumn } = await import('../js/components/WaterColumn.js');
+        const col = createWaterColumn(document.getElementById('h'), { maxDepth: 40, depth: 0 });
+        const seenByB = [];
+        col.on('change', (s, { changed }) => { if (changed.includes('month')) col.setState({ depth: 30 }); });
+        col.on('change', (s) => seenByB.push(s.depth));
+        col.setState({ month: 1 });
+        assert.equal(col.getState().depth, 30);
+        assert.equal(seenByB.at(-1), 30, `B viděl ${seenByB.join(' → ')}`);
+        col.destroy();
+    } finally {
+        Object.assign(g, saved);
+    }
+});

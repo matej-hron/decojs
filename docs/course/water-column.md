@@ -20,7 +20,7 @@ import { createWaterColumn } from '../js/components/WaterColumn.js';
 import { createTemperatureLayer } from '../js/components/waterColumn/temperatureLayer.js';
 import { lakeTemperature, lakeBands, lakeHasIce } from '../js/physics/lakeProfiles.js';
 
-const col = createWaterColumn(document.getElementById('model-lom'), {
+const col = createWaterColumn(document.getElementById('lom-column'), {
     maxDepth: 40,               // m
     depth: 0,                   // m, zaokrouhlí se na step
     step: 1,                    // m, krok posuvníku i tažení
@@ -55,7 +55,7 @@ const off = col.on('change', (state, { source, changed }) => {
 | `removeLayer(id)` | odebere vrstvu, zavolá `layer.destroy()`; vrací `true/false` |
 | `setState(partial)` | sloučí do stavu, zvaliduje klíče kostry, překreslí (v dalším snímku) a ohlásí změnu se `source: 'api'` |
 | `getState()` | mělká kopie stavu |
-| `on('change', fn)` | `fn(state, { source: 'user' \| 'api', changed: string[] })`; vrací funkci pro odhlášení. Volá se jen při skutečné změně (stejná hodnota = nic), takže `setState` v posluchači nezacyklí |
+| `on('change', fn)` | `fn(state, { source: 'user' \| 'api', changed: string[] })`; vrací funkci pro odhlášení. Volá se jen při skutečné změně (stejná hodnota = nic), takže `setState` v posluchači nezacyklí. Změny vyvolané v posluchači se řadí do fronty: každý posluchač dostane všechny změny v pořadí a poslední snímek je vždy aktuální |
 | `getGeometry()` | poslední vykreslená `geom` (pro testy / ladění) |
 | `render()` | vynutí synchronní překreslení (běžně netřeba) |
 | `destroy()` | `destroy()` všech vrstev, odpojí observery, odstraní DOM |
@@ -172,6 +172,8 @@ Registrované scénářové klíče:
 | Klíč | Typ | Kdo zapisuje | Význam |
 |---|---|---|---|
 | `month` | 1–12 | `p1/hustota.html` | měsíc roku pro teplotní profil lomu |
+| `water` | `'fresh'` \| `'salt'` | stránka kapitoly (Tlak, Archimedes) — **rezervováno pro 2. týden** | sladká / slaná voda (hustota pro tlak i vztlak) |
+| `altitude` | m n. m. | stránka kapitoly (Tlak) — **rezervováno pro 2. týden** | nadmořská výška hladiny (atmosférický tlak) |
 
 ## 5. Hloubka, ovládání, přístupnost
 
@@ -181,6 +183,10 @@ Registrované scénářové klíče:
   `touch-action: none`; jinde prst normálně posouvá stránku. Myší/perem lze stisknout kdekoli ve
   sloupci (skočí a táhne), prstem klepnutí do sloupce skočí. Capture je na `<svg>`, takže tažení přežije
   překreslení.
+- **Vrstvy jsou pro ukazatel průhledné:** kostra dá každé `<g class="wc-layer">` atribut
+  `pointer-events="none"`, takže klik a tažení ve sloupci jdou vždy na kostru, i když vrstva (potápěč,
+  balónek) leží nad sloupcem. Prvek, který má být klikací, si nastaví `pointer-events="auto"` sám
+  (stabilní pravidlo, viz §9).
 - Hloubka se vždy zaokrouhlí na `step` a omezí na 0…`maxDepth` (`snapDepth`); změna `maxDepth` hloubku
   znovu omezí.
 - **Odečet** `<p class="water-column-readout" aria-live="polite" aria-atomic="true">`.
@@ -273,6 +279,8 @@ createTemperatureLayer({
 - signatura `render(g, geom, state)`, význam polí `geom` z §3 (přidávat nová pole smíš);
 - klíče kostry `depth`, `maxDepth`, `surface` a konvence prefixů z §4;
 - `on('change')` a tvar `{ source, changed }`;
+- vrstvy jsou průhledné pro ukazatel (`pointer-events="none"` na `<g class="wc-layer">`, §5);
+- SVG `id` vrstvy (gradienty, clipPath) se tvoří z `ctx.uid` — nikdy vlastní globální počítadlo;
 - třídy DOM z §6 a klíče `geom.colors` z §7 (přidávat smíš).
 
 **Smí se měnit** bez domluvy (nejde o rozhraní):

@@ -83,7 +83,7 @@ export function createDensityCurve(host, options = {}) {
         svg.setAttribute('height', height);
         svg.replaceChildren();
 
-        const font = Math.max(14, Math.min(20, width / 45));
+        const font = Math.max(14, Math.min(20, width / 45)); // popisky os ≥ 14 px (mobil i projektor)
         const c = {
             text: cssVar('--text', '#2c3e50'),
             muted: cssVar('--text-subtle', '#7f8c8d'),
@@ -107,13 +107,13 @@ export function createDensityCurve(host, options = {}) {
         for (const v of axis.ticks) {
             svg.appendChild(el('line', { x1: plot.x, x2: plot.x + plot.w, y1: r1(Y(v)), y2: r1(Y(v)), stroke: c.grid }));
             svg.appendChild(el('text', { x: plot.x - font * 0.4, y: r1(Y(v) + font * 0.35), 'text-anchor': 'end',
-                'font-size': font * 0.85, fill: c.muted }, fmt(v, axis.decimals)));
+                'font-size': font, fill: c.text }, fmt(v, axis.decimals)));
         }
         const tx = niceTicks(range[0], range[1], range[1] - range[0] <= 10 ? 10 : 6);
         for (const v of tx.ticks) {
             svg.appendChild(el('line', { x1: r1(X(v)), x2: r1(X(v)), y1: plot.y, y2: plot.y + plot.h, stroke: c.grid }));
             svg.appendChild(el('text', { x: r1(X(v)), y: plot.y + plot.h + font * 1.2, 'text-anchor': 'middle',
-                'font-size': font * 0.85, fill: c.muted }, fmt(v, 0)));
+                'font-size': font, fill: c.text }, fmt(v, 0)));
         }
         svg.appendChild(el('text', { x: plot.x + plot.w / 2, y: height - font * 0.5, 'text-anchor': 'middle',
             'font-size': font, fill: c.text }, 'teplota / °C'));

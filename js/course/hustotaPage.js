@@ -43,7 +43,7 @@ export function densityReadout(t) {
         };
     }
     let sub;
-    if (Math.abs(t - MAX_DENSITY_TEMPERATURE) < 0.5) sub = 'Největší hustota — tato voda klesá ke dnu.';
+    if (Math.abs(t - 4) < 0.25) sub = 'Největší hustota — tato voda klesá ke dnu.';
     else if (t < MAX_DENSITY_TEMPERATURE) sub = 'Pod 4 °C se voda ochlazováním zase roztahuje (anomálie vody).';
     else sub = 'Nad 4 °C má voda tím menší hustotu, čím je teplejší.';
     return { main: `${temp}: voda, hustota ${fmt(rho, 2)}${NBSP}kg/m³`, sub };
@@ -75,7 +75,11 @@ function initDensityModel(initial) {
         if (t > range) range = 30; // bod by utekl z grafu
         render(true);
     });
-    rangeButtons.forEach(b => b.addEventListener('click', () => { range = Number(b.dataset.range); render(true); }));
+    rangeButtons.forEach(b => b.addEventListener('click', () => {
+        range = Number(b.dataset.range);
+        if (t > range) t = range; // bod nesmí potichu zmizet z grafu
+        render(true);
+    }));
     if (t > range) range = 30;
     render(false);
 }
@@ -114,7 +118,9 @@ function initLakeModel(initial) {
         renderPhase(m);
         syncUrl({ mesic: m });
     });
-    column.on('change', (state) => syncUrl({ hloubka: state.depth }));
+    column.on('change', (state, { changed }) => {
+        if (changed.includes('depth')) syncUrl({ hloubka: state.depth });
+    });
     renderPhase(initial.mesic);
 
     host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => column.render());

@@ -525,13 +525,31 @@ export function createWaterColumn(host, options = {}) {
         state = next;
         syncRange();
         scheduleRender();
-        const snapshot = getState();
-        for (const fn of [...listeners]) {
-            try {
-                fn(snapshot, { source, changed });
-            } catch (err) {
-                console.error('[WaterColumn] change listener failed', err);
+        emit(getState(), { source, changed });
+    }
+
+    // Změny vyvolané posluchačem (setState uvnitř on('change')) se řadí do fronty:
+    // každý posluchač dostane všechny změny ve správném pořadí a poslední stav
+    // je vždy ten aktuální (žádný pozdější posluchač nedostane starší snímek).
+    const pending = [];
+    let emitting = false;
+    function emit(snapshot, info) {
+        pending.push([snapshot, info]);
+        if (emitting) return;
+        emitting = true;
+        try {
+            while (pending.length) {
+                const [snap, inf] = pending.shift();
+                for (const fn of [...listeners]) {
+                    try {
+                        fn(snap, inf);
+                    } catch (err) {
+                        console.error('[WaterColumn] change listener failed', err);
+                    }
+                }
             }
+        } finally {
+            emitting = false;
         }
     }
 
@@ -751,6 +769,11 @@ export function createWaterColumn(host, options = {}) {
         });
         ro.observe(root);
     }
+    // Výška daná funkcí (např. podle výšky okna) se musí přepočítat i při změně výšky
+    // okna — ResizeObserver výše reaguje jen na šířku (F11 na projektoru).
+    const onWindowResize = typeof options.height === 'function' && typeof window !== 'undefined'
+        ? () => scheduleRender() : null;
+    if (onWindowResize) window.addEventListener('resize', onWindowResize);
     let mo = null;
     if (typeof MutationObserver === 'function') {
         mo = new MutationObserver(scheduleRender);
@@ -789,7 +812,9 @@ export function createWaterColumn(host, options = {}) {
             if (entries.some((e) => e.layer.id === layer.id)) {
                 throw new Error(`WaterColumn layer "${layer.id}" is already added`);
             }
-            const g = svgEl('g', { class: 'wc-layer', 'data-layer': layer.id });
+            // Vrstva je pro ukazatel průhledná (klik/tažení ve sloupci jde na kostru);
+            // prvek, který má být klikací, si nastaví pointer-events sám.
+            const g = svgEl('g', { class: 'wc-layer', 'data-layer': layer.id, 'pointer-events': 'none' });
             entries.push({ layer, g });
             if (typeof layer.init === 'function') {
                 layer.init({
@@ -845,6 +870,7 @@ export function createWaterColumn(host, options = {}) {
             if (rafId && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(rafId);
             ro?.disconnect();
             mo?.disconnect();
+            if (onWindowResize) window.removeEventListener('resize', onWindowResize);
             listeners.clear();
             root.remove();
         },

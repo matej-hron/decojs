@@ -5,7 +5,8 @@
  * NEJDE o měření konkrétního lomu. Čísla jsou zvolená tak, aby ukázala typický
  * průběh v našich podmínkách: letní vrstvení (teplá vrstva, termoklina, u dna
  * kolem 4 °C), podzimní promíchání, zimní inverzní vrstvení pod ledem (0 °C u ledu,
- * kolem 4 °C u dna) a jarní promíchání.
+ * kolem 4 °C u dna) a jarní promíchání. Při promíchání má celý sloupec stejnou teplotu
+ * (4–5 °C), voda je stejně hustá a vítr ji promíchá až ke dnu.
  *
  * Tvar profilu: od hladiny do hloubky `mixed` je teplota `surface`, v pásmu
  * tloušťky `thick` přejde hladce (kosinem) na teplotu `bottom`, níž zůstává `bottom`.
@@ -29,15 +30,16 @@
 export const LAKE_MONTHS = Object.freeze([
     { name: 'leden',    phase: 'zima',                ice: true,  surface: 0,  mixed: 0,  thick: 8,  bottom: 4 },
     { name: 'únor',     phase: 'zima',                ice: true,  surface: 0,  mixed: 0,  thick: 8,  bottom: 4 },
-    { name: 'březen',   phase: 'jarni-promichani',    ice: false, surface: 3,  mixed: 0,  thick: 10, bottom: 4 },
-    { name: 'duben',    phase: 'jarni-promichani',    ice: false, surface: 6,  mixed: 2,  thick: 12, bottom: 4 },
+    // Promíchání = celý sloupec má stejnou teplotu (mixed přes celou hloubku).
+    { name: 'březen',   phase: 'jarni-promichani',    ice: false, surface: 4,  mixed: 1000, thick: 1, bottom: 4 },
+    { name: 'duben',    phase: 'jarni-promichani',    ice: false, surface: 5,  mixed: 1000, thick: 1, bottom: 5 },
     { name: 'květen',   phase: 'leto',                ice: false, surface: 13, mixed: 3,  thick: 7,  bottom: 4 },
     { name: 'červen',   phase: 'leto',                ice: false, surface: 18, mixed: 4,  thick: 7,  bottom: 4 },
     { name: 'červenec', phase: 'leto',                ice: false, surface: 21, mixed: 5,  thick: 8,  bottom: 4 },
     { name: 'srpen',    phase: 'leto',                ice: false, surface: 22, mixed: 6,  thick: 8,  bottom: 4 },
     { name: 'září',     phase: 'leto',                ice: false, surface: 18, mixed: 8,  thick: 8,  bottom: 4 },
     { name: 'říjen',    phase: 'leto',                ice: false, surface: 13, mixed: 11, thick: 9,  bottom: 4 },
-    { name: 'listopad', phase: 'podzimni-promichani', ice: false, surface: 6,  mixed: 15, thick: 15, bottom: 4.5 },
+    { name: 'listopad', phase: 'podzimni-promichani', ice: false, surface: 5,  mixed: 1000, thick: 1, bottom: 5 },
     { name: 'prosinec', phase: 'zima',                ice: false, surface: 2,  mixed: 0,  thick: 8,  bottom: 4 },
 ].map(Object.freeze));
 
