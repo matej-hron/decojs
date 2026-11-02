@@ -62,7 +62,7 @@ function initDensityModel(initial) {
 
     const render = (writeUrl) => {
         slider.value = String(t);
-        slider.setAttribute('aria-valuetext', `${fmt(t, 1)} °C`);
+        slider.setAttribute('aria-valuetext', `${fmt(t, 1)}\u00a0°C`);
         rangeButtons.forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.range) === range)));
         curve.setRange([0, range]);
         curve.setTemperature(t);
@@ -84,13 +84,16 @@ function initLakeModel(initial) {
     const slider = document.getElementById('mesic-slider');
     const phaseEl = document.getElementById('lom-phase');
     const host = document.getElementById('lom-column');
-    if (!slider || !host) return;
+    if (!slider || !host) return null;
 
     const column = createWaterColumn(host, {
         maxDepth: LAKE_DEPTH,
         depth: initial.hloubka,
         surface: lakeHasIce(initial.mesic) ? 'ice' : 'water',
         aside: true,
+        // Na projektoru (na šířku) se model i s ovládáním vejde na jednu obrazovku.
+        height: (width) => Math.round(Math.max(300, Math.min(width < 600 ? width * 1.05 : width * 0.5,
+            window.innerHeight - 260))),
     });
     column.setState({ month: initial.mesic });
     column.addLayer(createTemperatureLayer({
@@ -114,19 +117,23 @@ function initLakeModel(initial) {
     column.on('change', (state) => syncUrl({ hloubka: state.depth }));
     renderPhase(initial.mesic);
 
-    host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => column.redraw?.());
+    host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => column.render());
+
+    /** Nastaví předvolbu (z odkazu „Ukaž v modelu“) bez znovunačtení stránky. */
+    return (p) => {
+        column.setState({ month: p.mesic, depth: p.hloubka, surface: lakeHasIce(p.mesic) ? 'ice' : 'water' });
+        renderPhase(p.mesic);
+        syncUrl({ mesic: p.mesic, hloubka: p.hloubka });
+    };
 }
 
-function initPresetLinks() {
+function initPresetLinks(applyLake) {
     // Odkaz „Ukaž v modelu“ na téže stránce: nastav předvolbu bez znovunačtení.
     document.querySelectorAll('a[data-preset-link]').forEach(a => a.addEventListener('click', (e) => {
+        if (!applyLake) return;
         e.preventDefault();
         const url = new URL(a.href);
-        const p = readParams(url.search, LAKE_PARAMS);
-        const slider = document.getElementById('mesic-slider');
-        slider.value = String(p.mesic);
-        slider.dispatchEvent(new Event('input'));
-        window.dispatchEvent(new CustomEvent('course-preset', { detail: p }));
+        applyLake(readParams(url.search, LAKE_PARAMS));
         document.getElementById(url.hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
     }));
 }
@@ -135,7 +142,6 @@ if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
     const search = window.location.search;
     initDensityModel(readParams(search, DENSITY_PARAMS));
-    initLakeModel(readParams(search, LAKE_PARAMS));
-    initPresetLinks();
+    initPresetLinks(initLakeModel(readParams(search, LAKE_PARAMS)));
     initChapter();
 }

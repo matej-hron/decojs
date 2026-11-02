@@ -34,7 +34,7 @@ export function chaptersHtml(chapters = P1_CHAPTERS) {
 export function questionsHtml(questions = P1_QUESTIONS) {
     return questions.map(q => {
         const where = q.answeredIn.map(s => chapterRef(chapterBySlug(s))).join(', ');
-        return `<li>${q.question}<span class="course-question-where">Odpověď: ${where}</span></li>`;
+        return `<li>${q.question}<span class="course-question-where">Odpověď v kapitole: ${where}</span></li>`;
     }).join('');
 }
 

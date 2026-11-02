@@ -20,7 +20,12 @@ import { initPractice } from './practice.js';
  */
 export function collectSections(root) {
     return [...root.querySelectorAll('main section[id]')]
-        .map(s => ({ id: s.id, title: s.querySelector('h2')?.textContent.trim() || '' }))
+        .map(s => {
+            const h2 = s.querySelector('h2');
+            // jen vlastní text nadpisu, bez štítku „slide 8“
+            const title = h2 ? [...h2.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
+            return { id: s.id, title };
+        })
         .filter(s => s.title);
 }
 

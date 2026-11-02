@@ -203,6 +203,7 @@ details.course-more > summary .course-summary-hint {
     background: var(--surface);
     padding: var(--space-3);
 }
+.course-model.chart-container { height: auto; } /* základ .chart-container má pevných 700 px */
 .course-model .chart-header h3 {
     margin: 0;
     font-size: var(--text-lg);
@@ -230,7 +231,7 @@ details.course-more > summary .course-summary-hint {
     color: var(--text);
 }
 .course-model-controls input[type="range"] {
-    width: min(26rem, 100%);
+    width: 100%;
     accent-color: var(--brand);
     height: 2rem;
 }
@@ -239,6 +240,7 @@ details.course-more > summary .course-summary-hint {
     flex-direction: column;
     gap: var(--space-1);
     flex: 1 1 18rem;
+    max-width: 36rem;
 }
 
 .course-segmented {
@@ -395,7 +397,7 @@ details.course-more > summary .course-summary-hint {
 }
 .course-questions .course-question-where {
     display: block;
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     color: var(--text-subtle);
 }
 
@@ -407,3 +409,25 @@ details.course-more > summary .course-summary-hint {
     .course-toc ol { flex-direction: column; }
     .course-table th, .course-table td { padding-right: 0.5em; }
 }
+
+/* Vodní sloupec si výšku řídí sám (svg + odečet + posuvník hloubky). */
+.course-plot.course-column-host { height: auto; }
+
+.water-column-readout {
+    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.6rem);
+    font-weight: 600;
+    color: var(--text);
+    margin: var(--space-2) 0 var(--space-1);
+    font-variant-numeric: tabular-nums;
+}
+.water-column-controls { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.water-column-depth {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 1 1 18rem;
+    max-width: 36rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.water-column-depth input[type="range"] { flex: 1; height: 2rem; accent-color: var(--brand); }

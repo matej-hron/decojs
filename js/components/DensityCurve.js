@@ -101,7 +101,7 @@ export function createDensityCurve(host, options = {}) {
         const r1 = v => Math.round(v * 10) / 10;
 
         svg.setAttribute('aria-label',
-            `Graf hustoty vody pro teplotu ${fmt(range[0], 0)} až ${fmt(range[1], 0)} °C; největší hustota při 4 °C.`);
+            `Graf hustoty vody pro teplotu ${fmt(range[0], 0)} až ${fmt(range[1], 0)}\u00a0°C; největší hustota při 4\u00a0°C.`);
 
         // mřížka + popisky osy hustoty
         for (const v of axis.ticks) {
@@ -129,7 +129,7 @@ export function createDensityCurve(host, options = {}) {
         svg.appendChild(el('line', { x1: xm, x2: xm, y1: plot.y, y2: plot.y + plot.h, stroke: c.max,
             'stroke-width': 2, 'stroke-dasharray': '6 5' }));
         svg.appendChild(el('text', { x: xm + font * 0.4, y: plot.y + plot.h - font * 0.6, 'font-size': font * 0.85,
-            fill: c.text }, 'největší hustota (4 °C)'));
+            fill: c.text }, 'největší hustota (4\u00a0°C)'));
 
         // křivka
         const pts = [];
@@ -144,7 +144,7 @@ export function createDensityCurve(host, options = {}) {
         // bod v aktuální teplotě
         if (temperature < 0) {
             svg.appendChild(el('text', { x: plot.x + font * 0.5, y: plot.y + font * 1.2, 'font-size': font,
-                fill: c.accent, 'font-weight': 600 }, `${fmt(temperature, 1)} °C: led, mimo graf`));
+                fill: c.accent, 'font-weight': 600 }, `${fmt(temperature, Number.isInteger(temperature) ? 0 : 1)}\u00a0°C: led, mimo graf`));
         } else if (temperature >= range[0] && temperature <= range[1]) {
             const cx = r1(X(temperature)), cy = r1(Y(waterDensity(temperature)));
             svg.appendChild(el('line', { x1: cx, x2: cx, y1: cy, y2: plot.y + plot.h, stroke: c.accent,
