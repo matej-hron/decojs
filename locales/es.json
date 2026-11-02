@@ -1510,6 +1510,11 @@
     },
     "nav": {
         "home": "Inicio",
+        "courses": {
+            "label": "Cursos",
+            "p1": "P1 – Física (en checo)",
+            "p1Density": "Densidad (en checo)"
+        },
         "sandbox": {
             "label": "Sandbox",
             "deco": "Modelado de descompresión",
@@ -1556,6 +1561,13 @@
         },
         "topics": {
             "heading": "Temas",
+            "courseP1": "Curso P1 – Física (en checo)",
+            "courseP1Desc": "La clase de física CMAS P★ capítulo a capítulo: texto de las diapositivas, lectura en casa, modelos interactivos y preguntas de examen. Por ahora solo en checo.",
+            "courseP1Links": {
+                "overview": "Resumen del curso",
+                "density": "Densidad"
+            },
+            "statusNew": "Nuevo",
             "sandbox": "Sandbox",
             "sandboxDesc": "Simuladores interactivos para planificar inmersiones y calcular gases.",
             "sandboxLinks": {

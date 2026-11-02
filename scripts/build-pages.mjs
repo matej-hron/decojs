@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Top-level directories served as-is. */
-const SITE_DIRS = ['css', 'data', 'fonts', 'icons', 'images', 'js', 'lab', 'locales', 'sandbox', 'videos'];
+const SITE_DIRS = ['concepts', 'css', 'data', 'fonts', 'icons', 'images', 'js', 'lab', 'locales', 'p1', 'sandbox', 'videos'];
 /** Top-level files served as-is (plus every top-level *.html). */
 const SITE_FILES = ['.nojekyll', 'CNAME', 'manifest.json', 'sw.js'];
 /** Never publish these, even if someone adds them to the lists above. */

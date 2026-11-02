@@ -337,6 +337,19 @@ async function reloadActiveQuiz() {
 }
 
 /**
+ * Pre-select a category from `?kategorie=<slug>`; unknown slugs are ignored.
+ */
+function applyCategoryFromUrl() {
+    const slug = new URLSearchParams(window.location.search).get('kategorie');
+    if (!slug) return;
+    const target = Array.from(categoryCheckboxes).find(cb => cb.value === slug);
+    if (!target) return;
+    target.checked = true;
+    if (categoryAllCheckbox) categoryAllCheckbox.checked = false;
+    updateQuestionCountOptions();
+}
+
+/**
  * Initialize the quiz module
  */
 async function initQuizModule(jsonPath) {
@@ -385,6 +398,8 @@ async function initQuizModule(jsonPath) {
     });
 
     document.addEventListener('languagechange', reloadActiveQuiz);
+
+    applyCategoryFromUrl();
 
     initQuiz();
 }

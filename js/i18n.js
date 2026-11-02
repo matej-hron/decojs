@@ -34,7 +34,7 @@ let currentLanguage = DEFAULT_LANG;
  */
 function getLocalePrefix() {
     const path = window.location.pathname;
-    if (['/sandbox/', '/lab/'].some(f => path.includes(f))) {
+    if (['/sandbox/', '/lab/', '/p1/'].some(f => path.includes(f))) {
         return '../';
     }
     return '';

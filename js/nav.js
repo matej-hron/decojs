@@ -15,6 +15,15 @@ import { initAppBanner } from './appBanner.js';
 const NAV_ITEMS = [
     { href: 'index.html', labelKey: 'nav.home', label: 'Home' },
     {
+        labelKey: 'nav.courses.label',
+        label: 'Courses',
+        href: 'p1/index.html',
+        submenu: [
+            { href: 'p1/index.html', labelKey: 'nav.courses.p1', label: 'P1 – Physics' },
+            { href: 'p1/hustota.html', labelKey: 'nav.courses.p1Density', label: 'Density' }
+        ]
+    },
+    {
         labelKey: 'nav.sandbox.label',
         label: 'Sandbox',
         href: 'sandbox/index.html',
@@ -73,7 +82,7 @@ function resolveLabel(item) {
 }
 
 /** One-level page folders that need a '../' prefix for root-relative links */
-const SUBFOLDERS = ['sandbox', 'lab'];
+const SUBFOLDERS = ['sandbox', 'lab', 'p1'];
 
 /**
  * Get the current page path from the URL
@@ -252,10 +261,12 @@ function initPage() {
     initNavigation();
     initAppBanner();
 }
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPage);
-} else {
-    initPage();
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPage);
+    } else {
+        initPage();
+    }
 }
 
 // Export for module usage
