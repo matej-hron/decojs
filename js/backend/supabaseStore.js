@@ -5,6 +5,7 @@
  */
 
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
+import { MARES_FORMAT, MARES_PARSER_VERSION } from '../import/maresDive.js';
 import { listSummary } from './sync.js';
 import { createCommunityApi } from './communityStore.js';
 import { createSocialApi } from './socialStore.js';
@@ -50,6 +51,11 @@ function isUnique(error, constraint) {
 }
 const RECORDING_KEY = 'log_entries_recording_id_key';
 const NUMBER_KEY = 'log_entries_owner_log_number_key';
+
+/** parser_version of a dive: each source format has its own. */
+export function parserVersionOf(dive) {
+    return dive?.source?.format === MARES_FORMAT ? MARES_PARSER_VERSION : PARSER_VERSION;
+}
 
 function toSummaryRow(r) {
     return {
@@ -208,7 +214,7 @@ export function createSupabaseStore(client) {
                         start_local: it.dive.start.local,
                         file_path: path,
                         file_sha256: it.sha256,
-                        parser_version: PARSER_VERSION,
+                        parser_version: parserVersionOf(it.dive),
                         summary: listSummary(it.dive),
                         record: it.dive,
                         updated_at: new Date().toISOString(),
@@ -230,6 +236,7 @@ export function createSupabaseStore(client) {
                 const { data, error } = await client.from(TABLE).select('file_path').eq('id', row.id).single();
                 if (error) throw fail(error);
                 if (!ownFile(data.file_path, user.id)) continue; // a buddy's copy: no file to parse again
+                if (!/\.dlf$/i.test(data.file_path)) continue; // only Divesoft files are re-parsed here
                 const name = data.file_path.split('/').pop();
                 const dive = parseDivesoftDLF(await readFile(data.file_path), { fileName: name });
                 const update = await client.from(TABLE).update({

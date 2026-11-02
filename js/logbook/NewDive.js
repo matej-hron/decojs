@@ -14,6 +14,7 @@ import { routeHref } from './router.js';
 import { translate } from '../i18n.js';
 import { fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { DeviceDownloadPanel } from './DeviceDownload.js';
 
 const NBSP = ' ';
 const DB_NAME = 'decojs-logbook';
@@ -220,7 +221,9 @@ export class NewDive {
             ${loggedHtml}
             ${this.hint ? `<p class="lb-muted">${escHtml(this.hint)}</p>` : ''}
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
+            <p class="lb-muted lb-sources-hint">${escHtml(tn('sourcesHint'))}</p>
             <div class="lb-actions">
+                <button type="button" class="btn btn-secondary" id="nd-dc"${this.busy ? ' disabled' : ''}>${escHtml(translate('diveLog.logbook.dc.menu', 'Download via Bluetooth'))}</button>
                 ${folderControl}
                 <button type="button" class="btn ${list.length ? 'btn-secondary' : 'btn-primary'}" id="nd-without"${this.busy ? ' disabled' : ''}>${escHtml(tn('without'))}</button>
                 <a class="btn btn-secondary lb-cancel" href="${routeHref({ name: 'list' })}">${escHtml(translate('diveLog.logbook.form.cancel', 'Cancel'))}</a>
@@ -242,8 +245,17 @@ export class NewDive {
         });
         for (const b of c.querySelectorAll('.lb-pick')) b.addEventListener('click', () => this._choose(list[Number(b.dataset.i)]));
         c.querySelector('#nd-folder')?.addEventListener('click', () => this._pickFolder());
+        c.querySelector('#nd-dc').addEventListener('click', () => this._deviceDownload());
         c.querySelector('#nd-allow')?.addEventListener('click', () => this._allow());
         c.querySelector('#nd-files')?.addEventListener('change', e => this._fromFiles(e.target));
+    }
+
+    /** Bluetooth download: the saved dives get logbook entries; the list shows them. */
+    _deviceDownload() {
+        new DeviceDownloadPanel({
+            store: this.store,
+            onImported: report => { if (report.saved && !this.destroyed) location.hash = routeHref({ name: 'list' }); },
+        });
     }
 
     async _pickFolder() {
