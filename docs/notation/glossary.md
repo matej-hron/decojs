@@ -39,6 +39,7 @@ Past: *p*<sub>t</sub> (tkáňový tlak, „t" = tissue → stojatě) vs. *c*<sub
 | *V* | objem | volume | l | SI: m³ | — | — | — | ISO 80000-4 |
 | *ρ* | hustota | density | kg/m³ | — | — | — | — | ISO 80000-4 |
 | *T* | termodynamická teplota | thermodynamic temperature | K | — | — | — | — | ISO 80000-5 |
+| *t* (nesází se, viz pozn.) | Celsiova teplota | Celsius temperature | °C | v DecoJS se píše **slovem** + jednotkou („teplota 4&nbsp;°C“, osa „teplota / °C“), protože *t* je vždy čas — style-guide §3.3 | — | — | — | ISO 80000-5 (alt. značka *ϑ*) |
 | *t* | **čas** | time | min | SI: s | — | — | — | ISO 80000-3 |
 | *h* | hloubka / výška | depth / height | m | — | — | — | — | čes. konvence |
 | *m* | hmotnost | mass | kg | — | — | — | — | ISO 80000-4 |

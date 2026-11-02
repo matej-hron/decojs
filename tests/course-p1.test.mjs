@@ -217,3 +217,37 @@ test('stránky kurzu a jejich moduly jsou v sw.js (offline na přednášce)', ()
     ];
     for (const f of needed) assert.ok(sw.includes(`'./${f}'`), `sw.js STATIC_ASSETS: chybí ./${f}`);
 });
+
+// --- graf hustoty ----------------------------------------------------------
+
+import { niceTicks, densityAxis } from '../js/components/DensityCurve.js';
+
+test('graf hustoty: osa obsáhne křivku s okrajem, dílky jsou hezké', () => {
+    for (const range of [[0, 10], [0, 30]]) {
+        const a = densityAxis(range);
+        assert.ok(a.min < waterDensity(range[1]) && a.max > waterDensity(MAX_DENSITY_TEMPERATURE), String(range));
+        assert.ok(a.ticks.length >= 3 && a.ticks.length <= 8, `${range}: ${a.ticks.length} dílků`);
+    }
+    assert.deepEqual(niceTicks(0, 30, 6).ticks, [0, 5, 10, 15, 20, 25, 30]);
+});
+
+// --- rozcestník --------------------------------------------------------------
+
+import { chaptersHtml, questionsHtml } from '../js/course/hubPage.js';
+import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours } from '../js/course/p1Course.js';
+
+test('rozcestník: hotové kapitoly jsou odkazy, ostatní „připravujeme“', () => {
+    const html = chaptersHtml();
+    assert.match(html, /href="hustota\.html"/);
+    assert.doesNotMatch(html, /href="tlak\.html"/);
+    assert.equal((html.match(/připravujeme/g) || []).length, P1_CHAPTERS.filter(c => c.status !== 'ready').length);
+    for (const c of P1_CHAPTERS) {
+        if (c.status === 'ready') assert.ok(existsSync(new URL(`p1/${c.slug}.html`, ROOT)), `chybí p1/${c.slug}.html`);
+    }
+});
+
+test('rozcestník: každá otázka slidu 6 míří na existující kapitolu', () => {
+    for (const q of P1_QUESTIONS) for (const s of q.answeredIn) assert.ok(chapterBySlug(s), s);
+    assert.equal((questionsHtml().match(/<li>/g) || []).length, 6);
+    assert.deepEqual(chapterNeighbours('hustota'), { prev: null, next: null });
+});
