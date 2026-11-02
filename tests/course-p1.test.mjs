@@ -115,3 +115,105 @@ test('pásma profilu navazují a pokrývají celý sloupec', async () => {
     }
     assert.deepEqual(lakeBands(8, DEPTH).map(b => b.label), ['teplá vrstva', 'termoklina', 'studená voda u dna']);
 });
+
+// --- předvolby v URL ------------------------------------------------------
+
+import { readParams, writeParams, normalizeParam } from '../js/course/modelParams.js';
+
+const SCHEMA = {
+    teplota: { min: -5, max: 30, step: 0.5, default: 4 },
+    mesic: { min: 1, max: 12, step: 1, default: 8 },
+};
+
+test('předvolby: čtení, výchozí hodnoty, ořez a krok', () => {
+    assert.deepEqual(readParams('', SCHEMA), { teplota: 4, mesic: 8 });
+    assert.deepEqual(readParams('?teplota=12.3&mesic=1', SCHEMA), { teplota: 12.5, mesic: 1 });
+    assert.deepEqual(readParams('?teplota=2,5', SCHEMA).teplota, 2.5, 'desetinná čárka z ručně psaného odkazu');
+    assert.deepEqual(readParams('?teplota=-40&mesic=99', SCHEMA), { teplota: -5, mesic: 12 });
+    assert.deepEqual(readParams('?teplota=abc&mesic=', SCHEMA), { teplota: 4, mesic: 8 });
+    assert.equal(normalizeParam(0.1 + 0.2, { min: 0, max: 1, step: 0.1, default: 0 }), 0.3);
+});
+
+test('předvolby: zápis zachová cizí parametry', () => {
+    assert.equal(writeParams('?mesic=3&x=1', { teplota: 7 }), '?mesic=3&x=1&teplota=7');
+    assert.equal(writeParams('?teplota=7', { teplota: null }), '');
+});
+
+// --- sdílené bloky pojmů ----------------------------------------------------
+
+import { conceptPath, isValidConceptId, loadConcepts } from '../js/course/concepts.js';
+
+test('bloky pojmů: bezpečná id a cesta', () => {
+    assert.equal(conceptPath('water-anomaly'), 'concepts/cs/water-anomaly.html');
+    for (const bad of ['../x', 'A', 'a_b', '', 'a--b', '-a']) assert.equal(isValidConceptId(bad), false, bad);
+    assert.throws(() => conceptPath('../etc/passwd'));
+});
+
+function fakeRoot(ids) {
+    const slots = ids.map(id => ({ dataset: { concept: id }, innerHTML: '' }));
+    return { slots, querySelectorAll: () => slots };
+}
+
+test('bloky pojmů: vloží obsah, stejný blok stáhne jen jednou, chybu ukáže', async () => {
+    const calls = [];
+    const fetchImpl = async (url) => {
+        calls.push(url);
+        if (url.endsWith('missing.html')) return { ok: false, status: 404 };
+        return { ok: true, text: async () => `<p>${url.split('/').pop()}</p>` };
+    };
+    const root = fakeRoot(['density', 'density', 'missing']);
+    const n = await loadConcepts(root, { fetchImpl, base: 'https://example.test/' });
+    assert.equal(n, 2);
+    assert.equal(calls.length, 2);
+    assert.equal(root.slots[0].innerHTML, '<p>density.html</p>');
+    assert.equal(root.slots[2].dataset.conceptState, 'error');
+});
+
+// --- „Procvič si“ -------------------------------------------------------------
+
+import { parseQuestionIds, pickQuestions } from '../js/course/practice.js';
+
+test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
+    assert.deepEqual(parseQuestionIds(' 8, 6,7 '), [8, 6, 7]);
+    assert.throws(() => parseQuestionIds('6,x'));
+    const data = { questions: [{ id: 6 }, { id: 7 }, { id: 8 }] };
+    assert.deepEqual(pickQuestions(data, [8, 6]).map(q => q.id), [8, 6]);
+    assert.throws(() => pickQuestions(data, [99]), /99/);
+});
+
+// --- stránky kurzu: odkazy na bloky, otázky a offline ----------------------
+
+const ROOT = new URL('../', import.meta.url);
+const read = (rel) => readFileSync(new URL(rel, ROOT), 'utf8');
+const coursePages = ['p1/index.html', 'p1/hustota.html'];
+
+test('stránky kurzu: vložené bloky pojmů existují a jsou v sw.js', () => {
+    const sw = read('sw.js');
+    for (const page of coursePages) {
+        for (const [, id] of read(page).matchAll(/data-concept="([^"]+)"/g)) {
+            const path = conceptPath(id);
+            assert.ok(existsSync(new URL(path, ROOT)), `${page}: chybí ${path}`);
+            assert.ok(sw.includes(`'./${path}'`), `sw.js STATIC_ASSETS: chybí ./${path}`);
+        }
+    }
+});
+
+test('stránky kurzu: otázky „Procvič si“ existují v kvízových datech', () => {
+    for (const page of coursePages) {
+        for (const m of read(page).matchAll(/data-quiz-source="([^"]+)"\s+data-question-ids="([^"]+)"/g)) {
+            const data = JSON.parse(read(m[1]));
+            assert.doesNotThrow(() => pickQuestions(data, parseQuestionIds(m[2])), `${page}: ${m[2]}`);
+        }
+    }
+});
+
+test('stránky kurzu a jejich moduly jsou v sw.js (offline na přednášce)', () => {
+    const sw = read('sw.js');
+    const needed = [
+        ...coursePages, 'css/course.css',
+        'js/course/p1Course.js', 'js/course/chapter.js', 'js/course/concepts.js', 'js/course/practice.js',
+        'js/course/modelParams.js', 'js/physics/waterDensity.js', 'js/physics/lakeProfiles.js',
+        'js/components/WaterColumn.js', 'js/components/waterColumn/temperatureLayer.js', 'js/components/DensityCurve.js',
+    ];
+    for (const f of needed) assert.ok(sw.includes(`'./${f}'`), `sw.js STATIC_ASSETS: chybí ./${f}`);
+});
