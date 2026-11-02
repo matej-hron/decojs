@@ -93,7 +93,7 @@ function initLakeModel(initial) {
         aside: true,
         // Na projektoru (na šířku) se model i s ovládáním vejde na jednu obrazovku.
         height: (width) => Math.round(Math.max(300, Math.min(width < 600 ? width * 1.05 : width * 0.5,
-            window.innerHeight - 260))),
+            window.innerHeight - 330))),
     });
     column.setState({ month: initial.mesic });
     column.addLayer(createTemperatureLayer({

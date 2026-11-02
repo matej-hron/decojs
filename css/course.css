@@ -266,6 +266,7 @@ details.course-more > summary .course-summary-hint {
 :root[data-theme="dark"] .course-segmented button[aria-pressed="true"] { color: #fff; }
 
 .course-readout {
+    flex: 1 1 18rem;
     font-size: clamp(1.25rem, 1rem + 1vw, 2rem);
     font-weight: 600;
     color: var(--text);
@@ -282,7 +283,7 @@ details.course-more > summary .course-summary-hint {
 .course-plot {
     position: relative;
     width: 100%;
-    height: clamp(260px, 52vh, 560px);
+    height: clamp(260px, calc(100vh - 330px), 560px);
 }
 .course-model.fullscreen .course-plot { flex: 1; height: auto; min-height: 300px; }
 .course-plot svg { display: block; }
@@ -431,3 +432,17 @@ details.course-more > summary .course-summary-hint {
     color: var(--text);
 }
 .water-column-depth input[type="range"] { flex: 1; height: 2rem; accent-color: var(--brand); }
+
+/* Odkaz s kotvou na model (#model-lom) nesmí schovat nadpis pod lepivou navigaci. */
+.course-model[id], .course-example[id] { scroll-margin-top: 72px; }
+
+/* „Procvič si“ přebírá styly kvízu; ty počítají se světlým pozadím. */
+.course-practice .option-btn { color: var(--text); width: 100%; }
+.course-practice .option-btn:disabled { color: var(--text); }
+:root[data-theme="dark"] .course-practice .option-btn:hover:not(:disabled) { background: var(--blue-900); }
+:root[data-theme="dark"] .course-practice .option-btn.correct,
+:root[data-theme="dark"] .course-practice .feedback-correct { background: #12352a; border-color: var(--green-500); }
+:root[data-theme="dark"] .course-practice .option-btn.incorrect,
+:root[data-theme="dark"] .course-practice .feedback-incorrect { background: #3b1a1a; border-color: var(--red-500); }
+:root[data-theme="dark"] .course-practice .feedback { color: var(--text); }
+:root[data-theme="dark"] .course-practice .option-key { color: var(--blue-300); }
