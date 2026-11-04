@@ -21,10 +21,9 @@ const DESKTOP = '(min-width: 769px)';
 
 /**
  * @param {Object<string, () => ModelController>} factories id modelu → funkce, která model postaví
- * @param {{onToggle?: (open: boolean) => void}} [options]
  * @returns {{open: (id: string) => void, openFromHash: () => void}}
  */
-export function initModelOverlays(factories, { onToggle = () => {} } = {}) {
+export function initModelOverlays(factories) {
     const controllers = new Map();
     const dialogOf = (id) => document.getElementById(id)?.closest('dialog.course-sim') ?? null;
     /** Slide, ze kterého se model otevírá: ten, kde je jeho náhled. */
@@ -58,7 +57,6 @@ export function initModelOverlays(factories, { onToggle = () => {} } = {}) {
         if (!controllers.has(id)) controllers.set(id, factories[id]() ?? {});
         controllers.get(id).onOpen?.();
         setHash(id);
-        onToggle(true);
     }
 
     for (const id of Object.keys(factories)) {
@@ -70,7 +68,6 @@ export function initModelOverlays(factories, { onToggle = () => {} } = {}) {
             const slide = slideOf(id);
             slide?.scrollIntoView({ block: 'start', behavior: 'instant' });
             setHash(slide?.closest('section[id]')?.id ?? '');
-            onToggle(false);
         });
         // Klik mimo: cíl je sám dialog (jeho backdrop), obsah má vlastní prvky.
         dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });

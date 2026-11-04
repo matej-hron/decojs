@@ -516,16 +516,19 @@ details.course-more > summary .course-summary-hint {
     .course-column-host .water-column-readout { margin: 0; }
 }
 
-.course-slide .course-play {
+.course-slide .course-month-step {
     flex: none;
-    min-width: 7rem;
     min-height: 44px;
+    padding-inline: 1em;
     background: var(--slide-accent);
     color: var(--slide-on-accent);
     border: 1px solid var(--slide-accent);
     box-shadow: none;
+    font-weight: 600;
+    white-space: nowrap;
 }
-.course-slide .course-play[aria-pressed="true"] { background: transparent; color: var(--slide-fg); border-color: var(--slide-line-strong); }
+.course-readout-month { font-size: clamp(1.4rem, 3.6vh, 2.4rem); line-height: 1.15; }
+.course-plot-clickable { cursor: pointer; }
 
 .course-simplification {
     font-size: var(--text-sm);

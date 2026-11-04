@@ -168,11 +168,12 @@ Slide 9 je jedna zastávka se dvěma řadami text + náhled jako v přednášce;
 Modely:
 1. **Hustota vody vs. teplota** — posuvník teploty (cca −5 až 30 °C, pod 0 °C led), křivka hustoty s bodem; maximum
    u 4 °C zřetelně; skok na led 917–920 kg/m³. Data: tabulková hustota vody (uveď zdroj v kódu).
-2. **Jezero během roku** — podle GIFu ve slidu 9 (oprava 2026-11-04, nahrazuje dřívější profil po měsících): 9 fází po
-   2 s, pět vrstev s teplotami z GIFu, vítr, strom, led. Hlavní věc je dynamika: přehrát/pozastavit, plynulé přechody,
-   posuvník fází, předvolba `?faze=1..9`. Doplněk oproti GIFu: šipky „těžší voda klesá“ při přechodech 1→2, 2→3, 3→4,
-   6→7, 7→8. Je to **schéma podle přednášky, ne měření**; čísla bez zdroje v přednášce (termoklina, teploty mimo GIF,
-   hloubka) se nepoužívají. Obecně: když má slide animaci, model zachová její smysl.
+2. **Modelový lom během roku** (oprava 2026-11-04, nahrazuje profil po měsících z pilotu i 9 fází z GIFu): 12 měsíců,
+   lom hluboký 30 m, teplota vzduchu, pásy v měřítku hloubky se svislou osou, vítr, strom, led. Posun klikem, aby autor stihl
+   vykládat: tlačítka „‹ předchozí měsíc“ a „další měsíc ›“, klik do průřezu, v otevřeném simulátoru i šipky (funguje i klikr),
+   posuvník pro přímý skok, předvolba `?mesic=1..12`. Automatické přehrávání není, přechody jsou plynulé. Náhled na slidu je
+   statický (srpen). Šipky „těžší voda klesá“ při srpen→září, září→říjen, říjen→listopad, listopad→prosinec, únor→březen.
+   Je to **odhad podle hlášení potápěčů, ne měření**, a čísla jsou v jedné konstantě v `js/physics/lakeCycle.js`.
 - Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 

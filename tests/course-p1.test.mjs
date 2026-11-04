@@ -50,20 +50,20 @@ import { readParams, writeParams, normalizeParam } from '../js/course/modelParam
 
 const SCHEMA = {
     teplota: { min: -5, max: 30, step: 0.5, default: 4 },
-    faze: { min: 1, max: 12, step: 1, default: 8 },
+    mesic: { min: 1, max: 12, step: 1, default: 8 },
 };
 
 test('předvolby: čtení, výchozí hodnoty, ořez a krok', () => {
-    assert.deepEqual(readParams('', SCHEMA), { teplota: 4, faze: 8 });
-    assert.deepEqual(readParams('?teplota=12.3&faze=1', SCHEMA), { teplota: 12.5, faze: 1 });
+    assert.deepEqual(readParams('', SCHEMA), { teplota: 4, mesic: 8 });
+    assert.deepEqual(readParams('?teplota=12.3&mesic=1', SCHEMA), { teplota: 12.5, mesic: 1 });
     assert.deepEqual(readParams('?teplota=2,5', SCHEMA).teplota, 2.5, 'desetinná čárka z ručně psaného odkazu');
-    assert.deepEqual(readParams('?teplota=-40&faze=99', SCHEMA), { teplota: -5, faze: 12 });
-    assert.deepEqual(readParams('?teplota=abc&faze=', SCHEMA), { teplota: 4, faze: 8 });
+    assert.deepEqual(readParams('?teplota=-40&mesic=99', SCHEMA), { teplota: -5, mesic: 12 });
+    assert.deepEqual(readParams('?teplota=abc&mesic=', SCHEMA), { teplota: 4, mesic: 8 });
     assert.equal(normalizeParam(0.1 + 0.2, { min: 0, max: 1, step: 0.1, default: 0 }), 0.3);
 });
 
 test('předvolby: zápis zachová cizí parametry', () => {
-    assert.equal(writeParams('?faze=3&x=1', { teplota: 7 }), '?faze=3&x=1&teplota=7');
+    assert.equal(writeParams('?mesic=3&x=1', { teplota: 7 }), '?mesic=3&x=1&teplota=7');
     assert.equal(writeParams('?teplota=7', { teplota: null }), '');
 });
 

@@ -1,18 +1,20 @@
 /**
- * Průřez jezera během roku (kapitola P1 Hustota): pět vrstev s teplotou, vítr, strom, led
- * a klesání těžší vody. Vlastní SVG podle GIFu ze slidu 9, data z `js/physics/lakeCycle.js`.
+ * Průřez modelového lomu během roku (kapitola P1 Hustota): vrstvy v měřítku hloubky s teplotou,
+ * teplota vzduchu, vítr, strom, led a klesání těžší vody. Vlastní SVG, data z `js/physics/lakeCycle.js`.
  *
- * Dynamika je hlavní věc: přechody jsou plynulé, ať je vidět, jak se vrstvy mění. Při
- * `prefers-reduced-motion` se nic neanimuje, fáze se jen krokují.
+ * Měsíce se posouvají klikem, aby autor stihl vykládat. Přechod je plynulý, ať je vidět, jak se
+ * vrstvy mění. Při `prefers-reduced-motion` se nic neanimuje.
  *
  * Kostra SVG se staví jen při změně velikosti, každý snímek mění jen atributy.
  */
 
-import { LAKE_PHASES, lakeFrame, lakeTemperatureColor, lakeTextColor, mixColors, playPosition } from '../physics/lakeCycle.js';
+import {
+    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTHS, formatAirTemperature, lakeFrame, lakeTemperatureColor,
+    lakeTextColor, mixColors,
+} from '../physics/lakeCycle.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const TWEEN_MS = 700;
-const LAYERS = 5;
 let uid = 0;
 
 function el(name, attrs = {}, parent = null, text) {
@@ -24,6 +26,7 @@ function el(name, attrs = {}, parent = null, text) {
 }
 
 const r1 = (v) => Math.round(v * 10) / 10;
+const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - ((-2 * x + 2) ** 2) / 2);
 
 /** Kresba stromu v jednotkách 0–100, základ kmene v (0, 0), nahoru je záporné y. */
 const TREE = {
@@ -37,24 +40,20 @@ const TREE = {
 
 /**
  * @param {HTMLElement} host prvek s rozměry; SVG ho vyplní
- * @param {{compact?: boolean, phase?: number, onPhase?: (index: number) => void}} [options]
- *   `compact` = náhled: menší písmo, bez popisku klesání
+ * @param {{compact?: boolean, month?: number}} [options]
+ *   `compact` = náhled: menší písmo, bez názvu osy a bez popisku klesání; `month` = index (0 = leden)
  */
 export function createLakeCycle(host, options = {}) {
     const compact = Boolean(options.compact);
-    const onPhase = options.onPhase ?? (() => {});
     const id = `lake-${++uid}`;
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const svg = el('svg', { class: 'lake-cycle', role: 'img' });
     host.appendChild(svg);
 
-    let pos = options.phase ?? 0;
-    let shownPhase = -1;
+    let month = options.month ?? 0; // cílový měsíc (index)
+    let pos = month;
     let refs = null;
     let raf = 0;
-    let playing = false;
-    let playStart = 0;
-    let playFrom = 0;
     let tween = null;
 
     function cssTokens() {
@@ -83,63 +82,100 @@ export function createLakeCycle(host, options = {}) {
         svg.replaceChildren();
 
         const c = cssTokens();
-        const font = compact ? Math.max(11, Math.min(14, H / 15)) : Math.max(14, Math.min(22, H / 22));
-        const y0 = Math.round(H * 0.34);
+        const font = compact ? Math.max(10, Math.min(13, H / 16)) : Math.max(14, Math.min(22, H / 22));
+        const y0 = Math.round(H * 0.3);
         const waterH = H - y0 - Math.max(6, H * 0.04);
-        const bowlW = Math.min(W * 0.66, waterH * 3.2);
+        const bowlW = Math.min(W * 0.64, waterH * 3.2);
         const cx = W / 2;
         const x1 = cx - bowlW / 2;
         const x2 = cx + bowlW / 2;
-        const band = waterH / LAYERS;
+        const depthY = (d) => y0 + (d / LAKE_MAX_DEPTH) * waterH;
 
-        // zem a miska
+        // zem a miska lomu
         el('rect', { x: 0, y: y0, width: W, height: H - y0, rx: 4, fill: c.ground }, svg);
         const bowl = `M${r1(x1)} ${y0} C${r1(x1)} ${r1(y0 + waterH * 0.82)} ${r1(x1 + bowlW * 0.3)} ${r1(y0 + waterH)} ${r1(cx)} ${r1(y0 + waterH)} `
             + `C${r1(x2 - bowlW * 0.3)} ${r1(y0 + waterH)} ${r1(x2)} ${r1(y0 + waterH * 0.82)} ${r1(x2)} ${y0} Z`;
         el('path', { d: bowl }, el('clipPath', { id: `${id}-bowl` }, el('defs', {}, svg)));
         const water = el('g', { 'clip-path': `url(#${id}-bowl)` }, svg);
-        const bands = Array.from({ length: LAYERS }, (_, i) => el('rect', {
-            x: r1(x1), y: r1(y0 + band * i), width: r1(bowlW), height: r1(band + 0.6),
+        const bands = LAKE_BANDS.map(([from, to]) => el('rect', {
+            x: r1(x1), y: r1(depthY(from)), width: r1(bowlW), height: r1(depthY(to) - depthY(from) + 0.6),
         }, water));
-        const tempFont = Math.max(compact ? 11 : 14, Math.min(band * 0.6, font * 1.15));
-        const labels = Array.from({ length: LAYERS }, (_, i) => el('text', {
-            x: r1(cx), y: r1(y0 + band * (i + 0.5) + tempFont * 0.35), 'text-anchor': 'middle',
-            'font-size': r1(tempFont), 'font-weight': 600,
-        }, svg));
 
-        // klesání: krátké šipky v povrchové vrstvě, po stranách teploty
+        // svislá osa hloubky na levém břehu
+        const axisX = r1(x1 - font * 0.9);
+        el('line', { x1: axisX, x2: axisX, y1: y0, y2: r1(depthY(LAKE_MAX_DEPTH)), stroke: '#ffffff', 'stroke-opacity': 0.7 }, svg);
+        const axisFont = r1(compact ? font * 0.9 : font * 0.85);
+        for (const d of LAKE_DEPTHS) {
+            const y = r1(depthY(d));
+            el('line', { x1: axisX, x2: r1(axisX + font * 0.4), y1: y, y2: y, stroke: '#ffffff', 'stroke-opacity': 0.7 }, svg);
+            el('text', {
+                x: r1(axisX - font * 0.3), y: r1(Math.min(y + axisFont * 0.35, H - 2)), 'text-anchor': 'end', 'font-size': axisFont, fill: '#ffffff',
+            }, svg, String(d));
+        }
+        if (!compact) {
+            const ty = r1(y0 + waterH / 2);
+            const tx = r1(Math.max(font, axisX - font * 2.6));
+            el('text', {
+                transform: `translate(${tx} ${ty}) rotate(-90)`, 'text-anchor': 'middle', 'font-size': axisFont, fill: '#ffffff',
+            }, svg, 'hloubka / m');
+        }
+
+        // Teplota je v pásu, v tenkém horním pásu menším písmem. Jen v náhledu, kde by bylo
+        // nečitelné, jde popisek na pravý břeh na úroveň pásu.
+        const tempFont = Math.max(compact ? 10 : 14, Math.min(font * 1.1, 24));
+        const minInside = compact ? 10 : 12;
+        const labels = LAKE_BANDS.map(([from, to]) => {
+            const bandH = depthY(to) - depthY(from);
+            const fit = Math.min(tempFont, bandH * 0.8);
+            const outside = fit < minInside;
+            const size = outside ? tempFont : fit;
+            const y = (depthY(from) + depthY(to)) / 2 + size * 0.35;
+            const node = el('text', {
+                x: r1(outside ? x2 + font * 0.5 : cx), y: r1(outside ? Math.max(y, y0 + size * 0.95) : y),
+                'text-anchor': outside ? 'start' : 'middle', 'font-size': r1(size), 'font-weight': 600,
+            }, svg);
+            return { node, outside };
+        });
+
+        // klesání: krátké šipky od hladiny, po stranách teploty
         const sinkGroup = el('g', { 'pointer-events': 'none' }, svg);
-        const sinkLen = Math.max(8, band * 0.42);
+        const surfaceH = depthY(LAKE_BANDS[0][1]) - y0;
+        const sinkLen = Math.max(10, surfaceH * 0.9);
+        const sinkStep = Math.max(4, surfaceH * 0.34);
         const sinkPaths = [-0.34, -0.2, 0.2, 0.34].map((dx) => {
             const x = r1(cx + bowlW * dx);
-            const y = r1(y0 + band * 0.12);
             return el('path', {
-                d: `M${x} ${y} v${r1(sinkLen)} m${r1(-sinkLen * 0.3)} ${r1(-sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(-sinkLen * 0.32)}`,
+                d: `M${x} ${y0 + 2} v${r1(sinkLen)} m${r1(-sinkLen * 0.3)} ${r1(-sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(-sinkLen * 0.32)}`,
                 fill: 'none', 'stroke-width': compact ? 1.6 : 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
             }, sinkGroup);
         });
         const sinkLabel = compact ? null : el('text', {
-            x: r1(cx), y: r1(y0 - font * 0.55), 'text-anchor': 'middle', 'font-size': r1(font), 'font-weight': 600, fill: c.text,
+            x: r1(cx), y: r1(y0 - font * 0.5), 'text-anchor': 'middle', 'font-size': r1(font), 'font-weight': 600, fill: c.text,
         }, svg, 'těžší voda klesá');
 
-        // led: přirůstá od hladiny
-        const iceThick = Math.max(compact ? 7 : 14, band * 0.34);
+        // led: přirůstá kolem hladiny (z větší části nad ní, ať nezakryje teplotu), popisek nad ním
+        const iceThick = compact ? 4 : Math.min(surfaceH * 0.5, 10);
         const ice = el('rect', { x: r1(x1 - 2), y: y0 - 1, width: r1(bowlW + 4), height: 0, rx: 2, fill: c.ice, stroke: c.iceEdge, 'stroke-width': 1 }, svg);
         const iceLabel = compact ? null : el('text', {
-            x: r1(cx), y: r1(y0 + iceThick * 0.5 + font * 0.28), 'text-anchor': 'middle', 'font-size': r1(font * 0.8), fill: c.iceText,
+            x: r1(cx), y: r1(y0 - iceThick * 0.6 - font * 0.3), 'text-anchor': 'middle', 'font-size': r1(font * 0.85), fill: c.text,
         }, svg, 'led');
 
+        // teplota vzduchu nad hladinou
+        const air = el('text', {
+            x: r1(cx), y: r1(y0 * (compact ? 0.42 : 0.44)), 'text-anchor': 'middle', 'font-size': r1(font * (compact ? 1.05 : 1.3)), 'font-weight': 600, fill: c.text,
+        }, svg);
+
         // vítr
-        const arrowW = Math.min(compact ? W * 0.3 : W * 0.24, compact ? 110 : 240);
-        const arrowX = Math.max(font * 0.4, x1 - arrowW * 0.55);
-        const arrowY = r1(y0 * (compact ? 0.62 : 0.66));
-        const shaft = Math.max(compact ? 5 : 8, y0 * 0.11);
+        const arrowW = Math.min(compact ? W * 0.2 : W * 0.2, compact ? 90 : 220);
+        const arrowX = Math.max(font * 0.4, x1 - arrowW * 0.75);
+        const arrowY = r1(y0 * 0.68);
+        const shaft = Math.max(compact ? 4 : 7, y0 * 0.1);
         const head = shaft * 2.2;
         const arrow = el('path', {
             d: `M${r1(arrowX)} ${r1(arrowY - shaft / 2)} h${r1(arrowW - head)} v${r1(-(head - shaft) / 2)} l${r1(head)} ${r1(head / 2)} l${r1(-head)} ${r1(head / 2)} v${r1(-(head - shaft) / 2)} h${r1(-(arrowW - head))} Z`,
         }, svg);
         const windLabel = el('text', {
-            x: r1(arrowX), y: r1(arrowY - head / 2 - font * 0.35), 'font-size': r1(font * (compact ? 0.95 : 0.9)), 'font-weight': 600, fill: c.text,
+            x: r1(arrowX), y: r1(arrowY - head / 2 - font * 0.35), 'font-size': r1(font * 0.9), 'font-weight': 600, fill: c.text,
         }, svg);
 
         // strom na pravém břehu
@@ -158,106 +194,106 @@ export function createLakeCycle(host, options = {}) {
         const buds = el('g', {}, tree);
         TREE.buds.forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3.2, fill: c.leaf }, buds));
 
-        refs = { c, y0, band, iceThick, bands, labels, sinkGroup, sinkPaths, sinkLabel, ice, iceLabel, arrow, windLabel, groundLeaves, snow, crown, falling, buds };
+        refs = { c, y0, iceThick, sinkStep, bands, labels, sinkGroup, sinkPaths, sinkLabel, ice, iceLabel, air, arrow, windLabel, groundLeaves, snow, crown, falling, buds };
+    }
+
+    function describe() {
+        const m = LAKE_MONTHS[month];
+        svg.setAttribute('aria-label', `Průřez modelového lomu, ${m.name}: ${m.label}. ${formatAirTemperature(m.air)}, `
+            + `teploty vody od hladiny ke dnu ${m.temps.join(', ')} °C.`);
     }
 
     function paint() {
         const frame = lakeFrame(pos);
-        if (refs) {
-            const { c } = refs;
-            frame.temps.forEach((t, i) => {
-                const color = lakeTemperatureColor(t);
-                refs.bands[i].setAttribute('fill', color);
-                refs.labels[i].setAttribute('fill', lakeTextColor(color));
-                refs.labels[i].textContent = `${Math.round(t)} °C`;
-            });
-            const iceH = frame.ice * refs.iceThick;
-            refs.ice.setAttribute('height', r1(iceH + 1));
-            refs.ice.setAttribute('opacity', frame.ice > 0 ? 1 : 0);
-            if (refs.iceLabel) refs.iceLabel.setAttribute('opacity', frame.ice > 0.7 ? 1 : 0);
-            // Led roste od hladiny, popisek první vrstvy před ním uhýbá dolů.
-            refs.labels[0].setAttribute('transform', `translate(0 ${r1(iceH * 0.5)})`);
-            refs.arrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
-            refs.windLabel.textContent = frame.warm >= 0.5 ? 'teplý vítr' : 'studený vítr';
-            const sink = frame.sinking;
-            refs.sinkGroup.setAttribute('opacity', r1(sink * 10) / 10);
-            refs.sinkGroup.setAttribute('transform', `translate(0 ${r1(frame.progress * refs.band * 0.34)})`);
-            const sinkColor = lakeTextColor(lakeTemperatureColor(frame.temps[0]));
-            refs.sinkPaths.forEach(p => p.setAttribute('stroke', sinkColor));
-            if (refs.sinkLabel) refs.sinkLabel.setAttribute('opacity', r1(sink * 10) / 10);
-            refs.crown.setAttribute('opacity', frame.tree.crown);
-            refs.falling.setAttribute('opacity', frame.tree.falling);
-            refs.falling.setAttribute('transform', `translate(${r1(frame.progress * 6)} ${r1(frame.progress * 10)})`);
-            refs.snow.setAttribute('opacity', frame.tree.snow);
-            refs.buds.setAttribute('opacity', frame.tree.buds);
-            refs.groundLeaves.setAttribute('opacity', frame.groundLeaves);
-        }
-        if (frame.phase !== shownPhase) {
-            shownPhase = frame.phase;
-            const p = LAKE_PHASES[shownPhase];
-            svg.setAttribute('aria-label', `Průřez jezera, fáze ${shownPhase + 1} z ${LAKE_PHASES.length}, ${p.label}: `
-                + `teploty od hladiny ke dnu ${p.temps.join(', ')} °C${p.ice ? ', na hladině led' : ''}.`);
-            onPhase(shownPhase);
-        }
+        if (!refs) return;
+        const { c } = refs;
+        frame.temps.forEach((t, i) => {
+            const color = lakeTemperatureColor(t);
+            refs.bands[i].setAttribute('fill', color);
+            const { node, outside } = refs.labels[i];
+            node.setAttribute('fill', outside ? '#ffffff' : lakeTextColor(color));
+            node.textContent = `${Math.round(t)} °C`;
+        });
+        const iceH = frame.ice * refs.iceThick;
+        refs.ice.setAttribute('y', r1(refs.y0 - iceH * 0.6));
+        refs.ice.setAttribute('height', r1(iceH));
+        refs.ice.setAttribute('opacity', frame.ice > 0 ? 1 : 0);
+        if (refs.iceLabel) refs.iceLabel.setAttribute('opacity', frame.ice > 0.7 ? 1 : 0);
+        // Led roste od hladiny, popisek první vrstvy (je-li v ní) před ním uhýbá dolů.
+        if (!refs.labels[0].outside) refs.labels[0].node.setAttribute('transform', `translate(0 ${r1(iceH * 0.2)})`);
+        refs.air.textContent = formatAirTemperature(frame.air);
+        refs.arrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
+        refs.windLabel.textContent = frame.warm >= 0.5 ? 'teplý vítr' : 'studený vítr';
+        // Klesání jen při kroku dopředu, v obráceném kroku ne.
+        const sink = tween?.forward ? frame.sinking : 0;
+        refs.sinkGroup.setAttribute('opacity', r1(sink * 10) / 10);
+        refs.sinkGroup.setAttribute('transform', `translate(0 ${r1(frame.progress * refs.sinkStep)})`);
+        const sinkColor = lakeTextColor(lakeTemperatureColor(frame.temps[0]));
+        refs.sinkPaths.forEach(p => p.setAttribute('stroke', sinkColor));
+        if (refs.sinkLabel) refs.sinkLabel.setAttribute('opacity', r1(sink * 10) / 10);
+        refs.crown.setAttribute('opacity', frame.tree.crown);
+        refs.falling.setAttribute('opacity', frame.tree.falling);
+        refs.falling.setAttribute('transform', `translate(${r1(frame.progress * 6)} ${r1(frame.progress * 10)})`);
+        refs.snow.setAttribute('opacity', frame.tree.snow);
+        refs.buds.setAttribute('opacity', frame.tree.buds);
+        refs.groundLeaves.setAttribute('opacity', frame.groundLeaves);
     }
 
     function loop(now) {
         raf = 0;
         if (tween) {
+            if (!tween.start) tween.start = now;
             const x = Math.min(1, (now - tween.start) / TWEEN_MS);
-            pos = tween.from + (tween.to - tween.from) * x;
-            if (x >= 1) { pos = tween.to; tween = null; }
-        } else if (playing) {
-            if (!playStart) playStart = now;
-            pos = playPosition(now - playStart, playFrom);
+            pos = tween.from + (tween.to - tween.from) * easeInOut(x);
+            if (x >= 1) { pos = month; tween = null; }
         }
         paint();
-        if (tween || playing) raf = requestAnimationFrame(loop);
+        if (tween) raf = requestAnimationFrame(loop);
     }
-    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+
+    /** Přejde na měsíc: plynule, nebo rovnou (reduced motion, předvolba). */
+    function goTo(index, target, { animate, forward }) {
+        month = index;
+        describe();
+        if (animate && !reduced) {
+            tween = { from: pos, to: target, start: 0, forward };
+            if (!raf) raf = requestAnimationFrame(loop);
+        } else {
+            cancelAnimationFrame(raf);
+            raf = 0;
+            tween = null;
+            pos = index;
+            paint();
+        }
+    }
 
     const ro = new ResizeObserver(() => { build(); paint(); });
     ro.observe(host);
     build();
+    describe();
     paint();
 
     return {
-        /** Tichá animace je pro `prefers-reduced-motion` vypnutá. */
-        canPlay: !reduced,
-        isPlaying: () => playing,
-        /** Přehrává od aktuální fáze. */
-        play() {
-            if (reduced || playing) return;
-            tween = null;
-            playing = true;
-            playStart = 0;
-            playFrom = lakeFrame(pos).phase;
-            pos = playFrom;
-            kick();
-        },
-        pause() {
-            playing = false;
-            if (!tween) pos = lakeFrame(pos).phase;
-            cancelAnimationFrame(raf);
-            raf = 0;
-            paint();
+        /**
+         * Posun o měsíc, dokola. Rychlé klikání navazuje na rozběhlý přechod.
+         * @param {1|-1} dir
+         */
+        step(dir) {
+            const n = LAKE_MONTHS.length;
+            const base = tween ? tween.to : pos;
+            goTo((month + dir + n) % n, base + dir, { animate: true, forward: dir > 0 });
         },
         /**
-         * @param {number} index fáze (0 = fáze 1)
-         * @param {{animate?: boolean}} [o] plynule přejít (mimo reduced-motion)
+         * Přímý skok na měsíc.
+         * @param {number} index (0 = leden)
+         * @param {{animate?: boolean}} [o]
          */
-        setPhase(index, { animate = false } = {}) {
-            playing = false;
-            if (animate && !reduced) {
-                tween = { from: pos, to: index, start: performance.now() };
-                kick();
-            } else {
-                tween = null;
-                pos = index;
-                paint();
-            }
+        setMonth(index, { animate = false } = {}) {
+            const n = LAKE_MONTHS.length;
+            pos = ((pos % n) + n) % n;
+            goTo(index, index, { animate, forward: false });
         },
-        getPhase: () => lakeFrame(pos).phase,
+        getMonth: () => month,
         redraw() { build(); paint(); },
         destroy() { cancelAnimationFrame(raf); ro.disconnect(); svg.remove(); },
     };

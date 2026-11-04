@@ -125,7 +125,7 @@
                             <div class="course-answer-body">
                                 <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
                                     Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
-                                <p><a href="?faze=6#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
+                                <p><a href="?mesic=1#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
                             </div>
                         </details>
                     </div>
@@ -147,7 +147,7 @@
                     <div class="course-model-controls">
                         <div class="course-slider">
                             <label for="teplota-slider">Teplota vody</label>
-                            <input type="range" id="teplota-slider" min="-5" max="30" step="0.5" value="4">
+                            <input type="range" id="teplota-slider" min="-5" max="30" step="0.5" value="4" autofocus>
                         </div>
                         <div class="course-segmented" role="group" aria-label="Rozsah grafu">
                             <button type="button" data-range="10" aria-pressed="true">0–10&nbsp;°C (jako na slidu)</button>
@@ -175,15 +175,16 @@
                         </div>
                     </div>
                     <div class="course-model-controls">
-                        <button type="button" class="btn btn-small course-play" id="jezero-play" aria-pressed="false">Přehrát</button>
+                        <button type="button" class="btn course-month-step" id="mesic-predchozi">‹ předchozí měsíc</button>
+                        <button type="button" class="btn course-month-step" id="mesic-dalsi" autofocus>další měsíc ›</button>
                         <div class="course-slider">
-                            <label for="faze-slider">Fáze</label>
-                            <input type="range" id="faze-slider" min="1" max="9" step="1" value="1">
+                            <label for="mesic-slider">Měsíc</label>
+                            <input type="range" id="mesic-slider" min="1" max="12" step="1" value="1">
                         </div>
-                        <p class="course-readout" id="jezero-faze" aria-live="polite"></p>
+                        <p class="course-readout course-readout-month" id="lom-mesic" aria-live="polite"></p>
                     </div>
-                    <div class="course-plot" id="jezero-scene"></div>
-                    <p class="course-simplification">Schéma podle přednášky, ne měření.</p>
+                    <div class="course-plot course-plot-clickable" id="lom-scene" title="Další měsíc"></div>
+                    <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, typický rok. Odhad podle hlášení potápěčů, ne měření.</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>
             </dialog>

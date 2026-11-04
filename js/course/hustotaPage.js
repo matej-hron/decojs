@@ -2,7 +2,7 @@
  * Kapitola P1 Hustota: oba modely + společné chování kapitoly. Modely se otevírají
  * z náhledů na slidu 9 (`js/course/modelOverlay.js`) a staví se až při otevření.
  * Model 1 — hustota vody a teplota (`?teplota=&rozsah=`, kotva #model-hustota).
- * Model 2 — jezero během roku podle GIFu z přednášky (`?faze=1..9`, kotva #model-lom).
+ * Model 2 — modelový lom během roku, posun po měsících (`?mesic=1..12`, kotva #model-lom).
  */
 
 import { initChapter } from './chapter.js';
@@ -11,7 +11,7 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { LAKE_PHASES } from '../physics/lakeCycle.js';
+import { LAKE_MONTHS, monthKeyStep } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
 import { createLakeCycle } from '../components/LakeCycle.js';
 
@@ -22,8 +22,10 @@ export const DENSITY_PARAMS = {
     teplota: { min: -5, max: 30, step: 0.5, default: 4 },
     rozsah: { min: 10, max: 30, step: 20, default: 10 },
 };
+/** Náhled lomu na slidu ukazuje srpen. */
+const THUMB_MONTH = 7;
 export const LAKE_PARAMS = {
-    faze: { min: 1, max: 9, step: 1, default: null }, // bez předvolby se přehrává
+    mesic: { min: 1, max: 12, step: 1, default: 1 },
 };
 
 /**
@@ -85,79 +87,65 @@ function initDensityModel(initial) {
 }
 
 /**
- * Text odečtu modelu jezera.
- * @param {number} index fáze (0 = fáze 1)
+ * Text odečtu modelu lomu.
+ * @param {number} index měsíc (0 = leden)
  * @returns {{main: string, sub: string}}
  */
 export function lakeReadout(index) {
-    const p = LAKE_PHASES[index];
-    return {
-        main: `Fáze ${index + 1} z ${LAKE_PHASES.length}: ${p.label}`,
-        sub: `${p.wind === 'warm' ? 'teplý' : 'studený'} vítr${p.ice ? ', na hladině led' : ''}`,
-    };
+    const m = LAKE_MONTHS[index];
+    return { main: `${m.name[0].toUpperCase()}${m.name.slice(1)}`, sub: m.label };
 }
 
 function initLakeModel(initial) {
-    const slider = document.getElementById('faze-slider');
-    const readout = document.getElementById('jezero-faze');
-    const playBtn = document.getElementById('jezero-play');
-    const host = document.getElementById('jezero-scene');
-    if (!slider || !host) return null;
+    const slider = document.getElementById('mesic-slider');
+    const readout = document.getElementById('lom-mesic');
+    const host = document.getElementById('lom-scene');
+    const dialog = host?.closest('dialog');
+    if (!slider || !host) return {};
 
-    const showPhase = (index) => {
+    const lake = createLakeCycle(host, { month: initial.mesic - 1 });
+    const show = () => {
+        const index = lake.getMonth();
         slider.value = String(index + 1);
-        slider.setAttribute('aria-valuetext', `${index + 1}: ${LAKE_PHASES[index].label}`);
+        slider.setAttribute('aria-valuetext', LAKE_MONTHS[index].name);
         const r = lakeReadout(index);
         readout.innerHTML = `${r.main}<span class="course-readout-sub">${r.sub}</span>`;
+        syncUrl({ mesic: index + 1 });
     };
-    const lake = createLakeCycle(host, { phase: initial.faze === null ? 0 : initial.faze - 1, onPhase: showPhase });
+    const step = (dir) => { lake.step(dir); show(); };
 
-    const syncPlay = () => {
-        const on = lake.isPlaying();
-        playBtn.textContent = on ? 'Pozastavit' : 'Přehrát';
-        playBtn.setAttribute('aria-pressed', String(on));
-        readout.setAttribute('aria-live', on ? 'off' : 'polite'); // při přehrávání nečíst každou fázi
-    };
-    const play = () => { lake.play(); syncPlay(); syncUrl({ faze: null }); };
-    const pause = () => { lake.pause(); syncPlay(); syncUrl({ faze: lake.getPhase() + 1 }); };
-
-    playBtn.hidden = !lake.canPlay; // prefers-reduced-motion: jen krokování
-    playBtn.addEventListener('click', () => (lake.isPlaying() ? pause() : play()));
+    document.getElementById('mesic-predchozi')?.addEventListener('click', () => step(-1));
+    document.getElementById('mesic-dalsi')?.addEventListener('click', () => step(1));
+    host.addEventListener('click', () => step(1)); // klik kamkoli do průřezu = další měsíc
     slider.addEventListener('input', () => {
-        const index = Number(slider.value) - 1;
-        lake.setPhase(index, { animate: true });
-        syncPlay();
-        syncUrl({ faze: index + 1 });
+        lake.setMonth(Number(slider.value) - 1, { animate: true });
+        show();
+    });
+    // Šipky a prezentační klikr: jen v otevřeném simulátoru, jinak přepínají slidy.
+    document.addEventListener('keydown', (e) => {
+        const dir = monthKeyStep(e, { simOpen: Boolean(dialog?.open) });
+        if (!dir) return;
+        e.preventDefault();
+        step(dir);
     });
     host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => lake.redraw());
 
     return {
-        /** Bez předvolby se hned přehrává, s `?faze=` ukáže fázi a stojí. */
+        /** Předvolba z adresy (i z odkazu „Ukaž to v modelu“) ukáže měsíc bez animace. */
         onOpen() {
-            const { faze } = readParams(window.location.search, LAKE_PARAMS);
-            if (faze === null) lake.play();
-            else lake.setPhase(faze - 1);
-            syncPlay();
-        },
-        onClose() {
-            lake.pause();
-            syncPlay();
+            lake.setMonth(readParams(window.location.search, LAKE_PARAMS).mesic - 1);
+            lake.redraw();
+            show();
         },
     };
 }
 
-/** Náhledy na slidu: skutečná data modelů. Jezero se v klidu přehrává, když je vidět. */
+/** Náhledy na slidu: skutečná data modelů, statické, ať na přednášce nic nerozptyluje. */
 function initThumbs() {
     const densityHost = document.getElementById('nahled-hustota');
     const lakeHost = document.getElementById('nahled-jezero');
     if (densityHost) createDensityCurve(densityHost, { range: [0, 10], temperature: 4, compact: true });
-    if (!lakeHost) return () => {};
-    const lake = createLakeCycle(lakeHost, { compact: true });
-    let visible = false;
-    let simOpen = false;
-    const sync = () => { if (visible && !simOpen) lake.play(); else lake.pause(); };
-    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(lakeHost);
-    return (open) => { simOpen = open; sync(); };
+    if (lakeHost) createLakeCycle(lakeHost, { compact: true, month: THUMB_MONTH });
 }
 
 function initPresetLinks(overlays) {
@@ -172,11 +160,11 @@ function initPresetLinks(overlays) {
 
 if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
-    const setThumbsPaused = initThumbs();
+    initThumbs();
     const overlays = initModelOverlays({
         'model-hustota': () => initDensityModel(readParams(window.location.search, DENSITY_PARAMS)),
         'model-lom': () => initLakeModel(readParams(window.location.search, LAKE_PARAMS)),
-    }, { onToggle: setThumbsPaused });
+    });
     initPresetLinks(overlays);
     initChapter().then(() => overlays.openFromHash());
 }
