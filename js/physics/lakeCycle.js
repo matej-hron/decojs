@@ -7,7 +7,7 @@
  * Model ukazuje příčinu: hladina chladne, až je těžší než voda pod ní, a teprve pak se vrstvy
  * vymění. Pod 4 °C je chladnější voda lehčí a zůstává nahoře.
  *
- * Pozice `pos` je spojitá: 0 = krok 1, 0.5 = půl cesty ke kroku 2, po kroku 21 následuje krok 1.
+ * Pozice `pos` je spojitá: 0 = krok 1, 0.5 = půl cesty ke kroku 2, po posledním kroku následuje krok 1.
  */
 
 /** Hloubky z tabulky (m), ke každé patří jedna teplota v `temps`. */
@@ -69,8 +69,9 @@ export const LAKE_STEPS = Object.freeze([
     { month: 'září', temps: [18, 18, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
     { month: 'říjen', temps: [12, 12, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
     { month: 'listopad', temps: [7, 7, 7, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
-    { month: 'prosinec', temps: [5, 7, 7, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
-    { month: 'prosinec', temps: [6, 6, 6, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
+    { month: 'prosinec', temps: [4, 7, 7, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
+    { month: 'prosinec', temps: [5, 5, 5, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
+    { month: 'prosinec', temps: [4, 5, 5, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
     { month: 'prosinec', temps: [4, 4, 4, 4, 4], ice: false, kind: 'výměna', label: 'vrstvy se mění až ke dnu: podzimní promíchání' },
     { month: 'prosinec', temps: [3, 4, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina je chladnější, ale pod 4\u00a0°C je lehčí, a proto zůstává nahoře' },
     { month: 'leden', temps: [1, 3, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina dál chladne a zůstává nahoře' },

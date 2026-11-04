@@ -39,19 +39,20 @@ const TABLE = [
     ['září', 13, [18, 18, 11, 5, 4], false, 'chlazení', 'hladina chladne'],
     ['říjen', 8, [12, 12, 11, 5, 4], false, 'chlazení', 'hladina chladne'],
     ['listopad', 4, [7, 7, 7, 5, 4], false, 'chlazení', 'hladina chladne'],
-    ['prosinec', 0, [5, 7, 7, 5, 4], false, 'těžší', 'hladina je chladnější než vrstva pod ní, a proto těžší'],
-    ['prosinec', 0, [6, 6, 6, 5, 4], false, 'výměna', 'vrstvy se mění: těžší voda klesá, teplejší stoupá'],
+    ['prosinec', 0, [4, 7, 7, 5, 4], false, 'těžší', 'hladina je chladnější než vrstva pod ní, a proto těžší'],
+    ['prosinec', 0, [5, 5, 5, 5, 4], false, 'výměna', 'vrstvy se mění: těžší voda klesá, teplejší stoupá'],
+    ['prosinec', 0, [4, 5, 5, 5, 4], false, 'těžší', 'hladina je chladnější než vrstva pod ní, a proto těžší'],
     ['prosinec', 0, [4, 4, 4, 4, 4], false, 'výměna', 'vrstvy se mění až ke dnu: podzimní promíchání'],
     ['prosinec', 0, [3, 4, 4, 4, 4], false, 'lehčí', `hladina je chladnější, ale pod 4${NB}°C je lehčí, a proto zůstává nahoře`],
     ['leden', -1, [1, 3, 4, 4, 4], false, 'lehčí', 'hladina dál chladne a zůstává nahoře'],
 ];
 
-test('21 kroků přesně podle tabulky: měsíc, vzduch, teploty, led, druh, popisek', () => {
+test('22 kroků přesně podle tabulky: měsíc, vzduch, teploty, led, druh, popisek', () => {
     assert.deepEqual(LAKE_STEPS.map(s => [s.month, airOf(s.month), s.temps, s.ice, s.kind, s.label]), TABLE);
 });
 
 test('5 hloubek v každém kroku, u dna vždy 4 °C', () => {
-    assert.equal(LAKE_STEPS.length, 21);
+    assert.equal(LAKE_STEPS.length, 22);
     for (const [i, s] of LAKE_STEPS.entries()) {
         assert.equal(s.temps.length, LAKE_DEPTHS.length, `krok ${i + 1}`);
         assert.equal(s.temps.at(-1), 4, `krok ${i + 1}`);
@@ -60,25 +61,22 @@ test('5 hloubek v každém kroku, u dna vždy 4 °C', () => {
 
 test('„těžší“: hladina je opravdu hustší než vrstva pod ní; nad 4 °C tedy i chladnější', () => {
     const steps = LAKE_STEPS.filter(s => s.kind === 'těžší');
-    assert.equal(steps.length, 3);
+    assert.equal(steps.length, 4);
     for (const s of steps) {
         assert.ok(waterDensity(s.temps[0]) > waterDensity(s.temps[1]), `${s.temps}: hustota`);
         if (s.temps[0] > 4) assert.ok(s.temps[0] < s.temps[1], `${s.temps}: nad 4 °C chladnější`);
     }
 });
 
-test('„výměna“ nad 4 °C: před výměnou byla hladina chladnější; po ní je vyrovnaná, proto se měří krok předtím', () => {
-    const before = (i) => LAKE_STEPS[i - 1].temps;
-    assert.ok(before(12)[0] < before(12)[1], 'krok 13: 21 < 22');
-    assert.ok(before(17)[0] < before(17)[1], 'krok 18: 5 < 7');
-    assert.ok(waterDensity(before(4)[0]) > waterDensity(before(4)[1]), 'krok 5: 4 °C je hustší než 3 °C');
-    for (const i of [4, 12, 17, 18]) {
-        assert.equal(LAKE_STEPS[i].kind, 'výměna');
+test('před každou výměnou je hladina těžší než vrstva pod ní; nad 4 °C tedy chladnější', () => {
+    const exchanges = LAKE_STEPS.flatMap((s, i) => (s.kind === 'výměna' ? [i] : []));
+    assert.deepEqual(exchanges, [4, 12, 17, 19]);
+    for (const i of exchanges) {
+        const [surface, below] = LAKE_STEPS[i - 1].temps;
+        assert.ok(waterDensity(surface) > waterDensity(below), `před krokem ${i + 1}: ${surface} °C je hustší než ${below} °C`);
+        if (below > 4) assert.ok(surface < below, `před krokem ${i + 1}: ${surface} °C < ${below} °C`);
         assert.equal(LAKE_STEPS[i].temps[0], LAKE_STEPS[i].temps[1], `krok ${i + 1}: po výměně vyrovnáno`);
     }
-    // Známá výjimka v zadané tabulce, nahlášená koordinátorovi: před krokem 19 je 6, 6, 6, 5, 4,
-    // hladina není chladnější než vrstva pod ní. Až se tabulka změní, tenhle řádek na to upozorní.
-    assert.deepEqual(before(18).slice(0, 2), [6, 6]);
 });
 
 test('„lehčí“: pod 4 °C je chladnější voda méně hustá, zůstává nahoře', () => {
@@ -90,11 +88,11 @@ test('„lehčí“: pod 4 °C je chladnější voda méně hustá, zůstává n
     }
 });
 
-test('výměna zasahuje jen vrstvy, které se mění; krok 19 až ke dnu', () => {
+test('výměna zasahuje jen vrstvy, které se mění; krok 20 až ke dnu', () => {
     assert.equal(exchangeLayerCount(4), 3);
     assert.equal(exchangeLayerCount(12), 3);
     assert.equal(exchangeLayerCount(17), 3);
-    assert.equal(exchangeLayerCount(18), 4);
+    assert.equal(exchangeLayerCount(19), 4);
 });
 
 test('hloubky a pásy v měřítku 0–30 m', () => {
@@ -125,17 +123,17 @@ test('přechod je plynulý: teploty, vzduch i led se mění postupně', () => {
     assert.deepEqual(f.temps, [1, 2, 3, 4, 4]);
     assert.equal(f.air, 1.5);
     assert.equal(f.ice, 0.5, 'led taje');
-    assert.equal(lakeFrame(20.5).ice, 0.5, 'krok 21 → 1: led přirůstá');
+    assert.equal(lakeFrame(21.5).ice, 0.5, 'krok 22 → 1: led přirůstá');
     assert.equal(lakeFrame(0.25).step, 0);
     assert.equal(lakeFrame(0.75).step, 1);
 });
 
-test('po kroku 21 krok 1 a naopak: dokola', () => {
-    assert.equal(stepIndex(20, 1), 0);
-    assert.equal(stepIndex(0, -1), 20);
+test('po kroku 22 krok 1 a naopak: dokola', () => {
+    assert.equal(stepIndex(21, 1), 0);
+    assert.equal(stepIndex(0, -1), 21);
     assert.equal(stepIndex(5, 1), 6);
-    assert.deepEqual(lakeFrame(21).temps, LAKE_STEPS[0].temps);
-    assert.deepEqual(lakeFrame(-1).temps, LAKE_STEPS[20].temps);
+    assert.deepEqual(lakeFrame(22).temps, LAKE_STEPS[0].temps);
+    assert.deepEqual(lakeFrame(-1).temps, LAKE_STEPS[21].temps);
 });
 
 test('?krok= a ?mesic=: měsíc otevře svůj první krok, krok má přednost, bez předvolby null', () => {
@@ -146,7 +144,8 @@ test('?krok= a ?mesic=: měsíc otevře svůj první krok, krok má přednost, b
     const parse = (q) => stepFromParams(readParams(q, LAKE_PARAMS));
     assert.equal(parse(''), null);
     assert.equal(parse('?krok=13'), 12);
-    assert.equal(parse('?krok=99'), 20, 'ořez');
+    assert.equal(parse('?krok=99'), 21, 'ořez');
+    assert.equal(parse('?krok=22'), 21);
     assert.equal(parse('?mesic=9'), 10);
     assert.equal(parse('?mesic=9&krok=2'), 1);
     assert.equal(parse('?mesic=abc'), null);
@@ -159,7 +158,7 @@ test('po zavření simulátoru předvolby zmizí z adresy, cizí parametry zůst
 
 test('odečet: měsíc, pořadí kroku a popisek', () => {
     assert.deepEqual(lakeReadout(12), {
-        main: 'Září', sub: 'krok 13 z 21', label: 'vrstvy se mění: těžší voda klesá, teplejší stoupá',
+        main: 'Září', sub: 'krok 13 z 22', label: 'vrstvy se mění: těžší voda klesá, teplejší stoupá',
     });
 });
 
@@ -186,7 +185,7 @@ test('stránka: ovládání po krocích, výklad s odstavcem o vzduchu', () => {
     assert.match(html, /předchozí krok/);
     assert.match(html, /další krok/);
     assert.doesNotMatch(html, /předchozí měsíc|další měsíc/);
-    assert.match(html, /id="krok-slider" min="1" max="21"/);
+    assert.match(html, /id="krok-slider" min="1" max="22"/);
     assert.match(html, /Modelový lom hluboký 30&nbsp;m, typický rok\. Odhad podle hlášení potápěčů, ne měření\./);
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8');
     assert.match(concept, /Proč hladina nevychladne na teplotu vzduchu\?/);

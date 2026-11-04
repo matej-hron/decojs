@@ -2,7 +2,7 @@
  * Kapitola P1 Hustota: oba modely + společné chování kapitoly. Modely se otevírají
  * z náhledů na slidu 9 (`js/course/modelOverlay.js`) a staví se až při otevření.
  * Model 1 — hustota vody a teplota (`?teplota=&rozsah=`, kotva #model-hustota).
- * Model 2 — modelový lom během roku, posun po krocích (`?krok=1..21`, `?mesic=1..12`, kotva #model-lom).
+ * Model 2 — modelový lom během roku, posun po krocích (`?krok=1..22`, `?mesic=1..12`, kotva #model-lom).
  */
 
 import { initChapter } from './chapter.js';
@@ -25,7 +25,7 @@ export const DENSITY_PARAMS = {
 /** Náhled lomu na slidu ukazuje krok 10 (srpen). */
 const THUMB_STEP = 9;
 export const LAKE_PARAMS = {
-    krok: { min: 1, max: 21, step: 1, default: null },
+    krok: { min: 1, max: 22, step: 1, default: null },
     mesic: { min: 1, max: 12, step: 1, default: null },
 };
 
