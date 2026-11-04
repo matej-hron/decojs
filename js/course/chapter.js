@@ -4,7 +4,8 @@
  *  - přepínač „Rozbalit všechny výklady“ pro `<details class="course-more">`,
  *  - předchozí / další kapitola podle `js/course/p1Course.js`,
  *  - vložení sdílených bloků pojmů a otázek „Procvič si“,
- *  - celá obrazovka pro modely (`.chart-container` + tlačítka podle Chart Standards).
+ *  - celá obrazovka pro modely (`.chart-container` + tlačítka podle Chart Standards),
+ *  - přepínání slidů šipkami a tlačítky (`js/course/slideNav.js`).
  *
  * Stránka nese `<body data-course-chapter="hustota">` a začíná rovnou prvním slidem: jeho
  * nadpis je jediné `h1`, úvod kapitoly patří do „Více“ pod ním.
@@ -13,6 +14,7 @@
 import { P1_CHAPTERS, chapterBySlug, chapterNeighbours } from './p1Course.js';
 import { loadConcepts } from './concepts.js';
 import { initPractice } from './practice.js';
+import { initSlideNav } from './slideNav.js';
 
 /**
  * Seznam sekcí pro obsah: každá `section[id]` s nadpisem `h1` nebo `h2` v `main`.
@@ -108,8 +110,10 @@ export async function initChapter() {
     renderToc();
     initFullscreen();
     renderPrevNext(slug);
+    const landOnHash = initSlideNav(slug ?? null);
     await Promise.all([loadConcepts(document), initPractice(document)]);
     initExpandAll();
     // Po vložení bloků se stránka prodlouží — znovu skoč na kotvu z URL (odkaz na model).
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    landOnHash();
 }

@@ -20,7 +20,7 @@ z webu, zbytek ze slidů) je v pořádku.
 |---|---|---|
 | Kdo | Matej u notebooku → projektor | student |
 | Zařízení | landscape, 1280×720 až 1920×1080 | hlavně mobil na výšku (390×844) |
-| Ovládání | **normálně** myší/klávesnicí (ne speciální prezentační režim) | prstem |
+| Ovládání | **normálně** myší/klávesnicí; ← → a tlačítka ‹ › skáčou po slidech (žádný zvláštní režim) | prstem, posouváním |
 | Potřeby | čitelnost z dálky, nic důležitého pod ohybem, odpovědi schované do odkrytí, rychlé otevření konkrétního příkladu | vysvětlení, příklady s kontrolou, návrat k látce |
 
 Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí šířce.
@@ -35,7 +35,8 @@ Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí š
 
 **Ne-cíle (teď)**
 - Angličtina/španělština nových stránek (později).
-- Speciální prezentační engine, krokování klikrem, poznámky přednášejícího.
+- Speciální prezentační engine (zvláštní režim, skrývání obsahu, přechodové efekty), krokování klikrem, poznámky
+  přednášejícího. Skok na předchozí a další slide ale je: stránka se dál normálně posouvá (viz §4, Navigace).
 - P★★ témata (optika, zvuk, teplo), Dalton/Henry — po přednášce.
 - END (rozhodnutí autora: v P1 ne).
 
@@ -69,6 +70,9 @@ Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí š
   vede na rozcestník), kapitoly ne (oprava 2026-11-04, kapitola nepatří na úroveň kurzu). Na stránkách kapitol zůstává
   „Kurzy“ zvýrazněné jako aktivní. Kapitoly jsou na rozcestníku v pořadí přednášky, nehotové jako „připravujeme“.
 - V kapitole: nahoře krátký obsah sekcí (skok na sekci/model), dole „← předchozí / další kapitola →“.
+- Klávesy ← → a nenápadná tlačítka ‹ › skočí na předchozí a další zastávku (slide, model, „Procvič si“), i přes hranici
+  kapitoly a rozcestníku (rozhodnuto 2026-11-04, `js/course/slideNav.js`). Šipky se nepoužijí, když patří posuvníku nebo
+  poli, ani s modifikátorem a u modelu na celé obrazovce. Na telefonu tlačítka nejsou, tam se posouvá.
 - Úvodní stránka (`index.html`): karta „Kurz P1 – Fyzika“.
 - Modely P1 zatím NE v menu Sandbox. (Později možná Sandbox členěný podle kurzů — mimo rozsah.)
 
@@ -108,7 +112,8 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
 4. **Řešené příklady** z přednášky: zadání viditelné, výsledek a postup **schované do odkrytí** (stejně na přednášce
    i doma). Kde to dává smysl, „spočítej sám“ s kontrolou.
 5. Rámeček „Teď už umíš odpovědět na…“ (pokud kapitola nějakou otázku odemyká).
-6. Odkaz na odpovídající kategorii kvízu fyziky (`data/quiz-physics.json` má kategorie mapující se na kapitoly, např.
+6. „Procvič si“ (poslední zastávka přepínání slidů, sekce s `data-slide-stop`).
+7. Odkaz na odpovídající kategorii kvízu fyziky (`data/quiz-physics.json` má kategorie mapující se na kapitoly, např.
    `vlastnosti-vody-vzduchu`, `tlak-jednotky`, `vztlak-vystroj`, `spotreba-planovani`).
 
 ## 6. Společné požadavky na modely
@@ -184,6 +189,8 @@ Opravy, které mění význam (ne překlepy), označ v PR, ať je Matej odsouhla
 
 - Autor: pořadí kapitol zůstává; česky nejdřív; školní čísla výchozí; END ne; *p*<sub>N₂</sub> hranice ~4 bar (pásmo
   3–4) jako koncept; jeden model pro přednášku i doma; postupný přesun.
+- Autor (2026-11-04): ← → a tlačítka přepínají slidy i přes hranici kapitoly. Upřesňuje dřívější „žádný prezentační
+  režim“: nic se neskrývá, stránka se dál posouvá, zvláštní režim ani klikr nejsou potřeba.
 - Koordinátor (Matej může přebít): sekce jako samostatná skupina stránek s rozcestníkem; modely jako JS moduly
   vložené v kapitole; pilot = Hustota; projektor ve světlém tématu.
 - Koordinátor: **plán a stavba teď pokrývají jen 1. týden** (pilot Hustota + kostra vodního sloupce + rozcestník).

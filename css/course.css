@@ -587,6 +587,39 @@ details.course-more > summary .course-summary-hint {
 :root[data-theme="dark"] .course-practice .feedback { color: var(--text); }
 :root[data-theme="dark"] .course-practice .option-key { color: var(--blue-300); }
 
+/* --- přepínání slidů: tlačítka ‹ › -----------------------------------------
+   Pro myš, v rohu okna. Model na celé obrazovce je překryje (má vyšší z-index). */
+
+.course-slide-nav {
+    position: fixed;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    z-index: 900;
+    display: flex;
+    gap: var(--space-1);
+}
+.course-slide-nav button {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0 0.15em;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: var(--radius-md);
+    background: var(--blue-700);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.75;
+}
+.course-slide-nav button:hover,
+.course-slide-nav button:focus-visible { opacity: 1; }
+@media (max-width: 768px) {
+    .course-slide-nav { display: none; }
+}
+@media (min-width: 769px) {
+    .course-simplification { padding-right: 6rem; } /* poslední řádek modelu nevede pod tlačítka */
+}
+
 /* --- tisk --------------------------------------------------------------- */
 
 @media print {
@@ -610,6 +643,7 @@ details.course-more > summary .course-summary-hint {
        Kreslí se v pixelech okna, na papír se zmenší přes viewBox (100vh by tu byla výška listu). */
     .course-slide.course-model { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .course-model .chart-header .btn { display: none; }
+    .course-slide-nav { display: none; }
     .course-plot { height: auto; }
     .course-plot svg { width: 100%; height: auto !important; } /* vodní sloupec má výšku přímo na prvku */
 }

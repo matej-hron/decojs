@@ -39,6 +39,7 @@ const STATIC_ASSETS = [
   './concepts/cs/lake-stratification.html',
   './js/course/p1Course.js',
   './js/course/chapter.js',
+  './js/course/slideNav.js',
   './js/course/concepts.js',
   './js/course/practice.js',
   './js/course/modelParams.js',
