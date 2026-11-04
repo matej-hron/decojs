@@ -79,7 +79,12 @@ export function initModelOverlays(factories, { onToggle = () => {} } = {}) {
             .forEach(btn => btn.addEventListener('click', () => open(id)));
     }
 
-    window.addEventListener('resize', () => { if (openId) place(openId); });
+    // Změna okna přeskládá stránku pod překryvem: nejdřív vrátit slide na místo, pak překryv.
+    window.addEventListener('resize', () => {
+        if (!openId) return;
+        slideOf(openId)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+        place(openId);
+    });
 
     const openFromHash = () => {
         const id = window.location.hash.slice(1);

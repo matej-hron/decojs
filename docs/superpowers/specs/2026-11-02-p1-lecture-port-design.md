@@ -69,8 +69,8 @@ Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí š
 - Hlavní menu (`js/nav.js`): nová položka **„Kurzy“** mezi Home a Sandbox; podmenu obsahuje **jen kurzy** („P1 – Fyzika“
   vede na rozcestník), kapitoly ne (oprava 2026-11-04, kapitola nepatří na úroveň kurzu). Na stránkách kapitol zůstává
   „Kurzy“ zvýrazněné jako aktivní. Kapitoly jsou na rozcestníku v pořadí přednášky, nehotové jako „připravujeme“.
-- V kapitole: nahoře krátký obsah sekcí (skok na sekci/model), dole „← předchozí / další kapitola →“.
-- Klávesy ← → a nenápadná tlačítka ‹ › skočí na předchozí a další zastávku (slide, model, „Procvič si“), i přes hranici
+- V kapitole: bez obsahu sekcí a bez lišty (oprava 2026-11-04), jen patička slidu (viz §5), dole „← předchozí / další kapitola →“.
+- Klávesy ← → a nenápadná tlačítka ‹ › skočí na předchozí a další zastávku (slide, „Procvič si“), i přes hranici
   kapitoly a rozcestníku (rozhodnuto 2026-11-04, `js/course/slideNav.js`). Šipky se nepoužijí, když patří posuvníku nebo
   poli, ani s modifikátorem a u modelu na celé obrazovce. Na telefonu tlačítka nejsou, tam se posouvá.
 - Úvodní stránka (`index.html`): karta „Kurz P1 – Fyzika“.
@@ -95,13 +95,14 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
 
 ## 5. Šablona kapitoly
 
-1. Kapitola začíná **rovnou prvním slidem**, jako na přednášce (oprava 2026-11-04). Nad ním je jen jedna úzká lišta
-   kurzu, stejná i na rozcestníku a na desktopu přilepená: kurz › kapitola, odkazy na sekce, „Rozbalit všechny výklady“
-   a tlačítka ‹ ›. Nadpis prvního slidu je jediné `h1` stránky.
+1. Kapitola začíná **rovnou prvním slidem**, jako na přednášce (oprava 2026-11-04), navigační lišta není. Na každém slidu
+   je stejná **patička** v rámečku: vlevo jméno přednášky „P1 – Fyzika“ (odkaz na Obsah), vpravo číslo slidu z přednášky
+   (atribut `data-slide-number`; titulní slide a „Procvič si“ ho nemají) a tlačítka ‹ ›. Název slidu je nadpis.
+   „Rozbalit všechny výklady“ je v řádku „Více“ vpravo. Nadpis prvního slidu je jediné `h1` stránky.
 
    **Pevná scéna (desktop):** všechny zastávky (titulní slide, slidy, modely, „Procvič si“) mají stejný rámeček, nadpis
    i začátek těla, přepnutí vypadá jako v PowerPointu. Zastávka = slide + řádek „Více“ a vyplní celou výšku pod
-   lištou (řádek zůstane prázdný, když „Více“ není), další slide tedy není vidět. Písmo závisí jen na okně. Rozměry jsou
+   hlavičkou webu (řádek zůstane prázdný, když „Více“ není), další slide tedy není vidět. Písmo závisí jen na okně. Rozměry jsou
    jedny v `css/course.css`, slide na nízkém okně smí narůst, obsah se neořezává. Telefon: normální tok, žádná pevná výška.
    Krátký úvod (proč to potápěč potřebuje) a **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“) patří
    na začátek „Více“ pod prvním slidem. Jsou to text kapitoly, ne sdílený blok pojmu.
@@ -109,7 +110,7 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
    - **Jádro = text slidu** (opravený, téměř doslovně), vždy viditelné. To se promítá. **Na projektoru se jádro
      sekce vejde na jednu obrazovku** (landscape) — velké písmo a čísla, kontrast pro projektor ve světlém tématu.
    - **„Více“ = výklad na doma** — to, co Matej říká nahlas; ve výchozím stavu sbalené (na mobilu i projektoru
-     stejně), rozbalí se klikem. Přepínač „Rozbalit všechny výklady“ je v liště nad prvním slidem.
+     stejně), rozbalí se klikem. Přepínač „Rozbalit všechny výklady“ je v řádku „Více“.
    - Stejný vzor rozbalování jako u odpovědí příkladů (bod 4) — jeden vzor na stránce; preferovat nativní
      `<details>`/`<summary>` (funguje offline i bez JS).
    - Text ve „Více“ píše builder → **Matej ho schvaluje před merge** (v PR vypsat všechny nové odstavce, nebo je

@@ -8,7 +8,8 @@
  * Zastávka = každý `.course-slide` kromě modelů (ty se otevírají z náhledu), včetně „Procvič si“. Každá
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
- * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v liště kurzu.
+ * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v patičce
+ * každého slidu, vedle jména přednášky a čísla slidu (`data-slide-number` na slidu).
  */
 
 import { P1_CHAPTERS } from './p1Course.js';
@@ -100,7 +101,7 @@ export function isSliderTarget(target) {
     return Boolean(target?.closest?.(SLIDER));
 }
 
-/** Skok na zastávku. První je začátek stránky i s lištou, adresa pak hash nepotřebuje. */
+/** Skok na zastávku. První je začátek stránky, adresa pak hash nepotřebuje. */
 function jumpTo(stops, index) {
     const stop = stops[index];
     if (index === 0) window.scrollTo({ top: 0, behavior: 'instant' });
@@ -110,27 +111,43 @@ function jumpTo(stops, index) {
     window.history.replaceState(null, '', `${pathname}${search}${anchor ? `#${anchor}` : ''}`);
 }
 
-function step(slug, dir) {
+function step(slug, dir, from = null) {
     const stops = collectStops(document);
     const stageTop = parseFloat(getComputedStyle(stops[0]).scrollMarginTop) || 0;
-    const index = mostVisibleIndex(stops.map(s => s.getBoundingClientRect()), stageTop, window.innerHeight);
+    const index = from ? stops.indexOf(from)
+        : mostVisibleIndex(stops.map(s => s.getBoundingClientRect()), stageTop, window.innerHeight);
     const target = nextTarget({ slug, index, count: stops.length, dir });
     if (!target) return;
     if ('stop' in target) jumpTo(stops, target.stop);
     else window.location.replace(target.href); // skoky nezaplňují historii prohlížeče
 }
 
-function renderButtons(slug) {
-    const nav = document.querySelector('.course-bar .course-slide-nav');
-    if (!nav) return;
-    for (const [dir, label, glyph] of [[-1, 'Předchozí slide', '‹'], [1, 'Další slide', '›']]) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = glyph;
-        btn.title = label;
-        btn.setAttribute('aria-label', label);
-        btn.addEventListener('click', () => step(slug, dir));
-        nav.appendChild(btn);
+/**
+ * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu a ‹ ›.
+ * @param {string|null} number číslo slidu z přednášky; titulní slide a „Procvič si“ ho nemají
+ * @returns {string} HTML
+ */
+export function slideFootHtml(number) {
+    const label = number ? ` aria-label="slide ${number}"` : '';
+    return `<a class="course-foot-title" href="index.html#kapitoly">P1 – Fyzika</a>
+        <span class="course-foot-right">
+            <span class="course-foot-number"${label}>${number ?? ''}</span>
+            <span class="course-slide-nav" role="group" aria-label="Přepínání slidů">
+                <button type="button" data-step="-1" title="Předchozí slide" aria-label="Předchozí slide">‹</button>
+                <button type="button" data-step="1" title="Další slide" aria-label="Další slide">›</button>
+            </span>
+        </span>`;
+}
+
+function renderFeet(slug) {
+    for (const stop of collectStops(document)) {
+        const foot = document.createElement('div');
+        foot.className = 'course-foot';
+        foot.innerHTML = slideFootHtml(stop.dataset.slideNumber ?? null);
+        foot.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
+            step(slug, Number(btn.dataset.step), stop);
+        }));
+        stop.appendChild(foot);
     }
 }
 
@@ -148,7 +165,7 @@ export function initSlideNav(slug) {
         e.preventDefault();
         step(slug, dir);
     });
-    renderButtons(slug);
+    renderFeet(slug);
 
     return () => {
         const stops = collectStops(document);

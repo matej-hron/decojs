@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import {
-    collectStops, isSliderTarget, mostVisibleIndex, nextTarget, slideKeyDirection, stopAnchor,
+    collectStops, isSliderTarget, mostVisibleIndex, nextTarget, slideFootHtml, slideKeyDirection, stopAnchor,
 } from '../js/course/slideNav.js';
 import { P1_CHAPTERS } from '../js/course/p1Course.js';
 
@@ -157,5 +157,29 @@ describe('zastávky na skutečných stránkách', () => {
     it('rozbalené „Více“ a řešený příklad zastávky nejsou', () => {
         const stops = collectStops(pageDom('p1/hustota.html'));
         assert.ok(stops.every(s => !s.closest('details') && !s.matches('.course-example')));
+    });
+});
+
+describe('patička slidu', () => {
+    it('vlevo jméno přednášky jako odkaz na Obsah, vpravo číslo a tlačítka', () => {
+        const html = slideFootHtml('9');
+        assert.match(html, /<a[^>]*href="index\.html#kapitoly"[^>]*>P1 – Fyzika<\/a>/);
+        assert.match(html, /class="course-foot-number"[^>]*>9</);
+        assert.match(html, /data-step="-1"/);
+        assert.match(html, /data-step="1"/);
+        assert.ok(html.indexOf('P1 – Fyzika') < html.indexOf('>9<'), 'jméno vlevo, číslo vpravo');
+    });
+
+    it('slide bez čísla má stejnou stavbu, jen číslo chybí', () => {
+        const html = slideFootHtml(null);
+        assert.doesNotMatch(html, /course-foot-number[^>]*>\d/);
+        assert.match(html, /P1 – Fyzika/);
+        assert.match(html, /data-step="1"/);
+    });
+
+    it('čísla slidů odpovídají přednášce, titulní slide a Procvič si číslo nemají', () => {
+        const numbers = (page) => collectStops(pageDom(page)).map(s => s.dataset.slideNumber ?? null);
+        assert.deepEqual(numbers('p1/index.html'), [null, '6', '7']);
+        assert.deepEqual(numbers('p1/hustota.html'), ['8', '9', null]);
     });
 });

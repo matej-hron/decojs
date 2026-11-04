@@ -201,16 +201,13 @@ test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“
 
 // --- šablona kapitoly: začíná rovnou prvním slidem --------------------------
 
-import { breadcrumbHtml } from '../js/course/chapter.js';
-
 for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
-    test(`kapitola ${c.slug}: lišta, hned za ní první slide s jediným h1`, () => {
+    test(`kapitola ${c.slug}: hned první je slide s jediným h1`, () => {
         const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
         const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
         assert.equal((main.match(/<h1[\s>]/g) || []).length, 1, 'jediné h1');
-        assert.match(main, /^<main[^>]*>\s*<div class="course-bar">/, 'první je lišta');
-        assert.match(main, /<\/div>\s*(?:<!--.*?-->\s*)*<section id="[^"]+" class="course-section">\s*<div class="course-slide">\s*<h1>/,
-            'za lištou první slide, jeho nadpis je h1');
+        assert.match(main, /^<main[^>]*>\s*(?:<!--.*?-->\s*)*<section id="[^"]+" class="course-section">\s*<div class="course-slide"[^>]*>\s*<h1>/,
+            'první je slide, jeho nadpis je h1');
     });
 
     test(`kapitola ${c.slug}: úvod je na začátku prvního „Více“, mimo sdílený blok`, () => {
@@ -221,20 +218,15 @@ for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
     });
 }
 
-test('lišta kapitoly: kurz › pořadí a název kapitoly z pořadí kurzu', () => {
-    assert.equal(breadcrumbHtml('hustota'), '<a href="index.html">Kurz P1 – Fyzika</a> › 1. Hustota');
-    assert.match(breadcrumbHtml('tlak'), /› 2\. Tlak$/);
-    assert.equal(breadcrumbHtml('neexistuje'), '');
-});
 
 // --- pevná scéna: stejná šablona na rozcestníku i v kapitolách ---------------
 
 for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`)]) {
-    test(`${page}: lišta kurzu s místem pro ‹ ›, každá zastávka je slide v sekci`, () => {
+    test(`${page}: bez lišty kurzu, každá zastávka je slide v sekci`, () => {
         const html = readFileSync(new URL(page, ROOT), 'utf8');
         const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
-        assert.match(main, /^<main[^>]*>\s*<div class="course-bar">/);
-        assert.match(main.slice(0, main.indexOf('</nav>') + 300), /class="course-slide-nav"/);
+        assert.doesNotMatch(main, /course-bar|course-toc|course-breadcrumb|course-slide-ref/);
+        assert.match(main, /^<main[^>]*>\s*(?:<!--.*?-->\s*)*<section[^>]*class="course-section">\s*<div class="course-slide"/);
         assert.equal((main.match(/<h1[\s>]/g) || []).length, 1, 'jediné h1');
         assert.doesNotMatch(main, /data-slide-stop|course-slide-cover|course-title/);
         // každý slide má hlavičku jako první potomek, tělo až za ní

@@ -6,7 +6,7 @@
  */
 
 import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug } from './p1Course.js';
-import { renderCourseBar } from './chapter.js';
+import { initExpandAll } from './chapter.js';
 import { initSlideNav } from './slideNav.js';
 import { registerServiceWorker } from '../swRegister.js';
 
@@ -52,6 +52,6 @@ if (typeof document !== 'undefined') {
     document.getElementById('course-chapter-details').innerHTML = chapterDetailsHtml();
     document.getElementById('course-questions').innerHTML = questionsHtml();
     document.getElementById('course-answers').innerHTML = answersHtml();
-    renderCourseBar(null);
+    initExpandAll();
     initSlideNav(null)();
 }
