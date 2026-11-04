@@ -1,14 +1,17 @@
 # Vodní sloupec — rozhraní vrstev
 
 Vodní sloupec je **sdílený model kurzu P1** (spec `docs/superpowers/specs/2026-11-02-p1-lecture-port-design.md`
-§6). Kapitoly ho nekopírují, ale **přidávají do něj vrstvy**: teplota (Hustota), tlak + balónek/zvon
-(Tlak, Boyle), potápěč a vztlak (Archimedes), parciální tlaky (Dalton), sycení (Henry).
+§6). Kapitoly ho nekopírují, ale **přidávají do něj vrstvy**: tlak + balónek/zvon (Tlak, Boyle), potápěč
+a vztlak (Archimedes), parciální tlaky (Dalton), sycení (Henry).
+
+**První skutečná vrstva přijde s kapitolou Tlak.** Kapitola Hustota sloupec nepoužívá: model jezera v ní
+vychází z GIFu ze slidu 9 (`js/components/LakeCycle.js`) a vrstvu „teplota“ z pilotu nahradil (2026-11-04).
 
 | Soubor | Co |
 |---|---|
 | `js/components/WaterColumn.js` | kostra: osa hloubky, sloupec, hladina/led, ukazatel, posuvník, odečet, rozhraní vrstev, čisté pomocné funkce |
-| `js/components/waterColumn/<vrstva>Layer.js` | jedna vrstva = jeden soubor (vzor: `temperatureLayer.js`) |
-| `tests/water-column.test.mjs` | testy čistých částí kostry a vrstvy teplota |
+| `js/components/waterColumn/<vrstva>Layer.js` | jedna vrstva = jeden soubor (vzor: [§10](#10-jak-přidat-vrstvu--příklad-tlak)) |
+| `tests/water-column.test.mjs` | testy čistých částí kostry a rozhraní vrstev na testovací vrstvě |
 
 Tohle rozhraní je **zafixované před 2. týdnem**, aby paralelní kapitoly mohly přidávat vrstvy bez kolizí.
 Co je stabilní a co se smí měnit, je v [§9](#9-co-je-stabilní).
@@ -17,29 +20,22 @@ Co je stabilní a co se smí měnit, je v [§9](#9-co-je-stabilní).
 
 ```js
 import { createWaterColumn } from '../js/components/WaterColumn.js';
-import { createTemperatureLayer } from '../js/components/waterColumn/temperatureLayer.js';
-import { lakeTemperature, lakeBands, lakeHasIce } from '../js/physics/lakeProfiles.js';
+import { createPressureLayer } from '../js/components/waterColumn/pressureLayer.js'; // viz §10
 
-const col = createWaterColumn(document.getElementById('lom-column'), {
+const col = createWaterColumn(document.getElementById('tlak-column'), {
     maxDepth: 40,               // m
     depth: 0,                   // m, zaokrouhlí se na step
     step: 1,                    // m, krok posuvníku i tažení
     surface: 'water',           // 'water' | 'ice'
-    state: { month: 8 },        // počáteční klíče stránky / vrstev
+    state: { water: 'fresh' },  // počáteční klíče stránky / vrstev
     // aside: false,            // vypne všechny boční panely
     // height: 480,             // px, nebo (width) => px; výchozí defaultHeight(width)
     // labels: { depthAxis: 'hloubka / m', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
 });
 
-col.addLayer(createTemperatureLayer({
-    profile: (depth, s) => lakeTemperature(s.month, depth, s.maxDepth),
-    bands: (s) => lakeBands(s.month, s.maxDepth),
-}));
+col.addLayer(createPressureLayer());
 
-monthSelect.addEventListener('change', () => {
-    const month = Number(monthSelect.value);
-    col.setState({ month, surface: lakeHasIce(month) ? 'ice' : 'water' });
-});
+waterSelect.addEventListener('change', () => col.setState({ water: waterSelect.value }));
 
 const off = col.on('change', (state, { source, changed }) => {
     if (changed.includes('depth')) writeUrlParam('hloubka', state.depth);
@@ -101,7 +97,7 @@ Konvence `zIndex`:
 
 | `zIndex` | Pro co | Příklad |
 |---|---|---|
-| −10 | barevné pozadí sloupce | teplota (gradient) |
+| −10 | barevné pozadí sloupce | hustota vody (přijde později) |
 | 0 | čáry, popisky, grafy v panelu | tlak, parciální tlaky |
 | 10 | předměty ve vodě | balónek, zvon, potápěč |
 
@@ -139,7 +135,7 @@ název osy na `y + h + 2.75 em`.
 ### Proč panel pro každou vrstvu (odchylka od plánu)
 
 Plán měl jeden `aside` pro celý sloupec. Kostra místo toho dává **každé vrstvě s `aside: true` vlastní
-panel** vedle sebe: profil teploty a průběh tlaku mají jiné vodorovné osy a ve společném panelu by se
+panel** vedle sebe: průběh tlaku a parciální tlaky mají jiné vodorovné osy a ve společném panelu by se
 paralelní kapitoly praly o místo i o osu. Kapitola s jednou vrstvou se chová přesně jako v plánu.
 Na mobilu (< 600 px) je sloupec ~42 % šířky a zbytek panely — s jednou vrstvou má panel na 390 px
 displeji ~180 px. Víc než dva panely na mobil nedávej (kapitola, ne kostra, rozhoduje, které vrstvy
@@ -152,7 +148,7 @@ zapne).
 | Druh klíče | Kdo ho vlastní | Tvar | Příklady |
 |---|---|---|---|
 | **kostra** | `WaterColumn.js` | rezervované jméno (`CORE_STATE_KEYS`) | `depth` (m), `maxDepth` (m), `surface` (`'water'`\|`'ice'`) |
-| **scénář** | stránka (kapitola) | bez prefixu, popisuje svět, ne vrstvu | `month` (1–12), později `water` (`'fresh'`\|`'salt'`), `altitude` (m) |
+| **scénář** | stránka (kapitola) | bez prefixu, popisuje svět, ne vrstvu | `water` (`'fresh'`\|`'salt'`), `altitude` (m) |
 | **soukromý klíč vrstvy** | jedna vrstva | **prefix = `id` vrstvy, camelCase** | `pressureMode` (`'school'`\|`'exact'`), `diverWeights`, `balloonVolume0` |
 
 Pravidla:
@@ -162,7 +158,7 @@ Pravidla:
   zůstávají bez prefixu a jejich význam se zapíše do tabulky níže — **nový scénářový klíč = řádek v této
   tabulce v tomtéž PR**.
 - Vrstva, která něco potřebuje od stránky (profil, data), to dostane **v options továrny** (funkce
-  `profile(depth, state)`), ne tím, že by znala jezero nebo kapitolu.
+  `profile(depth, state)`), ne tím, že by znala kapitolu.
 - Plochý klíč s prefixem (`pressureMode`) místo vnořeného objektu (`pressure.mode`) proto, že
   `setState` slučuje mělce a `on('change')` hlásí `changed` jako seznam jmen — vnořený objekt by se
   při každé změně celý přepsal a nešlo by poznat, co se změnilo.
@@ -171,7 +167,6 @@ Registrované scénářové klíče:
 
 | Klíč | Typ | Kdo zapisuje | Význam |
 |---|---|---|---|
-| `month` | 1–12 | `p1/hustota.html` | měsíc roku pro teplotní profil lomu |
 | `water` | `'fresh'` \| `'salt'` | stránka kapitoly (Tlak, Archimedes) — **rezervováno pro 2. týden** | sladká / slaná voda (hustota pro tlak i vztlak) |
 | `altitude` | m n. m. | stránka kapitoly (Tlak) — **rezervováno pro 2. týden** | nadmořská výška hladiny (atmosférický tlak) |
 
@@ -231,8 +226,7 @@ Vrstvy **nepoužívají natvrdo psané barvy textu a čar** — berou je z `geom
 | `dark` | `'light'` \| `'dark'` | jen kdyby vrstva opravdu potřebovala jinou barvu dat |
 
 Text přes barevnou plochu: `haloAttrs(colors, fontSize)` (text v `--text`, pod ním obrys v `--surface`).
-Barvy **dat** vrstvy (stupnice teploty, …) smí mít vrstva vlastní, ale přepsatelné CSS proměnnou
-`--wc-<vrstva>-*` (teplota: `--wc-temp-cold`, `--wc-temp-mid`, `--wc-temp-warm`).
+Barvy **dat** vrstvy smí mít vrstva vlastní, ale přepsatelné CSS proměnnou `--wc-<vrstva>-*`.
 
 ## 8. Exporty pro vrstvy a testy
 
@@ -246,29 +240,6 @@ DOM pomocníci: `svgEl(tag, attrs, parent)` (`attrs.text` = textContent), `haloA
 U+2212 + bez „−0“), nikdy `toFixed` — ten je dovolený jen pro souřadnice SVG. Obsah kurzu je zatím jen
 česky, proto pevně `'cs'`. Mezi číslem a jednotkou v `readout` `&nbsp;`, v SVG `<text>` znak U+00A0.
 V SVG `<text>` prostý text (bez kurzívy — SVG nemá `<var>`); kurzíva značek jen v HTML odečtu.
-
-Vrstva teplota navíc exportuje `temperatureColor(t, range, stops)`, `temperatureTicks`,
-`sampleProfile`, `resolveBands`, `temperatureReadout` a převody `hexToRgb`, `rgbToHex`, `rgbToOklab`,
-`oklabToRgb`.
-
-### Vrstva teplota
-
-```js
-createTemperatureLayer({
-    profile: (depth, state) => °C,   // povinné
-    range: [0, 25],                  // °C: osa panelu i barevná stupnice (mimo rozsah = krajní barva)
-    bands: [{ from, to, label }] | (state) => [...],   // volitelná pásma (m)
-    decimals: 0, label: 'teplota', axisLabel: 'teplota / °C', aside: true, id: 'temperature',
-});
-```
-
-- Sloupec obarvený svislým gradientem vzorkovaným z profilu (~1 vzorek / 4 px). Stupnice tmavě modrá →
-  světle šedá → červenooranžová, interpolovaná v OKLab (stejný krok teploty ≈ stejný krok barvy);
-  osa modrá–oranžová je čitelná i pro barvoslepé. `zIndex: −10`.
-- Pásma: čárkované hranice přes sloupec i panel, popisek uvnitř pásma (zalomí se na dva řádky, příliš
-  tenké pásmo popisek nemá — hranice zůstanou).
-- Panel: profil teploty (čára v `--text`), osa „teplota / °C“ po 5&nbsp;°C (při úzkém panelu po 10),
-  bod v aktuální hloubce s popiskem „8 °C“.
 
 ## 9. Co je stabilní
 
@@ -343,8 +314,8 @@ export function createPressureLayer({ id = 'pressure' } = {}) {
 }
 ```
 
-Na stránce: `col.addLayer(createPressureLayer())` — kostra jí přidělí druhý panel vedle teploty
-a odečet bude „hloubka 10&nbsp;m · teplota 8&nbsp;°C · *p* = 2,0&nbsp;bar“.
+Na stránce: `col.addLayer(createPressureLayer())` — kostra jí přidělí panel vedle sloupce
+a odečet bude „hloubka 10&nbsp;m · *p* = 2,0&nbsp;bar“.
 
 ## 11. Offline a integrace
 

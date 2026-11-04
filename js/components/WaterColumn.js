@@ -3,7 +3,7 @@
  *
  * A vertical column of water with a depth axis, a water surface (or ice),
  * a depth pointer the user can drag and a depth slider. Chapters do not copy
- * this component; they add *layers* to it (temperature, pressure + balloon,
+ * this component; they add *layers* to it (pressure + balloon,
  * diver and buoyancy, partial pressures, saturation …).
  *
  * The layer contract is documented in docs/course/water-column.md — read it
@@ -38,7 +38,7 @@ export const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
  * State keys owned by the core. Layers read them, only the core validates them.
- * Every other key belongs to the page (scenario keys such as `month`) or to a
+ * Every other key belongs to the page (scenario keys such as `water`) or to a
  * layer (keys prefixed with the layer id, e.g. `pressureMode`).
  */
 export const CORE_STATE_KEYS = Object.freeze(['depth', 'maxDepth', 'surface']);

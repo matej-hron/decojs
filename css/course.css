@@ -53,6 +53,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     --slide-chart-line: var(--blue-200);
     --slide-chart-point: #ff9d8a;
     --slide-chart-max: #ffc04d;
+    --slide-wind-warm: #ff7a66;
+    --slide-wind-cold: #5cb8f5;
+    --slide-ground: #6e4f3c;
     --slide-ok-bg: #12402f;
     --slide-bad-bg: #4a2020;
 
@@ -94,6 +97,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     --slide-chart-line: var(--blue-600);
     --slide-chart-point: #c0392b;
     --slide-chart-max: #b76e00;
+    --slide-wind-warm: #c9301f;
+    --slide-wind-cold: #1670c0;
+    --slide-ground: #8a6450;
     --slide-ok-bg: #e8f8f0;
     --slide-bad-bg: #fef2f2;
 }
@@ -127,6 +133,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     --wc-ice: var(--blue-50);
     --wc-ice-stroke: var(--blue-300);
     --wc-ice-text: var(--gray-800);
+    --lake-wind-warm: var(--slide-wind-warm);
+    --lake-wind-cold: var(--slide-wind-cold);
+    --lake-ground: var(--slide-ground);
 
     position: relative;
     display: flex;
@@ -495,6 +504,17 @@ details.course-more > summary .course-summary-hint {
     .course-column-host .water-column-readout { margin: 0; }
 }
 
+.course-slide .course-play {
+    flex: none;
+    min-width: 7rem;
+    min-height: 44px;
+    background: var(--slide-accent);
+    color: var(--slide-on-accent);
+    border: 1px solid var(--slide-accent);
+    box-shadow: none;
+}
+.course-slide .course-play[aria-pressed="true"] { background: transparent; color: var(--slide-fg); border-color: var(--slide-line-strong); }
+
 .course-simplification {
     font-size: var(--text-sm);
     color: var(--text-subtle);
@@ -581,7 +601,7 @@ details.course-more > summary .course-summary-hint {
     .course-table th, .course-table td { padding-right: 0.5em; }
 }
 
-/* Vodní sloupec si výšku řídí sám (svg + odečet + posuvník hloubky). */
+/* Vodní sloupec (kapitola Tlak) si výšku řídí sám: svg + odečet + posuvník hloubky. */
 .course-plot.course-column-host { height: auto; }
 
 .water-column-readout {

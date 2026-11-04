@@ -1,7 +1,7 @@
 /**
  * Kapitola P1 Hustota: oba modely + společné chování kapitoly.
  * Model 1 — hustota vody a teplota (`?teplota=&rozsah=`, kotva #model-hustota).
- * Model 2 — lom během roku ve vodním sloupci (`?mesic=&hloubka=`, kotva #model-lom).
+ * Model 2 — jezero během roku podle GIFu z přednášky (`?faze=1..9`, kotva #model-lom).
  */
 
 import { initChapter } from './chapter.js';
@@ -9,10 +9,9 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { lakeTemperature, lakeBands, lakeHasIce, lakePhase, LAKE_MONTHS, LAKE_PHASE_LABELS } from '../physics/lakeProfiles.js';
+import { LAKE_PHASES } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
-import { createWaterColumn } from '../components/WaterColumn.js';
-import { createTemperatureLayer } from '../components/waterColumn/temperatureLayer.js';
+import { createLakeCycle } from '../components/LakeCycle.js';
 
 const NBSP = ' ';
 const fmt = (v, d) => fmtNum(v, d, 'cs').replace('-', '−');
@@ -22,10 +21,8 @@ export const DENSITY_PARAMS = {
     rozsah: { min: 10, max: 30, step: 20, default: 10 },
 };
 export const LAKE_PARAMS = {
-    mesic: { min: 1, max: 12, step: 1, default: 8 },
-    hloubka: { min: 0, max: 40, step: 1, default: 0 },
+    faze: { min: 1, max: 9, step: 1, default: null }, // bez předvolby se přehrává
 };
-const LAKE_DEPTH = 40;
 
 /**
  * Text odečtu modelu 1.
@@ -84,54 +81,62 @@ function initDensityModel(initial) {
     render(false);
 }
 
+/**
+ * Text odečtu modelu jezera.
+ * @param {number} index fáze (0 = fáze 1)
+ * @returns {{main: string, sub: string}}
+ */
+export function lakeReadout(index) {
+    const p = LAKE_PHASES[index];
+    return {
+        main: `Fáze ${index + 1} z ${LAKE_PHASES.length}: ${p.label}`,
+        sub: `${p.wind === 'warm' ? 'teplý' : 'studený'} vítr${p.ice ? ', na hladině led' : ''}`,
+    };
+}
+
 function initLakeModel(initial) {
-    const slider = document.getElementById('mesic-slider');
-    const phaseEl = document.getElementById('lom-phase');
-    const host = document.getElementById('lom-column');
+    const slider = document.getElementById('faze-slider');
+    const readout = document.getElementById('jezero-faze');
+    const playBtn = document.getElementById('jezero-play');
+    const host = document.getElementById('jezero-scene');
     if (!slider || !host) return null;
 
-    const column = createWaterColumn(host, {
-        maxDepth: LAKE_DEPTH,
-        depth: initial.hloubka,
-        surface: lakeHasIce(initial.mesic) ? 'ice' : 'water',
-        aside: true,
-        // Desktop: sloupec vyplní, co v rámečku modelu zbývá nad řádkem s odečtem a hloubkou
-        // (host má výšku z CSS). Telefon: normální tok, výška podle šířky.
-        height: (width) => (window.matchMedia('(min-width: 769px)').matches
-            ? Math.max(240, host.clientHeight - host.querySelector('.water-column-controls').offsetHeight)
-            : Math.round(width * 1.05)),
-    });
-    column.setState({ month: initial.mesic });
-    column.addLayer(createTemperatureLayer({
-        profile: (depth, state) => lakeTemperature(state.month, Math.min(depth, LAKE_DEPTH), LAKE_DEPTH),
-        range: [0, 25],
-        bands: (state) => lakeBands(state.month, LAKE_DEPTH),
-    }));
-
-    const renderPhase = (m) => {
-        slider.value = String(m);
-        const name = LAKE_MONTHS[m - 1].name;
-        slider.setAttribute('aria-valuetext', name);
-        phaseEl.innerHTML = `${name[0].toUpperCase()}${name.slice(1)}<span class="course-readout-sub">${LAKE_PHASE_LABELS[lakePhase(m)]}${lakeHasIce(m) ? ', na hladině led' : ''}</span>`;
+    const showPhase = (index) => {
+        slider.value = String(index + 1);
+        slider.setAttribute('aria-valuetext', `${index + 1}: ${LAKE_PHASES[index].label}`);
+        const r = lakeReadout(index);
+        readout.innerHTML = `${r.main}<span class="course-readout-sub">${r.sub}</span>`;
     };
-    slider.addEventListener('input', () => {
-        const m = Number(slider.value);
-        column.setState({ month: m, surface: lakeHasIce(m) ? 'ice' : 'water' });
-        renderPhase(m);
-        syncUrl({ mesic: m });
-    });
-    column.on('change', (state, { changed }) => {
-        if (changed.includes('depth')) syncUrl({ hloubka: state.depth });
-    });
-    renderPhase(initial.mesic);
+    const lake = createLakeCycle(host, { phase: initial.faze === null ? 0 : initial.faze - 1, onPhase: showPhase });
 
-    host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => column.render());
+    const syncPlay = () => {
+        const on = lake.isPlaying();
+        playBtn.textContent = on ? 'Pozastavit' : 'Přehrát';
+        playBtn.setAttribute('aria-pressed', String(on));
+        readout.setAttribute('aria-live', on ? 'off' : 'polite'); // při přehrávání nečíst každou fázi
+    };
+    const play = () => { lake.play(); syncPlay(); syncUrl({ faze: null }); };
+    const pause = () => { lake.pause(); syncPlay(); syncUrl({ faze: lake.getPhase() + 1 }); };
+
+    playBtn.hidden = !lake.canPlay; // prefers-reduced-motion: jen krokování
+    playBtn.addEventListener('click', () => (lake.isPlaying() ? pause() : play()));
+    slider.addEventListener('input', () => {
+        const index = Number(slider.value) - 1;
+        lake.setPhase(index, { animate: true });
+        syncPlay();
+        syncUrl({ faze: index + 1 });
+    });
+    host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => lake.redraw());
+
+    if (initial.faze === null) lake.play();
+    syncPlay();
 
     /** Nastaví předvolbu (z odkazu „Ukaž v modelu“) bez znovunačtení stránky. */
     return (p) => {
-        column.setState({ month: p.mesic, depth: p.hloubka, surface: lakeHasIce(p.mesic) ? 'ice' : 'water' });
-        renderPhase(p.mesic);
-        syncUrl({ mesic: p.mesic, hloubka: p.hloubka });
+        if (p.faze === null) { play(); return; }
+        lake.setPhase(p.faze - 1, { animate: true });
+        syncPlay();
+        syncUrl({ faze: p.faze });
     };
 }
 

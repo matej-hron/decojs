@@ -5,16 +5,6 @@ import {
     defaultHeight, computeGeometry, depthReadout, joinReadout, sortLayers, splitLabel, wavePath,
     CORE_STATE_KEYS,
 } from '../js/components/WaterColumn.js';
-import {
-    temperatureColor, hexToRgb, rgbToHex, rgbToOklab, oklabToRgb, temperatureTicks, sampleProfile,
-    resolveBands, temperatureReadout, createTemperatureLayer, DEFAULT_TEMPERATURE_STOPS,
-} from '../js/components/waterColumn/temperatureLayer.js';
-
-const NBSP = ' ';
-
-// Simple illustrative profile (summer lake): warm on top, 4 °C at the bottom.
-const summer = (depth) => (depth < 6 ? 22 : depth < 12 ? 22 - ((depth - 6) / 6) * 16 : 6 - Math.min(2, (depth - 12) / 14));
-
 // ---------------------------------------------------------------- core helpers
 
 test('clamp and decimalsOf', () => {
@@ -167,107 +157,66 @@ test('core state keys are reserved', () => {
     assert.deepEqual([...CORE_STATE_KEYS], ['depth', 'maxDepth', 'surface']);
 });
 
-// ---------------------------------------------------------------- temperature colour
+// ---------------------------------------------------------------- rozhraní vrstev (testovací vrstva)
 
-test('colour conversions round-trip', () => {
-    for (const hex of ['#000000', '#ffffff', ...DEFAULT_TEMPERATURE_STOPS]) {
-        assert.equal(rgbToHex(oklabToRgb(rgbToOklab(hexToRgb(hex)))), hex);
+/** Spustí tělo s DOM z jsdom; kostra potřebuje document, window a getComputedStyle. */
+async function withDom(body) {
+    const { JSDOM } = await import('jsdom');
+    const dom = new JSDOM('<!doctype html><div id="h"></div>');
+    const g = globalThis;
+    const saved = { document: g.document, window: g.window, getComputedStyle: g.getComputedStyle };
+    g.window = dom.window; g.document = dom.window.document;
+    g.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
+    // jsdom nepočítá rozložení; bez šířky by se sloupec choval jako skrytý a nekreslil
+    Object.defineProperty(dom.window.document.getElementById('h'), 'clientWidth', { value: 800 });
+    try {
+        const { createWaterColumn } = await import('../js/components/WaterColumn.js');
+        await body(createWaterColumn, dom.window.document);
+    } finally {
+        Object.assign(g, saved);
     }
-    assert.deepEqual(hexToRgb('#fff'), [1, 1, 1]);
-    assert.throws(() => hexToRgb('blue'), TypeError);
+}
+
+/** Nejmenší vrstva podle docs/course/water-column.md: kreslí, odečítá, uklízí. */
+const testLayer = (log, extra = {}) => ({
+    id: 'test',
+    init(ctx) { log.push(`init:${ctx.uid ? 'uid' : 'bez uid'}`); },
+    render(g, geom, state) {
+        log.push(`render:${state.depth}:${geom.aside ? 'panel' : 'bez panelu'}`);
+        g.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'circle'));
+    },
+    readout: (state) => `test ${state.depth}&nbsp;m`,
+    destroy() { log.push('destroy'); },
+    ...extra,
 });
 
-test('temperatureColor: end stops at the range ends, clamped outside', () => {
-    const [cold, mid, warm] = DEFAULT_TEMPERATURE_STOPS;
-    assert.equal(temperatureColor(0), cold);
-    assert.equal(temperatureColor(25), warm);
-    assert.equal(temperatureColor(12.5), mid);
-    assert.equal(temperatureColor(-5), cold);
-    assert.equal(temperatureColor(40), warm);
-    assert.equal(temperatureColor(4, [4, 10]), cold);
-    assert.equal(temperatureColor(NaN), null);
-    assert.equal(temperatureColor(undefined), null);
-    assert.equal(temperatureColor(null), null);
-    assert.equal(temperatureColor(5, [0, 10], ['#000000', '#ffffff']), rgbToHex(oklabToRgb(
-        rgbToOklab(hexToRgb('#000000')).map((x, i) => (x + rgbToOklab(hexToRgb('#ffffff'))[i]) / 2))));
+test('vrstva: init jednou, render při změně, odečet se přidá, destroy při odebrání', async () => {
+    await withDom(async (createWaterColumn, doc) => {
+        const log = [];
+        const col = createWaterColumn(doc.getElementById('h'), { maxDepth: 40, depth: 10 });
+        col.addLayer(testLayer(log));
+        assert.equal(log.filter(x => x.startsWith('init')).length, 1);
+        assert.ok(log.includes('init:uid'), 'vrstva dostane ctx.uid');
+        assert.ok(log.includes('render:10:bez panelu'));
+        col.setState({ depth: 20 });
+        assert.ok(log.some(x => x === 'render:20:bez panelu'), log.join(' '));
+        assert.match(doc.querySelector('.water-column-readout').innerHTML, /hloubka 20.*test 20/s);
+        col.removeLayer('test');
+        assert.ok(log.includes('destroy'));
+        col.destroy();
+    });
 });
 
-test('temperatureColor is monotonic: warmer is never bluer', () => {
-    // OKLab b axis (blue − / yellow +) and red − blue channel both grow with temperature
-    let prevB = -Infinity, prevRB = -Infinity;
-    for (let t = 0; t <= 25; t += 0.5) {
-        const rgb = hexToRgb(temperatureColor(t));
-        const b = rgbToOklab(rgb)[2];
-        const rb = rgb[0] - rgb[2];
-        assert.ok(b >= prevB - 1e-3, `OKLab b non-decreasing at ${t} °C`);
-        assert.ok(rb >= prevRB - 1 / 255, `R − B non-decreasing at ${t} °C`);
-        prevB = b;
-        prevRB = rb;
-    }
-});
-
-test('4 °C and 20 °C are clearly different colours', () => {
-    const lab4 = rgbToOklab(hexToRgb(temperatureColor(4)));
-    const lab20 = rgbToOklab(hexToRgb(temperatureColor(20)));
-    const dE = Math.hypot(...lab4.map((x, i) => x - lab20[i])) * 100;
-    assert.ok(dE > 20, `ΔE_OK ${dE.toFixed(1)}`);
-});
-
-// ---------------------------------------------------------------- temperature data
-
-test('temperatureTicks: steps of 5 °C, 10 °C when the panel is narrow', () => {
-    assert.deepEqual(temperatureTicks([0, 25], 200, 14), [0, 5, 10, 15, 20, 25]);
-    assert.deepEqual(temperatureTicks([0, 25], 600, 20), [0, 5, 10, 15, 20, 25], 'never finer than 5 °C');
-    assert.deepEqual(temperatureTicks([0, 25], 90, 14), [0, 10, 20]);
-    assert.deepEqual(temperatureTicks([0, 25], 60, 14), [0, 20]);
-});
-
-test('sampleProfile: surface to bottom, drops non-finite values', () => {
-    const s = sampleProfile(summer, { maxDepth: 40 }, 41);
-    assert.equal(s.length, 41);
-    assert.equal(s[0].depth, 0);
-    assert.equal(s.at(-1).depth, 40);
-    assert.equal(s[0].t, 22);
-    const holes = sampleProfile((d) => (d > 20 ? NaN : 10), { maxDepth: 40 }, 5);
-    assert.deepEqual(holes.map((x) => x.depth), [0, 10, 20]);
-    const fromState = sampleProfile((d, st) => st.month, { maxDepth: 10, month: 8 }, 2);
-    assert.deepEqual(fromState.map((x) => x.t), [8, 8], 'profile receives the state');
-});
-
-test('resolveBands: array or function of state, clamped, sorted, invalid dropped', () => {
-    const bands = (st) => (st.month === 8
-        ? [{ from: 12, to: 60, label: 'studená voda u dna' }, { from: 0, to: 6, label: 'teplá vrstva' },
-            { from: 12, to: 6, label: 'termoklina' }, { from: 5, to: 5, label: 'nic' }, { from: 1, to: 2, label: '' }]
-        : []);
-    assert.deepEqual(resolveBands(bands, { maxDepth: 40, month: 8 }), [
-        { from: 0, to: 6, label: 'teplá vrstva' },
-        { from: 6, to: 12, label: 'termoklina' },
-        { from: 12, to: 40, label: 'studená voda u dna' },
-    ]);
-    assert.deepEqual(resolveBands(bands, { maxDepth: 40, month: 1 }), []);
-    assert.deepEqual(resolveBands(undefined, { maxDepth: 40 }), []);
-});
-
-test('temperature readout: decimal comma, &nbsp; before °C, real minus', () => {
-    assert.equal(temperatureReadout(8), 'teplota 8&nbsp;°C');
-    assert.equal(temperatureReadout(4.4), 'teplota 4&nbsp;°C');
-    assert.equal(temperatureReadout(3.96, 1), 'teplota 4,0&nbsp;°C');
-    assert.equal(temperatureReadout(-1.5, 1), 'teplota −1,5&nbsp;°C');
-    assert.equal(temperatureReadout(NaN), null);
-    assert.ok(!temperatureReadout(12.25, 2).includes('.'), 'no decimal point');
-});
-
-test('temperature layer: shape and readout from its profile', () => {
-    const layer = createTemperatureLayer({ profile: (d, st) => (st.surface === 'ice' && d === 0 ? 0 : summer(d)) });
-    assert.equal(layer.id, 'temperature');
-    assert.equal(layer.aside, true);
-    assert.equal(typeof layer.render, 'function');
-    assert.equal(layer.readout({ depth: 0, maxDepth: 40, surface: 'water' }), 'teplota 22&nbsp;°C');
-    assert.equal(layer.readout({ depth: 0, maxDepth: 40, surface: 'ice' }), 'teplota 0&nbsp;°C');
-    assert.equal(layer.readout({ depth: 9, maxDepth: 40 }), 'teplota 14&nbsp;°C');
-    const full = `${'hloubka 9&nbsp;m'} · ${layer.readout({ depth: 9, maxDepth: 40 })}`;
-    assert.equal(full.replaceAll('&nbsp;', NBSP), `hloubka 9${NBSP}m · teplota 14${NBSP}°C`);
-    assert.throws(() => createTemperatureLayer({}), TypeError);
+test('vrstva: je průhledná pro ukazatel a boční panel dostane jen s aside', async () => {
+    await withDom(async (createWaterColumn, doc) => {
+        const log = [];
+        const col = createWaterColumn(doc.getElementById('h'), { maxDepth: 40, depth: 0 });
+        col.addLayer(testLayer(log, { aside: true }));
+        assert.ok(log.some(x => x.endsWith(':panel')), log.join(' '));
+        const group = doc.querySelector('.wc-layer');
+        assert.equal(group.getAttribute('pointer-events'), 'none');
+        col.destroy();
+    });
 });
 
 // --- rozesílání změn: setState v posluchači nesmí pozdějším posluchačům poslat starý stav ---

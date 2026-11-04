@@ -6,7 +6,6 @@ import { readFileSync, existsSync } from 'node:fs';
 import {
     waterDensity, densityAt, ICE_DENSITY, MAX_DENSITY_TEMPERATURE, WATER_RANGE,
 } from '../js/physics/waterDensity.js';
-import { lakeTemperature, lakePhase, lakeHasIce, LAKE_MONTHS } from '../js/physics/lakeProfiles.js';
 
 const near = (actual, expected, tol, msg) =>
     assert.ok(Math.abs(actual - expected) <= tol, `${msg ?? ''} expected ${expected} ±${tol}, got ${actual}`);
@@ -43,78 +42,7 @@ test('pod 0 °C je led, lehčí než voda o ~8 %', () => {
     near(drop, 0.083, 0.003, 'pokles hustoty při zamrznutí');
 });
 
-// --- jezero / lom během roku ---------------------------------------------
-
-const DEPTH = 40;
-const profile = (m) => Array.from({ length: DEPTH + 1 }, (_, h) => lakeTemperature(m, h, DEPTH));
-
-test('12 měsíců s fází roku', () => {
-    assert.equal(LAKE_MONTHS.length, 12);
-    const phases = new Set(LAKE_MONTHS.map((_, i) => lakePhase(i + 1)));
-    assert.deepEqual([...phases].sort(), ['jarni-promichani', 'leto', 'podzimni-promichani', 'zima']);
-    assert.throws(() => lakePhase(13), RangeError);
-});
-
-test('u dna hlubokého lomu je celý rok kolem 4 °C', () => {
-    for (let m = 1; m <= 12; m++) {
-        const bottom = lakeTemperature(m, DEPTH, DEPTH);
-        assert.ok(bottom >= 3.9 && bottom <= 5.1, `měsíc ${m}: ${bottom}`);
-    }
-});
-
-test('v zimě pod ledem: 0 °C u ledu, s hloubkou tepleji (inverzní vrstvení)', () => {
-    for (const m of [1, 2]) {
-        assert.equal(lakeHasIce(m), true);
-        near(lakeTemperature(m, 0, DEPTH), 0, 0.05, `měsíc ${m} u ledu`);
-        const p = profile(m);
-        for (let h = 1; h < p.length; h++) assert.ok(p[h] >= p[h - 1] - 1e-9, `měsíc ${m}, ${h} m`);
-        near(p[15], 4, 0.2, `měsíc ${m}, 15 m`);
-    }
-    assert.equal(lakeHasIce(8), false);
-});
-
-test('v létě teplá voda nahoře, s hloubkou monotónně chladněji (termoklina)', () => {
-    const p = profile(8);
-    assert.ok(p[0] > 20, `srpen hladina ${p[0]}`);
-    for (let h = 1; h < p.length; h++) assert.ok(p[h] <= p[h - 1] + 1e-9, `srpen ${h} m`);
-    // termoklina: největší pokles teploty na metr je pod hladinou, ne u ní
-    const drops = p.slice(1).map((v, i) => p[i] - v);
-    const steepest = drops.indexOf(Math.max(...drops));
-    assert.ok(steepest >= 3 && steepest <= 15, `nejstrmější pokles v ${steepest} m`);
-});
-
-test('při jarním a podzimním promíchání má celý sloupec stejnou teplotu', () => {
-    for (let m = 1; m <= 12; m++) {
-        if (!lakePhase(m).endsWith('promichani')) continue;
-        const p = profile(m);
-        assert.equal(Math.max(...p) - Math.min(...p), 0, `měsíc ${m}: ${Math.min(...p)}–${Math.max(...p)}`);
-    }
-});
-
-test('mělčí lom: profil se přizpůsobí hloubce, dno stále studené', () => {
-    const shallow = 15;
-    near(lakeTemperature(8, shallow, shallow), 5, 1.5, 'dno 15m lomu v srpnu');
-    assert.throws(() => lakeTemperature(8, 20, 15), RangeError);
-});
-
 // --- všechny teploty profilu jsou v rozsahu, kde platí vzorec hustoty --------
-
-test('profily leží v rozsahu vzorce hustoty', () => {
-    for (let m = 1; m <= 12; m++) {
-        for (const t of profile(m)) assert.ok(t >= 0 && t <= 30, `měsíc ${m}: ${t}`);
-    }
-});
-
-test('pásma profilu navazují a pokrývají celý sloupec', async () => {
-    const { lakeBands } = await import('../js/physics/lakeProfiles.js');
-    for (let m = 1; m <= 12; m++) {
-        const b = lakeBands(m, DEPTH);
-        assert.equal(b[0].from, 0);
-        assert.equal(b.at(-1).to, DEPTH);
-        for (let i = 1; i < b.length; i++) assert.equal(b[i].from, b[i - 1].to);
-    }
-    assert.deepEqual(lakeBands(8, DEPTH).map(b => b.label), ['teplá vrstva', 'termoklina', 'studená voda u dna']);
-});
 
 // --- předvolby v URL ------------------------------------------------------
 
@@ -122,20 +50,20 @@ import { readParams, writeParams, normalizeParam } from '../js/course/modelParam
 
 const SCHEMA = {
     teplota: { min: -5, max: 30, step: 0.5, default: 4 },
-    mesic: { min: 1, max: 12, step: 1, default: 8 },
+    faze: { min: 1, max: 12, step: 1, default: 8 },
 };
 
 test('předvolby: čtení, výchozí hodnoty, ořez a krok', () => {
-    assert.deepEqual(readParams('', SCHEMA), { teplota: 4, mesic: 8 });
-    assert.deepEqual(readParams('?teplota=12.3&mesic=1', SCHEMA), { teplota: 12.5, mesic: 1 });
+    assert.deepEqual(readParams('', SCHEMA), { teplota: 4, faze: 8 });
+    assert.deepEqual(readParams('?teplota=12.3&faze=1', SCHEMA), { teplota: 12.5, faze: 1 });
     assert.deepEqual(readParams('?teplota=2,5', SCHEMA).teplota, 2.5, 'desetinná čárka z ručně psaného odkazu');
-    assert.deepEqual(readParams('?teplota=-40&mesic=99', SCHEMA), { teplota: -5, mesic: 12 });
-    assert.deepEqual(readParams('?teplota=abc&mesic=', SCHEMA), { teplota: 4, mesic: 8 });
+    assert.deepEqual(readParams('?teplota=-40&faze=99', SCHEMA), { teplota: -5, faze: 12 });
+    assert.deepEqual(readParams('?teplota=abc&faze=', SCHEMA), { teplota: 4, faze: 8 });
     assert.equal(normalizeParam(0.1 + 0.2, { min: 0, max: 1, step: 0.1, default: 0 }), 0.3);
 });
 
 test('předvolby: zápis zachová cizí parametry', () => {
-    assert.equal(writeParams('?mesic=3&x=1', { teplota: 7 }), '?mesic=3&x=1&teplota=7');
+    assert.equal(writeParams('?faze=3&x=1', { teplota: 7 }), '?faze=3&x=1&teplota=7');
     assert.equal(writeParams('?teplota=7', { teplota: null }), '');
 });
 
@@ -225,7 +153,7 @@ test('stránky kurzu a vše, co (i nepřímo) načítají, je v sw.js (offline n
     for (const page of coursePages) visit(page);
     const missing = [...seen].filter(f => !sw.includes(`'./${f}'`));
     assert.deepEqual(missing, [], 'sw.js STATIC_ASSETS');
-    assert.ok(seen.has('js/components/WaterColumn.js') && seen.has('js/course/hustotaPage.js'), 'procházení importů funguje');
+    assert.ok(seen.has('js/components/LakeCycle.js') && seen.has('js/course/hustotaPage.js'), 'procházení importů funguje');
 });
 
 // --- graf hustoty ----------------------------------------------------------

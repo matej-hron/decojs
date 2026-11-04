@@ -149,22 +149,22 @@
 
             <div class="course-model course-slide chart-container" id="model-lom">
                 <div class="chart-header">
-                    <h3>Model: lom během roku</h3>
+                    <h3>Model: jezero během roku</h3>
                     <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-lom" title="Celá obrazovka">
                         <span class="fullscreen-icon">⛶</span>
                         <span class="fullscreen-text">Celá obrazovka</span>
                     </button>
                 </div>
                 <div class="course-model-controls">
+                    <button type="button" class="btn btn-small course-play" id="jezero-play" aria-pressed="false">Přehrát</button>
                     <div class="course-slider">
-                        <label for="mesic-slider">Měsíc</label>
-                        <input type="range" id="mesic-slider" min="1" max="12" step="1" value="8">
+                        <label for="faze-slider">Fáze</label>
+                        <input type="range" id="faze-slider" min="1" max="9" step="1" value="1">
                     </div>
-                    <p class="course-readout" id="lom-phase" aria-live="polite"></p>
+                    <p class="course-readout" id="jezero-faze" aria-live="polite"></p>
                 </div>
-                <div class="course-plot course-column-host" id="lom-column"></div>
-                <p class="course-simplification">Profily jsou ilustrativní: typický hluboký lom (40&nbsp;m) v našich
-                    podmínkách, ne měření konkrétního lomu.</p>
+                <div class="course-plot" id="jezero-scene"></div>
+                <p class="course-simplification">Schéma podle přednášky, ne měření.</p>
                 <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
             </div>
 
@@ -176,14 +176,14 @@
             <div class="course-example" id="priklad-lom">
                 <h3>Řešený příklad</h3>
                 <div class="course-core">
-                    <p>Lom hluboký 40&nbsp;m je v lednu zamrzlý. Kde pod ledem najdeš nejteplejší vodu a jak bude teplá?</p>
+                    <p>Jezero je v zimě zamrzlé. Kde pod ledem najdeš nejteplejší vodu a jak bude teplá?</p>
                 </div>
                 <details class="course-answer">
                     <summary>Ukázat odpověď</summary>
                     <div class="course-answer-body">
                         <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
                             Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
-                        <p><a href="?mesic=1&amp;hloubka=40#model-lom" data-preset-link>Ukaž to v modelu (leden, 40&nbsp;m) →</a></p>
+                        <p><a href="?faze=6#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
                     </div>
                 </details>
             </div>

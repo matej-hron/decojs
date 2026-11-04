@@ -160,11 +160,12 @@ Obsah:
 Modely:
 1. **Hustota vody vs. teplota** — posuvník teploty (cca −5 až 30 °C, pod 0 °C led), křivka hustoty s bodem; maximum
    u 4 °C zřetelně; skok na led 917–920 kg/m³. Data: tabulková hustota vody (uveď zdroj v kódu).
-2. **Jezero / lom během roku** — volba měsíce (nebo ročního období) → teplotní profil s hloubkou ve vodním sloupci +
-   barevné vrstvy: letní stratifikace (teplá vrstva, termoklina, u dna ~4 °C), podzimní promíchání, zimní inverzní
-   stratifikace (led 0 °C nahoře, ~4 °C u dna), jarní promíchání. Profily jsou **ilustrativní**, ne měření konkrétního
-   lomu — přiznat. Potápěčská pointa: proč je u dna zima i v srpnu a proč pod ledem není 0 °C všude.
-- Řešený příklad (návrh builderu, např. „Kde v lomu v lednu najdeš nejteplejší vodu?“) se schovanou odpovědí.
+2. **Jezero během roku** — podle GIFu ve slidu 9 (oprava 2026-11-04, nahrazuje dřívější profil po měsících): 9 fází po
+   2 s, pět vrstev s teplotami z GIFu, vítr, strom, led. Hlavní věc je dynamika: přehrát/pozastavit, plynulé přechody,
+   posuvník fází, předvolba `?faze=1..9`. Doplněk oproti GIFu: šipky „těžší voda klesá“ při přechodech 1→2, 2→3, 3→4,
+   6→7, 7→8. Je to **schéma podle přednášky, ne měření**; čísla bez zdroje v přednášce (termoklina, teploty mimo GIF,
+   hloubka) se nepoužívají. Obecně: když má slide animaci, model zachová její smysl.
+- Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 
 ## 8. Harmonogram (do přednášky ~23. 11. 2026)

@@ -1,5 +1,5 @@
 /**
- * Předvolby modelů kurzu v URL (`?teplota=2&mesic=1#model-lom`).
+ * Předvolby modelů kurzu v URL (`?teplota=2#model-hustota`, `?faze=6#model-lom`).
  *
  * Matej tak může ze slidu nebo z rozcestníku skočit rovnou na konkrétní ukázku.
  * Každý model popíše své parametry schématem; neplatná hodnota se tiše nahradí
