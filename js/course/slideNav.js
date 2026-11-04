@@ -5,7 +5,7 @@
  * Není to prezentační engine: stránka se dál normálně posouvá, nic se neskrývá a skok
  * je okamžitý (na projektoru klidnější, a tím odpadá i prefers-reduced-motion).
  *
- * Zastávka = každý `.course-slide` (i model a „Procvič si“), v pořadí na stránce. Každá
+ * Zastávka = každý `.course-slide` kromě modelů (ty se otevírají z náhledu), včetně „Procvič si“. Každá
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
  * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v liště kurzu.
@@ -26,7 +26,7 @@ const MIN_VISIBLE = 0.25;
  * @returns {Element[]} zastávky v pořadí na stránce
  */
 export function collectStops(root) {
-    return [...root.querySelectorAll('main .course-slide')];
+    return [...root.querySelectorAll('main .course-slide:not(.course-model)')];
 }
 
 /**
@@ -82,12 +82,12 @@ export function mostVisibleIndex(rects, top, bottom) {
 /**
  * @param {{key: string, altKey: boolean, ctrlKey: boolean, metaKey: boolean, shiftKey: boolean,
  *   defaultPrevented: boolean, target: EventTarget|null}} e
- * @param {{fullscreen?: boolean}} [state] model je na celé obrazovce
+ * @param {{modelOpen?: boolean}} [state] je otevřený simulátor nebo model na celé obrazovce
  * @returns {1|-1|0} směr kroku, 0 = klávesa slidům nepatří
  */
-export function slideKeyDirection(e, { fullscreen = false } = {}) {
+export function slideKeyDirection(e, { modelOpen = false } = {}) {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return 0;
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || fullscreen) return 0;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented || modelOpen) return 0;
     if (e.target?.closest?.(OWN_ARROWS)) return 0;
     return e.key === 'ArrowRight' ? 1 : -1;
 }
@@ -141,9 +141,9 @@ function renderButtons(slug) {
  */
 export function initSlideNav(slug) {
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isSliderTarget(e.target)) { e.target.blur(); return; }
-        const fullscreen = Boolean(document.querySelector('.course-model.fullscreen'));
-        const dir = slideKeyDirection(e, { fullscreen });
+        const modelOpen = Boolean(document.querySelector('dialog.course-sim[open], .course-model.fullscreen'));
+        if (e.key === 'Escape' && isSliderTarget(e.target) && !modelOpen) { e.target.blur(); return; }
+        const dir = slideKeyDirection(e, { modelOpen });
         if (!dir) return;
         e.preventDefault();
         step(slug, dir);

@@ -36,6 +36,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 
     /* Varianta A „hloubka“ (výchozí): plocha odvozená z barvy hlavičky webu (--blue-700). */
     --slide-scheme: dark;
+    --slide-thumb-bg: var(--blue-800);
     --slide-bg: var(--blue-800);
     --slide-bg-end: #0e3650;
     --slide-fg: #ffffff;
@@ -81,6 +82,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
    stane jedinou a tenhle blok (nebo výchozí hodnoty výše) zmizí. */
 :root[data-slide="svetly"] .course-page {
     --slide-scheme: light;
+    --slide-thumb-bg: var(--blue-50);
     --slide-bg: var(--blue-50);
     --slide-bg-end: var(--blue-50);
     --slide-fg: var(--gray-900);
@@ -205,6 +207,75 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
         align-content: start;
         align-items: start;
     }
+}
+
+/* Slide 9 a podobné: řady text + náhled modelu, jako v přednášce. */
+.course-slide .course-core-rows { gap: var(--space-3); }
+.course-row { display: grid; gap: var(--space-3) var(--space-6); }
+.course-slide .course-row ul { margin: 0; }
+.course-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 10rem;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--slide-line-strong);
+    border-radius: var(--radius-md);
+    background: transparent;
+    cursor: pointer;
+}
+.course-thumb:hover,
+.course-thumb:focus-visible { border-color: var(--slide-accent); outline: 2px solid var(--slide-accent); outline-offset: 1px; }
+.course-thumb-plot { position: absolute; inset: var(--space-1); pointer-events: none; }
+.course-thumb-plot svg { display: block; position: absolute; inset: 0; }
+.course-thumb-hint {
+    position: absolute;
+    right: var(--space-2);
+    bottom: var(--space-2);
+    padding: 0.15em 0.6em;
+    border-radius: var(--radius-full);
+    background: var(--slide-accent);
+    color: var(--slide-on-accent);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.5;
+}
+.course-thumb-hint::after { content: " ▸"; }
+.course-thumb-hint-top { top: var(--space-2); bottom: auto; } /* graf klesá doprava, nahoře je místo */
+@media (min-width: 900px) {
+    /* Text má přednost: řady rostou podle něj, zbylé místo vyplní náhledy. */
+    .course-slide .course-core-rows { display: grid; grid-template-rows: auto auto; align-content: stretch; }
+    .course-row { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); align-items: stretch; }
+    .course-row-flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); }
+    .course-row-flip .course-thumb { order: -1; }
+    .course-row .course-thumb { height: 100%; }
+}
+
+/* --- simulátor v překryvu: leží přesně v rámečku slidu (rozměry zapisuje modelOverlay.js) --- */
+
+dialog.course-sim {
+    position: fixed;
+    inset: auto;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: none;
+    overflow-y: auto;
+}
+dialog.course-sim::backdrop { background: rgba(5, 20, 32, 0.45); }
+dialog.course-sim > .course-model.chart-container { margin: 0; height: 100%; box-sizing: border-box; }
+html:has(dialog.course-sim[open]) { overflow: hidden; }
+@media (max-width: 768px) {
+    /* Telefon: celá obrazovka, normální posouvání uvnitř. */
+    dialog.course-sim { inset: 0; width: 100%; height: 100%; border-radius: 0; }
+    dialog.course-sim > .course-model.chart-container { height: auto; min-height: 100%; border-radius: 0; }
 }
 
 /* --- lišta kurzu: drobečky, obsah sekcí, rozbalit vše, ‹ › -----------------
@@ -396,6 +467,7 @@ details.course-more > summary .course-summary-hint {
 /* --- modely ------------------------------------------------------------- */
 
 .course-model.chart-container { height: auto; margin: 0; } /* základ .chart-container má pevných 700 px */
+.course-sim-actions { display: flex; gap: var(--space-2); flex: none; }
 .course-model .chart-header .btn {
     background: transparent;
     color: var(--slide-head-fg);
@@ -524,13 +596,12 @@ details.course-more > summary .course-summary-hint {
 /* --- řešený příklad ------------------------------------------------------ */
 
 .course-example {
-    background: var(--surface-sunken);
+    background: var(--surface-elevated);
     border-radius: var(--radius-md);
     padding: var(--space-4);
     margin: var(--space-4) 0 0;
 }
 .course-example h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
-.course-example .course-core p:last-child { margin-bottom: 0; }
 
 /* --- Procvič si -------------------------------------------------------- */
 
@@ -689,6 +760,11 @@ details.course-more > summary .course-summary-hint {
        Kreslí se v pixelech okna, na papír se zmenší přes viewBox (100vh by tu byla výška listu). */
     .course-slide.course-model { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .course-model .chart-header .btn { display: none; }
+    /* Náhledy se kreslí barvami plochy na obrazovce, takže si ji v tisku ponechají. */
+    .course-thumb { height: 12rem; break-inside: avoid; background: var(--slide-thumb-bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .course-thumb-hint { display: none; }
+    .course-thumb-plot svg { width: 100%; height: 100%; }
+    dialog.course-sim:not([open]) { display: none; }
     .course-model .course-plot { flex: none; height: auto; min-height: 0; }
     .course-model .course-plot svg { position: static !important; width: 100%; height: auto !important; } /* vodní sloupec má výšku přímo na prvku */
 }

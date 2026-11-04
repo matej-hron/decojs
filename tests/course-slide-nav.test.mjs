@@ -121,8 +121,8 @@ describe('slideKeyDirection: kdy klávesy patří slidům', () => {
         }
     });
 
-    it('model na celé obrazovce šipky nepřepínají', () => {
-        assert.equal(slideKeyDirection(key('ArrowRight'), { fullscreen: true }), 0);
+    it('v otevřeném simulátoru a na celé obrazovce šipky nepřepínají', () => {
+        assert.equal(slideKeyDirection(key('ArrowRight'), { modelOpen: true }), 0);
     });
 
     it('už vyřízenou klávesu nechá být', () => {
@@ -138,9 +138,9 @@ describe('slideKeyDirection: kdy klávesy patří slidům', () => {
 });
 
 describe('zastávky na skutečných stránkách', () => {
-    it('kapitola: každý slide včetně modelů a „Procvič si“, v pořadí na stránce', () => {
+    it('kapitola: jeden slide přednášky je jedna zastávka, modely zastávky nejsou', () => {
         const anchors = collectStops(pageDom('p1/hustota.html')).map(stopAnchor);
-        assert.deepEqual(anchors, ['definice', 'teplota', 'model-hustota', 'jezero', 'model-lom', 'procvic']);
+        assert.deepEqual(anchors, ['definice', 'teplota', 'procvic']);
     });
 
     it('rozcestník: titulní slide, otázky, Obsah', () => {

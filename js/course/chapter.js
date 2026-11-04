@@ -104,7 +104,10 @@ function initFullscreen() {
         btn.addEventListener('click', toggle);
         target.querySelector('.btn-fullscreen-close')?.addEventListener('click', toggle);
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && target.classList.contains('fullscreen')) toggle();
+            if (e.key === 'Escape' && target.classList.contains('fullscreen')) {
+                e.preventDefault(); // Esc jen opustí celou obrazovku, simulátor zůstane otevřený
+                toggle();
+            }
         });
     });
 }
@@ -122,7 +125,7 @@ export async function initChapter() {
     const landOnHash = initSlideNav(slug ?? null);
     await Promise.all([loadConcepts(document), initPractice(document)]);
     initExpandAll();
-    // Po vložení bloků se stránka prodlouží — znovu skoč na kotvu z URL (odkaz na model).
+    // Po vložení bloků se stránka prodlouží — znovu skoč na kotvu z URL.
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
     landOnHash();
 }

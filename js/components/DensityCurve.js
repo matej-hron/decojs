@@ -64,11 +64,13 @@ function el(name, attrs = {}, text) {
 
 /**
  * @param {HTMLElement} host
- * @param {{range?: [number, number], temperature?: number}} [options]
+ * @param {{range?: [number, number], temperature?: number, compact?: boolean}} [options]
+ *   `compact` = náhled na slidu: menší písmo, bez názvů os
  */
 export function createDensityCurve(host, options = {}) {
     let range = options.range ?? [0, 10];
     let temperature = options.temperature ?? 4;
+    const compact = Boolean(options.compact);
     const svg = el('svg', { class: 'density-curve', role: 'img' });
     host.appendChild(svg);
 
@@ -81,7 +83,8 @@ export function createDensityCurve(host, options = {}) {
         svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // v tisku se zmenší na šířku papíru
         svg.replaceChildren();
 
-        const font = Math.max(14, Math.min(24, width / 56)); // popisky os ≥ 14 px, na projektoru větší
+        // popisky os ≥ 14 px, na projektoru větší; náhled je jen ukázka, plný graf je v simulátoru
+        const font = compact ? Math.max(10, Math.min(13, height / 16)) : Math.max(14, Math.min(24, width / 56));
         // Barvy se čtou z hostitele: slide si je přepisuje lokálně (tmavá i světlá plocha).
         const css = getComputedStyle(host);
         const cssVar = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
@@ -96,7 +99,9 @@ export function createDensityCurve(host, options = {}) {
         };
         const axis = densityAxis(range);
         const yLabelW = font * 4.2;
-        const pad = { left: yLabelW + font * 1.6, right: font, top: font * 1.2, bottom: font * 3.4 };
+        const pad = compact
+            ? { left: yLabelW, right: font, top: font, bottom: font * 2 }
+            : { left: yLabelW + font * 1.6, right: font, top: font * 1.2, bottom: font * 3.4 };
         const plot = { x: pad.left, y: pad.top, w: width - pad.left - pad.right, h: height - pad.top - pad.bottom };
         const X = t => plot.x + ((t - range[0]) / (range[1] - range[0])) * plot.w;
         const Y = r => plot.y + (1 - (r - axis.min) / (axis.max - axis.min)) * plot.h;
@@ -117,21 +122,21 @@ export function createDensityCurve(host, options = {}) {
             svg.appendChild(el('text', { x: r1(X(v)), y: plot.y + plot.h + font * 1.2, 'text-anchor': 'middle',
                 'font-size': font, fill: c.text }, fmt(v, 0)));
         }
-        svg.appendChild(el('text', { x: plot.x + plot.w / 2, y: height - font * 0.5, 'text-anchor': 'middle',
+        if (!compact) svg.appendChild(el('text', { x: plot.x + plot.w / 2, y: height - font * 0.5, 'text-anchor': 'middle',
             'font-size': font, fill: c.text }, 'teplota / °C'));
         const yTitle = el('text', { transform: `translate(${r1(font * 1.1)} ${r1(plot.y + plot.h / 2)}) rotate(-90)`,
             'text-anchor': 'middle', 'font-size': font, fill: c.text });
         yTitle.append('hustota ');
         yTitle.appendChild(el('tspan', { 'font-style': 'italic' }, 'ρ'));
         yTitle.append(' / (kg/m³)');
-        svg.appendChild(yTitle);
+        if (!compact) svg.appendChild(yTitle);
 
         // značka maxima
         const xm = r1(X(MAX_DENSITY_TEMPERATURE));
         svg.appendChild(el('line', { x1: xm, x2: xm, y1: plot.y, y2: plot.y + plot.h, stroke: c.max,
             'stroke-width': 2, 'stroke-dasharray': '6 5' }));
         svg.appendChild(el('text', { x: xm + font * 0.4, y: plot.y + plot.h - font * 0.6, 'font-size': font * 0.85,
-            fill: c.text }, 'největší hustota (4\u00a0°C)'));
+            fill: c.text }, compact ? '4\u00a0°C' : 'největší hustota (4\u00a0°C)'));
 
         // křivka
         const pts = [];

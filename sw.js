@@ -40,6 +40,7 @@ const STATIC_ASSETS = [
   './js/course/p1Course.js',
   './js/course/chapter.js',
   './js/course/slideNav.js',
+  './js/course/modelOverlay.js',
   './js/course/concepts.js',
   './js/course/practice.js',
   './js/course/modelParams.js',

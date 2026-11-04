@@ -243,3 +243,29 @@ for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 're
         }
     });
 }
+
+// --- model se otevírá z náhledu na svém slidu ---------------------------------
+
+for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
+    test(`kapitola ${c.slug}: každý model je v překryvu a má náhled na slidu`, () => {
+        const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
+        const models = [...html.matchAll(/class="course-model course-slide[^"]*" id="([^"]+)"/g)].map(m => m[1]);
+        assert.ok(models.length > 0);
+        for (const id of models) {
+            assert.match(html, new RegExp(`<dialog class="course-sim"[^>]*>\\s*<div class="course-model course-slide[^"]*" id="${id}"`), `${id} v dialogu`);
+            assert.match(html, new RegExp(`<button[^>]*class="course-thumb"[^>]*data-open-model="${id}"`), `náhled ${id}`);
+        }
+    });
+}
+
+test('Hustota: slide 9 má jedno „Více“ a v něm oba výklady i řešený příklad', () => {
+    const html = readFileSync(new URL('p1/hustota.html', ROOT), 'utf8');
+    const section = html.slice(html.indexOf('<section id="teplota"'), html.indexOf('<section id="procvic"'));
+    assert.equal((section.match(/<details class="course-more">/g) || []).length, 1);
+    const more = section.slice(section.indexOf('<details class="course-more">'), section.indexOf('<dialog'));
+    for (const part of ['data-concept="water-anomaly"', 'data-concept="lake-stratification"', 'id="priklad-lom"']) {
+        assert.ok(more.includes(part), part);
+    }
+    assert.doesNotMatch(html, /id="jezero"/);
+});
+

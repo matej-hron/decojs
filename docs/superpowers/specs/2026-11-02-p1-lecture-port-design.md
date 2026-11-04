@@ -114,7 +114,10 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
      `<details>`/`<summary>` (funguje offline i bez JS).
    - Text ve „Více“ píše builder → **Matej ho schvaluje před merge** (v PR vypsat všechny nové odstavce, nebo je
      dát do REPORT.md k revizi). Jádro nesmí měnit pořadí ani význam slidů.
-3. **Vložené modely** u sekce, ke které patří (ne na konci stránky).
+3. **Jeden slide přednášky = jedna zastávka** (rozhodnuto 2026-11-04). **Model se otevírá z náhledu na svém slidu a není
+   samostatná zastávka.** Náhled je tlačítko se skutečnými daty modelu a nápovědou „Otevřít model“. Klik otevře simulátor
+   překryvem v rámečku slidu, zavírá se Esc, křížkem a klikem mimo. V simulátoru šipky slidy nepřepínají. Adresa
+   `#model-…` otevře stránku se slidem a simulátorem, předvolby se načtou. „Více“ je pod slidem jedno.
 4. **Řešené příklady** z přednášky: zadání viditelné, výsledek a postup **schované do odkrytí** (stejně na přednášce
    i doma). Kde to dává smysl, „spočítej sám“ s kontrolou.
 5. Rámeček „Teď už umíš odpovědět na…“ (pokud kapitola nějakou otázku odemyká).
@@ -156,6 +159,8 @@ Obsah:
   poznámka v §9, olovo 11 340, ocel 7 850 kg/m³).
 - Háčky dopředu (ve „Více“ pod slidem 8): sladká vs. slaná voda → tlak; olovo vs. neopren vs. vzduch → vztlak.
 - Teplotní závislost, anomálie vody (max. hustota při ~4 °C), led plave a izoluje, voda promrzá od hladiny.
+
+Slide 9 je jedna zastávka se dvěma řadami text + náhled jako v přednášce; modely se otevírají z náhledů.
 
 Modely:
 1. **Hustota vody vs. teplota** — posuvník teploty (cca −5 až 30 °C, pod 0 °C led), křivka hustoty s bodem; maximum

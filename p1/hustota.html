@@ -90,103 +90,111 @@
             </details>
         </section>
 
-        <!-- Slide 9, horní polovina -->
+        <!-- Slide 9: jedna zastávka. Modely se otevírají z náhledů, nejsou samostatné zastávky. -->
         <section id="teplota" class="course-section">
             <div class="course-slide">
                 <h2>Závislost hustoty na teplotě <span class="course-slide-ref">slide 9</span></h2>
-                <div class="course-core">
-                    <ul>
-                        <li>Většina látek při ochlazování zvětšuje hustotu.</li>
-                        <li><span class="course-highlight">Anomálie vody:</span> voda má největší hustotu při 4&nbsp;°C.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="course-model course-slide chart-container" id="model-hustota">
-                <div class="chart-header">
-                    <h3>Model: hustota vody a teplota</h3>
-                    <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-hustota" title="Celá obrazovka">
-                        <span class="fullscreen-icon">⛶</span>
-                        <span class="fullscreen-text">Celá obrazovka</span>
-                    </button>
-                </div>
-                <div class="course-model-controls">
-                    <div class="course-slider">
-                        <label for="teplota-slider">Teplota vody</label>
-                        <input type="range" id="teplota-slider" min="-5" max="30" step="0.5" value="4">
+                <div class="course-core course-core-rows">
+                    <div class="course-row">
+                        <ul>
+                            <li>Většina látek při ochlazování zvětšuje hustotu.</li>
+                            <li><span class="course-highlight">Anomálie vody:</span> voda má největší hustotu při 4&nbsp;°C.</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-hustota" aria-label="Otevřít model: hustota vody a teplota">
+                            <span class="course-thumb-plot" id="nahled-hustota"></span>
+                            <span class="course-thumb-hint course-thumb-hint-top">Otevřít model</span>
+                        </button>
                     </div>
-                    <div class="course-segmented" role="group" aria-label="Rozsah grafu">
-                        <button type="button" data-range="10" aria-pressed="true">0–10&nbsp;°C (jako na slidu)</button>
-                        <button type="button" data-range="30" aria-pressed="false">0–30&nbsp;°C</button>
+                    <div class="course-row course-row-flip">
+                        <ul>
+                            <li>„Těžká“ voda vlivem gravitace klesá dolů. Proto v zimě promrzá voda od hladiny,
+                                a to umožňuje rybám přežít zimu.</li>
+                            <li>Led je lehčí než voda, plave na hladině a dokonce funguje jako izolace proti ochlazování
+                                vody výměnou tepla se vzduchem.</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-lom" aria-label="Otevřít model: jezero během roku">
+                            <span class="course-thumb-plot" id="nahled-jezero"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
                     </div>
-                    <p class="course-readout" id="hustota-readout" aria-live="polite"></p>
                 </div>
-                <div class="course-plot" id="hustota-plot"></div>
-                <p class="course-simplification">Čistá voda při normálním tlaku (tabulka Tanaka a kol., 2001).
-                    Pod 0&nbsp;°C model ukazuje led, podchlazenou vodu neřeší.</p>
-                <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
             </div>
 
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
-                <div class="course-more-body course-concept" data-concept="water-anomaly"></div>
-            </details>
-        </section>
-
-        <!-- Slide 9, dolní polovina (obrázek jezera) -->
-        <section id="jezero" class="course-section">
-            <div class="course-slide">
-                <h2>„Těžká“ voda klesá dolů <span class="course-slide-ref">slide 9</span></h2>
-                <div class="course-core">
-                    <ul>
-                        <li>„Těžká“ voda vlivem gravitace klesá dolů. Proto v zimě promrzá voda od hladiny,
-                            a to umožňuje rybám přežít zimu.</li>
-                        <li>Led je lehčí než voda, plave na hladině a dokonce funguje jako izolace proti ochlazování
-                            vody výměnou tepla se vzduchem.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="course-model course-slide chart-container" id="model-lom">
-                <div class="chart-header">
-                    <h3>Model: jezero během roku</h3>
-                    <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-lom" title="Celá obrazovka">
-                        <span class="fullscreen-icon">⛶</span>
-                        <span class="fullscreen-text">Celá obrazovka</span>
-                    </button>
-                </div>
-                <div class="course-model-controls">
-                    <button type="button" class="btn btn-small course-play" id="jezero-play" aria-pressed="false">Přehrát</button>
-                    <div class="course-slider">
-                        <label for="faze-slider">Fáze</label>
-                        <input type="range" id="faze-slider" min="1" max="9" step="1" value="1">
+                <div class="course-more-body">
+                    <div class="course-concept" data-concept="water-anomaly"></div>
+                    <div class="course-concept" data-concept="lake-stratification"></div>
+                    <div class="course-example" id="priklad-lom">
+                        <h3>Řešený příklad</h3>
+                        <p>Jezero je v zimě zamrzlé. Kde pod ledem najdeš nejteplejší vodu a jak bude teplá?</p>
+                        <details class="course-answer">
+                            <summary>Ukázat odpověď</summary>
+                            <div class="course-answer-body">
+                                <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
+                                    Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
+                                <p><a href="?faze=6#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
+                            </div>
+                        </details>
                     </div>
-                    <p class="course-readout" id="jezero-faze" aria-live="polite"></p>
                 </div>
-                <div class="course-plot" id="jezero-scene"></div>
-                <p class="course-simplification">Schéma podle přednášky, ne měření.</p>
-                <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
-            </div>
-
-            <details class="course-more">
-                <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
-                <div class="course-more-body course-concept" data-concept="lake-stratification"></div>
             </details>
 
-            <div class="course-example" id="priklad-lom">
-                <h3>Řešený příklad</h3>
-                <div class="course-core">
-                    <p>Jezero je v zimě zamrzlé. Kde pod ledem najdeš nejteplejší vodu a jak bude teplá?</p>
-                </div>
-                <details class="course-answer">
-                    <summary>Ukázat odpověď</summary>
-                    <div class="course-answer-body">
-                        <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
-                            Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
-                        <p><a href="?faze=6#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
+            <dialog class="course-sim" aria-labelledby="titulek-hustota">
+                <div class="course-model course-slide chart-container" id="model-hustota">
+                    <div class="chart-header">
+                        <h3 id="titulek-hustota">Model: hustota vody a teplota</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-hustota" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít model" aria-label="Zavřít model">✕</button>
+                        </div>
                     </div>
-                </details>
-            </div>
+                    <div class="course-model-controls">
+                        <div class="course-slider">
+                            <label for="teplota-slider">Teplota vody</label>
+                            <input type="range" id="teplota-slider" min="-5" max="30" step="0.5" value="4">
+                        </div>
+                        <div class="course-segmented" role="group" aria-label="Rozsah grafu">
+                            <button type="button" data-range="10" aria-pressed="true">0–10&nbsp;°C (jako na slidu)</button>
+                            <button type="button" data-range="30" aria-pressed="false">0–30&nbsp;°C</button>
+                        </div>
+                        <p class="course-readout" id="hustota-readout" aria-live="polite"></p>
+                    </div>
+                    <div class="course-plot" id="hustota-plot"></div>
+                    <p class="course-simplification">Čistá voda při normálním tlaku (tabulka Tanaka a kol., 2001).
+                        Pod 0&nbsp;°C model ukazuje led, podchlazenou vodu neřeší.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
+
+            <dialog class="course-sim" aria-labelledby="titulek-jezero">
+                <div class="course-model course-slide chart-container" id="model-lom">
+                    <div class="chart-header">
+                        <h3 id="titulek-jezero">Model: jezero během roku</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-lom" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít model" aria-label="Zavřít model">✕</button>
+                        </div>
+                    </div>
+                    <div class="course-model-controls">
+                        <button type="button" class="btn btn-small course-play" id="jezero-play" aria-pressed="false">Přehrát</button>
+                        <div class="course-slider">
+                            <label for="faze-slider">Fáze</label>
+                            <input type="range" id="faze-slider" min="1" max="9" step="1" value="1">
+                        </div>
+                        <p class="course-readout" id="jezero-faze" aria-live="polite"></p>
+                    </div>
+                    <div class="course-plot" id="jezero-scene"></div>
+                    <p class="course-simplification">Schéma podle přednášky, ne měření.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
         </section>
 
         <section id="procvic" class="course-section">

@@ -1,10 +1,12 @@
 /**
- * Kapitola P1 Hustota: oba modely + společné chování kapitoly.
+ * Kapitola P1 Hustota: oba modely + společné chování kapitoly. Modely se otevírají
+ * z náhledů na slidu 9 (`js/course/modelOverlay.js`) a staví se až při otevření.
  * Model 1 — hustota vody a teplota (`?teplota=&rozsah=`, kotva #model-hustota).
  * Model 2 — jezero během roku podle GIFu z přednášky (`?faze=1..9`, kotva #model-lom).
  */
 
 import { initChapter } from './chapter.js';
+import { initModelOverlays } from './modelOverlay.js';
 import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
@@ -79,6 +81,7 @@ function initDensityModel(initial) {
     }));
     if (t > range) range = 30;
     render(false);
+    return {};
 }
 
 /**
@@ -128,33 +131,52 @@ function initLakeModel(initial) {
     });
     host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => lake.redraw());
 
-    if (initial.faze === null) lake.play();
-    syncPlay();
-
-    /** Nastaví předvolbu (z odkazu „Ukaž v modelu“) bez znovunačtení stránky. */
-    return (p) => {
-        if (p.faze === null) { play(); return; }
-        lake.setPhase(p.faze - 1, { animate: true });
-        syncPlay();
-        syncUrl({ faze: p.faze });
+    return {
+        /** Bez předvolby se hned přehrává, s `?faze=` ukáže fázi a stojí. */
+        onOpen() {
+            const { faze } = readParams(window.location.search, LAKE_PARAMS);
+            if (faze === null) lake.play();
+            else lake.setPhase(faze - 1);
+            syncPlay();
+        },
+        onClose() {
+            lake.pause();
+            syncPlay();
+        },
     };
 }
 
-function initPresetLinks(applyLake) {
-    // Odkaz „Ukaž v modelu“ na téže stránce: nastav předvolbu bez znovunačtení.
+/** Náhledy na slidu: skutečná data modelů. Jezero se v klidu přehrává, když je vidět. */
+function initThumbs() {
+    const densityHost = document.getElementById('nahled-hustota');
+    const lakeHost = document.getElementById('nahled-jezero');
+    if (densityHost) createDensityCurve(densityHost, { range: [0, 10], temperature: 4, compact: true });
+    if (!lakeHost) return () => {};
+    const lake = createLakeCycle(lakeHost, { compact: true });
+    let visible = false;
+    let simOpen = false;
+    const sync = () => { if (visible && !simOpen) lake.play(); else lake.pause(); };
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(lakeHost);
+    return (open) => { simOpen = open; sync(); };
+}
+
+function initPresetLinks(overlays) {
+    // Odkaz „Ukaž v modelu“: zapiš předvolbu do adresy a otevři simulátor bez znovunačtení.
     document.querySelectorAll('a[data-preset-link]').forEach(a => a.addEventListener('click', (e) => {
-        if (!applyLake) return;
         e.preventDefault();
         const url = new URL(a.href);
-        applyLake(readParams(url.search, LAKE_PARAMS));
-        document.getElementById(url.hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+        window.history.replaceState(null, '', `${url.pathname}${url.search}${window.location.hash}`);
+        overlays.open(url.hash.slice(1));
     }));
 }
 
 if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
-    const search = window.location.search;
-    initDensityModel(readParams(search, DENSITY_PARAMS));
-    initPresetLinks(initLakeModel(readParams(search, LAKE_PARAMS)));
-    initChapter();
+    const setThumbsPaused = initThumbs();
+    const overlays = initModelOverlays({
+        'model-hustota': () => initDensityModel(readParams(window.location.search, DENSITY_PARAMS)),
+        'model-lom': () => initLakeModel(readParams(window.location.search, LAKE_PARAMS)),
+    }, { onToggle: setThumbsPaused });
+    initPresetLinks(overlays);
+    initChapter().then(() => overlays.openFromHash());
 }
