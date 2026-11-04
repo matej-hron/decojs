@@ -1,15 +1,16 @@
 /**
- * Průřez modelového lomu během roku (kapitola P1 Hustota): vrstvy v měřítku hloubky s teplotou,
+ * Průřez modelového lomu během roku (kapitola P1 Hustota): pět stejných vrstev s teplotou,
  * teplota vzduchu, vítr, strom, led a klesání těžší vody. Vlastní SVG, data z `js/physics/lakeCycle.js`.
  *
- * Kroky se posouvají klikem, aby autor stihl vykládat. Přechod je plynulý, výměna vrstev trvá déle
- * a je na ní vidět pohyb. Při `prefers-reduced-motion` se nic neanimuje, šipky jen stojí.
+ * Kroky se posouvají klikem, aby autor stihl vykládat. Přechod je plynulý. Při výměně se vrstvy
+ * opravdu prohodí: čísla se míjejí a jdou na nové místo. Při `prefers-reduced-motion` se nic neanimuje,
+ * šipky jen stojí.
  *
  * Kostra SVG se staví jen při změně velikosti, každý snímek mění jen atributy.
  */
 
 import {
-    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeLayerCount, formatAirTemperature, lakeFrame,
+    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeRange, formatAirTemperature, lakeFrame,
     lakeTemperatureColor, lakeTextColor, mixColors,
 } from '../physics/lakeCycle.js';
 
@@ -100,7 +101,7 @@ export function createLakeCycle(host, options = {}) {
         el('path', { d: bowl }, el('clipPath', { id: `${id}-bowl` }, el('defs', {}, svg)));
         const water = el('g', { 'clip-path': `url(#${id}-bowl)` }, svg);
         const bands = LAKE_BANDS.map(([from, to]) => el('rect', {
-            x: r1(x1), y: r1(depthY(from)), width: r1(bowlW), height: r1(depthY(to) - depthY(from) + 0.6),
+            x: r1(x1), y: r1(depthY(from)), width: r1(bowlW), height: r1(depthY(to) - depthY(from) + 1.5), // překryv: stejná teplota se slije bez švu
         }, water));
 
         // svislá osa hloubky na levém břehu
@@ -122,22 +123,12 @@ export function createLakeCycle(host, options = {}) {
             }, svg, 'hloubka [m]');
         }
 
-        // Teplota je v pásu, v tenkém horním pásu menším písmem. Jen v náhledu, kde by bylo
-        // nečitelné, jde popisek na pravý břeh na úroveň pásu.
+        // Každá vrstva má popisek s teplotou uprostřed pásu.
         const tempFont = Math.max(compact ? 10 : 14, Math.min(font * 1.1, 24));
-        const minInside = compact ? 10 : 12;
-        const labels = LAKE_BANDS.map(([from, to]) => {
-            const bandH = depthY(to) - depthY(from);
-            const fit = Math.min(tempFont, bandH * 0.8);
-            const outside = fit < minInside;
-            const size = outside ? tempFont : fit;
-            const y = (depthY(from) + depthY(to)) / 2 + size * 0.35;
-            const node = el('text', {
-                x: r1(outside ? x2 + font * 0.5 : cx), y: r1(outside ? Math.max(y, y0 + size * 0.95) : y),
-                'text-anchor': outside ? 'start' : 'middle', 'font-size': r1(size), 'font-weight': 600,
-            }, svg);
-            return { node, outside };
-        });
+        const labelY = LAKE_BANDS.map(([from, to]) => (depthY(from) + depthY(to)) / 2 + tempFont * 0.35);
+        const labels = LAKE_BANDS.map((_, i) => el('text', {
+            x: r1(cx), y: r1(labelY[i]), 'text-anchor': 'middle', 'font-size': r1(tempFont), 'font-weight': 600,
+        }, svg));
 
         // Šipky: tmavý obrys a světlý střed, čitelné na každé barvě vrstvy. Patří do vody (ořez miskou).
         const arrow = (parent, width) => {
@@ -155,22 +146,25 @@ export function createLakeCycle(host, options = {}) {
         const heavyLen = Math.max(9, surfaceH * 0.72);
         [-0.34, -0.2, 0.2, 0.34].forEach((dx) => arrow(heavier, compact ? 1.6 : 2.6).set(downPath(cx + bowlW * dx, heavyLen, heavyLen * 0.34)));
 
-        // „výměna“: dlouhé šipky dolů a nahoru přes vrstvy, které se mění
+        // „výměna“: šipky dolů a nahoru jen v rozsahu, který se v kroku mění
         const exchange = el('g', { 'pointer-events': 'none' }, water);
         const exDown = [-0.26, -0.13].map(dx => ({ dx, ...arrow(exchange, compact ? 2 : 4) }));
         const exUp = [0.13, 0.26].map(dx => ({ dx, ...arrow(exchange, compact ? 2 : 4) }));
         const exchangeGeom = (index) => {
-            const count = LAKE_STEPS[index].kind === 'výměna' ? exchangeLayerCount(index) : 0;
-            const height = count ? depthY(LAKE_BANDS[count - 1][1]) - y0 : 0;
-            const len = Math.min(height * 0.6, waterH * 0.34);
-            const head = Math.max(5, Math.min(len * 0.22, font * 0.65));
-            return { height, len, head };
+            if (LAKE_STEPS[index].kind !== 'výměna') return null;
+            const [from, to] = exchangeRange(index);
+            const y1 = depthY(from);
+            const height = depthY(to) - y1;
+            const len = Math.max(height * 0.75, Math.min(26, waterH * 0.14));
+            // I v tenké vrstvě je vidět pohyb: šipka může mírně přejet okraj rozsahu.
+            const travel = Math.max(height - len, Math.min(18, waterH * 0.08));
+            return { start: y1 + (height - len - travel) / 2, len, travel, head: Math.max(5, Math.min(len * 0.26, font * 0.6)) };
         };
         const setExchange = (index) => {
-            const { len, head } = exchangeGeom(index);
-            if (!len) return;
-            exDown.forEach(a => a.set(downPath(cx + bowlW * a.dx, len, head)));
-            exUp.forEach(a => a.set(upPath(cx + bowlW * a.dx, len, head)));
+            const g = exchangeGeom(index);
+            if (!g) return;
+            exDown.forEach(a => a.set(downPath(cx + bowlW * a.dx, g.len, g.head)));
+            exUp.forEach(a => a.set(upPath(cx + bowlW * a.dx, g.len, g.head)));
         };
 
         // led: přirůstá kolem hladiny (z větší části nad ní, ať nezakryje teplotu), popisek nad ním
@@ -214,7 +208,7 @@ export function createLakeCycle(host, options = {}) {
         const buds = el('g', {}, tree);
         TREE.buds.forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3.2, fill: c.leaf }, buds));
 
-        refs = { c, y0, iceThick, bands, labels, heavier, exchange, exDown, exUp, exchangeGeom, setExchange, ice, iceLabel, air, windArrow, windLabel, groundLeaves, snow, crown, falling, buds };
+        refs = { c, y0, iceThick, bands, labels, labelY, cx, swapOffset: bowlW * 0.09, heavier, exchange, exDown, exUp, exchangeGeom, setExchange, ice, iceLabel, air, windArrow, windLabel, groundLeaves, snow, crown, falling, buds };
         refs.setExchange(step);
     }
 
@@ -224,24 +218,47 @@ export function createLakeCycle(host, options = {}) {
             + `teploty vody od hladiny ke dnu ${t.temps.join(', ')} °C.`);
     }
 
+    /**
+     * Popisky vrstev. Při prohození (`e` = průběh 0–1) jedou čísla dvojice na nové místo:
+     * klesající vlevo, stoupající vpravo, ať se míjejí.
+     */
+    function paintLabels(frame, iceH, e) {
+        const { temps: target, swap } = LAKE_STEPS[step];
+        refs.labels.forEach((node, i) => {
+            const moving = e !== null && (i === swap || i === swap + 1);
+            node.setAttribute('x', r1(refs.cx));
+            node.setAttribute('y', r1(refs.labelY[i] + (i === 0 ? iceH * 0.2 : 0))); // led roste od hladiny, popisek mu uhýbá
+            if (!moving) {
+                node.removeAttribute('stroke');
+                node.textContent = `${Math.round(frame.temps[i])}\u00a0°C`;
+                node.setAttribute('fill', lakeTextColor(lakeTemperatureColor(frame.temps[i])));
+                return;
+            }
+            // Horní číslo klesá, spodní stoupá. Přes různé pásy je čitelné světlé s tmavým obrysem.
+            const down = i === swap;
+            const startY = refs.labelY[i];
+            const endY = refs.labelY[down ? swap + 1 : swap];
+            node.textContent = `${target[down ? swap + 1 : swap]}\u00a0°C`;
+            node.setAttribute('x', r1(refs.cx + (down ? -1 : 1) * Math.sin(Math.PI * e) * refs.swapOffset));
+            node.setAttribute('y', r1(startY + (endY - startY) * e));
+            node.setAttribute('fill', '#ffffff');
+            node.setAttribute('stroke', '#10202c');
+            node.setAttribute('stroke-width', 3);
+            node.setAttribute('paint-order', 'stroke');
+        });
+    }
+
     function paint() {
         const frame = lakeFrame(pos);
         if (!refs) return;
         const { c } = refs;
-        frame.temps.forEach((t, i) => {
-            const color = lakeTemperatureColor(t);
-            refs.bands[i].setAttribute('fill', color);
-            const { node, outside } = refs.labels[i];
-            node.setAttribute('fill', outside ? '#ffffff' : lakeTextColor(color));
-            node.textContent = `${Math.round(t)} °C`;
-        });
+        frame.temps.forEach((t, i) => refs.bands[i].setAttribute('fill', lakeTemperatureColor(t)));
         const iceH = frame.ice * refs.iceThick;
         refs.ice.setAttribute('y', r1(refs.y0 - iceH * 0.6));
         refs.ice.setAttribute('height', r1(iceH));
         refs.ice.setAttribute('opacity', frame.ice > 0 ? 1 : 0);
         if (refs.iceLabel) refs.iceLabel.setAttribute('opacity', frame.ice > 0.7 ? 1 : 0);
-        // Led roste od hladiny, popisek první vrstvy (je-li v ní) před ním uhýbá dolů.
-        if (!refs.labels[0].outside) refs.labels[0].node.setAttribute('transform', `translate(0 ${r1(iceH * 0.2)})`);
+        paintLabels(frame, iceH, tween?.swap ? easeInOut(tween.x) : null);
         refs.air.textContent = formatAirTemperature(frame.air);
         refs.windArrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
         refs.windLabel.textContent = frame.warm >= 0.5 ? 'teplý vítr' : 'studený vítr';
@@ -250,12 +267,11 @@ export function createLakeCycle(host, options = {}) {
         refs.heavier.setAttribute('opacity', kind === 'těžší' ? 1 : 0);
         refs.exchange.setAttribute('opacity', kind === 'výměna' ? 1 : 0);
         if (kind === 'výměna') {
-            const { height, len } = refs.exchangeGeom(step);
-            const travel = height - len - 4;
+            const { start, travel } = refs.exchangeGeom(step);
             // Dojede ke konci a vrátí se doprostřed, kde zůstane stát.
             const m = tween?.forward ? 0.5 - 0.5 * Math.cos(2.5 * Math.PI * tween.x) : 0.5;
-            refs.exDown.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(refs.y0 + 2 + travel * m)})`));
-            refs.exUp.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(refs.y0 + 2 + travel * (1 - m))})`));
+            refs.exDown.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(start + travel * m)})`));
+            refs.exUp.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(start + travel * (1 - m))})`));
         }
         refs.crown.setAttribute('opacity', frame.tree.crown);
         refs.falling.setAttribute('opacity', frame.tree.falling);
@@ -283,8 +299,9 @@ export function createLakeCycle(host, options = {}) {
         describe();
         refs?.setExchange(step);
         if (animate && !reduced) {
-            const ms = forward && LAKE_STEPS[index].kind === 'výměna' ? EXCHANGE_MS : TWEEN_MS;
-            tween = { from: pos, to: target, start: 0, x: 0, ms, forward };
+            // Prohození čísel jen z klidu: rychlé klikání a držení šipky jde obyčejnou cestou.
+            const swap = forward && LAKE_STEPS[index].kind === 'výměna' && !tween;
+            tween = { from: pos, to: target, start: 0, x: 0, ms: swap ? EXCHANGE_MS : TWEEN_MS, forward, swap };
             if (!raf) raf = requestAnimationFrame(loop);
         } else {
             cancelAnimationFrame(raf);

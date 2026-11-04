@@ -544,6 +544,23 @@ details.course-more > summary .course-summary-hint {
     .course-step-label { min-height: 3.9em; } /* na telefonu se nejdelší věta zalomí na tři řádky */
 }
 .course-plot-clickable { cursor: pointer; }
+.course-months { display: flex; gap: 2px; }
+.course-months button {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 1.9rem;
+    padding: 0;
+    border: 1px solid var(--slide-line-strong);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--slide-fg);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+}
+.course-months button:hover,
+.course-months button:focus-visible { border-color: var(--slide-accent); }
+.course-months button[aria-pressed="true"] { background: var(--slide-accent); border-color: var(--slide-accent); color: var(--slide-on-accent); font-weight: 600; }
 
 .course-simplification {
     font-size: var(--text-sm);

@@ -1,20 +1,36 @@
 /**
- * Modelový lom během roku (kapitola P1 Hustota, slide 9): mechanismus po krocích.
+ * Modelový lom během roku (kapitola P1 Hustota, slide 9), zjednodušený na 5 stejných vrstev.
+ * Odhad podle hlášení potápěčů, ne měření. Teploty jsou ve °C.
  *
- * Modelový lom hluboký 30 m, typický rok. Odhad podle hlášení potápěčů, ne měření.
- * Čísla se mění jen v tabulkách LAKE_STEPS a LAKE_MONTH_SCENE níže. Teploty jsou ve °C.
- *
- * Model ukazuje příčinu: hladina chladne, až je těžší než voda pod ní, a teprve pak se vrstvy
- * vymění. Pod 4 °C je chladnější voda lehčí a zůstává nahoře.
+ * Průběh roku se negeneruje z ruční tabulky, ale ze dvou pravidel. Jeden krok je právě jedna změna:
+ *   1. jedna vrstva se změní o 1 °C,
+ *   2. dvě sousední vrstvy se prohodí, když je horní těžší než spodní (podle waterDensity).
+ * Navíc jsou stavové kroky beze změny teplot: hladina zamrzla, únor pod ledem, led roztál.
+ * Čísla se mění jen v LAKE_START, LAKE_SUMMER_TARGETS, LAKE_UNDER_ICE a LAKE_MONTH_SCENE níže.
  *
  * Pozice `pos` je spojitá: 0 = krok 1, 0.5 = půl cesty ke kroku 2, po posledním kroku následuje krok 1.
  */
 
-/** Hloubky z tabulky (m), ke každé patří jedna teplota v `temps`. */
-export const LAKE_DEPTHS = Object.freeze([0, 5, 10, 20, 30]);
+import { waterDensity } from './waterDensity.js';
+
 export const LAKE_MAX_DEPTH = 30;
-/** Pásy kreslené kolem hloubek z tabulky (m). */
-export const LAKE_BANDS = Object.freeze([[0, 2.5], [2.5, 7.5], [7.5, 15], [15, 25], [25, 30]]);
+/** Pět stejně velkých vrstev (m): stejná velikost dělá prohození poctivým. */
+export const LAKE_BANDS = Object.freeze([[0, 6], [6, 12], [12, 18], [18, 24], [24, 30]]);
+/** Hloubky na ose (m). */
+export const LAKE_DEPTHS = Object.freeze([0, 6, 12, 18, 24, 30]);
+
+/** Výchozí stav, srpen. */
+const LAKE_START = Object.freeze([23, 10, 6, 5, 4]);
+/** Pod ledem po jednom kroku (po zamrznutí hladiny). */
+const LAKE_UNDER_ICE = Object.freeze([[0, 3, 4, 4, 4], [0, 2, 4, 4, 4], [0, 2, 3, 4, 4]]);
+/** Léto: cíle na konci měsíce, po 1 °C, v rámci měsíce nejdřív hladina, pak níže. */
+const LAKE_SUMMER_TARGETS = Object.freeze([
+    ['duben', [8, 5, 4, 4, 4]],
+    ['květen', [14, 6, 5, 4, 4]],
+    ['červen', [19, 8, 5, 5, 4]],
+    ['červenec', [22, 9, 6, 5, 4]],
+    ['srpen', [23, 10, 6, 5, 4]],
+]);
 
 /**
  * Co patří k měsíci: teplota vzduchu, vítr, strom a listí na zemi.
@@ -35,47 +51,118 @@ const LAKE_MONTH_SCENE = Object.freeze({
     prosinec: { air: 0, wind: 'cold', tree: 'bare', groundLeaves: 0.6 },
 });
 
-/** Pořadí měsíců pro `?mesic=1..12`. */
-const MONTH_ORDER = Object.keys(LAKE_MONTH_SCENE);
+/** Pořadí měsíců pro `?mesic=1..12` a tlačítka měsíců. */
+export const LAKE_MONTH_NAMES = Object.freeze(Object.keys(LAKE_MONTH_SCENE));
 
 /**
  * @typedef {Object} LakeStep
  * @property {string} month
- * @property {number[]} temps  teplota vody v hloubkách LAKE_DEPTHS
+ * @property {number[]} temps  teplota vrstev od hladiny ke dnu
  * @property {boolean} ice  led na hladině
- * @property {'klid'|'ohřev'|'chlazení'|'těžší'|'výměna'|'lehčí'} kind
+ * @property {'chlazení'|'ohřev'|'těžší'|'lehčí'|'výměna'|'promícháno'|'led'|'pod ledem'|'klid'|'tání'|'léto'} kind
  * @property {string} label  hlavní věta k výkladu
+ * @property {number} [swap]  index horní vrstvy prohozené dvojice (jen u `výměna`)
  */
 
-const HEAVIER = 'hladina je chladnější než vrstva pod ní, a proto těžší';
-const EXCHANGE = 'vrstvy se mění: těžší voda klesá, teplejší stoupá';
-const WARMING = 'hladina se ohřívá, lehčí voda zůstává nahoře';
+/**
+ * Nejvýše položená dvojice, kde je horní voda těžší než spodní.
+ * @param {readonly number[]} temps
+ * @returns {number} index horní vrstvy, nebo −1, když je sloupec stabilní
+ */
+export function unstablePair(temps) {
+    for (let i = 0; i + 1 < temps.length; i++) {
+        if (waterDensity(temps[i]) > waterDensity(temps[i + 1])) return i;
+    }
+    return -1;
+}
+
+const allFour = (temps) => temps.every(t => t === 4);
+
+/** Podzimní měsíc podle nejnižší teploty hladiny dosud, aby prohození měsíc nevrátilo. */
+function autumnMonth(lowest) {
+    if (lowest >= 16) return 'září';
+    if (lowest >= 10) return 'říjen';
+    if (lowest >= 6) return 'listopad';
+    return lowest >= 1 ? 'prosinec' : 'leden';
+}
+
+/**
+ * Popisek prohození. Stoupá vždy lehčí voda; nad 4 °C je to ta teplejší, pod 4 °C ta chladnější.
+ * @param {number} rising teplota vody, která stoupá
+ * @param {number} sinking teplota vody, která klesá
+ * @returns {string}
+ */
+export function swapLabel(rising, sinking) {
+    return rising > sinking
+        ? 'Vrstvy se prohodí: těžší voda klesá, teplejší stoupá'
+        : 'Vrstvy se prohodí: těžší voda klesá, lehčí stoupá';
+}
+
+/**
+ * Vygeneruje celý rok ze dvou pravidel. Krok 1 je výchozí srpen, po posledním kroku následuje znovu krok 1.
+ * @returns {LakeStep[]}
+ */
+export function buildLakeSteps() {
+    const steps = [{ month: 'srpen', temps: [...LAKE_START], ice: false, kind: 'léto', label: 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře' }];
+    let temps = [...LAKE_START];
+    const push = (month, kind, label, extra = {}) => steps.push({ month, temps: [...temps], ice: false, kind, label, ...extra });
+
+    /** Prohazuje od nejvýše položené dvojice, dokud není sloupec stabilní. */
+    const settle = (month) => {
+        for (let i = unstablePair(temps); i >= 0; i = unstablePair(temps)) {
+            const [sinking, rising] = [temps[i], temps[i + 1]];
+            temps[i] = rising;
+            temps[i + 1] = sinking;
+            push(month, 'výměna', swapLabel(rising, sinking), { swap: i });
+        }
+    };
+
+    // Podzim: hladina −1 °C, pak případná prohození; končí, když hladina dosáhne 0 °C.
+    let lowest = temps[0];
+    while (temps[0] > 0) {
+        temps[0] -= 1;
+        lowest = Math.min(lowest, temps[0]);
+        const month = autumnMonth(lowest);
+        if (unstablePair(temps) === 0) push(month, 'těžší', 'Hladina je chladnější než vrstva pod ní, a proto těžší');
+        else if (allFour(temps)) push(month, 'promícháno', 'Celý lom má 4\u00a0°C: podzimní promíchání');
+        else if (temps[0] < 4) push(month, 'lehčí', 'Hladina chladne, pod 4\u00a0°C je lehčí a zůstává nahoře');
+        else push(month, 'chlazení', 'Hladina chladne');
+        settle(month);
+    }
+
+    // Zima: led, pod ledem po jednom kroku, únor klid.
+    push('leden', 'led', 'Hladina zamrzla', { ice: true });
+    for (const under of LAKE_UNDER_ICE) {
+        temps = [...under];
+        push('leden', 'pod ledem', 'Pod ledem voda pomalu chladne', { ice: true });
+    }
+    push('únor', 'klid', 'Led na hladině', { ice: true });
+
+    // Jaro: led zmizí, hladina +1 °C a stejné pravidlo prohození, dokud není všude 4 °C.
+    push('březen', 'tání', 'Led roztál');
+    while (!allFour(temps)) {
+        temps[0] += 1;
+        if (unstablePair(temps) === 0) push('březen', 'těžší', 'Hladina má teplotu blíž 4\u00a0°C, a proto je těžší než voda pod ní');
+        else if (allFour(temps)) push('březen', 'promícháno', 'Celý lom má 4\u00a0°C: jarní promíchání');
+        else push('březen', 'ohřev', 'Hladina se ohřívá');
+        settle('březen');
+    }
+
+    // Léto: po 1 °C přes cíle měsíců, shora dolů. Poslední krok by byl znovu výchozí srpen.
+    for (const [month, target] of LAKE_SUMMER_TARGETS) {
+        for (let k = 0; k < temps.length; k++) {
+            while (temps[k] !== target[k]) {
+                temps[k] += Math.sign(target[k] - temps[k]);
+                push(month, 'léto', 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře');
+            }
+        }
+    }
+    steps.pop();
+    return steps;
+}
 
 /** @type {readonly LakeStep[]} */
-export const LAKE_STEPS = Object.freeze([
-    { month: 'leden', temps: [0, 2, 3, 4, 4], ice: true, kind: 'klid', label: 'led na hladině' },
-    { month: 'únor', temps: [0, 2, 3, 4, 4], ice: true, kind: 'klid', label: 'led na hladině' },
-    { month: 'březen', temps: [2, 2, 3, 4, 4], ice: false, kind: 'ohřev', label: 'led roztál, hladina se ohřívá' },
-    { month: 'březen', temps: [4, 3, 3, 4, 4], ice: false, kind: 'těžší', label: 'hladina má 4\u00a0°C, je těžší než voda pod ní' },
-    { month: 'březen', temps: [4, 4, 4, 4, 4], ice: false, kind: 'výměna', label: 'vrstvy se mění: jarní promíchání' },
-    { month: 'duben', temps: [8, 6, 5, 4, 4], ice: false, kind: 'ohřev', label: WARMING },
-    { month: 'květen', temps: [14, 11, 6, 5, 4], ice: false, kind: 'ohřev', label: WARMING },
-    { month: 'červen', temps: [20, 17, 8, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
-    { month: 'červenec', temps: [23, 21, 9, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
-    { month: 'srpen', temps: [23, 22, 10, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
-    { month: 'září', temps: [22, 22, 10, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
-    { month: 'září', temps: [21, 22, 10, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
-    { month: 'září', temps: [21, 21, 11, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
-    { month: 'září', temps: [18, 18, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
-    { month: 'říjen', temps: [12, 12, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
-    { month: 'listopad', temps: [7, 7, 7, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
-    { month: 'prosinec', temps: [4, 7, 7, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
-    { month: 'prosinec', temps: [5, 5, 5, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
-    { month: 'prosinec', temps: [4, 5, 5, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
-    { month: 'prosinec', temps: [4, 4, 4, 4, 4], ice: false, kind: 'výměna', label: 'vrstvy se mění až ke dnu: podzimní promíchání' },
-    { month: 'prosinec', temps: [3, 4, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina je chladnější, ale pod 4\u00a0°C je lehčí, a proto zůstává nahoře' },
-    { month: 'leden', temps: [1, 3, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina dál chladne a zůstává nahoře' },
-]);
+export const LAKE_STEPS = Object.freeze(buildLakeSteps());
 
 /** Stav stromu jako čísla 0–1, aby šel plynule měnit: koruna, padající listí, sníh, pupeny. */
 const TREE_STATES = Object.freeze({
@@ -92,17 +179,13 @@ export const airOf = (month) => LAKE_MONTH_SCENE[month].air;
 export const treeOf = (month) => LAKE_MONTH_SCENE[month].tree;
 
 /**
- * Kolik vrstev od hladiny se účastní výměny v daném kroku: po nejhlubší, která se mění.
- * @param {number} index krok (0 = krok 1)
- * @returns {number}
+ * Rozsah prohození v metrech: dvě sousední vrstvy. Tam patří šipky.
+ * @param {number} index krok typu `výměna`
+ * @returns {[number, number]}
  */
-export function exchangeLayerCount(index) {
-    const n = LAKE_STEPS.length;
-    const now = LAKE_STEPS[index].temps;
-    const before = LAKE_STEPS[(index - 1 + n) % n].temps;
-    let count = 0;
-    now.forEach((t, k) => { if (t !== before[k]) count = k + 1; });
-    return count;
+export function exchangeRange(index) {
+    const { swap } = LAKE_STEPS[index];
+    return [LAKE_BANDS[swap][0], LAKE_BANDS[swap + 1][1]];
 }
 
 /**
@@ -111,7 +194,7 @@ export function exchangeLayerCount(index) {
  * @returns {number} index kroku
  */
 export function firstStepOfMonth(monthNumber) {
-    return LAKE_STEPS.findIndex(s => s.month === MONTH_ORDER[monthNumber - 1]);
+    return LAKE_STEPS.findIndex(s => s.month === LAKE_MONTH_NAMES[monthNumber - 1]);
 }
 
 /**

@@ -170,14 +170,14 @@ Slide 9 je jedna zastávka se dvěma řadami text + náhled jako v přednášce;
 Modely:
 1. **Hustota vody vs. teplota** — posuvník teploty (cca −5 až 30 °C, pod 0 °C led), křivka hustoty s bodem; maximum
    u 4 °C zřetelně; skok na led 917–920 kg/m³. Data: tabulková hustota vody (uveď zdroj v kódu).
-2. **Modelový lom během roku** (oprava 2026-11-04, nahrazuje profil z pilotu, 9 fází z GIFu i prosté měsíce). Model ukazuje
-   **příčinu po krocích**: hladina chladne, až je těžší než voda pod ní, a teprve pak se vrstvy vymění; pod 4 °C je chladnější
-   voda lehčí a zůstává nahoře. 22 kroků v lomu hlubokém 30 m, ke každému měsíc a velký popisek, teplota vzduchu, pásy v měřítku
-   hloubky se svislou osou, vítr, strom, led. Posun: tlačítka „‹ předchozí krok“ a „další krok ›“, klik do průřezu, v otevřeném
-   simulátoru i šipky (funguje klikr), posuvník pro přímý skok, předvolby `?krok=1..22` a `?mesic=1..12`, které po zavření
-   z adresy zmizí. Automatické přehrávání není. Krok `těžší` má krátké šipky dolů v povrchové vrstvě, `výměna` delší pohyb
-   (asi 1,5 s) a šipky dolů i nahoru, `lehčí` žádnou šipku. Náhled na slidu je statický (krok 10, srpen).
-   Je to **odhad podle hlášení potápěčů, ne měření**, a čísla jsou v tabulkách v `js/physics/lakeCycle.js`.
+2. **Modelový lom během roku** (oprava 2026-11-04, nahrazuje profil z pilotu, 9 fází z GIFu, prosté měsíce i ruční tabulky kroků).
+   Pět stejných vrstev v lomu hlubokém 30 m. **Jeden krok je změna jedné vrstvy o 1 °C, nebo prohození dvou sousedních vrstev**, když je
+   horní těžší než spodní (podle `js/physics/waterDensity.js`). Průběh roku generuje čistá funkce v `js/physics/lakeCycle.js` ze dvou
+   pravidel a několika cílových stavů, 90 kroků včetně stavových (zamrznutí, únor, tání). Popisky se generují podle druhu kroku.
+   Posun: tlačítka „‹ předchozí krok“ a „další krok ›“, klik do průřezu, v otevřeném simulátoru i šipky (funguje klikr), posuvník kroků,
+   řada dvanácti tlačítek skočí na první krok měsíce, předvolby `?krok=` a `?mesic=1..12`, které po zavření z adresy zmizí. Výchozí je
+   srpen. Automatické přehrávání není. Při prohození se čísla asi 1,5 s míjejí a šipky ukazují jen dotčenou dvojici vrstev; krok `těžší`
+   má krátké šipky dolů v povrchové vrstvě. Náhled na slidu je statický srpen. Je to **odhad podle hlášení potápěčů, ne měření**.
 - Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 

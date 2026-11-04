@@ -2,7 +2,7 @@
  * Kapitola P1 Hustota: oba modely + společné chování kapitoly. Modely se otevírají
  * z náhledů na slidu 9 (`js/course/modelOverlay.js`) a staví se až při otevření.
  * Model 1 — hustota vody a teplota (`?teplota=&rozsah=`, kotva #model-hustota).
- * Model 2 — modelový lom během roku, posun po krocích (`?krok=1..22`, `?mesic=1..12`, kotva #model-lom).
+ * Model 2 — modelový lom během roku, posun po krocích (`?krok=`, `?mesic=1..12`, kotva #model-lom).
  */
 
 import { initChapter } from './chapter.js';
@@ -11,7 +11,7 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { LAKE_STEPS, modelKeyStep, stepFromParams } from '../physics/lakeCycle.js';
+import { LAKE_MONTH_NAMES, LAKE_STEPS, firstStepOfMonth, modelKeyStep, stepFromParams } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
 import { createLakeCycle } from '../components/LakeCycle.js';
 
@@ -22,10 +22,8 @@ export const DENSITY_PARAMS = {
     teplota: { min: -5, max: 30, step: 0.5, default: 4 },
     rozsah: { min: 10, max: 30, step: 20, default: 10 },
 };
-/** Náhled lomu na slidu ukazuje krok 10 (srpen). */
-const THUMB_STEP = 9;
 export const LAKE_PARAMS = {
-    krok: { min: 1, max: 22, step: 1, default: null },
+    krok: { min: 1, max: LAKE_STEPS.length, step: 1, default: null },
     mesic: { min: 1, max: 12, step: 1, default: null },
 };
 
@@ -109,9 +107,24 @@ function initLakeModel() {
     if (!slider || !host) return {};
 
     const lake = createLakeCycle(host, { step: stepFromParams(readParams(window.location.search, LAKE_PARAMS)) ?? 0 });
+    slider.max = String(LAKE_STEPS.length);
+
+    // Řada tlačítek s měsíci: skočí na první krok měsíce.
+    const monthButtons = LAKE_MONTH_NAMES.map((name, m) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = name[0].toUpperCase();
+        btn.title = name;
+        btn.setAttribute('aria-label', name);
+        btn.addEventListener('click', () => { lake.setStep(firstStepOfMonth(m + 1)); show(); });
+        return btn;
+    });
+    document.getElementById('lom-mesice')?.append(...monthButtons);
+
     const show = () => {
         const index = lake.getStep();
         const r = lakeReadout(index);
+        monthButtons.forEach((btn, m) => btn.setAttribute('aria-pressed', String(LAKE_MONTH_NAMES[m] === LAKE_STEPS[index].month)));
         slider.value = String(index + 1);
         slider.setAttribute('aria-valuetext', `${index + 1}, ${LAKE_STEPS[index].month}: ${r.label}`);
         readout.innerHTML = `${r.main}<span class="course-readout-sub">${r.sub}</span>`;
@@ -154,7 +167,7 @@ function initThumbs() {
     const densityHost = document.getElementById('nahled-hustota');
     const lakeHost = document.getElementById('nahled-jezero');
     if (densityHost) createDensityCurve(densityHost, { range: [0, 10], temperature: 4, compact: true });
-    if (lakeHost) createLakeCycle(lakeHost, { compact: true, step: THUMB_STEP });
+    if (lakeHost) createLakeCycle(lakeHost, { compact: true }) // krok 1 je srpen;
 }
 
 function initPresetLinks(overlays) {

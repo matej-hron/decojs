@@ -123,7 +123,7 @@
                             <div class="course-answer-body">
                                 <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
                                     Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
-                                <p><a href="?mesic=1#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
+                                <p><a href="?mesic=2#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
                             </div>
                         </details>
                     </div>
@@ -176,14 +176,14 @@
                         <button type="button" class="btn course-step-btn" id="krok-predchozi">‹ předchozí krok</button>
                         <button type="button" class="btn course-step-btn" id="krok-dalsi" autofocus>další krok ›</button>
                         <div class="course-slider">
-                            <label for="krok-slider">Krok</label>
-                            <input type="range" id="krok-slider" min="1" max="22" step="1" value="1">
+                            <div class="course-months" id="lom-mesice" role="group" aria-label="Skok na měsíc"></div>
+                            <input type="range" id="krok-slider" min="1" max="90" step="1" value="1" aria-label="Krok">
                         </div>
                         <p class="course-readout course-readout-month" id="lom-mesic"></p>
                     </div>
                     <p class="course-step-label" id="lom-popisek" aria-live="polite"></p>
                     <div class="course-plot course-plot-clickable" id="lom-scene" title="Další krok"></div>
-                    <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, typický rok. Odhad podle hlášení potápěčů, ne měření.</p>
+                    <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev. Odhad podle hlášení potápěčů, ne měření.</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>
             </dialog>
