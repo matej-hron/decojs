@@ -243,7 +243,7 @@ test('graf hustoty: osa obsáhne křivku s okrajem, dílky jsou hezké', () => {
 
 // --- rozcestník --------------------------------------------------------------
 
-import { chaptersHtml, questionsHtml } from '../js/course/hubPage.js';
+import { answersHtml, chapterDetailsHtml, chaptersHtml, questionsHtml } from '../js/course/hubPage.js';
 import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours } from '../js/course/p1Course.js';
 
 test('rozcestník: hotové kapitoly jsou odkazy, ostatní „připravujeme“', () => {
@@ -260,4 +260,12 @@ test('rozcestník: každá otázka slidu 6 míří na existující kapitolu', ()
     for (const q of P1_QUESTIONS) for (const s of q.answeredIn) assert.ok(chapterBySlug(s), s);
     assert.equal((questionsHtml().match(/<li>/g) || []).length, 6);
     assert.deepEqual(chapterNeighbours('hustota'), { prev: null, next: null });
+});
+
+test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“', () => {
+    assert.doesNotMatch(questionsHtml(), /Odpověď v kapitole/);
+    assert.doesNotMatch(chaptersHtml(), /slidy|P★/);
+    assert.equal((answersHtml().match(/Odpověď v kapitole/g) || []).length, P1_QUESTIONS.length);
+    assert.match(answersHtml(), /Tlak \(připravujeme\)/);
+    assert.match(chapterDetailsHtml(), /Hustota: P★, slidy 8–9/);
 });

@@ -62,9 +62,6 @@ function el(name, attrs = {}, text) {
     return n;
 }
 
-const cssVar = (name, fallback) =>
-    getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-
 /**
  * @param {HTMLElement} host
  * @param {{range?: [number, number], temperature?: number}} [options]
@@ -81,16 +78,21 @@ export function createDensityCurve(host, options = {}) {
         if (!width || !height) return;
         svg.setAttribute('width', width);
         svg.setAttribute('height', height);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // v tisku se zmenší na šířku papíru
         svg.replaceChildren();
 
-        const font = Math.max(14, Math.min(20, width / 45)); // popisky os ≥ 14 px (mobil i projektor)
+        const font = Math.max(14, Math.min(24, width / 56)); // popisky os ≥ 14 px, na projektoru větší
+        // Barvy se čtou z hostitele: slide si je přepisuje lokálně (tmavá i světlá plocha).
+        const css = getComputedStyle(host);
+        const cssVar = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
         const c = {
             text: cssVar('--text', '#2c3e50'),
             muted: cssVar('--text-subtle', '#7f8c8d'),
             grid: cssVar('--border', '#dce1e6'),
-            line: cssVar('--blue-500', '#2980b9'),
-            accent: cssVar('--red-500', '#e74c3c'),
-            max: cssVar('--amber-500', '#f39c12'),
+            surface: cssVar('--surface-elevated', '#fff'),
+            line: cssVar('--chart-line', '#2980b9'),
+            accent: cssVar('--chart-point', '#e74c3c'),
+            max: cssVar('--chart-max', '#f39c12'),
         };
         const axis = densityAxis(range);
         const yLabelW = font * 4.2;
@@ -150,7 +152,7 @@ export function createDensityCurve(host, options = {}) {
             svg.appendChild(el('line', { x1: cx, x2: cx, y1: cy, y2: plot.y + plot.h, stroke: c.accent,
                 'stroke-width': 1.5, 'stroke-dasharray': '3 4' }));
             svg.appendChild(el('circle', { cx, cy, r: Math.max(6, font * 0.45), fill: c.accent,
-                stroke: cssVar('--surface-elevated', '#fff'), 'stroke-width': 2 }));
+                stroke: c.surface, 'stroke-width': 2 }));
         }
     }
 

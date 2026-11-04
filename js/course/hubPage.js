@@ -1,7 +1,8 @@
 /**
  * Rozcestník kurzu P1: kapitoly v pořadí přednášky a motivační otázky ze slidu 6.
- * Otázka odkazuje na kapitolu, kde ji student poprvé umí zodpovědět (zatím často
- * „připravujeme“). Je to jen prezentace — žádný stav per student.
+ * Slidy ukazují jen otázky a názvy kapitol; kapitolu, kde student otázku poprvé umí
+ * zodpovědět (zatím často „připravujeme“), řekne až „Více“. Je to jen prezentace —
+ * žádný stav per student.
  */
 
 import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug } from './p1Course.js';
@@ -17,21 +18,26 @@ export function chapterRef(c) {
         : `${c.title} (připravujeme)`;
 }
 
+/** Slide 7: jen názvy kapitol; hotové jsou odkazy, ostatní tlumené. */
 export function chaptersHtml(chapters = P1_CHAPTERS) {
-    return chapters.map(c => {
-        const ready = c.status === 'ready';
-        const title = ready
-            ? `<a class="course-chapter-title" href="${c.slug}.html">${c.title}</a>`
-            : `<span class="course-chapter-title">${c.title}</span>`;
-        return `<li class="${ready ? 'is-ready' : 'is-planned'}">
-            ${title}
-            <span class="course-chapter-meta">${c.level} · slidy ${c.slides}</span>
-            <span class="course-status${ready ? ' is-ready' : ''}">${ready ? 'hotovo' : 'připravujeme'}</span>
-        </li>`;
-    }).join('');
+    return chapters.map(c => c.status === 'ready'
+        ? `<li class="is-ready"><a href="${c.slug}.html">${c.title}</a></li>`
+        : `<li class="is-planned">${c.title} <span class="course-status">připravujeme</span></li>`
+    ).join('');
 }
 
+/** „Více“ pod slidem 7: úroveň a slidy každé kapitoly. */
+export function chapterDetailsHtml(chapters = P1_CHAPTERS) {
+    return chapters.map(c => `<li>${c.title}: ${c.level}, slidy ${c.slides}</li>`).join('');
+}
+
+/** Slide 6: jen otázky. */
 export function questionsHtml(questions = P1_QUESTIONS) {
+    return questions.map(q => `<li>${q.question}</li>`).join('');
+}
+
+/** „Více“ pod slidem 6: kde student otázku poprvé zodpoví. */
+export function answersHtml(questions = P1_QUESTIONS) {
     return questions.map(q => {
         const where = q.answeredIn.map(s => chapterRef(chapterBySlug(s))).join(', ');
         return `<li>${q.question}<span class="course-question-where">Odpověď v kapitole: ${where}</span></li>`;
@@ -41,5 +47,7 @@ export function questionsHtml(questions = P1_QUESTIONS) {
 if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
     document.getElementById('course-chapters').innerHTML = chaptersHtml();
+    document.getElementById('course-chapter-details').innerHTML = chapterDetailsHtml();
     document.getElementById('course-questions').innerHTML = questionsHtml();
+    document.getElementById('course-answers').innerHTML = answersHtml();
 }

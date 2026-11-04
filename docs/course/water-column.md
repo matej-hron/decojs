@@ -117,7 +117,7 @@ Konvence `zIndex`:
 
 ## 3. `geom`
 
-Kostra kreslí v **pixelových souřadnicích** (bez `viewBox`): 1 jednotka SVG = 1 CSS px, takže písmo má
+Kostra kreslí v **pixelových souřadnicích** (`viewBox` 1:1, zmenšuje se jen v tisku): 1 jednotka SVG = 1 CSS px, takže písmo má
 stálou velikost. `geom` se počítá při každém překreslení z šířky obalu.
 
 | Pole | Popis |

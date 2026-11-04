@@ -20,7 +20,7 @@
  *       destroy() { … },                // optional cleanup
  *   });
  *
- * The SVG works in *pixel* coordinates (no viewBox scaling) so text keeps a
+ * The SVG works in *pixel* coordinates (a 1:1 viewBox, no scaling on screen) so text keeps a
  * fixed, legible size: ≥ 14 px on a 390 px phone, up to 20 px on a projector.
  *
  * Pure helpers (geometry, ticks, depth ↔ y mapping, snapping, formatting) are
@@ -597,6 +597,7 @@ export function createWaterColumn(host, options = {}) {
         svg.setAttribute('width', String(geom.width));
         svg.setAttribute('height', String(geom.height));
         svg.style.height = `${geom.height}px`;
+        svg.setAttribute('viewBox', `0 0 ${geom.width} ${geom.height}`); // 1:1 on screen; lets print CSS fit the paper
         svg.setAttribute('font-size', String(geom.fontSize));
         svg.setAttribute('font-family', 'var(--font-body, sans-serif)');
         svg.replaceChildren();

@@ -96,8 +96,9 @@ function initLakeModel(initial) {
         surface: lakeHasIce(initial.mesic) ? 'ice' : 'water',
         aside: true,
         // Na projektoru (na šířku) se model i s ovládáním vejde na jednu obrazovku.
+        // Hlavička a popisky slidu rostou s výškou okna, proto ne pevný odečet.
         height: (width) => Math.round(Math.max(300, Math.min(width < 600 ? width * 1.05 : width * 0.5,
-            window.innerHeight - 330))),
+            window.innerHeight * 0.93 - 320))),
     });
     column.setState({ month: initial.mesic });
     column.addLayer(createTemperatureLayer({
