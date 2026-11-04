@@ -95,8 +95,14 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
 
 ## 5. Šablona kapitoly
 
-1. Kapitola začíná **rovnou prvním slidem**, jako na přednášce (oprava 2026-11-04). Nad ním je jen jedna úzká lišta:
-   kurz › kapitola, odkazy na sekce a „Rozbalit všechny výklady“. Nadpis prvního slidu je jediné `h1` stránky.
+1. Kapitola začíná **rovnou prvním slidem**, jako na přednášce (oprava 2026-11-04). Nad ním je jen jedna úzká lišta
+   kurzu, stejná i na rozcestníku a na desktopu přilepená: kurz › kapitola, odkazy na sekce, „Rozbalit všechny výklady“
+   a tlačítka ‹ ›. Nadpis prvního slidu je jediné `h1` stránky.
+
+   **Pevná scéna (desktop):** všechny zastávky (titulní slide, slidy, modely, „Procvič si“) mají stejný rámeček, nadpis
+   i začátek těla, přepnutí vypadá jako v PowerPointu. Zastávka = slide + řádek „Více“ a vyplní celou výšku pod
+   lištou (řádek zůstane prázdný, když „Více“ není), další slide tedy není vidět. Písmo závisí jen na okně. Rozměry jsou
+   jedny v `css/course.css`, slide na nízkém okně smí narůst, obsah se neořezává. Telefon: normální tok, žádná pevná výška.
    Krátký úvod (proč to potápěč potřebuje) a **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“) patří
    na začátek „Více“ pod prvním slidem. Jsou to text kapitoly, ne sdílený blok pojmu.
 2. Výklad po sekcích ve **dvou vrstvách** (rozhodnutí autora):
@@ -112,7 +118,7 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
 4. **Řešené příklady** z přednášky: zadání viditelné, výsledek a postup **schované do odkrytí** (stejně na přednášce
    i doma). Kde to dává smysl, „spočítej sám“ s kontrolou.
 5. Rámeček „Teď už umíš odpovědět na…“ (pokud kapitola nějakou otázku odemyká).
-6. „Procvič si“ (poslední zastávka přepínání slidů, sekce s `data-slide-stop`).
+6. „Procvič si“: poslední slide kapitoly, sekce `#procvic` (přepínání slidů na ni míří z další kapitoly).
 7. Odkaz na odpovídající kategorii kvízu fyziky (`data/quiz-physics.json` má kategorie mapující se na kapitoly, např.
    `vlastnosti-vody-vzduchu`, `tlak-jednotky`, `vztlak-vystroj`, `spotreba-planovani`).
 

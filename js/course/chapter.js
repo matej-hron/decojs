@@ -1,6 +1,6 @@
 /**
  * Chování stránky kapitoly kurzu (bez závislosti na konkrétním modelu):
- *  - lišta nad prvním slidem: kurz › kapitola a obsah sekcí (skok na sekci / model),
+ *  - lišta kurzu: kurz › kapitola a obsah sekcí (skok na sekci / model), též na rozcestníku,
  *  - přepínač „Rozbalit všechny výklady“ pro `<details class="course-more">`,
  *  - předchozí / další kapitola podle `js/course/p1Course.js`,
  *  - vložení sdílených bloků pojmů a otázek „Procvič si“,
@@ -41,14 +41,25 @@ function renderToc() {
 }
 
 /**
- * Drobečky v liště kapitoly: název kurzu › pořadí a název kapitoly.
- * @param {string} slug
+ * Drobečky v liště: název kurzu › pořadí a název kapitoly.
+ * @param {string|null} slug kapitola, `null` na rozcestníku
  * @returns {string} HTML, prázdné pro neznámou kapitolu
  */
 export function breadcrumbHtml(slug) {
+    if (slug === null) return 'Kurz P1 – Fyzika';
     const i = P1_CHAPTERS.findIndex(c => c.slug === slug);
     if (i < 0) return '';
     return `<a href="index.html">Kurz P1 – Fyzika</a> › ${i + 1}. ${P1_CHAPTERS[i].title}`;
+}
+
+/**
+ * Lišta kurzu, stejná na rozcestníku i v kapitolách.
+ * @param {string|null} slug kapitola, `null` na rozcestníku
+ */
+export function renderCourseBar(slug) {
+    const crumb = document.querySelector('.course-bar .course-breadcrumb');
+    if (crumb) crumb.innerHTML = breadcrumbHtml(slug);
+    renderToc();
 }
 
 function initExpandAll() {
@@ -105,9 +116,7 @@ function initFullscreen() {
 export async function initChapter() {
     const slug = document.body.dataset.courseChapter;
     if (slug && !chapterBySlug(slug)) console.warn(`chapter: neznámá kapitola „${slug}“`);
-    const crumb = document.querySelector('.course-bar .course-breadcrumb');
-    if (crumb) crumb.innerHTML = breadcrumbHtml(slug);
-    renderToc();
+    renderCourseBar(slug ?? null);
     initFullscreen();
     renderPrevNext(slug);
     const landOnHash = initSlideNav(slug ?? null);

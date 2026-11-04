@@ -298,3 +298,20 @@ test('lišta kapitoly: kurz › pořadí a název kapitoly z pořadí kurzu', ()
     assert.match(breadcrumbHtml('tlak'), /› 2\. Tlak$/);
     assert.equal(breadcrumbHtml('neexistuje'), '');
 });
+
+// --- pevná scéna: stejná šablona na rozcestníku i v kapitolách ---------------
+
+for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`)]) {
+    test(`${page}: lišta kurzu s místem pro ‹ ›, každá zastávka je slide v sekci`, () => {
+        const html = readFileSync(new URL(page, ROOT), 'utf8');
+        const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+        assert.match(main, /^<main[^>]*>\s*<div class="course-bar">/);
+        assert.match(main.slice(0, main.indexOf('</nav>') + 300), /class="course-slide-nav"/);
+        assert.equal((main.match(/<h1[\s>]/g) || []).length, 1, 'jediné h1');
+        assert.doesNotMatch(main, /data-slide-stop|course-slide-cover|course-title/);
+        // každý slide má hlavičku jako první potomek, tělo až za ní
+        for (const m of main.matchAll(/class="course-(?:model course-)?slide(?: [^"]*)?"[^>]*>\s*(<\w+[^>]*>)/g)) {
+            assert.match(m[1], /^<(h1|h2|div class="chart-header")/, m[1]);
+        }
+    });
+}

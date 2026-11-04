@@ -10,6 +10,11 @@
     <meta name="theme-color" content="#2980b9">
     <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
 
+    <!-- Písmo hned, ať text při přechodu mezi slidy neposkočí -->
+    <link rel="preload" href="../fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/fraunces-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/inter-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/course.css">
     <script>/* dočasné: porovnání barev slidů, po výběru varianty odstranit */ if (new URLSearchParams(location.search).get('slide') === 'svetly') document.documentElement.dataset.slide = 'svetly';</script>
@@ -28,16 +33,21 @@
     </nav>
 
     <main class="course-page" lang="cs">
-        <div class="course-slide course-slide-cover">
-            <div class="course-slide-head">
-                <p class="course-breadcrumb">Kurzy</p>
-                <h1 class="course-title">Kurz P1 – Fyzika</h1>
-            </div>
-            <div class="course-core">
-                <p class="course-lead">Přednáška fyziky pro kurz CMAS P★ po kapitolách: text slidů, výklad na doma,
-                    interaktivní modely a otázky z testů SPČR. Kapitoly jdou v pořadí přednášky, od jednoduchého ke složitému.</p>
-            </div>
+        <div class="course-bar">
+            <p class="course-breadcrumb"></p>
+            <nav class="course-toc" aria-label="Obsah přehledu"></nav>
+            <div class="course-slide-nav" role="group" aria-label="Přepínání slidů"></div>
         </div>
+
+        <section class="course-section">
+            <div class="course-slide">
+                <h1>Kurz P1 – Fyzika</h1>
+                <div class="course-core">
+                    <p class="course-lead">Přednáška fyziky pro kurz CMAS P★ po kapitolách: text slidů, výklad na doma,
+                        interaktivní modely a otázky z testů SPČR. Kapitoly jdou v pořadí přednášky, od jednoduchého ke složitému.</p>
+                </div>
+            </div>
+        </section>
 
         <section id="proc" class="course-section">
             <div class="course-slide">

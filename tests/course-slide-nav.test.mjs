@@ -47,7 +47,7 @@ describe('nextTarget: přes hranice stránek', () => {
     });
 
     it('první zastávka → poslední zastávka předchozí hotové kapitoly', () => {
-        assert.deepEqual(nextTarget({ slug: 'c', index: 0, count: 4, dir: -1, chapters: COURSE }), { href: 'a.html#posledni' });
+        assert.deepEqual(nextTarget({ slug: 'c', index: 0, count: 4, dir: -1, chapters: COURSE }), { href: 'a.html#procvic' });
     });
 
     it('první zastávka první kapitoly → Obsah', () => {

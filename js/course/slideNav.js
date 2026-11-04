@@ -5,28 +5,28 @@
  * Není to prezentační engine: stránka se dál normálně posouvá, nic se neskrývá a skok
  * je okamžitý (na projektoru klidnější, a tím odpadá i prefers-reduced-motion).
  *
- * Zastávka = `.course-slide` nebo prvek s `data-slide-stop`, v pořadí na stránce.
- * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují.
+ * Zastávka = každý `.course-slide` (i model a „Procvič si“), v pořadí na stránce. Každá
+ * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
+ * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
+ * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v liště kurzu.
  */
 
 import { P1_CHAPTERS } from './p1Course.js';
 
-/** Hash: po načtení kapitoly skoč na její poslední zastávku (krok zpět z další kapitoly). */
-const LAST_STOP_HASH = '#posledni';
+/** Kotva poslední zastávky každé kapitoly (hlídá test). */
+const LAST_STOP_HASH = '#procvic';
 /** Prvky, kterým šipky patří. */
 const OWN_ARROWS = 'input, select, textarea, [contenteditable]:not([contenteditable="false"]), [role="slider"]';
 const SLIDER = 'input[type="range"], [role="slider"]';
 /** Kus zastávky, který musí být vidět, aby se počítala za aktuální (kraj dalšího slidu nestačí). */
 const MIN_VISIBLE = 0.25;
-/** Mezera mezi hlavičkou webu a slidem, stejná jako scroll-margin v css/course.css. */
-const GAP_UNDER_NAV = 8;
 
 /**
  * @param {ParentNode} root
  * @returns {Element[]} zastávky v pořadí na stránce
  */
 export function collectStops(root) {
-    return [...root.querySelectorAll('main .course-slide, main [data-slide-stop]')];
+    return [...root.querySelectorAll('main .course-slide')];
 }
 
 /**
@@ -100,13 +100,11 @@ export function isSliderTarget(target) {
     return Boolean(target?.closest?.(SLIDER));
 }
 
-const navHeight = () => document.querySelector('.main-nav')?.getBoundingClientRect().height ?? 0;
-
-/** Skok na zastávku. První je začátek stránky i s lištou kapitoly, adresa pak hash nepotřebuje. */
+/** Skok na zastávku. První je začátek stránky i s lištou, adresa pak hash nepotřebuje. */
 function jumpTo(stops, index) {
     const stop = stops[index];
-    const top = index === 0 ? 0 : stop.getBoundingClientRect().top + window.scrollY - navHeight() - GAP_UNDER_NAV;
-    window.scrollTo({ top, behavior: 'instant' });
+    if (index === 0) window.scrollTo({ top: 0, behavior: 'instant' });
+    else stop.scrollIntoView({ block: 'start', behavior: 'instant' });
     const anchor = index === 0 ? '' : stopAnchor(stop);
     const { pathname, search } = window.location;
     window.history.replaceState(null, '', `${pathname}${search}${anchor ? `#${anchor}` : ''}`);
@@ -114,7 +112,8 @@ function jumpTo(stops, index) {
 
 function step(slug, dir) {
     const stops = collectStops(document);
-    const index = mostVisibleIndex(stops.map(s => s.getBoundingClientRect()), navHeight(), window.innerHeight);
+    const stageTop = parseFloat(getComputedStyle(stops[0]).scrollMarginTop) || 0;
+    const index = mostVisibleIndex(stops.map(s => s.getBoundingClientRect()), stageTop, window.innerHeight);
     const target = nextTarget({ slug, index, count: stops.length, dir });
     if (!target) return;
     if ('stop' in target) jumpTo(stops, target.stop);
@@ -122,10 +121,8 @@ function step(slug, dir) {
 }
 
 function renderButtons(slug) {
-    const nav = document.createElement('div');
-    nav.className = 'course-slide-nav';
-    nav.setAttribute('role', 'group');
-    nav.setAttribute('aria-label', 'Přepínání slidů');
+    const nav = document.querySelector('.course-bar .course-slide-nav');
+    if (!nav) return;
     for (const [dir, label, glyph] of [[-1, 'Předchozí slide', '‹'], [1, 'Další slide', '›']]) {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -135,7 +132,6 @@ function renderButtons(slug) {
         btn.addEventListener('click', () => step(slug, dir));
         nav.appendChild(btn);
     }
-    document.body.appendChild(nav);
 }
 
 /**
@@ -157,7 +153,6 @@ export function initSlideNav(slug) {
     return () => {
         const stops = collectStops(document);
         const { hash } = window.location;
-        if (hash === LAST_STOP_HASH) { jumpTo(stops, stops.length - 1); return; }
         const index = stops.findIndex(s => hash === `#${stopAnchor(s)}`);
         if (index > 0) jumpTo(stops, index);
     };

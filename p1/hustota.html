@@ -10,6 +10,11 @@
     <meta name="theme-color" content="#2980b9">
     <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
 
+    <!-- Písmo hned, ať text při přechodu mezi slidy neposkočí -->
+    <link rel="preload" href="../fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/fraunces-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/inter-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/course.css">
     <script>/* dočasné: porovnání barev slidů, po výběru varianty odstranit */ if (new URLSearchParams(location.search).get('slide') === 'svetly') document.documentElement.dataset.slide = 'svetly';</script>
@@ -32,6 +37,7 @@
             <p class="course-breadcrumb"></p>
             <nav class="course-toc" aria-label="Obsah kapitoly"></nav>
             <button type="button" class="course-expand-all" aria-pressed="false">Rozbalit všechny výklady</button>
+            <div class="course-slide-nav" role="group" aria-label="Přepínání slidů"></div>
         </div>
 
         <!-- Slide 8 -->
@@ -183,11 +189,15 @@
             </div>
         </section>
 
-        <section id="procvic" class="course-section" data-slide-stop>
-            <h2>Procvič si</h2>
-            <p class="course-note">Otázky z testů SPČR/CMAS. Klikni na odpověď.</p>
-            <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="6,7,8"></div>
-            <p><a href="../quiz-physics.html?kategorie=vlastnosti-vody-vzduchu">Všechny otázky z testu fyziky na vlastnosti vody a vzduchu →</a></p>
+        <section id="procvic" class="course-section">
+            <div class="course-slide">
+                <h2>Procvič si</h2>
+                <div class="course-core course-core-practice">
+                    <p class="course-note">Otázky z testů SPČR/CMAS. Klikni na odpověď.</p>
+                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="6,7,8"></div>
+                    <p><a href="../quiz-physics.html?kategorie=vlastnosti-vody-vzduchu">Všechny otázky z testu fyziky na vlastnosti vody a vzduchu →</a></p>
+                </div>
+            </div>
         </section>
 
         <nav class="course-prevnext" aria-label="Předchozí a další kapitola"></nav>

@@ -95,10 +95,11 @@ function initLakeModel(initial) {
         depth: initial.hloubka,
         surface: lakeHasIce(initial.mesic) ? 'ice' : 'water',
         aside: true,
-        // Na projektoru (na šířku) se model i s ovládáním vejde na jednu obrazovku.
-        // Hlavička a popisky slidu rostou s výškou okna, proto ne pevný odečet.
-        height: (width) => Math.round(Math.max(300, Math.min(width < 600 ? width * 1.05 : width * 0.5,
-            window.innerHeight * 0.93 - 320))),
+        // Desktop: sloupec vyplní, co v rámečku modelu zbývá nad řádkem s odečtem a hloubkou
+        // (host má výšku z CSS). Telefon: normální tok, výška podle šířky.
+        height: (width) => (window.matchMedia('(min-width: 769px)').matches
+            ? Math.max(240, host.clientHeight - host.querySelector('.water-column-controls').offsetHeight)
+            : Math.round(width * 1.05)),
     });
     column.setState({ month: initial.mesic });
     column.addLayer(createTemperatureLayer({
