@@ -246,11 +246,12 @@ test('graf hustoty: osa obsáhne křivku s okrajem, dílky jsou hezké', () => {
 import { answersHtml, chapterDetailsHtml, chaptersHtml, questionsHtml } from '../js/course/hubPage.js';
 import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours } from '../js/course/p1Course.js';
 
-test('rozcestník: hotové kapitoly jsou odkazy, ostatní „připravujeme“', () => {
+test('rozcestník: hotové kapitoly jsou odkazy, ostatní jen tlumené', () => {
     const html = chaptersHtml();
     assert.match(html, /href="hustota\.html"/);
     assert.doesNotMatch(html, /href="tlak\.html"/);
-    assert.equal((html.match(/připravujeme/g) || []).length, P1_CHAPTERS.filter(c => c.status !== 'ready').length);
+    assert.doesNotMatch(html, /připravujeme/);
+    assert.equal((html.match(/is-planned/g) || []).length, P1_CHAPTERS.filter(c => c.status !== 'ready').length);
     for (const c of P1_CHAPTERS) {
         if (c.status === 'ready') assert.ok(existsSync(new URL(`p1/${c.slug}.html`, ROOT)), `chybí p1/${c.slug}.html`);
     }

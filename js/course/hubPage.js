@@ -18,11 +18,11 @@ export function chapterRef(c) {
         : `${c.title} (připravujeme)`;
 }
 
-/** Slide 7: jen názvy kapitol; hotové jsou odkazy, ostatní tlumené. */
+/** Slide 7: jen názvy kapitol; hotové jsou odkazy, ostatní tlumené (vysvětlí řádek pod seznamem). */
 export function chaptersHtml(chapters = P1_CHAPTERS) {
     return chapters.map(c => c.status === 'ready'
         ? `<li class="is-ready"><a href="${c.slug}.html">${c.title}</a></li>`
-        : `<li class="is-planned">${c.title} <span class="course-status">připravujeme</span></li>`
+        : `<li class="is-planned">${c.title}</li>`
     ).join('');
 }
 
