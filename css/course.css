@@ -508,7 +508,7 @@ details.course-more > summary .course-summary-hint {
     .course-column-host .water-column-readout { margin: 0; }
 }
 
-.course-slide .course-month-step {
+.course-slide .course-step-btn {
     flex: none;
     min-height: 44px;
     padding-inline: 1em;
@@ -520,6 +520,19 @@ details.course-more > summary .course-summary-hint {
     white-space: nowrap;
 }
 .course-readout-month { font-size: clamp(1.4rem, 3.6vh, 2.4rem); line-height: 1.15; }
+/* Popisek kroku je hlavní věc k výkladu. Místo drží i pro delší větu, ať se průřez nehýbe. */
+.course-step-label {
+    margin: 0 0 var(--space-2);
+    min-height: 1.3em;
+    font-size: clamp(1.15rem, 3.4vh, 2.2rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--slide-fg);
+}
+.course-step-label::first-letter { text-transform: uppercase; }
+@media (max-width: 768px) {
+    .course-step-label { min-height: 3.9em; } /* na telefonu se nejdelší věta zalomí na tři řádky */
+}
 .course-plot-clickable { cursor: pointer; }
 
 .course-simplification {

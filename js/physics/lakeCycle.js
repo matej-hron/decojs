@@ -1,10 +1,13 @@
 /**
- * Modelový lom během roku (kapitola P1 Hustota, slide 9).
+ * Modelový lom během roku (kapitola P1 Hustota, slide 9): mechanismus po krocích.
  *
  * Modelový lom hluboký 30 m, typický rok. Odhad podle hlášení potápěčů, ne měření.
- * Čísla se mění jen v tabulce LAKE_MONTHS níže. Teploty jsou ve °C.
+ * Čísla se mění jen v tabulkách LAKE_STEPS a LAKE_MONTH_SCENE níže. Teploty jsou ve °C.
  *
- * Pozice `pos` je spojitá: 0 = leden, 0.5 = půl cesty k únoru, po prosinci následuje znovu leden.
+ * Model ukazuje příčinu: hladina chladne, až je těžší než voda pod ní, a teprve pak se vrstvy
+ * vymění. Pod 4 °C je chladnější voda lehčí a zůstává nahoře.
+ *
+ * Pozice `pos` je spojitá: 0 = krok 1, 0.5 = půl cesty ke kroku 2, po kroku 21 následuje krok 1.
  */
 
 /** Hloubky z tabulky (m), ke každé patří jedna teplota v `temps`. */
@@ -14,31 +17,63 @@ export const LAKE_MAX_DEPTH = 30;
 export const LAKE_BANDS = Object.freeze([[0, 2.5], [2.5, 7.5], [7.5, 15], [15, 25], [25, 30]]);
 
 /**
- * @typedef {Object} LakeMonth
- * @property {string} name
- * @property {number} air  teplota vzduchu
+ * Co patří k měsíci: teplota vzduchu, vítr, strom a listí na zemi.
+ * @type {Readonly<Record<string, {air: number, wind: 'warm'|'cold', tree: string, groundLeaves: number}>>}
+ */
+const LAKE_MONTH_SCENE = Object.freeze({
+    leden: { air: -1, wind: 'cold', tree: 'snow', groundLeaves: 0 },
+    únor: { air: 0, wind: 'cold', tree: 'snow', groundLeaves: 0 },
+    březen: { air: 3, wind: 'warm', tree: 'bare', groundLeaves: 0 },
+    duben: { air: 9, wind: 'warm', tree: 'buds', groundLeaves: 0 },
+    květen: { air: 13, wind: 'warm', tree: 'leaves', groundLeaves: 0 },
+    červen: { air: 17, wind: 'warm', tree: 'leaves', groundLeaves: 0 },
+    červenec: { air: 18, wind: 'warm', tree: 'leaves', groundLeaves: 0 },
+    srpen: { air: 18, wind: 'warm', tree: 'leaves', groundLeaves: 0 },
+    září: { air: 13, wind: 'cold', tree: 'falling', groundLeaves: 0.3 },
+    říjen: { air: 8, wind: 'cold', tree: 'falling', groundLeaves: 0.7 },
+    listopad: { air: 4, wind: 'cold', tree: 'bare', groundLeaves: 1 },
+    prosinec: { air: 0, wind: 'cold', tree: 'bare', groundLeaves: 0.6 },
+});
+
+/** Pořadí měsíců pro `?mesic=1..12`. */
+const MONTH_ORDER = Object.keys(LAKE_MONTH_SCENE);
+
+/**
+ * @typedef {Object} LakeStep
+ * @property {string} month
  * @property {number[]} temps  teplota vody v hloubkách LAKE_DEPTHS
  * @property {boolean} ice  led na hladině
- * @property {'warm'|'cold'} wind
- * @property {string} label
- * @property {string} tree  klíč do TREE_STATES
- * @property {number} groundLeaves  listí na zemi (0–1)
+ * @property {'klid'|'ohřev'|'chlazení'|'těžší'|'výměna'|'lehčí'} kind
+ * @property {string} label  hlavní věta k výkladu
  */
 
-/** @type {readonly LakeMonth[]} */
-export const LAKE_MONTHS = Object.freeze([
-    { name: 'leden', air: -1, temps: [0, 2, 3, 4, 4], ice: true, wind: 'cold', label: 'led na hladině', tree: 'snow', groundLeaves: 0 },
-    { name: 'únor', air: 0, temps: [0, 2, 3, 4, 4], ice: true, wind: 'cold', label: 'led na hladině', tree: 'snow', groundLeaves: 0 },
-    { name: 'březen', air: 3, temps: [4, 4, 4, 4, 4], ice: false, wind: 'warm', label: 'jarní promíchání', tree: 'bare', groundLeaves: 0 },
-    { name: 'duben', air: 9, temps: [8, 6, 5, 4, 4], ice: false, wind: 'warm', label: 'hladina se ohřívá', tree: 'buds', groundLeaves: 0 },
-    { name: 'květen', air: 13, temps: [14, 11, 6, 5, 4], ice: false, wind: 'warm', label: 'hladina se ohřívá', tree: 'leaves', groundLeaves: 0 },
-    { name: 'červen', air: 17, temps: [20, 17, 8, 5, 4], ice: false, wind: 'warm', label: 'letní vrstvení', tree: 'leaves', groundLeaves: 0 },
-    { name: 'červenec', air: 18, temps: [23, 21, 9, 5, 4], ice: false, wind: 'warm', label: 'letní vrstvení', tree: 'leaves', groundLeaves: 0 },
-    { name: 'srpen', air: 18, temps: [23, 22, 10, 5, 4], ice: false, wind: 'warm', label: 'letní vrstvení', tree: 'leaves', groundLeaves: 0 },
-    { name: 'září', air: 13, temps: [18, 18, 11, 5, 4], ice: false, wind: 'cold', label: 'hladina chladne', tree: 'falling', groundLeaves: 0.3 },
-    { name: 'říjen', air: 8, temps: [12, 12, 11, 5, 4], ice: false, wind: 'cold', label: 'hladina chladne', tree: 'falling', groundLeaves: 0.7 },
-    { name: 'listopad', air: 4, temps: [7, 7, 7, 5, 4], ice: false, wind: 'cold', label: 'hladina chladne', tree: 'bare', groundLeaves: 1 },
-    { name: 'prosinec', air: 0, temps: [4, 4, 4, 4, 4], ice: false, wind: 'cold', label: 'podzimní promíchání', tree: 'bare', groundLeaves: 0.6 },
+const HEAVIER = 'hladina je chladnější než vrstva pod ní, a proto těžší';
+const EXCHANGE = 'vrstvy se mění: těžší voda klesá, teplejší stoupá';
+const WARMING = 'hladina se ohřívá, lehčí voda zůstává nahoře';
+
+/** @type {readonly LakeStep[]} */
+export const LAKE_STEPS = Object.freeze([
+    { month: 'leden', temps: [0, 2, 3, 4, 4], ice: true, kind: 'klid', label: 'led na hladině' },
+    { month: 'únor', temps: [0, 2, 3, 4, 4], ice: true, kind: 'klid', label: 'led na hladině' },
+    { month: 'březen', temps: [2, 2, 3, 4, 4], ice: false, kind: 'ohřev', label: 'led roztál, hladina se ohřívá' },
+    { month: 'březen', temps: [4, 3, 3, 4, 4], ice: false, kind: 'těžší', label: 'hladina má 4\u00a0°C, je těžší než voda pod ní' },
+    { month: 'březen', temps: [4, 4, 4, 4, 4], ice: false, kind: 'výměna', label: 'vrstvy se mění: jarní promíchání' },
+    { month: 'duben', temps: [8, 6, 5, 4, 4], ice: false, kind: 'ohřev', label: WARMING },
+    { month: 'květen', temps: [14, 11, 6, 5, 4], ice: false, kind: 'ohřev', label: WARMING },
+    { month: 'červen', temps: [20, 17, 8, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
+    { month: 'červenec', temps: [23, 21, 9, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
+    { month: 'srpen', temps: [23, 22, 10, 5, 4], ice: false, kind: 'klid', label: 'letní vrstvení' },
+    { month: 'září', temps: [22, 22, 10, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
+    { month: 'září', temps: [21, 22, 10, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
+    { month: 'září', temps: [21, 21, 11, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
+    { month: 'září', temps: [18, 18, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
+    { month: 'říjen', temps: [12, 12, 11, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
+    { month: 'listopad', temps: [7, 7, 7, 5, 4], ice: false, kind: 'chlazení', label: 'hladina chladne' },
+    { month: 'prosinec', temps: [5, 7, 7, 5, 4], ice: false, kind: 'těžší', label: HEAVIER },
+    { month: 'prosinec', temps: [6, 6, 6, 5, 4], ice: false, kind: 'výměna', label: EXCHANGE },
+    { month: 'prosinec', temps: [4, 4, 4, 4, 4], ice: false, kind: 'výměna', label: 'vrstvy se mění až ke dnu: podzimní promíchání' },
+    { month: 'prosinec', temps: [3, 4, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina je chladnější, ale pod 4\u00a0°C je lehčí, a proto zůstává nahoře' },
+    { month: 'leden', temps: [1, 3, 4, 4, 4], ice: false, kind: 'lehčí', label: 'hladina dál chladne a zůstává nahoře' },
 ]);
 
 /** Stav stromu jako čísla 0–1, aby šel plynule měnit: koruna, padající listí, sníh, pupeny. */
@@ -50,25 +85,52 @@ const TREE_STATES = Object.freeze({
     buds: { crown: 0, falling: 0, snow: 0, buds: 1 },
 });
 
-/** Přechody, při kterých se hladina blíží 4 °C a těžší voda klesá (index výchozího měsíce). */
-const SINKING_FROM = new Set([1, 7, 8, 9, 10]);
+/** @param {string} month @returns {number} teplota vzduchu v měsíci */
+export const airOf = (month) => LAKE_MONTH_SCENE[month].air;
+/** @param {string} month @returns {string} klíč stavu stromu v měsíci */
+export const treeOf = (month) => LAKE_MONTH_SCENE[month].tree;
 
 /**
- * @param {number} from index výchozího měsíce (0 = leden)
- * @returns {boolean} při kroku na další měsíc klesá voda z povrchové vrstvy
+ * Kolik vrstev od hladiny se účastní výměny v daném kroku: po nejhlubší, která se mění.
+ * @param {number} index krok (0 = krok 1)
+ * @returns {number}
  */
-export function isSinkingTransition(from) {
-    return SINKING_FROM.has(from);
+export function exchangeLayerCount(index) {
+    const n = LAKE_STEPS.length;
+    const now = LAKE_STEPS[index].temps;
+    const before = LAKE_STEPS[(index - 1 + n) % n].temps;
+    let count = 0;
+    now.forEach((t, k) => { if (t !== before[k]) count = k + 1; });
+    return count;
 }
 
 /**
- * Další nebo předchozí měsíc, dokola.
+ * První krok daného měsíce.
+ * @param {number} monthNumber 1–12
+ * @returns {number} index kroku
+ */
+export function firstStepOfMonth(monthNumber) {
+    return LAKE_STEPS.findIndex(s => s.month === MONTH_ORDER[monthNumber - 1]);
+}
+
+/**
+ * Krok z předvolby v adrese; `krok` má přednost před `mesic`.
+ * @param {{krok: number|null, mesic: number|null}} params
+ * @returns {number|null} index kroku, nebo null bez předvolby
+ */
+export function stepFromParams({ krok, mesic }) {
+    if (krok !== null) return krok - 1;
+    return mesic !== null ? firstStepOfMonth(mesic) : null;
+}
+
+/**
+ * Další nebo předchozí krok, dokola.
  * @param {number} index
  * @param {1|-1} dir
  * @returns {number}
  */
-export function stepMonth(index, dir) {
-    const n = LAKE_MONTHS.length;
+export function stepIndex(index, dir) {
+    const n = LAKE_STEPS.length;
     return (index + dir + n) % n;
 }
 
@@ -76,32 +138,32 @@ const lerp = (a, b, f) => a + (b - a) * f;
 const round4 = (v) => Math.round(v * 1e4) / 1e4;
 
 /**
- * Stav modelu v dané pozici roku.
+ * Stav modelu v dané pozici cyklu.
  * @param {number} pos
  * @returns {{temps: number[], air: number, ice: number, warm: number, tree: Record<string, number>,
- *   groundLeaves: number, month: number, progress: number, sinking: number}}
- *   `month` je zobrazený měsíc (index), `sinking` 0–1 uprostřed přechodu s klesáním
+ *   groundLeaves: number, step: number, progress: number}} `step` je zobrazený krok (index)
  */
 export function lakeFrame(pos) {
-    const n = LAKE_MONTHS.length;
+    const n = LAKE_STEPS.length;
     const p = ((pos % n) + n) % n;
     const i = Math.floor(p + 1e-9) % n;
     const raw = p - i;
     const f = raw < 1e-9 ? 0 : raw;
-    const a = LAKE_MONTHS[i];
-    const b = LAKE_MONTHS[(i + 1) % n];
-    const treeA = TREE_STATES[a.tree];
-    const treeB = TREE_STATES[b.tree];
+    const a = LAKE_STEPS[i];
+    const b = LAKE_STEPS[(i + 1) % n];
+    const sceneA = LAKE_MONTH_SCENE[a.month];
+    const sceneB = LAKE_MONTH_SCENE[b.month];
+    const treeA = TREE_STATES[sceneA.tree];
+    const treeB = TREE_STATES[sceneB.tree];
     return {
         temps: a.temps.map((t, k) => round4(lerp(t, b.temps[k], f))),
-        air: round4(lerp(a.air, b.air, f)),
+        air: round4(lerp(sceneA.air, sceneB.air, f)),
         ice: round4(lerp(a.ice ? 1 : 0, b.ice ? 1 : 0, f)),
-        warm: round4(lerp(a.wind === 'warm' ? 1 : 0, b.wind === 'warm' ? 1 : 0, f)),
+        warm: round4(lerp(sceneA.wind === 'warm' ? 1 : 0, sceneB.wind === 'warm' ? 1 : 0, f)),
         tree: Object.fromEntries(Object.keys(treeA).map(k => [k, round4(lerp(treeA[k], treeB[k], f))])),
-        groundLeaves: round4(lerp(a.groundLeaves, b.groundLeaves, f)),
-        month: f < 0.5 ? i : (i + 1) % n,
+        groundLeaves: round4(lerp(sceneA.groundLeaves, sceneB.groundLeaves, f)),
+        step: f < 0.5 ? i : (i + 1) % n,
         progress: f,
-        sinking: isSinkingTransition(i) ? round4(Math.sin(Math.PI * f)) : 0,
     };
 }
 
@@ -116,13 +178,13 @@ export function formatAirTemperature(t) {
 }
 
 /**
- * Krok měsíce z klávesy. V otevřeném simulátoru šipky patří měsícům i na posuvníku,
- * jen tak funguje krok dokola a prezentační klikr. Mimo simulátor přepínají slidy (`slideNav.js`).
+ * Krok modelu z klávesy. V otevřeném simulátoru šipky patří krokům i na posuvníku, jen tak funguje
+ * krok dokola a prezentační klikr. Mimo simulátor přepínají slidy (`slideNav.js`).
  * @param {{key: string, altKey: boolean, ctrlKey: boolean, metaKey: boolean, shiftKey: boolean}} e
  * @param {{simOpen?: boolean}} [state]
  * @returns {1|-1|0}
  */
-export function monthKeyStep(e, { simOpen = false } = {}) {
+export function modelKeyStep(e, { simOpen = false } = {}) {
     if (!simOpen || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return 0;
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return 0;
     return e.key === 'ArrowRight' ? 1 : -1;

@@ -173,15 +173,16 @@
                         </div>
                     </div>
                     <div class="course-model-controls">
-                        <button type="button" class="btn course-month-step" id="mesic-predchozi">‹ předchozí měsíc</button>
-                        <button type="button" class="btn course-month-step" id="mesic-dalsi" autofocus>další měsíc ›</button>
+                        <button type="button" class="btn course-step-btn" id="krok-predchozi">‹ předchozí krok</button>
+                        <button type="button" class="btn course-step-btn" id="krok-dalsi" autofocus>další krok ›</button>
                         <div class="course-slider">
-                            <label for="mesic-slider">Měsíc</label>
-                            <input type="range" id="mesic-slider" min="1" max="12" step="1" value="1">
+                            <label for="krok-slider">Krok</label>
+                            <input type="range" id="krok-slider" min="1" max="21" step="1" value="1">
                         </div>
-                        <p class="course-readout course-readout-month" id="lom-mesic" aria-live="polite"></p>
+                        <p class="course-readout course-readout-month" id="lom-mesic"></p>
                     </div>
-                    <div class="course-plot course-plot-clickable" id="lom-scene" title="Další měsíc"></div>
+                    <p class="course-step-label" id="lom-popisek" aria-live="polite"></p>
+                    <div class="course-plot course-plot-clickable" id="lom-scene" title="Další krok"></div>
                     <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, typický rok. Odhad podle hlášení potápěčů, ne měření.</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>

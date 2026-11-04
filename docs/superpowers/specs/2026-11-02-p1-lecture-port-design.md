@@ -168,12 +168,14 @@ Slide 9 je jedna zastávka se dvěma řadami text + náhled jako v přednášce;
 Modely:
 1. **Hustota vody vs. teplota** — posuvník teploty (cca −5 až 30 °C, pod 0 °C led), křivka hustoty s bodem; maximum
    u 4 °C zřetelně; skok na led 917–920 kg/m³. Data: tabulková hustota vody (uveď zdroj v kódu).
-2. **Modelový lom během roku** (oprava 2026-11-04, nahrazuje profil po měsících z pilotu i 9 fází z GIFu): 12 měsíců,
-   lom hluboký 30 m, teplota vzduchu, pásy v měřítku hloubky se svislou osou, vítr, strom, led. Posun klikem, aby autor stihl
-   vykládat: tlačítka „‹ předchozí měsíc“ a „další měsíc ›“, klik do průřezu, v otevřeném simulátoru i šipky (funguje i klikr),
-   posuvník pro přímý skok, předvolba `?mesic=1..12`. Automatické přehrávání není, přechody jsou plynulé. Náhled na slidu je
-   statický (srpen). Šipky „těžší voda klesá“ při srpen→září, září→říjen, říjen→listopad, listopad→prosinec, únor→březen.
-   Je to **odhad podle hlášení potápěčů, ne měření**, a čísla jsou v jedné konstantě v `js/physics/lakeCycle.js`.
+2. **Modelový lom během roku** (oprava 2026-11-04, nahrazuje profil z pilotu, 9 fází z GIFu i prosté měsíce). Model ukazuje
+   **příčinu po krocích**: hladina chladne, až je těžší než voda pod ní, a teprve pak se vrstvy vymění; pod 4 °C je chladnější
+   voda lehčí a zůstává nahoře. 21 kroků v lomu hlubokém 30 m, ke každému měsíc a velký popisek, teplota vzduchu, pásy v měřítku
+   hloubky se svislou osou, vítr, strom, led. Posun: tlačítka „‹ předchozí krok“ a „další krok ›“, klik do průřezu, v otevřeném
+   simulátoru i šipky (funguje klikr), posuvník pro přímý skok, předvolby `?krok=1..21` a `?mesic=1..12`, které po zavření
+   z adresy zmizí. Automatické přehrávání není. Krok `těžší` má krátké šipky dolů v povrchové vrstvě, `výměna` delší pohyb
+   (asi 1,5 s) a šipky dolů i nahoru, `lehčí` žádnou šipku. Náhled na slidu je statický (krok 10, srpen).
+   Je to **odhad podle hlášení potápěčů, ne měření**, a čísla jsou v tabulkách v `js/physics/lakeCycle.js`.
 - Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 

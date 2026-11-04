@@ -2,19 +2,21 @@
  * Průřez modelového lomu během roku (kapitola P1 Hustota): vrstvy v měřítku hloubky s teplotou,
  * teplota vzduchu, vítr, strom, led a klesání těžší vody. Vlastní SVG, data z `js/physics/lakeCycle.js`.
  *
- * Měsíce se posouvají klikem, aby autor stihl vykládat. Přechod je plynulý, ať je vidět, jak se
- * vrstvy mění. Při `prefers-reduced-motion` se nic neanimuje.
+ * Kroky se posouvají klikem, aby autor stihl vykládat. Přechod je plynulý, výměna vrstev trvá déle
+ * a je na ní vidět pohyb. Při `prefers-reduced-motion` se nic neanimuje, šipky jen stojí.
  *
  * Kostra SVG se staví jen při změně velikosti, každý snímek mění jen atributy.
  */
 
 import {
-    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTHS, formatAirTemperature, lakeFrame, lakeTemperatureColor,
-    lakeTextColor, mixColors,
+    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeLayerCount, formatAirTemperature, lakeFrame,
+    lakeTemperatureColor, lakeTextColor, mixColors,
 } from '../physics/lakeCycle.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const TWEEN_MS = 700;
+/** Výměna vrstev: delší a s pohybem, ať je vidět z dálky. */
+const EXCHANGE_MS = 1500;
 let uid = 0;
 
 function el(name, attrs = {}, parent = null, text) {
@@ -40,8 +42,8 @@ const TREE = {
 
 /**
  * @param {HTMLElement} host prvek s rozměry; SVG ho vyplní
- * @param {{compact?: boolean, month?: number}} [options]
- *   `compact` = náhled: menší písmo, bez názvu osy a bez popisku klesání; `month` = index (0 = leden)
+ * @param {{compact?: boolean, step?: number}} [options]
+ *   `compact` = náhled: menší písmo, bez názvu osy; `step` = index (0 = krok 1)
  */
 export function createLakeCycle(host, options = {}) {
     const compact = Boolean(options.compact);
@@ -50,8 +52,8 @@ export function createLakeCycle(host, options = {}) {
     const svg = el('svg', { class: 'lake-cycle', role: 'img' });
     host.appendChild(svg);
 
-    let month = options.month ?? 0; // cílový měsíc (index)
-    let pos = month;
+    let step = options.step ?? 0; // cílový krok (index)
+    let pos = step;
     let refs = null;
     let raf = 0;
     let tween = null;
@@ -137,21 +139,39 @@ export function createLakeCycle(host, options = {}) {
             return { node, outside };
         });
 
-        // klesání: krátké šipky od hladiny, po stranách teploty
-        const sinkGroup = el('g', { 'pointer-events': 'none' }, svg);
+        // Šipky: tmavý obrys a světlý střed, čitelné na každé barvě vrstvy. Patří do vody (ořez miskou).
+        const arrow = (parent, width) => {
+            const g = el('g', {}, parent);
+            const outline = el('path', { fill: 'none', stroke: '#10202c', 'stroke-opacity': 0.6, 'stroke-width': width + 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+            const core = el('path', { fill: 'none', stroke: '#ffffff', 'stroke-width': width, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+            return { g, set(d) { outline.setAttribute('d', d); core.setAttribute('d', d); } };
+        };
+        const downPath = (x, len, head) => `M${r1(x)} 0 v${r1(len)} m${r1(-head)} ${r1(-head)} l${r1(head)} ${r1(head)} l${r1(head)} ${r1(-head)}`;
+        const upPath = (x, len, head) => `M${r1(x)} ${r1(len)} v${r1(-len)} m${r1(-head)} ${r1(head)} l${r1(head)} ${r1(-head)} l${r1(head)} ${r1(head)}`;
+
+        // „těžší“: krátké šipky dolů v povrchové vrstvě
         const surfaceH = depthY(LAKE_BANDS[0][1]) - y0;
-        const sinkLen = Math.max(10, surfaceH * 0.9);
-        const sinkStep = Math.max(4, surfaceH * 0.34);
-        const sinkPaths = [-0.34, -0.2, 0.2, 0.34].map((dx) => {
-            const x = r1(cx + bowlW * dx);
-            return el('path', {
-                d: `M${x} ${y0 + 2} v${r1(sinkLen)} m${r1(-sinkLen * 0.3)} ${r1(-sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(sinkLen * 0.32)} l${r1(sinkLen * 0.3)} ${r1(-sinkLen * 0.32)}`,
-                fill: 'none', 'stroke-width': compact ? 1.6 : 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
-            }, sinkGroup);
-        });
-        const sinkLabel = compact ? null : el('text', {
-            x: r1(cx), y: r1(y0 - font * 0.5), 'text-anchor': 'middle', 'font-size': r1(font), 'font-weight': 600, fill: c.text,
-        }, svg, 'těžší voda klesá');
+        const heavier = el('g', { 'pointer-events': 'none', transform: `translate(0 ${y0 + 2})` }, water);
+        const heavyLen = Math.max(9, surfaceH * 0.72);
+        [-0.34, -0.2, 0.2, 0.34].forEach((dx) => arrow(heavier, compact ? 1.6 : 2.6).set(downPath(cx + bowlW * dx, heavyLen, heavyLen * 0.34)));
+
+        // „výměna“: dlouhé šipky dolů a nahoru přes vrstvy, které se mění
+        const exchange = el('g', { 'pointer-events': 'none' }, water);
+        const exDown = [-0.26, -0.13].map(dx => ({ dx, ...arrow(exchange, compact ? 2 : 4) }));
+        const exUp = [0.13, 0.26].map(dx => ({ dx, ...arrow(exchange, compact ? 2 : 4) }));
+        const exchangeGeom = (index) => {
+            const count = LAKE_STEPS[index].kind === 'výměna' ? exchangeLayerCount(index) : 0;
+            const height = count ? depthY(LAKE_BANDS[count - 1][1]) - y0 : 0;
+            const len = Math.min(height * 0.6, waterH * 0.34);
+            const head = Math.max(5, Math.min(len * 0.22, font * 0.65));
+            return { height, len, head };
+        };
+        const setExchange = (index) => {
+            const { len, head } = exchangeGeom(index);
+            if (!len) return;
+            exDown.forEach(a => a.set(downPath(cx + bowlW * a.dx, len, head)));
+            exUp.forEach(a => a.set(upPath(cx + bowlW * a.dx, len, head)));
+        };
 
         // led: přirůstá kolem hladiny (z větší části nad ní, ať nezakryje teplotu), popisek nad ním
         const iceThick = compact ? 4 : Math.min(surfaceH * 0.5, 10);
@@ -171,7 +191,7 @@ export function createLakeCycle(host, options = {}) {
         const arrowY = r1(y0 * 0.68);
         const shaft = Math.max(compact ? 4 : 7, y0 * 0.1);
         const head = shaft * 2.2;
-        const arrow = el('path', {
+        const windArrow = el('path', {
             d: `M${r1(arrowX)} ${r1(arrowY - shaft / 2)} h${r1(arrowW - head)} v${r1(-(head - shaft) / 2)} l${r1(head)} ${r1(head / 2)} l${r1(-head)} ${r1(head / 2)} v${r1(-(head - shaft) / 2)} h${r1(-(arrowW - head))} Z`,
         }, svg);
         const windLabel = el('text', {
@@ -194,13 +214,14 @@ export function createLakeCycle(host, options = {}) {
         const buds = el('g', {}, tree);
         TREE.buds.forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3.2, fill: c.leaf }, buds));
 
-        refs = { c, y0, iceThick, sinkStep, bands, labels, sinkGroup, sinkPaths, sinkLabel, ice, iceLabel, air, arrow, windLabel, groundLeaves, snow, crown, falling, buds };
+        refs = { c, y0, iceThick, bands, labels, heavier, exchange, exDown, exUp, exchangeGeom, setExchange, ice, iceLabel, air, windArrow, windLabel, groundLeaves, snow, crown, falling, buds };
+        refs.setExchange(step);
     }
 
     function describe() {
-        const m = LAKE_MONTHS[month];
-        svg.setAttribute('aria-label', `Průřez modelového lomu, ${m.name}: ${m.label}. ${formatAirTemperature(m.air)}, `
-            + `teploty vody od hladiny ke dnu ${m.temps.join(', ')} °C.`);
+        const t = LAKE_STEPS[step];
+        svg.setAttribute('aria-label', `Průřez modelového lomu, ${t.month}: ${t.label}. ${formatAirTemperature(airOf(t.month))}, `
+            + `teploty vody od hladiny ke dnu ${t.temps.join(', ')} °C.`);
     }
 
     function paint() {
@@ -222,15 +243,20 @@ export function createLakeCycle(host, options = {}) {
         // Led roste od hladiny, popisek první vrstvy (je-li v ní) před ním uhýbá dolů.
         if (!refs.labels[0].outside) refs.labels[0].node.setAttribute('transform', `translate(0 ${r1(iceH * 0.2)})`);
         refs.air.textContent = formatAirTemperature(frame.air);
-        refs.arrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
+        refs.windArrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
         refs.windLabel.textContent = frame.warm >= 0.5 ? 'teplý vítr' : 'studený vítr';
-        // Klesání jen při kroku dopředu, v obráceném kroku ne.
-        const sink = tween?.forward ? frame.sinking : 0;
-        refs.sinkGroup.setAttribute('opacity', r1(sink * 10) / 10);
-        refs.sinkGroup.setAttribute('transform', `translate(0 ${r1(frame.progress * refs.sinkStep)})`);
-        const sinkColor = lakeTextColor(lakeTemperatureColor(frame.temps[0]));
-        refs.sinkPaths.forEach(p => p.setAttribute('stroke', sinkColor));
-        if (refs.sinkLabel) refs.sinkLabel.setAttribute('opacity', r1(sink * 10) / 10);
+        // Šipky podle druhu cílového kroku. Pohyb jen při kroku dopředu, jinak stojí uprostřed.
+        const { kind } = LAKE_STEPS[step];
+        refs.heavier.setAttribute('opacity', kind === 'těžší' ? 1 : 0);
+        refs.exchange.setAttribute('opacity', kind === 'výměna' ? 1 : 0);
+        if (kind === 'výměna') {
+            const { height, len } = refs.exchangeGeom(step);
+            const travel = height - len - 4;
+            // Dojede ke konci a vrátí se doprostřed, kde zůstane stát.
+            const m = tween?.forward ? 0.5 - 0.5 * Math.cos(2.5 * Math.PI * tween.x) : 0.5;
+            refs.exDown.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(refs.y0 + 2 + travel * m)})`));
+            refs.exUp.forEach(a => a.g.setAttribute('transform', `translate(0 ${r1(refs.y0 + 2 + travel * (1 - m))})`));
+        }
         refs.crown.setAttribute('opacity', frame.tree.crown);
         refs.falling.setAttribute('opacity', frame.tree.falling);
         refs.falling.setAttribute('transform', `translate(${r1(frame.progress * 6)} ${r1(frame.progress * 10)})`);
@@ -243,20 +269,22 @@ export function createLakeCycle(host, options = {}) {
         raf = 0;
         if (tween) {
             if (!tween.start) tween.start = now;
-            const x = Math.min(1, (now - tween.start) / TWEEN_MS);
-            pos = tween.from + (tween.to - tween.from) * easeInOut(x);
-            if (x >= 1) { pos = month; tween = null; }
+            tween.x = Math.min(1, (now - tween.start) / tween.ms);
+            pos = tween.from + (tween.to - tween.from) * easeInOut(tween.x);
+            if (tween.x >= 1) { pos = step; tween = null; }
         }
         paint();
         if (tween) raf = requestAnimationFrame(loop);
     }
 
-    /** Přejde na měsíc: plynule, nebo rovnou (reduced motion, předvolba). */
+    /** Přejde na krok: plynule, nebo rovnou (reduced motion, předvolba). */
     function goTo(index, target, { animate, forward }) {
-        month = index;
+        step = index;
         describe();
+        refs?.setExchange(step);
         if (animate && !reduced) {
-            tween = { from: pos, to: target, start: 0, forward };
+            const ms = forward && LAKE_STEPS[index].kind === 'výměna' ? EXCHANGE_MS : TWEEN_MS;
+            tween = { from: pos, to: target, start: 0, x: 0, ms, forward };
             if (!raf) raf = requestAnimationFrame(loop);
         } else {
             cancelAnimationFrame(raf);
@@ -275,25 +303,25 @@ export function createLakeCycle(host, options = {}) {
 
     return {
         /**
-         * Posun o měsíc, dokola. Rychlé klikání navazuje na rozběhlý přechod.
+         * Posun o krok, dokola. Rychlé klikání navazuje na rozběhlý přechod.
          * @param {1|-1} dir
          */
         step(dir) {
-            const n = LAKE_MONTHS.length;
+            const n = LAKE_STEPS.length;
             const base = tween ? tween.to : pos;
-            goTo((month + dir + n) % n, base + dir, { animate: true, forward: dir > 0 });
+            goTo((step + dir + n) % n, base + dir, { animate: true, forward: dir > 0 });
         },
         /**
-         * Přímý skok na měsíc.
-         * @param {number} index (0 = leden)
+         * Přímý skok na krok.
+         * @param {number} index (0 = krok 1)
          * @param {{animate?: boolean}} [o]
          */
-        setMonth(index, { animate = false } = {}) {
-            const n = LAKE_MONTHS.length;
+        setStep(index, { animate = false } = {}) {
+            const n = LAKE_STEPS.length;
             pos = ((pos % n) + n) % n;
             goTo(index, index, { animate, forward: false });
         },
-        getMonth: () => month,
+        getStep: () => step,
         redraw() { build(); paint(); },
         destroy() { cancelAnimationFrame(raf); ro.disconnect(); svg.remove(); },
     };
