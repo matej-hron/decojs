@@ -143,9 +143,9 @@ describe('zastávky na skutečných stránkách', () => {
         assert.deepEqual(anchors, ['definice', 'teplota', 'procvic']);
     });
 
-    it('rozcestník: titulní slide, otázky, Obsah', () => {
+    it('rozcestník: titulní slide, slidy 2 až 5, otázky, Obsah, v pořadí přednášky', () => {
         const anchors = collectStops(pageDom('p1/index.html')).map(stopAnchor);
-        assert.deepEqual(anchors, ['', 'proc', 'kapitoly']);
+        assert.deepEqual(anchors, ['', 'plan', 'osnova-p1', 'osnova-p2', 'literatura', 'proc', 'kapitoly']);
     });
 
     it('každá hotová kapitola končí zastávkou „Procvič si“', () => {
@@ -179,7 +179,7 @@ describe('patička slidu', () => {
 
     it('čísla slidů odpovídají přednášce, titulní slide a Procvič si číslo nemají', () => {
         const numbers = (page) => collectStops(pageDom(page)).map(s => s.dataset.slideNumber ?? null);
-        assert.deepEqual(numbers('p1/index.html'), [null, '6', '7']);
+        assert.deepEqual(numbers('p1/index.html'), [null, '2', '3', '4', '5', '6', '7']);
         assert.deepEqual(numbers('p1/hustota.html'), ['8', '9', null]);
     });
 });

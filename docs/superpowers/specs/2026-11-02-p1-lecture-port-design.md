@@ -66,6 +66,8 @@ Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí š
   nepřepisuje.
 
 ### Navigace (schváleno autorem)
+- Rozcestník drží úvod přednášky jako zastávky: titulní slide, slidy 2 až 5 (plán, osnovy výcviku, literatura), 6 a 7.
+  Text je přesně ze slidů, slidy 2 až 5 nemají „Více“ (doplněno 2026-11-04).
 - Hlavní menu (`js/nav.js`): nová položka **„Kurzy“** mezi Home a Sandbox; podmenu obsahuje **jen kurzy** („P1 – Fyzika“
   vede na rozcestník), kapitoly ne (oprava 2026-11-04, kapitola nepatří na úroveň kurzu). Na stránkách kapitol zůstává
   „Kurzy“ zvýrazněné jako aktivní. Kapitoly jsou na rozcestníku v pořadí přednášky, nehotové jako „připravujeme“.

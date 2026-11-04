@@ -176,6 +176,16 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     }
 }
 
+/* Osnovy výcviku (slidy 3 a 4): dlouhý seznam ve dvou sloupcích, ať se vejde do rámečku. */
+.course-slide .course-core-outline { font-size: calc(var(--course-slide-text) * 0.8); line-height: 1.35; }
+.course-outline-title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--space-4); }
+.course-core-outline li:not(:has(ul)) { break-inside: avoid; } /* sloupec se láme mezi body, ne uvnitř bodu */
+.course-core-outline ul ul { margin: var(--space-1) 0 0; }
+.course-core-outline ul ul li { margin-bottom: var(--space-1); }
+@media (min-width: 900px) {
+    .course-core-outline > ul { column-count: 2; column-gap: var(--space-8); }
+}
+
 /* Slide 9 a podobné: řady text + náhled modelu, jako v přednášce. */
 .course-slide .course-core-rows { gap: var(--space-3); }
 .course-row { display: grid; gap: var(--space-3) var(--space-6); }

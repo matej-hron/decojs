@@ -2,6 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
 
 import {
     waterDensity, densityAt, ICE_DENSITY, MAX_DENSITY_TEMPERATURE, WATER_RANGE,
@@ -280,5 +281,50 @@ test('kurz P1 píše jednotku v hranatých závorkách, jako přednáška (style
     }
     assert.match(readFileSync(new URL('js/components/DensityCurve.js', ROOT), 'utf8'), /'teplota \[°C\]'[\s\S]*'hustota \[kg\/m³\]'/);
     assert.match(readFileSync(new URL('js/components/LakeCycle.js', ROOT), 'utf8'), /'hloubka \[m\]'/);
+});
+
+// --- úvodní slidy 2 až 5: text přesně ze slidů -------------------------------
+
+test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', () => {
+    const dom = new JSDOM(readFileSync(new URL('p1/index.html', ROOT), 'utf8')).window.document;
+    const items = (id) => [...dom.querySelectorAll(`#${id} li`)]
+        .map(li => [...li.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').replace(/\s+/g, ' ').trim());
+    const title = (id) => dom.querySelector(`#${id} h2`).textContent.trim();
+    assert.equal(title('plan'), 'Fyzika – plán');
+    assert.deepEqual(items('plan'), ['Fyzika, teorie (dnes)', 'Fyziologie', 'Plánování ponorů, dekompresní postupy']);
+    assert.equal(title('osnova-p1'), 'Fyzika – osnova výcviku');
+    assert.equal(dom.querySelector('#osnova-p1 .course-outline-title').textContent.replace(/\s+/g, ' ').trim(), 'P★: T4 Základy potápěčské fyziky (2 × 45 min)');
+    assert.deepEqual(items('osnova-p1'), [
+        'Základní fyzikální pojmy spojené s potápěním (veličiny a jednotky, vysvětlení pojmů).',
+        'Atmosférický, hydrostatický a celkový tlak, přetlak, podtlak (vysvětlení pojmů, vzájemná souvislost, výpočet celkového tlaku v určité hloubce).',
+        'Vliv tlaku na plyny, kapaliny a tuhé látky.',
+        'Složení vzduchu, hustota vzduchu.',
+        'Boyleův-Mariotteův zákon (izotermický děj) ve vztahu k potápěčské praxi (praktické příklady a výpočty).',
+        'Tělesné a přídavné dutiny, nebezpečí jejich poškození, nutnost vydechování při výstupu.',
+        'Kompenzace tlaku ve středouší a v masce.',
+        'Nebezpečí malých hloubek.',
+        'Archimedův zákon, vyvážení potápěče, změny vyvážení během ponoru.',
+    ]);
+    assert.equal(dom.querySelector('#osnova-p2 .course-outline-title').textContent.replace(/\s+/g, ' ').trim(), 'P★★: T1 Potápěčská fyzika (2 × 45 min)');
+    assert.deepEqual(items('osnova-p2'), [
+        'opakování Boyleův – Mariottův zákon, rozšíření na stavovou rovnici ideálního plynu, důsledky jednotlivých dějů (isotermický, isochorický, isobarický) na potápěčskou praxi (výpočty jednoduchých příkladů s využitím stavové rovnice ideálního plynu, přepouštění plynů)',
+        'parciální tlak plynu (vysvětlení pojmu), výpočet parciálního tlaku',
+        'šíření světla a zvuku ve vzduchu a pod vodou, přechod z jednoho prostředí do druhého',
+        'vidění na vzduchu, pod vodou, s potápěčskou maskou',
+        'změna intenzity a barvy světla ve vodním prostředí',
+        'slyšení na vzduchu a pod vodou',
+        'teplo, teplota, vedení a sdílení tepla, tepelné ztráty při potápění',
+        'rozpouštění a vylučování inertních plynů z roztoku',
+        'Henryho zákon',
+        'dynamika procesu',
+        'přesycení, kritické přesycení',
+        'souvislost s dekompresními procesy',
+    ]);
+    assert.equal(title('literatura'), 'Fyzika – literatura');
+    assert.deepEqual(items('literatura'), ['Fyzika (Jahns)',
+        'Potápění s přístrojem (Vrbovský, Jahns, Štětina, Růžička, Nachtigal, Hrdina)', 'Přístrojové potápění', 'Deco for Divers (Powell)']);
+    for (const id of ['plan', 'osnova-p1', 'osnova-p2', 'literatura']) {
+        assert.equal(dom.querySelector(`#${id} details`), null, `${id} bez „Více“`);
+    }
 });
 
