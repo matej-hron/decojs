@@ -46,7 +46,7 @@ export const CORE_STATE_KEYS = Object.freeze(['depth', 'maxDepth', 'surface']);
 /** Default Czech labels. Override any of them via `options.labels`. */
 export const DEFAULT_LABELS = Object.freeze({
     figure: 'Vodní sloupec',
-    depthAxis: 'hloubka / m',
+    depthAxis: 'hloubka [m]',
     depth: 'hloubka',
     slider: 'Hloubka',
     ice: 'led',

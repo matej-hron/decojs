@@ -269,3 +269,16 @@ test('slidy mají jediný styl Hladina, žádný přepínač', () => {
     }
 });
 
+test('kurz P1 píše jednotku v hranatých závorkách, jako přednáška (style-guide, rozhodnutí 5)', () => {
+    const html = readFileSync(new URL('p1/hustota.html', ROOT), 'utf8');
+    assert.match(html, /<th scope="col">Hustota \[kg\/m³\]<\/th>/);
+    assert.match(html, /<var>ρ<\/var> = <var>m<\/var>\/<var>V<\/var> <span class="course-unit">\[kg\/m³\]<\/span>/);
+    assert.doesNotMatch(html, /Jednotka hustoty/);
+    for (const file of ['p1/hustota.html', 'p1/index.html', 'js/components/DensityCurve.js', 'js/components/LakeCycle.js', 'js/components/WaterColumn.js', 'js/course/hustotaPage.js']) {
+        const src = readFileSync(new URL(file, ROOT), 'utf8');
+        assert.doesNotMatch(src, /(hustota|teplota|hloubka|Hustota)[^\n'"]{0,12} \/ (\(|m\b|°C|kg)/, file);
+    }
+    assert.match(readFileSync(new URL('js/components/DensityCurve.js', ROOT), 'utf8'), /'teplota \[°C\]'[\s\S]*'hustota \[kg\/m³\]'/);
+    assert.match(readFileSync(new URL('js/components/LakeCycle.js', ROOT), 'utf8'), /'hloubka \[m\]'/);
+});
+

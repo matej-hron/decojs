@@ -422,6 +422,16 @@ projekt dosud bar a metry.
 l (objem), °C (teplota).** kPa se ponechává v kvízech, protože tak jsou formulovány
 oficiální otázky SPČR — jde o citaci zadání, ne o nekonzistenci (viz §4.7 poznámka výše).
 
+### 5. Jednotka v hranatých závorkách v kurzu P1
+
+V kurzu P1 (`p1/`, jeho modely a sdílené bloky pojmů) se jednotka v záhlaví tabulky a v popisku osy
+píše v hranatých závorkách: `Hustota [kg/m³]`, `hustota [kg/m³]`, `teplota [°C]`, `hloubka [m]`.
+Tak je zapsaná i ve vzorci na slidu: *ρ* = *m*/*V* [kg/m³].
+
+**Rozhodnutí autora (2026-11-04), kvůli věrnosti přednášce a čitelnosti.** Není to požadavek normy:
+ČSN EN ISO 80000-1 by v záhlaví a na ose čekala podíl veličiny a jednotky. Zbytek webu se tím nemění.
+Norma dál platí pro značky, kurzívu a zápis čísel, tedy i pro nedělitelnou mezeru mezi číslem a jednotkou.
+
 ## Prameny
 
 1. ČSN EN ISO 80000-1 (01 1300), ed. 10/2023 — Česká agentura pro standardizaci, katalog:

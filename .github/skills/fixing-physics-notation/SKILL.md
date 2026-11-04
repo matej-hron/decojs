@@ -304,6 +304,8 @@ Jsou to **správné** zápisy; jejich změna je regrese:
 - `60°`, `180°` — úhel a azimut se píší bez mezery (`data/quiz-vessel.json` jich má 71)
 - `32%` jako přívlastek vs. `32 %` jako podstatné jméno — obojí správně, jinde
 - `kPa` a doslovné znění v kvízech — citace SPČR, cituje se verbatim
+- `Hustota [kg/m³]`, `teplota [°C]`, `hloubka [m]` v kurzu P1 — jednotka v hranatých závorkách v záhlaví a na ose,
+  rozhodnutí autora (`docs/notation/style-guide.md`, Rozhodnutí projektu č. 5). Mimo kurz P1 se tím nic nemění.
 - **skloňovaný název jednotky v běžné větě** — „s méně než 1&nbsp;bar**em**",
   „2&nbsp;bar**y**", „v 10&nbsp;metr**ech**". Neskloňuje se **značka** (`bar`,
   `m`), ale vypsaný *název* jednotky ve větě čeština skloňuje normálně.

@@ -331,15 +331,7 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     margin: var(--space-3) 0 var(--space-4);
 }
 .course-formula var { font-family: var(--font-display); }
-.course-frac {
-    display: inline-flex;
-    flex-direction: column;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 1.1;
-}
-.course-frac > span:first-child { border-bottom: 2px solid currentColor; padding: 0 0.2em; }
-.course-formula .course-unit { font-size: 0.8em; color: var(--text-subtle); margin-left: 0.6em; }
+.course-formula .course-unit { font-size: 0.8em; margin-left: 0.3em; white-space: nowrap; }
 
 .course-table {
     border-collapse: collapse;

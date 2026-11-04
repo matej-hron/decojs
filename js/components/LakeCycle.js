@@ -117,7 +117,7 @@ export function createLakeCycle(host, options = {}) {
             const tx = r1(Math.max(font, axisX - font * 2.6));
             el('text', {
                 transform: `translate(${tx} ${ty}) rotate(-90)`, 'text-anchor': 'middle', 'font-size': axisFont, fill: '#ffffff',
-            }, svg, 'hloubka / m');
+            }, svg, 'hloubka [m]');
         }
 
         // Teplota je v pásu, v tenkém horním pásu menším písmem. Jen v náhledu, kde by bylo

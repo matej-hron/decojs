@@ -123,12 +123,9 @@ export function createDensityCurve(host, options = {}) {
                 'font-size': font, fill: c.text }, fmt(v, 0)));
         }
         if (!compact) svg.appendChild(el('text', { x: plot.x + plot.w / 2, y: height - font * 0.5, 'text-anchor': 'middle',
-            'font-size': font, fill: c.text }, 'teplota / °C'));
+            'font-size': font, fill: c.text }, 'teplota [°C]'));
         const yTitle = el('text', { transform: `translate(${r1(font * 1.1)} ${r1(plot.y + plot.h / 2)}) rotate(-90)`,
-            'text-anchor': 'middle', 'font-size': font, fill: c.text });
-        yTitle.append('hustota ');
-        yTitle.appendChild(el('tspan', { 'font-style': 'italic' }, 'ρ'));
-        yTitle.append(' / (kg/m³)');
+            'text-anchor': 'middle', 'font-size': font, fill: c.text }, 'hustota [kg/m³]');
         if (!compact) svg.appendChild(yTitle);
 
         // značka maxima

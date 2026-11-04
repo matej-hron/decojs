@@ -30,7 +30,7 @@ const col = createWaterColumn(document.getElementById('tlak-column'), {
     state: { water: 'fresh' },  // počáteční klíče stránky / vrstev
     // aside: false,            // vypne všechny boční panely
     // height: 480,             // px, nebo (width) => px; výchozí defaultHeight(width)
-    // labels: { depthAxis: 'hloubka / m', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
+    // labels: { depthAxis: 'hloubka [m]', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
 });
 
 col.addLayer(createPressureLayer());
@@ -300,7 +300,7 @@ export function createPressureLayer({ id = 'pressure' } = {}) {
                     fill: geom.colors.text, text: fmtCs(bar, 0) }, g);
             }
             svgEl('text', { x: p.x + p.w / 2, y: p.y + p.h + 2.75 * geom.fontSize, 'text-anchor': 'middle',
-                fill: geom.colors.text, text: 'tlak / bar' }, g);
+                fill: geom.colors.text, text: 'tlak [bar]' }, g);
         },
 
         readout(state) {
