@@ -91,12 +91,15 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
 
 ## 5. Šablona kapitoly
 
-1. Krátký úvod: proč to potápěč potřebuje + **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“).
+1. Kapitola začíná **rovnou prvním slidem**, jako na přednášce (oprava 2026-11-04). Nad ním je jen jedna úzká lišta:
+   kurz › kapitola, odkazy na sekce a „Rozbalit všechny výklady“. Nadpis prvního slidu je jediné `h1` stránky.
+   Krátký úvod (proč to potápěč potřebuje) a **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“) patří
+   na začátek „Více“ pod prvním slidem. Jsou to text kapitoly, ne sdílený blok pojmu.
 2. Výklad po sekcích ve **dvou vrstvách** (rozhodnutí autora):
    - **Jádro = text slidu** (opravený, téměř doslovně), vždy viditelné. To se promítá. **Na projektoru se jádro
      sekce vejde na jednu obrazovku** (landscape) — velké písmo a čísla, kontrast pro projektor ve světlém tématu.
    - **„Více“ = výklad na doma** — to, co Matej říká nahlas; ve výchozím stavu sbalené (na mobilu i projektoru
-     stejně), rozbalí se klikem. Nahoře na stránce přepínač „Rozbalit všechny výklady“.
+     stejně), rozbalí se klikem. Přepínač „Rozbalit všechny výklady“ je v liště nad prvním slidem.
    - Stejný vzor rozbalování jako u odpovědí příkladů (bod 4) — jeden vzor na stránce; preferovat nativní
      `<details>`/`<summary>` (funguje offline i bez JS).
    - Text ve „Více“ píše builder → **Matej ho schvaluje před merge** (v PR vypsat všechny nové odstavce, nebo je
@@ -140,7 +143,7 @@ dřív, než se rozjedou další kapitoly.
 Obsah:
 - Definice hustoty, tabulka látek ze slidu 8 (voda sladká 1 000, slaná 1 020–1 030, led 920, vzduch 1,25 → viz
   poznámka v §9, olovo 11 340, ocel 7 850 kg/m³).
-- Háčky dopředu: sladká vs. slaná voda → tlak; olovo vs. neopren vs. vzduch → vztlak.
+- Háčky dopředu (ve „Více“ pod slidem 8): sladká vs. slaná voda → tlak; olovo vs. neopren vs. vzduch → vztlak.
 - Teplotní závislost, anomálie vody (max. hustota při ~4 °C), led plave a izoluje, voda promrzá od hladiny.
 
 Modely:

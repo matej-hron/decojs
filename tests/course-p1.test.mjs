@@ -269,3 +269,31 @@ test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“
     assert.match(answersHtml(), /Tlak \(připravujeme\)/);
     assert.match(chapterDetailsHtml(), /Hustota: P★, slidy 8–9/);
 });
+
+// --- šablona kapitoly: začíná rovnou prvním slidem --------------------------
+
+import { breadcrumbHtml } from '../js/course/chapter.js';
+
+for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
+    test(`kapitola ${c.slug}: lišta, hned za ní první slide s jediným h1`, () => {
+        const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
+        const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+        assert.equal((main.match(/<h1[\s>]/g) || []).length, 1, 'jediné h1');
+        assert.match(main, /^<main[^>]*>\s*<div class="course-bar">/, 'první je lišta');
+        assert.match(main, /<\/div>\s*(?:<!--.*?-->\s*)*<section id="[^"]+" class="course-section">\s*<div class="course-slide">\s*<h1>/,
+            'za lištou první slide, jeho nadpis je h1');
+    });
+
+    test(`kapitola ${c.slug}: úvod je na začátku prvního „Více“, mimo sdílený blok`, () => {
+        const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
+        const more = html.slice(html.indexOf('<details class="course-more">'));
+        assert.match(more, /^<details class="course-more">\s*<summary>.*?<\/summary>\s*<div class="course-more-body">\s*<div class="course-chapter-intro">/s);
+        assert.ok(more.indexOf('course-chapter-intro') < more.indexOf('data-concept'), 'úvod je před blokem pojmu');
+    });
+}
+
+test('lišta kapitoly: kurz › pořadí a název kapitoly z pořadí kurzu', () => {
+    assert.equal(breadcrumbHtml('hustota'), '<a href="index.html">Kurz P1 – Fyzika</a> › 1. Hustota');
+    assert.match(breadcrumbHtml('tlak'), /› 2\. Tlak$/);
+    assert.equal(breadcrumbHtml('neexistuje'), '');
+});

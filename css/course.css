@@ -10,10 +10,11 @@
 .course-page {
     --course-core-size: clamp(1.05rem, 0.85rem + 0.75vw, 1.6rem);
     --course-more-size: clamp(1rem, 0.92rem + 0.3vw, 1.2rem);
-    --course-link: var(--brand);
+    --course-link: var(--blue-600);
 
     /* Rozměry slidu: písmo plynule podle okna (šířka i výška), čitelné z dálky. */
     --course-nav-height: 65px;
+    --course-bar-height: 2.5rem;
     --course-slide-text: clamp(1.15rem, min(2.3vw, 4.1vh), 2.6rem);
     --course-slide-title: clamp(1.6rem, min(3.4vw, 6.5vh), 3.4rem);
     --course-slide-pad: clamp(1rem, 4vw, 4rem);
@@ -40,7 +41,7 @@
 
     max-width: 1640px;
     margin: 0 auto;
-    padding: var(--space-4) var(--space-4) var(--space-12);
+    padding: var(--space-2) var(--space-4) var(--space-12);
 }
 
 .course-breadcrumb {
@@ -137,6 +138,7 @@
 .course-slide + .course-slide { margin-top: var(--space-4); }
 
 /* Hlavička slidu: stejná na všech slidech, liší se jen barvou. */
+.course-slide > h1,
 .course-slide > h2,
 .course-slide > .chart-header,
 .course-slide-head {
@@ -146,6 +148,7 @@
     background: var(--slide-head-bg);
     color: var(--slide-head-fg);
 }
+.course-slide > h1,
 .course-slide > h2 {
     border: 0;
     font-family: var(--font-display);
@@ -185,10 +188,11 @@
 .course-slide-cover .course-lead { font-size: 1em; color: inherit; margin: 0; max-width: 56ch; }
 
 /* Desktop a projektor: slide vyplní okno pod hlavičkou webu, delší text ho může natáhnout.
-   Pod textovým slidem ještě vykoukne „Více“. */
+   Nad prvním slidem kapitoly je lišta, pod textovým slidem ještě vykoukne „Více“. */
 @media (min-width: 769px) {
     .course-section[id] { scroll-margin-top: calc(var(--course-nav-height) + var(--space-2)); }
-    .course-slide { min-height: calc(100vh - var(--course-nav-height) - var(--space-4) - 3.25rem); }
+    .course-slide { min-height: calc(100vh - var(--course-nav-height) - var(--space-4) - var(--course-bar-height) - 3.25rem); }
+    .course-slide-cover { min-height: calc(100vh - var(--course-nav-height) - var(--space-4) - 3.25rem); }
     .course-slide.course-model { min-height: calc(100vh - var(--course-nav-height) - var(--space-4)); }
     .course-slide-cover .course-slide-head { flex: 11; }
     .course-slide-cover .course-core { flex: 9; }
@@ -203,39 +207,43 @@
     }
 }
 
-/* --- obsah kapitoly + rozbalit vše ------------------------------------- */
+/* --- lišta kapitoly: drobečky, obsah sekcí, rozbalit vše ------------------
+   Jeden úzký řádek nad prvním slidem. Obsah sekcí se při nedostatku místa posouvá
+   uvnitř lišty, takže ji delší kapitola nerozšíří. */
 
-.course-toolbar {
+.course-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-4);
-    align-items: flex-start;
-    justify-content: space-between;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: var(--space-3) var(--space-4);
-    margin-bottom: var(--space-6);
-}
-
-.course-toc-title {
+    align-items: center;
+    gap: 0 var(--space-5);
+    min-height: var(--course-bar-height);
     font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-subtle);
-    margin: 0 0 var(--space-1);
+    color: var(--text);
 }
+.course-bar .course-breadcrumb { margin: 0; color: inherit; white-space: nowrap; }
+.course-toc { flex: 1 1 0; min-width: 0; }
 .course-toc ol {
+    list-style: none;
     margin: 0;
-    padding-left: 1.4em;
+    padding: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-6);
+    gap: var(--space-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
 }
-.course-toc a { font-weight: 500; }
+.course-toc li { margin: 0; }
+.course-toc a { display: block; padding-block: var(--space-2); }
 
 .course-expand-all {
+    background: none;
+    border: 0;
+    padding: var(--space-2) 0;
+    font: inherit;
+    color: var(--course-link);
+    text-decoration: underline;
     white-space: nowrap;
+    cursor: pointer;
 }
 
 /* --- sekce ------------------------------------------------------------- */
@@ -353,8 +361,7 @@ details.course-more > summary .course-summary-hint {
     background: var(--surface-sunken);
     padding: var(--space-3) var(--space-4);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    font-size: var(--course-more-size);
-    margin: 0 0 var(--space-6);
+    margin: 0 0 var(--space-4);
 }
 .course-hooks p { margin: 0 0 var(--space-2); }
 .course-hooks ul { margin: 0; padding-left: 1.2em; }
@@ -540,8 +547,7 @@ details.course-more > summary .course-summary-hint {
 
 @media (max-width: 600px) {
     .course-page { padding: var(--space-3) var(--space-3) var(--space-10); }
-    .course-toolbar { padding: var(--space-3); }
-    .course-toc ol { flex-direction: column; }
+    .course-toc { flex-basis: 100%; }
     .course-table th, .course-table td { padding-right: 0.5em; }
 }
 

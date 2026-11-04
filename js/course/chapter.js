@@ -1,29 +1,30 @@
 /**
  * Chování stránky kapitoly kurzu (bez závislosti na konkrétním modelu):
- *  - obsah sekcí nahoře (skok na sekci / model),
+ *  - lišta nad prvním slidem: kurz › kapitola a obsah sekcí (skok na sekci / model),
  *  - přepínač „Rozbalit všechny výklady“ pro `<details class="course-more">`,
  *  - předchozí / další kapitola podle `js/course/p1Course.js`,
  *  - vložení sdílených bloků pojmů a otázek „Procvič si“,
  *  - celá obrazovka pro modely (`.chart-container` + tlačítka podle Chart Standards).
  *
- * Stránka nese `<body data-course-chapter="hustota">`.
+ * Stránka nese `<body data-course-chapter="hustota">` a začíná rovnou prvním slidem: jeho
+ * nadpis je jediné `h1`, úvod kapitoly patří do „Více“ pod ním.
  */
 
-import { chapterBySlug, chapterNeighbours } from './p1Course.js';
+import { P1_CHAPTERS, chapterBySlug, chapterNeighbours } from './p1Course.js';
 import { loadConcepts } from './concepts.js';
 import { initPractice } from './practice.js';
 
 /**
- * Seznam sekcí pro obsah: každá `section[id]` s nadpisem `h2` v `main`.
+ * Seznam sekcí pro obsah: každá `section[id]` s nadpisem `h1` nebo `h2` v `main`.
  * @param {ParentNode} root
  * @returns {{id: string, title: string}[]}
  */
 export function collectSections(root) {
     return [...root.querySelectorAll('main section[id]')]
         .map(s => {
-            const h2 = s.querySelector('h2');
+            const heading = s.querySelector('h1, h2');
             // jen vlastní text nadpisu, bez štítku „slide 8“
-            const title = h2 ? [...h2.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
+            const title = heading ? [...heading.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
             return { id: s.id, title };
         })
         .filter(s => s.title);
@@ -34,7 +35,18 @@ function renderToc() {
     if (!toc) return;
     const items = collectSections(document)
         .map(s => `<li><a href="#${s.id}">${s.title}</a></li>`).join('');
-    toc.innerHTML = `<h2 class="course-toc-title">Obsah kapitoly</h2><ol>${items}</ol>`;
+    toc.innerHTML = `<ol>${items}</ol>`;
+}
+
+/**
+ * Drobečky v liště kapitoly: název kurzu › pořadí a název kapitoly.
+ * @param {string} slug
+ * @returns {string} HTML, prázdné pro neznámou kapitolu
+ */
+export function breadcrumbHtml(slug) {
+    const i = P1_CHAPTERS.findIndex(c => c.slug === slug);
+    if (i < 0) return '';
+    return `<a href="index.html">Kurz P1 – Fyzika</a> › ${i + 1}. ${P1_CHAPTERS[i].title}`;
 }
 
 function initExpandAll() {
@@ -91,6 +103,8 @@ function initFullscreen() {
 export async function initChapter() {
     const slug = document.body.dataset.courseChapter;
     if (slug && !chapterBySlug(slug)) console.warn(`chapter: neznámá kapitola „${slug}“`);
+    const crumb = document.querySelector('.course-bar .course-breadcrumb');
+    if (crumb) crumb.innerHTML = breadcrumbHtml(slug);
     renderToc();
     initFullscreen();
     renderPrevNext(slug);
