@@ -1512,8 +1512,7 @@
         "home": "Domů",
         "courses": {
             "label": "Kurzy",
-            "p1": "P1 – Fyzika",
-            "p1Density": "Hustota"
+            "p1": "P1 – Fyzika"
         },
         "sandbox": {
             "label": "Pískoviště",

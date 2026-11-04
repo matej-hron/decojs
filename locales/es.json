@@ -1512,8 +1512,7 @@
         "home": "Inicio",
         "courses": {
             "label": "Cursos",
-            "p1": "P1 – Física (en checo)",
-            "p1Density": "Densidad (en checo)"
+            "p1": "P1 – Física (en checo)"
         },
         "sandbox": {
             "label": "Sandbox",

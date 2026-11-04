@@ -1512,8 +1512,7 @@
         "home": "Home",
         "courses": {
             "label": "Courses",
-            "p1": "P1 – Physics (Czech)",
-            "p1Density": "Density (Czech)"
+            "p1": "P1 – Physics (Czech)"
         },
         "sandbox": {
             "label": "Sandbox",

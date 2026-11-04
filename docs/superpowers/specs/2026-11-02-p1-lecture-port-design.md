@@ -65,8 +65,9 @@ Jeden obsah a **jeden model pro obojí** — rozložení se jen přizpůsobí š
   nepřepisuje.
 
 ### Navigace (schváleno autorem)
-- Hlavní menu (`js/nav.js`): nová položka **„Kurzy“** mezi Home a Sandbox; podmenu „P1 – Fyzika“ (rozcestník) a
-  **jen hotové kapitoly** v pořadí přednášky. Nehotové kapitoly jen na rozcestníku jako „připravujeme“.
+- Hlavní menu (`js/nav.js`): nová položka **„Kurzy“** mezi Home a Sandbox; podmenu obsahuje **jen kurzy** („P1 – Fyzika“
+  vede na rozcestník), kapitoly ne (oprava 2026-11-04, kapitola nepatří na úroveň kurzu). Na stránkách kapitol zůstává
+  „Kurzy“ zvýrazněné jako aktivní. Kapitoly jsou na rozcestníku v pořadí přednášky, nehotové jako „připravujeme“.
 - V kapitole: nahoře krátký obsah sekcí (skok na sekci/model), dole „← předchozí / další kapitola →“.
 - Úvodní stránka (`index.html`): karta „Kurz P1 – Fyzika“.
 - Modely P1 zatím NE v menu Sandbox. (Později možná Sandbox členěný podle kurzů — mimo rozsah.)

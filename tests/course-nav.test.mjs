@@ -1,14 +1,13 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NAV_ITEMS } from '../js/nav.js';
+import { NAV_ITEMS, isLinkActive } from '../js/nav.js';
 import { P1_CHAPTERS } from '../js/course/p1Course.js';
 import { selectSiteFiles } from '../scripts/build-pages.mjs';
 
 const KEYS = [
     ['nav', 'courses', 'label'],
     ['nav', 'courses', 'p1'],
-    ['nav', 'courses', 'p1Density'],
     ['home', 'topics', 'courseP1'],
     ['home', 'topics', 'courseP1Desc'],
     ['home', 'topics', 'courseP1Links', 'overview'],
@@ -17,12 +16,24 @@ const KEYS = [
 ];
 
 describe('Courses menu', () => {
-    it('lists exactly the ready P1 chapters', () => {
-        const courses = NAV_ITEMS.find(i => i.labelKey === 'nav.courses.label');
+    const courses = NAV_ITEMS.find(i => i.labelKey === 'nav.courses.label');
+
+    it('lists only courses, no chapters', () => {
         assert.ok(courses, 'Courses menu item exists');
-        const menu = courses.submenu.map(s => s.href).filter(h => h !== 'p1/index.html').sort();
-        const ready = P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`).sort();
-        assert.deepEqual(menu, ready);
+        assert.deepEqual(courses.submenu.map(s => s.href), ['p1/index.html']);
+    });
+
+    it('stays active on the course overview and on every chapter', () => {
+        const pages = ['p1/index.html', ...P1_CHAPTERS.map(c => `p1/${c.slug}.html`)];
+        for (const page of pages) {
+            assert.ok(isLinkActive(courses, page), page);
+        }
+    });
+
+    it('is not active outside the course', () => {
+        for (const page of ['index.html', 'pressure.html', 'sandbox/index.html']) {
+            assert.equal(isLinkActive(courses, page), false, page);
+        }
     });
 
     it('sits between Home and Sandbox', () => {
@@ -47,6 +58,7 @@ describe('locales', () => {
                 assert.equal(typeof v, 'string', path.join('.'));
                 assert.ok(v.length > 0, path.join('.'));
             }
+            assert.equal(data.nav.courses.p1Density, undefined, 'chapters have no menu key');
         });
     }
 });

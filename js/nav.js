@@ -18,9 +18,10 @@ const NAV_ITEMS = [
         labelKey: 'nav.courses.label',
         label: 'Courses',
         href: 'p1/index.html',
+        // Chapters are not in the menu, but the course stays highlighted on them.
+        activeFolder: 'p1/',
         submenu: [
-            { href: 'p1/index.html', labelKey: 'nav.courses.p1', label: 'P1 – Physics' },
-            { href: 'p1/hustota.html', labelKey: 'nav.courses.p1Density', label: 'Density' }
+            { href: 'p1/index.html', labelKey: 'nav.courses.p1', label: 'P1 – Physics' }
         ]
     },
     {
@@ -115,10 +116,21 @@ function getPathPrefix() {
 }
 
 /**
+ * Check if a nav item's own link should be highlighted on the current page:
+ * it points at the page, or the page is in the item's `activeFolder`.
+ */
+function isLinkActive(item, currentPage) {
+    if (item.href && item.href.split('#')[0] === currentPage) {
+        return true;
+    }
+    return Boolean(item.activeFolder && currentPage.startsWith(item.activeFolder));
+}
+
+/**
  * Check if a nav item or its submenu contains the current page
  */
 function isActiveItem(item, currentPage) {
-    if (item.href && item.href.split('#')[0] === currentPage) {
+    if (isLinkActive(item, currentPage)) {
         return true;
     }
     if (item.submenu) {
@@ -144,7 +156,7 @@ function generateNavHTML(currentPage) {
 
             if (item.href) {
                 // Has both link and submenu (like Pressure)
-                const activeClass = item.href.split('#')[0] === currentPage ? ' class="active"' : '';
+                const activeClass = isLinkActive(item, currentPage) ? ' class="active"' : '';
                 html += `<a href="${prefix}${item.href}"${activeClass}>${itemLabel}</a>`;
             } else {
                 // Just a dropdown trigger (like Tests)
@@ -270,4 +282,4 @@ if (typeof document !== 'undefined') {
 }
 
 // Export for module usage
-export { initNavigation, NAV_ITEMS };
+export { initNavigation, NAV_ITEMS, isLinkActive };

@@ -2,7 +2,7 @@
  * Kurz P1 – Fyzika: pořadí kapitol a motivační otázky.
  *
  * Kostra kurzu = pořadí kapitol přednášky FyzikaP12_2025 (od jednoduchého ke složitému).
- * Kapitola se stavem 'ready' má stránku `p1/<slug>.html` a je v hlavním menu „Kurzy“;
+ * Kapitola se stavem 'ready' má stránku `p1/<slug>.html` a odkaz na rozcestníku;
  * 'planned' se jen vypíše na rozcestníku jako „připravujeme“.
  *
  * Otázky ze slidu 6 jsou motivační háčky — neřídí pořadí. `answeredIn` říká, ve které
