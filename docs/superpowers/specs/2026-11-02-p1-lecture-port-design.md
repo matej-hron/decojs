@@ -104,6 +104,8 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
    i začátek těla, přepnutí vypadá jako v PowerPointu. Zastávka = slide + řádek „Více“ a vyplní celou výšku pod
    hlavičkou webu (řádek zůstane prázdný, když „Více“ není), další slide tedy není vidět. Písmo závisí jen na okně. Rozměry jsou
    jedny v `css/course.css`, slide na nízkém okně smí narůst, obsah se neořezává. Telefon: normální tok, žádná pevná výška.
+   **Styl slidů je jeden, Hladina** (přechod tyrkysová → tmavomodrá, nahoře vlnka, rozhodnuto 2026-11-04); přepínač se nestaví,
+   světlý styl přibude, jen pokud Hladina neobstojí na projektoru v učebně. Kontrast textu aspoň 4,5:1, ovládání aspoň 3:1.
    Krátký úvod (proč to potápěč potřebuje) a **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“) patří
    na začátek „Více“ pod prvním slidem. Jsou to text kapitoly, ne sdílený blok pojmu.
 2. Výklad po sekcích ve **dvou vrstvách** (rozhodnutí autora):

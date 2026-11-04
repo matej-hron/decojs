@@ -261,3 +261,11 @@ test('Hustota: slide 9 má jedno „Více“ a v něm oba výklady i řešený p
     assert.doesNotMatch(html, /id="jezero"/);
 });
 
+test('slidy mají jediný styl Hladina, žádný přepínač', () => {
+    const css = readFileSync(new URL('css/course.css', ROOT), 'utf8');
+    assert.doesNotMatch(css, /data-slide=|svetly/);
+    for (const page of ['p1/index.html', 'p1/hustota.html']) {
+        assert.doesNotMatch(readFileSync(new URL(page, ROOT), 'utf8'), /svetly|dataset\.slide/);
+    }
+});
+
