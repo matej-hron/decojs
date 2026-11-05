@@ -672,6 +672,10 @@ section[id],
     border: 2px solid transparent;
 }
 
+.topic-card[hidden] {
+    display: none;
+}
+
 .topic-card.available {
     cursor: pointer;
 }

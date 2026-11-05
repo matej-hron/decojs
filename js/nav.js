@@ -11,6 +11,7 @@
 
 import { translate } from './i18n.js';
 import { initAppBanner } from './appBanner.js';
+import { courseVisible } from './course/courseLock.js';
 
 const NAV_ITEMS = [
     { href: 'index.html', labelKey: 'nav.home', label: 'Home' },
@@ -20,6 +21,8 @@ const NAV_ITEMS = [
         href: 'p1/index.html',
         // Chapters are not in the menu, but the course stays highlighted on them.
         activeFolder: 'p1/',
+        // On the published site the course appears only after it is unlocked.
+        courseOnly: true,
         submenu: [
             { href: 'p1/index.html', labelKey: 'nav.courses.p1', label: 'P1 – Physics' }
         ]
@@ -146,7 +149,7 @@ function generateNavHTML(currentPage) {
     let html = '';
     const prefix = getPathPrefix();
 
-    for (const item of NAV_ITEMS) {
+    for (const item of NAV_ITEMS.filter(i => !i.courseOnly || courseVisible())) {
         const isActive = isActiveItem(item, currentPage);
         const itemLabel = resolveLabel(item);
 
@@ -265,12 +268,20 @@ function initNavigation() {
 
     // Re-render nav whenever language changes so translated labels appear.
     document.addEventListener('languagechange', renderNav);
+    document.addEventListener('courseunlocked', renderNav);
+}
+
+/** The course card on the home page is hidden in the HTML, so a locked course never flashes. */
+function showCourseCards() {
+    if (!courseVisible()) return;
+    document.querySelectorAll('[data-course-card]').forEach((card) => { card.hidden = false; });
 }
 
 // Auto-initialize when DOM is ready. Also offer the Android app banner site-wide
 // (self-guards: only on Android, only if not previously dismissed).
 function initPage() {
     initNavigation();
+    showCourseCards();
     initAppBanner();
 }
 if (typeof document !== 'undefined') {

@@ -26,8 +26,11 @@ jobs:
         with:
           node-version: '22'
 
-      # Fails if any sw.js STATIC_ASSET or local href/src is missing from the artifact.
+      # Fails if any sw.js STATIC_ASSET or local href/src is missing from the artifact,
+      # or if the secret is missing: the P1 course is published only encrypted with it.
       - run: node scripts/build-pages.mjs _site
+        env:
+          P1_COURSE_CODE: ${{ secrets.P1_COURSE_CODE }}
 
       - uses: actions/configure-pages@v5
 

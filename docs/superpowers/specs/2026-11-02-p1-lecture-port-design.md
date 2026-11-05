@@ -181,6 +181,13 @@ Modely:
 - Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 
+### Zámek kurzu na webu (2026-11-05)
+
+Na decotheory.eu jsou `p1/*.html` jen prázdná stránka se šifrovaným obsahem, kód kurzu je klíčem k šifře (AES-256-GCM, PBKDF2-SHA-256,
+600 000 iterací, pevná sůl). Šifruje `scripts/course-encrypt.mjs` až výstup sestavení, kód je v secretu `P1_COURSE_CODE`, bez něj sestavení
+selže. Dešifruje `js/course/courseLock.js` a pamatuje si odvozený klíč, ne kód. Do odemčení není kurz v menu ani na úvodní stránce. Pojmy
+v `concepts/` a modely v `js/` se nešifrují, repo zůstává veřejné. Ze zdroje stránky běží čitelně bez kódu.
+
 ## 8. Harmonogram (do přednášky ~23. 11. 2026)
 
 | Kdy | Co |

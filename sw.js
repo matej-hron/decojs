@@ -44,6 +44,7 @@ const STATIC_ASSETS = [
   './js/course/concepts.js',
   './js/course/practice.js',
   './js/course/modelParams.js',
+  './js/course/courseLock.js',
   './js/course/hubPage.js',
   './js/course/hustotaPage.js',
   './js/physics/waterDensity.js',

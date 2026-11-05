@@ -6,7 +6,8 @@
 /** @param {string} swUrl - URL of sw.js, resolved against the page */
 export function registerServiceWorker(swUrl) {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register(swUrl).catch(error => console.warn('[SW] registration failed', error));
-    });
+    const register = () => navigator.serviceWorker.register(swUrl).catch(error => console.warn('[SW] registration failed', error));
+    // A course page module runs only after unlocking, long after `load` has fired.
+    if (document.readyState === 'complete') register();
+    else window.addEventListener('load', register);
 }
