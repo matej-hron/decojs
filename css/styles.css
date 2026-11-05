@@ -672,6 +672,10 @@ section[id],
     border: 2px solid transparent;
 }
 
+.topic-card[hidden] {
+    display: none;
+}
+
 .topic-card.available {
     cursor: pointer;
 }
@@ -2439,7 +2443,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.234";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.251";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

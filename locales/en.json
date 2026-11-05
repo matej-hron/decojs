@@ -1510,6 +1510,10 @@
     },
     "nav": {
         "home": "Home",
+        "courses": {
+            "label": "Courses",
+            "p1": "P1 – Physics (Czech)"
+        },
         "sandbox": {
             "label": "Sandbox",
             "deco": "Decompression Modelling",
@@ -1556,6 +1560,13 @@
         },
         "topics": {
             "heading": "Topics",
+            "courseP1": "P1 Physics course (Czech)",
+            "courseP1Desc": "The CMAS P★ physics lecture chapter by chapter — slide text, home reading, interactive models and exam questions. Czech only for now.",
+            "courseP1Links": {
+                "overview": "Course overview",
+                "density": "Density"
+            },
+            "statusNew": "New",
             "sandbox": "Sandbox",
             "sandboxDesc": "Interactive simulators for dive planning and gas calculations.",
             "sandboxLinks": {

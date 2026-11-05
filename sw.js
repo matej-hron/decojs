@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.234';
+const CACHE_NAME = 'deco-theory-0.6.251';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -31,6 +31,27 @@ const STATIC_ASSETS = [
   './sandbox/editor-test.html',
   './sandbox/repetitive-dives.html',
   './sandbox/deco-table.html',
+  './p1/index.html',
+  './p1/hustota.html',
+  './css/course.css',
+  './concepts/cs/density.html',
+  './concepts/cs/water-anomaly.html',
+  './concepts/cs/lake-stratification.html',
+  './js/course/p1Course.js',
+  './js/course/chapter.js',
+  './js/course/slideNav.js',
+  './js/course/modelOverlay.js',
+  './js/course/concepts.js',
+  './js/course/practice.js',
+  './js/course/modelParams.js',
+  './js/course/courseLock.js',
+  './js/course/hubPage.js',
+  './js/course/hustotaPage.js',
+  './js/physics/waterDensity.js',
+  './js/physics/lakeCycle.js',
+  './js/components/DensityCurve.js',
+  './js/components/LakeCycle.js',
+  './js/components/WaterColumn.js',
   './lab/dive-log.html',
   './lab/dive.html',
   './data/cmas-deco-tables.json',

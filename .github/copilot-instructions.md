@@ -203,6 +203,10 @@ Only an allow-list of site files is deployed (`scripts/build-pages.mjs`: top-lev
 the site needs must be added to `SITE_DIRS`. The build (also run in CI) fails if a `STATIC_ASSETS` entry or a
 local `href`/`src` in a published page is missing from the output.
 
+The P1 course (`p1/*.html`) is published only encrypted: `scripts/course-encrypt.mjs` encrypts the output with the
+code from `P1_COURSE_CODE` (a repo secret, never written anywhere), and the build fails without it. `js/course/courseLock.js`
+decrypts in the browser. From source (`python3 -m http.server`) the pages stay readable. For a local build pick your own test value.
+
 ## Update Behavior
 
 | What Changes | Auto-updates? | Notes |

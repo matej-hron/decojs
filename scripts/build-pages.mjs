@@ -6,19 +6,22 @@
  * (tests/ with real dive logs, docs/, supabase/, wiki/, scripts/ …) never goes public.
  * The build fails when:
  *   - a service-worker STATIC_ASSET is missing from the output,
- *   - a local href/src in a published HTML page points at a file that is not published.
+ *   - a local href/src in a published HTML page points at a file that is not published,
+ *   - P1_COURSE_CODE is missing: the course pages are published only encrypted (scripts/course-encrypt.mjs).
+ * A failed build removes its output, so an unencrypted course can never be uploaded.
  *
- * Usage: node scripts/build-pages.mjs [outDir]
+ * Usage: P1_COURSE_CODE=… node scripts/build-pages.mjs [outDir]
  */
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { encryptCourse, requireCourseCode } from './course-encrypt.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Top-level directories served as-is. */
-const SITE_DIRS = ['css', 'data', 'fonts', 'icons', 'images', 'js', 'lab', 'locales', 'sandbox', 'videos'];
+const SITE_DIRS = ['concepts', 'css', 'data', 'fonts', 'icons', 'images', 'js', 'lab', 'locales', 'p1', 'sandbox', 'videos'];
 /** Top-level files served as-is (plus every top-level *.html). */
 const SITE_FILES = ['.nojekyll', 'CNAME', 'manifest.json', 'sw.js'];
 /** Never publish these, even if someone adds them to the lists above. */
@@ -53,7 +56,8 @@ export function localRefs(htmlPath, html) {
     return refs;
 }
 
-function build(outDir) {
+async function build(outDir) {
+    const code = requireCourseCode(process.env.P1_COURSE_CODE);
     const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(Boolean);
     const files = selectSiteFiles(tracked);
     rmSync(outDir, { recursive: true, force: true });
@@ -75,13 +79,18 @@ function build(outDir) {
     }
     if (!existsSync(join(outDir, '.nojekyll'))) problems.push('.nojekyll missing');
 
-    if (problems.length) {
-        console.error(problems.map(p => `✗ ${p}`).join('\n'));
-        process.exit(1);
-    }
+    if (problems.length) throw new Error(problems.join('\n✗ '));
+
+    // Až po kontrole odkazů: ta běží nad čitelnými zdroji.
+    await encryptCourse(outDir, files, code);
     console.log(`Published ${files.length} files to ${outDir}`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-    build(resolve(process.argv[2] ?? join(ROOT, '_site')));
+    const outDir = resolve(process.argv[2] ?? join(ROOT, '_site'));
+    build(outDir).catch((err) => {
+        rmSync(outDir, { recursive: true, force: true });
+        console.error(`✗ ${err.message}`);
+        process.exit(1);
+    });
 }

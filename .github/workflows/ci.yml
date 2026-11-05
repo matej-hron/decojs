@@ -28,4 +28,7 @@ jobs:
 
       - run: npm test
 
+      # Test value only: the real course code is a secret of the Pages deploy.
       - run: node scripts/build-pages.mjs _site
+        env:
+          P1_COURSE_CODE: ci-test-value-not-the-course-code

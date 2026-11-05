@@ -1510,6 +1510,10 @@
     },
     "nav": {
         "home": "Domů",
+        "courses": {
+            "label": "Kurzy",
+            "p1": "P1 – Fyzika"
+        },
         "sandbox": {
             "label": "Pískoviště",
             "deco": "Modelování dekomprese",
@@ -1556,6 +1560,13 @@
         },
         "topics": {
             "heading": "Témata",
+            "courseP1": "Kurz P1 – Fyzika",
+            "courseP1Desc": "Přednáška fyziky pro kurz CMAS P★ po kapitolách — text slidů, výklad na doma, interaktivní modely a otázky z testů.",
+            "courseP1Links": {
+                "overview": "Přehled kurzu",
+                "density": "Hustota"
+            },
+            "statusNew": "Nové",
             "sandbox": "Pískoviště",
             "sandboxDesc": "Interaktivní simulátory pro plánování ponorů a výpočty plynů.",
             "sandboxLinks": {
