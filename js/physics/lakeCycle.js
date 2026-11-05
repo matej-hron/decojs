@@ -26,7 +26,7 @@ const LAKE_UNDER_ICE = Object.freeze([[0, 3, 4, 4, 4], [0, 2, 4, 4, 4], [0, 2, 3
 /** Léto: cíle na konci měsíce, po 1 °C, v rámci měsíce nejdřív hladina, pak níže. */
 const LAKE_SUMMER_TARGETS = Object.freeze([
     ['duben', [8, 5, 4, 4, 4]],
-    ['květen', [14, 6, 5, 4, 4]],
+    ['květen', [13, 6, 5, 4, 4]],
     ['červen', [19, 8, 5, 5, 4]],
     ['červenec', [22, 9, 6, 5, 4]],
     ['srpen', [23, 10, 6, 5, 4]],
@@ -54,6 +54,9 @@ const LAKE_MONTH_SCENE = Object.freeze({
 /** Pořadí měsíců pro `?mesic=1..12` a tlačítka měsíců. */
 export const LAKE_MONTH_NAMES = Object.freeze(Object.keys(LAKE_MONTH_SCENE));
 
+/** @param {string} month @returns {number} teplota vzduchu v měsíci */
+export const airOf = (month) => LAKE_MONTH_SCENE[month].air;
+
 /**
  * @typedef {Object} LakeStep
  * @property {string} month
@@ -78,12 +81,14 @@ export function unstablePair(temps) {
 
 const allFour = (temps) => temps.every(t => t === 4);
 
-/** Podzimní měsíc podle nejnižší teploty hladiny dosud, aby prohození měsíc nevrátilo. */
+/**
+ * Podzimní měsíc podle nejnižší teploty hladiny dosud, aby prohození měsíc nevrátilo.
+ * Nejvýš prosinec: hladina 0 °C bez ledu patří k prosincovému vzduchu 0 °C, led je až první krok ledna.
+ */
 function autumnMonth(lowest) {
     if (lowest >= 16) return 'září';
     if (lowest >= 10) return 'říjen';
-    if (lowest >= 6) return 'listopad';
-    return lowest >= 1 ? 'prosinec' : 'leden';
+    return lowest >= 6 ? 'listopad' : 'prosinec';
 }
 
 /**
@@ -103,7 +108,7 @@ export function swapLabel(rising, sinking) {
  * @returns {LakeStep[]}
  */
 export function buildLakeSteps() {
-    const steps = [{ month: 'srpen', temps: [...LAKE_START], ice: false, kind: 'léto', label: 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře' }];
+    const steps = [{ month: 'srpen', temps: [...LAKE_START], ice: false, kind: 'léto', label: 'Letní vrstvení: teplejší a lehčí voda zůstává nahoře' }];
     let temps = [...LAKE_START];
     const push = (month, kind, label, extra = {}) => steps.push({ month, temps: [...temps], ice: false, kind, label, ...extra });
 
@@ -139,13 +144,16 @@ export function buildLakeSteps() {
     push('únor', 'klid', 'Led na hladině', { ice: true });
 
     // Jaro: led zmizí, hladina +1 °C a stejné pravidlo prohození, dokud není všude 4 °C.
-    push('březen', 'tání', 'Led roztál');
+    // Jakmile hladina poprvé překročí vzduch března, je duben a už se nevrací.
+    let springMonth = 'březen';
+    push(springMonth, 'tání', 'Led roztál');
     while (!allFour(temps)) {
         temps[0] += 1;
-        if (unstablePair(temps) === 0) push('březen', 'těžší', 'Hladina má teplotu blíž 4\u00a0°C, a proto je těžší než voda pod ní');
-        else if (allFour(temps)) push('březen', 'promícháno', 'Celý lom má 4\u00a0°C: jarní promíchání');
-        else push('březen', 'ohřev', 'Hladina se ohřívá');
-        settle('březen');
+        if (temps[0] > airOf('březen')) springMonth = 'duben';
+        if (unstablePair(temps) === 0) push(springMonth, 'těžší', 'Hladina má teplotu blíž 4\u00a0°C, a proto je těžší než voda pod ní');
+        else if (allFour(temps)) push(springMonth, 'promícháno', 'Celý lom má 4\u00a0°C: jarní promíchání');
+        else push(springMonth, 'ohřev', 'Hladina se ohřívá');
+        settle(springMonth);
     }
 
     // Léto: po 1 °C přes cíle měsíců, shora dolů. Poslední krok by byl znovu výchozí srpen.
@@ -153,7 +161,7 @@ export function buildLakeSteps() {
         for (let k = 0; k < temps.length; k++) {
             while (temps[k] !== target[k]) {
                 temps[k] += Math.sign(target[k] - temps[k]);
-                push(month, 'léto', 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře');
+                push(month, 'léto', k === 0 ? 'Slunce ohřívá hladinu, lehčí voda zůstává nahoře' : 'Teplo pomalu proniká hlouběji');
             }
         }
     }
@@ -173,8 +181,6 @@ const TREE_STATES = Object.freeze({
     buds: { crown: 0, falling: 0, snow: 0, buds: 1 },
 });
 
-/** @param {string} month @returns {number} teplota vzduchu v měsíci */
-export const airOf = (month) => LAKE_MONTH_SCENE[month].air;
 /** @param {string} month @returns {string} klíč stavu stromu v měsíci */
 export const treeOf = (month) => LAKE_MONTH_SCENE[month].tree;
 

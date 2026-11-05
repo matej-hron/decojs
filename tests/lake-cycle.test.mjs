@@ -73,7 +73,7 @@ test('po skončení prohazování je sloupec stabilní podle hustoty', () => {
 
 test('celý lom má 4 °C na jaře i na podzimu, u dna vždy 4 °C', () => {
     const fours = LAKE_STEPS.filter(s => s.temps.every(t => t === 4));
-    assert.deepEqual(fours.map(s => s.month), ['prosinec', 'březen']);
+    assert.deepEqual(fours.map(s => s.month), ['prosinec', 'duben']);
     assert.deepEqual(fours.map(s => s.label), [`Celý lom má 4${NB}°C: podzimní promíchání`, `Celý lom má 4${NB}°C: jarní promíchání`]);
     for (const s of LAKE_STEPS) assert.equal(s.temps.at(-1), 4);
     for (const s of LAKE_STEPS) assert.equal(s.temps.length, 5);
@@ -103,7 +103,8 @@ test('léto: cíle měsíců, po 1 °C shora dolů, pravidlo prohození se nespu
     }
     const lastOf = (month) => LAKE_STEPS.filter(s => s.month === month).at(-1).temps;
     assert.deepEqual(lastOf('duben'), [8, 5, 4, 4, 4]);
-    assert.deepEqual(lastOf('květen'), [14, 6, 5, 4, 4]);
+    assert.deepEqual(lastOf('březen'), [3, 3, 3, 4, 4]);
+    assert.deepEqual(lastOf('květen'), [13, 6, 5, 4, 4]);
     assert.deepEqual(lastOf('červen'), [19, 8, 5, 5, 4]);
     assert.deepEqual(lastOf('červenec'), [22, 9, 6, 5, 4]);
     // v rámci měsíce nejdřív hladina
@@ -123,7 +124,7 @@ test('měsíce jdou monotónně po cyklu, podzimní hranice podle nejnižší hl
     let lowest = 23;
     for (const s of LAKE_STEPS.slice(1, iAutumnEnd + 1)) {
         lowest = Math.min(lowest, s.temps[0]);
-        const expected = lowest >= 16 ? 'září' : lowest >= 10 ? 'říjen' : lowest >= 6 ? 'listopad' : lowest >= 1 ? 'prosinec' : 'leden';
+        const expected = lowest >= 16 ? 'září' : lowest >= 10 ? 'říjen' : lowest >= 6 ? 'listopad' : 'prosinec';
         assert.equal(s.month, expected, `${s.temps}`);
     }
     assert.deepEqual(LAKE_MONTH_NAMES.map(airOf), [-1, 0, 3, 9, 13, 17, 18, 18, 13, 8, 4, 0]);
@@ -138,7 +139,52 @@ test('popisky podle druhu kroku', () => {
     const spring = LAKE_STEPS.slice(iThaw + 1, iSpringEnd + 1);
     assert.equal(spring[0].label, 'Hladina se ohřívá');
     assert.equal(spring.find(s => s.temps.join() === '3,2,3,4,4').label, `Hladina má teplotu blíž 4${NB}°C, a proto je těžší než voda pod ní`);
-    assert.equal(LAKE_STEPS.at(-1).label, 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře');
+    assert.equal(LAKE_STEPS[0].label, 'Letní vrstvení: teplejší a lehčí voda zůstává nahoře');
+    assert.equal(LAKE_STEPS.at(-1).label, 'Slunce ohřívá hladinu, lehčí voda zůstává nahoře');
+    assert.equal(labelOf([8, 5, 4, 4, 4]), 'Teplo pomalu proniká hlouběji');
+});
+
+test('jaro: březen končí 3, 3, 3, 4, 4, první krok nad vzduchem března je duben a měsíc se nevrací', () => {
+    const iApril = firstStepOfMonth(LAKE_MONTH_NAMES.indexOf('duben') + 1);
+    assert.deepEqual(LAKE_STEPS[iApril - 1].temps, [3, 3, 3, 4, 4]);
+    assert.equal(LAKE_STEPS[iApril - 1].month, 'březen');
+    assert.deepEqual(LAKE_STEPS[iApril].temps, [4, 3, 3, 4, 4]);
+    assert.equal(LAKE_STEPS[iSpringEnd].label, `Celý lom má 4${NB}°C: jarní promíchání`);
+    assert.equal(LAKE_STEPS[iSpringEnd].month, 'duben');
+});
+
+test('hladina proti vzduchu: chladne jen ke vzduchu, ohřívá se na jaře jen ke vzduchu', () => {
+    for (let i = 0; i < N; i++) {
+        const [was, s] = [LAKE_STEPS[i].temps[0], next(i)];
+        const label = `krok ${i + 1} → ${((i + 1) % N) + 1}: ${was} → ${s.temps[0]}, ${s.month} vzduch ${airOf(s.month)}`;
+        // Prohození je výměna vod, ne chlazení vzduchem: jarní prohození hladinu dočasně sníží.
+        if (s.temps[0] < was && s.kind !== 'výměna') assert.ok(s.temps[0] >= Math.max(airOf(s.month), 0), label);
+        if (s.temps[0] > was && ['březen', 'duben', 'květen'].includes(s.month)) assert.ok(s.temps[0] <= airOf(s.month), label);
+    }
+});
+
+test('led jen v měsíci se vzduchem nejvýš 0 °C, první krok ledna má led', () => {
+    for (const s of LAKE_STEPS) if (s.ice) assert.ok(airOf(s.month) <= 0, s.month);
+    assert.equal(LAKE_STEPS[firstStepOfMonth(1)].ice, true);
+    assert.equal(LAKE_STEPS[firstStepOfMonth(1)].label, 'Hladina zamrzla');
+    const before = LAKE_STEPS[firstStepOfMonth(1) - 1];
+    assert.deepEqual([before.month, before.temps[0], before.ice], ['prosinec', 0, false], 'hladina 0 °C bez ledu patří do prosince');
+});
+
+test('od března do srpna je hladina nad vzduchem jen v létě, bez prohození a se sluncem v popisku', () => {
+    // Podzim a zima sem nepatří: na podzim je hladina nad vzduchem záměrně, voda chladne pomalu.
+    for (let i = iThaw; i < N; i++) {
+        const s = LAKE_STEPS[i];
+        if (s.temps[0] <= airOf(s.month)) continue;
+        const label = `krok ${i + 1}: hladina ${s.temps[0]}, ${s.month} vzduch ${airOf(s.month)}`;
+        assert.ok(['červen', 'červenec', 'srpen'].includes(s.month), label);
+        assert.notEqual(s.kind, 'výměna', label);
+        // Změna hlubší vrstvy nese popisek o pronikání tepla, slunce jmenuje krok, který ohřál hladinu.
+        const surfaceChanged = s.temps[0] !== LAKE_STEPS[i - 1].temps[0];
+        if (surfaceChanged) assert.match(s.label, /Slunce/, label);
+        else assert.equal(s.label, 'Teplo pomalu proniká hlouběji', label);
+    }
+    assert.ok(LAKE_STEPS[0].temps[0] > airOf(LAKE_STEPS[0].month), 'krok 1 je výjimka s popiskem letního vrstvení');
 });
 
 test('prohození: stoupá lehčí voda; „teplejší“ jen tam, kde stoupá opravdu teplejší', () => {
@@ -223,7 +269,7 @@ test('po zavření simulátoru předvolby zmizí z adresy, cizí parametry zůst
 });
 
 test('odečet: měsíc, pořadí kroku a popisek', () => {
-    assert.deepEqual(lakeReadout(0), { main: 'Srpen', sub: `krok 1 z ${N}`, label: 'Slunce ohřívá horní vrstvy, lehčí voda zůstává nahoře' });
+    assert.deepEqual(lakeReadout(0), { main: 'Srpen', sub: `krok 1 z ${N}`, label: 'Letní vrstvení: teplejší a lehčí voda zůstává nahoře' });
 });
 
 test('teplota vzduchu: skutečné minus a nedělitelná mezera', () => {
