@@ -10,7 +10,7 @@
  */
 
 import {
-    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeRange, formatAirTemperature, lakeFrame,
+    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeRange, formatAirTemperature, lakeFrame, windLabelText,
     lakeTemperatureColor, lakeTextColor, mixColors,
 } from '../physics/lakeCycle.js';
 
@@ -174,9 +174,10 @@ export function createLakeCycle(host, options = {}) {
             x: r1(cx), y: r1(y0 - iceThick * 0.6 - font * 0.3), 'text-anchor': 'middle', 'font-size': r1(font * 0.85), fill: c.text,
         }, svg, 'led');
 
-        // teplota vzduchu nad hladinou
+        // teplota vzduchu nad hladinou; v úzkém průřezu výš, ať se nepotká s popiskem šipky vzduchu
+        const narrow = compact || W < 820;
         const air = el('text', {
-            x: r1(cx), y: r1(y0 * (compact ? 0.42 : 0.44)), 'text-anchor': 'middle', 'font-size': r1(font * (compact ? 1.05 : 1.3)), 'font-weight': 600, fill: c.text,
+            x: r1(cx), y: r1(y0 * (narrow ? 0.24 : 0.44)), 'text-anchor': 'middle', 'font-size': r1(font * (compact ? 1.05 : 1.3)), 'font-weight': 600, fill: c.text,
         }, svg);
 
         // vítr
@@ -208,7 +209,7 @@ export function createLakeCycle(host, options = {}) {
         const buds = el('g', {}, tree);
         TREE.buds.forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3.2, fill: c.leaf }, buds));
 
-        refs = { c, y0, iceThick, bands, labels, labelY, cx, swapOffset: bowlW * 0.09, heavier, exchange, exDown, exUp, exchangeGeom, setExchange, ice, iceLabel, air, windArrow, windLabel, groundLeaves, snow, crown, falling, buds };
+        refs = { c, y0, iceThick, bands, labels, labelY, cx, swapOffset: bowlW * 0.09, shortAir: narrow, heavier, exchange, exDown, exUp, exchangeGeom, setExchange, ice, iceLabel, air, windArrow, windLabel, groundLeaves, snow, crown, falling, buds };
         refs.setExchange(step);
     }
 
@@ -259,9 +260,9 @@ export function createLakeCycle(host, options = {}) {
         refs.ice.setAttribute('opacity', frame.ice > 0 ? 1 : 0);
         if (refs.iceLabel) refs.iceLabel.setAttribute('opacity', frame.ice > 0.7 ? 1 : 0);
         paintLabels(frame, iceH, tween?.swap ? easeInOut(tween.x) : null);
-        refs.air.textContent = formatAirTemperature(frame.air);
+        refs.air.textContent = formatAirTemperature(frame.air, { short: refs.shortAir });
         refs.windArrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
-        refs.windLabel.textContent = frame.warm >= 0.5 ? 'teplý vítr' : 'studený vítr';
+        refs.windLabel.textContent = windLabelText(frame.warm);
         // Šipky podle druhu cílového kroku. Pohyb jen při kroku dopředu, jinak stojí uprostřed.
         const { kind } = LAKE_STEPS[step];
         refs.heavier.setAttribute('opacity', kind === 'těžší' ? 1 : 0);

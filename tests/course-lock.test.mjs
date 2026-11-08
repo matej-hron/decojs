@@ -17,7 +17,7 @@ const cipherOf = (html) => JSON.parse(html.match(/<script type="application\/jso
 
 /** Věty ze slidů a výkladu, které bez kódu nesmí být vidět. */
 const SECRET = {
-    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'Jezero je v zimě zamrzlé', 'Modelový lom hluboký'],
+    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'V srpnu se v lomu zanoříš', 'Modelový lom hluboký'],
     'p1/index.html': ['Fyzika – plán', 'Deco for Divers', 'Základy potápěčské fyziky', 'Přednáška fyziky pro kurz'],
 };
 

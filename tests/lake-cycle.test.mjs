@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 import {
     LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTH_NAMES, LAKE_STEPS, airOf, exchangeRange, firstStepOfMonth,
-    formatAirTemperature, lakeFrame, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
+    LAKE_MONTH_ABBR, formatAirTemperature, lakeFrame, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
     treeOf, unstablePair,
 } from '../js/physics/lakeCycle.js';
 import { waterDensity } from '../js/physics/waterDensity.js';
@@ -246,14 +246,16 @@ test('krok dokola', () => {
 
 test('tlačítka měsíců a ?mesic=: první krok měsíce; ?krok= má přednost; bez předvolby srpen', () => {
     assert.equal(LAKE_MONTH_NAMES.length, 12);
-    assert.equal(LAKE_MONTH_NAMES.map(n => n[0].toUpperCase()).join(''), 'LÚBDKČČSZŘLP');
+    assert.deepEqual(LAKE_MONTH_ABBR, ['Le', 'Ún', 'Bř', 'Du', 'Kv', 'Čn', 'Čc', 'Sr', 'Zá', 'Ří', 'Li', 'Pr']);
+    assert.equal(new Set(LAKE_MONTH_ABBR).size, 12, 'každý měsíc jiná zkratka');
+    LAKE_MONTH_ABBR.forEach((abbr, m) => assert.ok(LAKE_MONTH_NAMES[m].toLowerCase().startsWith(abbr.toLowerCase()[0]), abbr));
     LAKE_MONTH_NAMES.forEach((name, m) => {
         const first = firstStepOfMonth(m + 1);
         assert.equal(LAKE_STEPS[first].month, name);
         assert.ok(LAKE_STEPS.slice(0, first).every(s => s.month !== name), `${name}: nic dřív`);
     });
     assert.equal(firstStepOfMonth(8), 0, 'srpen začíná výchozím stavem');
-    assert.equal(LAKE_STEPS[firstStepOfMonth(2)].label, 'Led na hladině', 'odkaz „zima“ z řešeného příkladu vede na únor');
+    assert.deepEqual(LAKE_STEPS[firstStepOfMonth(8)].temps, [23, 10, 6, 5, 4], 'odkaz „srpen“ z řešeného příkladu: v 15 m (vrstva 12–18 m) je 6 °C');
     const parse = (q) => stepFromParams(readParams(q, LAKE_PARAMS));
     assert.equal(parse(''), null);
     assert.equal(parse('?krok=14'), 13);
@@ -273,9 +275,25 @@ test('odečet: měsíc, pořadí kroku a popisek', () => {
 });
 
 test('teplota vzduchu: skutečné minus a nedělitelná mezera', () => {
-    assert.equal(formatAirTemperature(18), `vzduch 18${NB}°C`);
-    assert.equal(formatAirTemperature(-1), `vzduch −1${NB}°C`);
-    assert.equal(formatAirTemperature(-0.3), `vzduch 0${NB}°C`, 'bez záporné nuly');
+    assert.equal(formatAirTemperature(18), `vzduch 18${NB}°C (průměr měsíce)`);
+    assert.equal(formatAirTemperature(18, { short: true }), `vzduch 18${NB}°C (průměr)`, 'telefon a náhled');
+    assert.equal(formatAirTemperature(-1), `vzduch −1${NB}°C (průměr měsíce)`);
+    assert.equal(formatAirTemperature(-0.3), `vzduch 0${NB}°C (průměr měsíce)`, 'bez záporné nuly');
+});
+
+test('šipka vzduchu: popisek podle účinku na hladinu, i v březnu při 3 °C', () => {
+    assert.equal(windLabelText(1), 'vzduch ohřívá hladinu');
+    assert.equal(windLabelText(0), 'vzduch ochlazuje hladinu');
+    const march = LAKE_STEPS.findIndex(s => s.month === 'březen');
+    assert.equal(windLabelText(lakeFrame(march).warm), 'vzduch ohřívá hladinu');
+    const september = LAKE_STEPS.findIndex(s => s.month === 'září');
+    assert.equal(windLabelText(lakeFrame(september).warm), 'vzduch ochlazuje hladinu');
+});
+
+test('teploty vzduchu odpovídají normálu ČHMÚ 1991–2020 pro ČR (zaokrouhleno)', () => {
+    // opendata.chmi.cz …/regional_averages/temperature/Normal_1991_2020_areal_temperature.csv, sloupec Cesko
+    const normal = [-1.4, -0.4, 3.2, 8.5, 13.1, 16.5, 18.3, 17.9, 13.0, 8.2, 3.5, -0.4];
+    LAKE_MONTH_NAMES.forEach((m, i) => assert.ok(Math.abs(airOf(m) - normal[i]) <= 0.5, `${m}: ${airOf(m)} vs ${normal[i]}`));
 });
 
 test('klávesy posouvají krok jen v otevřeném simulátoru, i s fokusem na posuvníku', () => {
@@ -296,7 +314,9 @@ test('stránka a výklad: ovládání po krocích, poznámka a srpen podle nové
     assert.match(html, /další krok/);
     assert.match(html, new RegExp(`id="krok-slider" min="1" max="${N}"`));
     assert.match(html, /id="lom-mesice"/);
-    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Odhad podle hlášení potápěčů, ne měření\./);
+    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z lomů Srní, Horní Cerekev a Šífr\. Zbytek roku dopočítaný z pravidel modelu\. Vzduch: průměr měsíce v ČR \(ČHMÚ\)\./);
+    assert.match(html, /<a href="\?mesic=8#model-lom" data-preset-link>/, 'řešený příklad vede na srpen');
+    assert.doesNotMatch(html, /jezero během roku/, 'model se jmenuje lom během roku');
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8');
     assert.match(concept, /Proč hladina nevychladne na teplotu vzduchu\?/);
     assert.match(concept, /horní vrstva kolem 23&nbsp;°C, vrstva v hloubce 6 až 12&nbsp;m kolem 10&nbsp;°C a u dna jsou 4&nbsp;°C/);
