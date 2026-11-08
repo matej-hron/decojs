@@ -184,7 +184,7 @@ uvádí při prvním výskytu.
 | CNS | toxicita centrálního nervového systému | CNS oxygen toxicity | — | — | — |
 | OTU | jednotky kyslíkové toxicity | oxygen tolerance units | — | — | — |
 | GF | gradientový faktor | gradient factor | — | — | — |
-| SAC | spotřeba vzduchu na povrchu | surface air consumption | — | — | — |
+| SAC | hladinová spotřeba (spotřeba vzduchu na povrchu), l/min — „hladinová spotřeba“ je termín testů SPČR a kurzu P1 | surface air consumption | — | — | — |
 | TTS / TDT | doba do vynoření / celková doba dekomprese | time to surface / total deco time | — | — | — |
 | SI | povrchový interval | surface interval | — | — | — |
 | EAN | obohacený vzduch (nitrox) | enriched air nitrox | — | — | — |
