@@ -66,6 +66,7 @@ const STATIC_ASSETS = [
   './js/physics/lakeCycle.js',
   './js/physics/pressure.js',
   './js/physics/boyle.js',
+  './js/physics/buoyancy.js',
   './js/components/DensityCurve.js',
   './js/components/LakeCycle.js',
   './js/components/WaterColumn.js',
