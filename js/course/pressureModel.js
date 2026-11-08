@@ -227,9 +227,11 @@ export function initPressureModel({ host: hostId, controls: controlsId }) {
     });
     host.closest('.course-model')?.addEventListener('fullscreenchange-model', () => model.redraw());
     return {
+        /** Předvolba z adresy (náhled bez ní nechá model, jak ho student nechal). */
         onOpen() {
             open = true;
-            model.setState(read());
+            const search = new URLSearchParams(window.location.search);
+            if (Object.keys(PRESSURE_PARAMS).some((k) => search.has(k))) model.setState(read());
             model.redraw();
         },
         /** Předvolby po zavření z adresy zmizí, jinak by zůstaly při přechodu na další slide. */

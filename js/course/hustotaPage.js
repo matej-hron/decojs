@@ -6,7 +6,7 @@
  */
 
 import { initChapter } from './chapter.js';
-import { initModelOverlays } from './modelOverlay.js';
+import { initModelOverlays, initPresetLinks } from './modelOverlay.js';
 import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
@@ -168,16 +168,6 @@ function initThumbs() {
     const lakeHost = document.getElementById('nahled-jezero');
     if (densityHost) createDensityCurve(densityHost, { range: [0, 10], temperature: 4, compact: true });
     if (lakeHost) createLakeCycle(lakeHost, { compact: true }) // krok 1 je srpen;
-}
-
-function initPresetLinks(overlays) {
-    // Odkaz „Ukaž v modelu“: zapiš předvolbu do adresy a otevři simulátor bez znovunačtení.
-    document.querySelectorAll('a[data-preset-link]').forEach(a => a.addEventListener('click', (e) => {
-        e.preventDefault();
-        const url = new URL(a.href);
-        window.history.replaceState(null, '', `${url.pathname}${url.search}${window.location.hash}`);
-        overlays.open(url.hash.slice(1));
-    }));
 }
 
 if (typeof document !== 'undefined') {
