@@ -158,6 +158,14 @@ z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čá
 `fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek).
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
+Varianty těla:
+- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slidy 13 a 17): `<figure class="course-figure">`
+  na konci sloupce, výška nejvýš 20 % slidu.
+- **Dva obrázky vedle sebe a pod nimi řádek přes celou šířku** (slide 12): tělo má dva `<div>` (obrázek a věta pod ním)
+  a za nimi `<div class="course-core-row">` s drobnějším textem a malou fotkou. Obrázky jsou nejvýš 19 % slidu, fotka 14 %.
+- **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` s autorem, licencí a odkazem na zdroj,
+  záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
+
 ```html
 <div class="course-slide" data-slide-number="11" data-slide-type="figure">
     <h2>Tlak</h2>
