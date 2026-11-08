@@ -413,7 +413,7 @@ test('T9: slide 18 má nádoby i Pascalův sud vedle sebe v jedné ilustraci, ro
     assert.doesNotMatch(text(slide(18).querySelector('ul')), /Rouen/);
     const caps = [...fig.querySelectorAll('figcaption.course-figure-pair > span')].map(text);
     assert.equal(caps.length, 2);
-    assert.deepEqual(caps, ['stejná výška h, stejná síla', 'Pascalův pokus v Rouenu']);
+    assert.deepEqual(caps, ['stejná výška h, stejný tlak na dno', 'Pascalův pokus v Rouenu']);
     // obraz nese slide: sloupec s obrázkem je širší než text
     assert.ok(slide(18).querySelector('.course-core').classList.contains('course-core-figure-wide'));
     assert.match(read('css/course.css'), /\.course-core-figure-wide \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1\.35fr\)/);
@@ -491,4 +491,16 @@ test('T13: odkrytá buňka má stejný rámeček jako otazník, tabulka se nezkr
     const open = css.match(/details\.course-cell\[open\] \{([^}]*)\}/)?.[1] ?? '';
     assert.match(open, /border: 1px solid transparent/, 'stejně vysoký rámeček, jen neviditelný');
     assert.match(open, /padding: 0 0\.4em/);
+});
+
+// ---------------------------------------------------------------- T14: popisek pod nádobami a paradox ve „Více“
+
+test('T14: pod nádobami „stejný tlak na dno“, ve „Více“ věta o síle na dno a tíze vody', () => {
+    const cap = slide(18).querySelector('figcaption.course-figure-pair > span');
+    assert.match(cap.innerHTML, /^stejná výška <var>h<\/var>, stejný&nbsp;tlak&nbsp;na&nbsp;dno$/, '„stejný tlak na dno“ se neláme, dno nezůstane samo');
+    const more = slide(18).closest('section').querySelector('details.course-more');
+    const p = [...more.querySelectorAll('p')].find(el => /paradox/.test(text(el)));
+    assert.ok(p, 'věta o paradoxu');
+    assert.equal(text(p), 'Síla na dno F = p · S je ve všech třech nádobách stejná, i když tíha vody je v každé jiná: to je hydrostatický paradox.');
+    assert.match(p.innerHTML, /<var>F<\/var> = <var>p<\/var> · <var>S<\/var>/);
 });
