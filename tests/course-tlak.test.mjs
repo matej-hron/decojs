@@ -345,7 +345,7 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
         14: ['nízký tlak', 'vysoký tlak'],
         16: ['vzduchu ubývá, tlak klesá k 0', 'Mount Everest 8 850 m', '31 kPa', 'hladina moře', '101 kPa'],
         17: ['horské sedlo'],
-        18: ['F', 'F', 'F', 'S', 'S', 'S', 'h'],
+        18: ['F', 'F', 'F', 'S', 'S', 'S', 'h', 'h', 'pár litrů v trubici', 'sud praskl'],
         21: ['obličejové dutiny', 'dýchací cesty', 'plíce', 'trávicí systém'],
     };
     for (const [n, want] of Object.entries(labels)) {
@@ -373,4 +373,54 @@ test('T8: pod vzorcem p = F/S [Pa] je řádek 1 Pa = 1 N/m² (jednotky stojatě,
     assert.match(note.innerHTML, /^1&nbsp;Pa = 1&nbsp;N\/m², síla 1&nbsp;N na ploše 1&nbsp;m²$/);
     assert.equal(note.querySelectorAll('var, i, em').length, 0, 'jednotky ani čísla nejsou kurzívou');
     assert.match(read('css/course.css'), /\.course-formula-note \{[^}]*text-align: center/);
+});
+
+// ---------------------------------------------------------------- T9: Pascalův sud na slidu 18
+
+test('T9: slide 18 má nádoby i Pascalův sud vedle sebe v jedné ilustraci, rozhoduje výška', () => {
+    const fig = slide(18).querySelector('figure.course-illustration');
+    const svg = fig.querySelector('svg');
+    assert.match(svg.getAttribute('aria-label'), /sud/);
+    assert.ok(svg.querySelector('.fig-barrel'), 'sud');
+    assert.ok(svg.querySelectorAll('.fig-jet').length >= 4, 'voda tryská ze spár sudu');
+    assert.ok(svg.querySelector('.fig-can'), 'konvička, která dolévá');
+    // stejná kóta h u nádob i u sudu, u sudu (trubice) výrazně vyšší
+    const dims = [...svg.querySelectorAll('.fig-dim')].map(p => {
+        const [, y0, y1] = p.getAttribute('d').match(/^M\d+ (\d+)V(\d+)/).map(Number);
+        return Math.abs(y1 - y0);
+    });
+    assert.equal(dims.length, 2, 'kóta h u nádob a u sudu');
+    const [vessels, barrel] = dims.sort((a, b) => a - b);
+    assert.ok(barrel >= 2.5 * vessels, `trubice výrazně vyšší: ${barrel} vs ${vessels}`);
+    // poslední odrážka je popisek pod sudem, myšlenka v jedné větě
+    assert.doesNotMatch(text(slide(18).querySelector('ul')), /Rouen/);
+    const caps = [...fig.querySelectorAll('figcaption.course-figure-pair > span')].map(text);
+    assert.equal(caps.length, 2);
+    assert.deepEqual(caps, ['stejná výška h, stejná síla', 'Pascalův pokus v Rouenu']);
+    // obraz nese slide: sloupec s obrázkem je širší než text
+    assert.ok(slide(18).querySelector('.course-core').classList.contains('course-core-figure-wide'));
+    assert.match(read('css/course.css'), /\.course-core-figure-wide \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1\.35fr\)/);
+});
+
+test('T9: „Více“ u slidu 18 poctivě říká, že pokus se sudem je spíš legenda, se zdrojem', () => {
+    const more = slide(18).closest('section').querySelector('details.course-more');
+    const p = [...more.querySelectorAll('p')].find(el => /sud/.test(text(el)));
+    assert.ok(p, 'věta o pokusu');
+    assert.match(text(p), /19\. století/);
+    assert.ok([...p.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://en.wikipedia.org/wiki/Pascal%27s_barrel'), 'zdroj');
+});
+
+test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem i v SOURCES.md', () => {
+    const fig = slide(18).querySelector('figure.course-portrait');
+    assert.ok(fig, 'portrét');
+    const img = fig.querySelector('img');
+    assert.equal(img.getAttribute('src'), '../images/course/p1/pascal.jpg');
+    assert.ok(img.getAttribute('width') && img.getAttribute('height'), 'rozměry proti poskakování');
+    assert.match(img.getAttribute('alt'), /Blaise Pascal/);
+    const cap = text(fig.querySelector('figcaption'));
+    assert.match(cap, /Blaise Pascal \(1623–1662\)/);
+    assert.match(cap, /volné dílo/);
+    assert.ok([...fig.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG'));
+    assert.match(read('images/course/p1/SOURCES.md'), /`images\/course\/p1\/pascal\.jpg` \| Tlak, slide 18 \|.*PD-art-old-100-expired.*File:Blaise Pascal Versailles\.JPG/);
+    assert.match(read('sw.js'), /'\.\/images\/course\/p1\/pascal\.jpg'/);
 });

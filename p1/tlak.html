@@ -540,7 +540,7 @@
         <section id="hydrostaticky" class="course-section">
             <div class="course-slide" data-slide-number="18" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Hydrostatický tlak</h2>
-                <div class="course-core">
+                <div class="course-core course-core-figure-wide">
                     <div>
                         <ul>
                             <li><span class="course-highlight">Vyvolán tíhou kapaliny (vody):</span>
@@ -548,32 +548,65 @@
                             <li>Závisí na hloubce, hustotě (salinita, teplota) a tíhovém zrychlení.</li>
                             <li><span class="course-highlight">Tlak není závislý na množství vody, ale pouze na výšce vodního
                                 sloupce</span> (hydrostatický paradox).</li>
-                            <li>Pascalův překvapivý pokus na náměstí v Rouenu: sud se roztrhl, přestože tíha vody byla nepatrná.</li>
                         </ul>
+                        <figure class="course-figure course-portrait">
+                            <img src="../images/course/p1/pascal.jpg" width="240" height="320" alt="Blaise Pascal, portrét olejem">
+                            <figcaption>Blaise Pascal (1623–1662)
+                                <span class="course-figure-note">obraz podle F. Quesnela, kolem 1690, Versailles; volné dílo,
+                                    <a href="https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG">Wikimedia Commons</a></span></figcaption>
+                        </figure>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 400" role="img" aria-label="Tři nádoby různého tvaru se stejnou výškou hladiny h: na stejně velké dno S působí stejná síla F">
-                            <rect class="fig-paper" width="600" height="400" rx="16"/>
-                            <polygon class="fig-liquid" points="45,320 135,320 135,110 45,110"/>
-                            <path class="fig-wall" d="M45 46L45 320H135L135 46"/>
-                            <polygon class="fig-force" points="72,200 72,296 62,296 78,316 94,296 84,296 84,200"/>
-                            <text x="98.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="90.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <polygon class="fig-liquid" points="225,320 315,320 358.7,110 181.3,110"/>
-                            <path class="fig-wall" d="M168 46L225 320H315L372 46"/>
-                            <polygon class="fig-force" points="252,200 252,296 242,296 258,316 274,296 264,296 264,200"/>
-                            <text x="278.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="270.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <polygon class="fig-liquid" points="400,320 490,320 468.5,110 421.5,110"/>
-                            <path class="fig-wall" d="M428 46L400 320H490L462 46"/>
-                            <polygon class="fig-force" points="427,200 427,296 417,296 433,316 449,296 439,296 439,200"/>
-                            <text x="453.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="445.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <path class="fig-guide" d="M24 110H548"/>
-                            <path class="fig-wall" d="M20 320H512"/>
-                            <path class="fig-dim" d="M548 110V320M536 110H560M536 320H560"/>
-                            <text x="568" y="228" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                        <svg viewBox="0 0 600 440" role="img" aria-label="Vlevo tři nádoby různého tvaru se stejnou výškou hladiny h: na stejně velké dno S působí stejná síla F. Vpravo Pascalův sud s vysokou tenkou trubicí: konvička dolije pár litrů, sloupec v trubici je mnohem vyšší než sud a sud praskl, voda tryská ze spár">
+                            <rect class="fig-paper" width="600" height="440" rx="16"/>
+                            <polygon class="fig-liquid" points="20,372 90,372 90,262 20,262"/>
+                            <path class="fig-wall" d="M20 216L20 372H90L90 216"/>
+                            <polygon class="fig-force" points="35,284 35,348 26,348 41,368 56,348 47,348 47,284"/>
+                            <text x="53" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="55" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <polygon class="fig-liquid" points="118,372 188,372 197.9,262 108.1,262"/>
+                            <path class="fig-wall" d="M104 216L118 372H188L202 216"/>
+                            <polygon class="fig-force" points="133,284 133,348 124,348 139,368 154,348 145,348 145,284"/>
+                            <text x="151" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="153" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <polygon class="fig-liquid" points="222,372 292,372 279.3,262 234.7,262"/>
+                            <path class="fig-wall" d="M240 216L222 372H292L274 216"/>
+                            <polygon class="fig-force" points="237,284 237,348 228,348 243,368 258,348 249,348 249,284"/>
+                            <text x="255" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="257" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <path class="fig-guide" d="M14 262H318"/>
+                            <path class="fig-wall" d="M14 372H300"/>
+                            <path class="fig-dim" d="M318 262V372M306 262H330M306 372H330"/>
+                            <text x="326" y="330" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                            <path class="fig-jet" d="M386 292Q372 290 366 302"/>
+                            <path class="fig-jet" d="M384 334Q370 334 366 346"/>
+                            <path class="fig-jet" d="M514 292Q528 290 534 302"/>
+                            <path class="fig-jet" d="M516 334Q530 334 534 346"/>
+                            <path class="fig-jet" d="M420 262Q410 246 398 250"/>
+                            <path class="fig-jet" d="M480 262Q490 246 502 250"/>
+                            <circle class="fig-drop" cx="364" cy="316" r="4"/>
+                            <circle class="fig-drop" cx="536" cy="316" r="4"/>
+                            <circle class="fig-drop" cx="364" cy="360" r="4"/>
+                            <circle class="fig-drop" cx="536" cy="360" r="4"/>
+                            <path class="fig-barrel" d="M398 262C380 290 380 344 398 372H502C520 344 520 290 502 262Z"/>
+                            <path class="fig-stave" d="M426 262C418 296 418 338 426 372M450 262V372M474 262C482 296 482 338 474 372"/>
+                            <path class="fig-hoop" d="M392 280Q450 286 508 280M392 354Q450 360 508 354"/>
+                            <path class="fig-wall" d="M376 372H524"/>
+                            <rect class="fig-glass" x="443" y="62" width="14" height="200"/>
+                            <rect class="fig-liquid" x="446" y="76" width="8" height="186"/>
+                            <polygon class="fig-glass" points="430,44 470,44 457,64 443,64"/>
+                            <path class="fig-jet" d="M482 22Q466 26 460 46"/>
+                            <path class="fig-can" d="M494 10H538V48H494ZM494 26L476 16L474 22L494 36Z"/>
+                            <path class="fig-hoop" d="M538 18C556 18 556 40 538 40"/>
+                            <text x="430" y="128" text-anchor="end" class="fig-label-xl"><tspan x="430">pár litrů</tspan><tspan font-size="0"> </tspan><tspan x="430" dy="40">v trubici</tspan></text>
+                            <path class="fig-guide" d="M462 76H556"/>
+                            <path class="fig-dim" d="M568 76V372M556 76H580M556 372H580"/>
+                            <text x="576" y="236" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                            <rect class="fig-tag" x="356" y="386" width="188" height="46" rx="10"/>
+                            <text x="450" y="420" text-anchor="middle" class="fig-label-xl fig-label-tag">sud praskl</text>
                         </svg>
+                        <figcaption class="course-figure-pair"><span>stejná výška <var>h</var>, stejná síla</span>
+                            <span>Pascalův pokus v Rouenu</span></figcaption>
                     </figure>
                 </div>
             </div>
@@ -583,6 +616,9 @@
                     <div class="course-concept" data-concept="hydrostatic-pressure"></div>
                     <p>Slovo „pouze“ na slidu platí pro jednu kapalinu: když se nemění hustota ani tíhové zrychlení, záleží jen na výšce
                         sloupce.</p>
+                    <p>Pokus se sudem je spíš legenda: Pascal ho ve svých dochovaných spisech nikde nepopisuje, připsali mu ho až
+                        francouzští autoři v 19.&nbsp;století (<a href="https://en.wikipedia.org/wiki/Pascal%27s_barrel">Pascal’s barrel</a>,
+                        anglická Wikipedie). Fyzika na obrázku přitom platí: tlak ve dně sudu dává výška sloupce v trubici.</p>
                 </div>
             </details>
         </section>
