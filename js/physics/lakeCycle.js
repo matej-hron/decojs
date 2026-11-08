@@ -40,7 +40,8 @@ const LAKE_SUMMER_TARGETS = Object.freeze([
  * Zdroj: https://opendata.chmi.cz/meteorology/products/regional_averages/temperature/Normal_1991_2020_areal_temperature.csv
  * (leden −1,4, únor −0,4, březen 3,2, duben 8,5, květen 13,1, červen 16,5, červenec 18,3, srpen 17,9,
  * září 13,0, říjen 8,2, listopad 3,5, prosinec −0,4 °C; ověřeno 2026-11-08).
- * `wind` je účinek vzduchu na hladinu: 'warm' ji ohřívá, 'cold' ochlazuje.
+ * `wind` říká, jestli se v měsíci hladina ohřívá ('warm'), nebo chladne ('cold'). Příčinu neurčuje: v létě hladinu
+ * ohřívá hlavně slunce, ne vzduch (srpen: vzduch 18 °C, hladina 23 °C).
  * @type {Readonly<Record<string, {air: number, wind: 'warm'|'cold', tree: string, groundLeaves: number}>>}
  */
 const LAKE_MONTH_SCENE = Object.freeze({
@@ -279,12 +280,13 @@ export function formatAirTemperature(t, { short = false } = {}) {
 }
 
 /**
- * Popisek šipky vzduchu podle účinku na hladinu, ne podle teploty vzduchu: v březnu hladinu ohřívá i vzduch 3 °C.
- * @param {number} warm 0–1, podíl „ohřívá“ v přechodu mezi měsíci
+ * Popisek šipky u hladiny: jen co se s hladinou v měsíci děje, ne kdo to způsobuje.
+ * Vzduch to být nemusí: v srpnu má vzduch 18 °C a hladina 23 °C, ohřívá ji slunce.
+ * @param {number} warm 0–1, podíl „ohřívá se“ v přechodu mezi měsíci
  * @returns {string}
  */
 export function windLabelText(warm) {
-    return warm >= 0.5 ? 'vzduch ohřívá hladinu' : 'vzduch ochlazuje hladinu';
+    return warm >= 0.5 ? 'hladina se ohřívá' : 'hladina chladne';
 }
 
 /**

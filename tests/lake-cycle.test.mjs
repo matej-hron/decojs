@@ -281,13 +281,13 @@ test('teplota vzduchu: skutečné minus a nedělitelná mezera', () => {
     assert.equal(formatAirTemperature(-0.3), `vzduch 0${NB}°C (průměr měsíce)`, 'bez záporné nuly');
 });
 
-test('šipka vzduchu: popisek podle účinku na hladinu, i v březnu při 3 °C', () => {
-    assert.equal(windLabelText(1), 'vzduch ohřívá hladinu');
-    assert.equal(windLabelText(0), 'vzduch ochlazuje hladinu');
-    const march = LAKE_STEPS.findIndex(s => s.month === 'březen');
-    assert.equal(windLabelText(lakeFrame(march).warm), 'vzduch ohřívá hladinu');
-    const september = LAKE_STEPS.findIndex(s => s.month === 'září');
-    assert.equal(windLabelText(lakeFrame(september).warm), 'vzduch ochlazuje hladinu');
+test('šipka u hladiny: popisek říká, jestli se hladina ohřívá, nebo chladne, příčinu vzduchu nepřipisuje', () => {
+    const labelOf = (month) => windLabelText(lakeFrame(LAKE_STEPS.findIndex(s => s.month === month)).warm);
+    assert.equal(labelOf('srpen'), 'hladina se ohřívá', 'srpen: vzduch 18 °C, hladina 23 °C, ohřívá slunce');
+    assert.equal(labelOf('březen'), 'hladina se ohřívá');
+    assert.equal(labelOf('září'), 'hladina chladne');
+    assert.equal(labelOf('leden'), 'hladina chladne');
+    for (const warm of [0, 1]) assert.doesNotMatch(windLabelText(warm), /vzduch|vítr/);
 });
 
 test('teploty vzduchu odpovídají normálu ČHMÚ 1991–2020 pro ČR (zaokrouhleno)', () => {
