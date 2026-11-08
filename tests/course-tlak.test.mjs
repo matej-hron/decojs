@@ -232,7 +232,14 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(20), /1,4 \/ 0,21 ≈ 6,7\s?bar/);
     assert.doesNotMatch(more(20), /28\s?m|40,5|66\s?m|1,6\s?bar|pN₂ asi [34]/, 'žádné meze z pN₂ 3 nebo 4 bar ani 1,6 bar');
     assert.match(more(20), /Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon\./);
-    assert.match(more(22), /Nad rámec P★/);
+    // T12: Boyle je jádro P★, nad rámec jsou jen izobarický a izochorický děj
+    const h22 = text(slide(22).closest('section').querySelector('details.course-more h3'));
+    assert.equal(h22, 'Tři zvláštní děje');
+    assert.doesNotMatch(more(22), /Nad rámec P★|Osnova je řadí/);
+    assert.match(more(22), /Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na jednodušší zákon:/);
+    assert.match(more(22), /Boyle-Mariottův zákon, pV = konst\. Ten je jádrem P★, podrobně v kapitole Stlačování plynů/);
+    assert.match(more(22), /Izobarický a izochorický děj řadí osnova až do P★★ \(slide 4\), tady jsou pro úplnost\./);
+    assert.doesNotMatch(text(doc.body), /Boyleův|Mariotteův/, 'jedno jméno zákona: Boyle-Mariottův');
     assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
     assert.match(more(22), /V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon/);
     assert.match(more(22), /V testech SPČR platí Gay-Lussac = stálý tlak, Charles = stálý objem\./);
