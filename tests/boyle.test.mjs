@@ -130,3 +130,19 @@ test('spotřeba: neplatný vstup vyhodí chybu', () => {
     assert.throws(() => timeToReserve({ cylinder: 15, start: 200, reserve: 50, sac: 0, depth: 10 }), RangeError);
     assert.throws(() => sacFromPressureDrop({ cylinder: 10, drop: 100, time: 0, depth: 20 }), RangeError);
 });
+
+test('R4-06: přesný režim, zásoba z lahve a spotřeba v hloubce mají stejné jednotky (bar · l)', async () => {
+    const { pressureAt } = await import('../js/physics/pressure.js');
+    const exact = { mode: 'exact', water: 'salt' };
+    const p = (h) => pressureAt(h, exact).total;
+    const tank = { cylinder: 15, start: 200, reserve: 50, sac: 30, ...exact };
+    // čas · hladinová spotřeba · p(h) = použitelná zásoba v bar · l
+    const t = timeToReserve({ ...tank, depth: 30 });
+    close(t * 30 * p(30), 15 * 150, 1e-9);
+    // co ubude z lahve (přepočteno na hladinu, p0) za ten čas, je zásoba / p0
+    close(gasUsed({ sac: 30, depth: 30, time: t, ...exact }) * p(0), 15 * 150, 1e-9);
+    // hladinová spotřeba z poklesu tlaku je inverze času do rezervy
+    close(sacFromPressureDrop({ cylinder: 15, drop: 150, time: t, depth: 30, ...exact }), 30, 1e-9);
+    // ve školním režimu beze změny (slide 29)
+    close(timeToReserve({ cylinder: 15, start: 200, reserve: 50, sac: 30, depth: 30 }), 18.75, 1e-12);
+});

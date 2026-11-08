@@ -5,9 +5,10 @@
  * Při stálém množství plynu a stálé teplotě je p₁ · V₁ = p₂ · V₂. Tlak v hloubce bere z
  * `js/physics/pressure.js`, takže platí oba jeho režimy („školní“ výchozí jako přednáška a „přesně“).
  *
- * Spotřeba: hladinová spotřeba (SAC) je objem vzduchu za minutu při tlaku na hladině. V hloubce dýchá potápěč
- * stejně velké nádechy stlačeného vzduchu, takže z lahve ubývá SAC · p / p₀ litrů (přepočteno na hladinu) za minutu.
- * Ve školním režimu je p₀ = 1 bar, tedy SAC · p.
+ * Spotřeba: hladinová spotřeba (SAC) je objem vzduchu za minutu při tlaku na hladině p₀. V hloubce dýchá potápěč
+ * stejně velké nádechy stlačeného vzduchu, takže z lahve ubývá SAC · p / p₀ litrů (přepočteno na hladinu) za minutu,
+ * tedy SAC · p bar · l za minutu. Zásoba v lahvi je objem lahve · tlak, také v bar · l, a proto se čas do rezervy
+ * i hladinová spotřeba z poklesu tlaku počítají s p, ne s p / p₀ (review R4-06). Ve školním režimu je p₀ = 1 bar.
  *
  * Objemy v litrech, tlaky v barech, hloubka v metrech, čas v minutách.
  */
@@ -93,8 +94,9 @@ export function gasUsed({ sac, depth, time, ...pressure }) {
 
 /**
  * Použitelná zásoba vzduchu v lahvi: objem lahve × (počáteční tlak − rezerva) (slide 29).
+ * Výsledek je v bar · l, tedy v litrech při 1 bar (ve školním režimu totéž co litry přepočtené na hladinu).
  * @param {{cylinder: number, start: number, reserve?: number}} p objem lahve (l), tlaky v lahvi (bar)
- * @returns {number} l
+ * @returns {number} bar · l
  */
 export function usableGas({ cylinder, start, reserve = 0 }) {
     positive(cylinder, 'Objem lahve');
@@ -110,7 +112,8 @@ export function usableGas({ cylinder, start, reserve = 0 }) {
  */
 export function timeToReserve({ cylinder, start, reserve = 0, sac, depth, ...pressure }) {
     positive(sac, 'Hladinová spotřeba');
-    return usableGas({ cylinder, start, reserve }) / consumptionAtDepth(sac, depth, pressure);
+    // bar · l / (l/min · bar)
+    return usableGas({ cylinder, start, reserve }) / (sac * totalPressure(depth, pressure));
 }
 
 /**
@@ -122,5 +125,5 @@ export function sacFromPressureDrop({ cylinder, drop, time, depth, ...pressure }
     positive(cylinder, 'Objem lahve');
     nonNegative(drop, 'Pokles tlaku');
     positive(time, 'Čas');
-    return (cylinder * drop) / time / consumptionAtDepth(1, depth, pressure);
+    return (cylinder * drop) / time / totalPressure(depth, pressure);
 }

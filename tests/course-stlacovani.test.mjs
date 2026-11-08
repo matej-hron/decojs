@@ -228,3 +228,12 @@ test('Stlačování plynů: stránka, modul, model a pojmy jsou offline (sw.js)'
     }
     assert.match(html, /<script type="module" src="\.\.\/js\/course\/stlacovaniPage\.js"><\/script>/);
 });
+
+test('jméno zákona: v kapitole Tlak „Boyle-Mariottův zákon“ (rozhodnutí 4), citace osnovy na rozcestníku doslova', () => {
+    assert.doesNotMatch(read('p1/tlak.html'), /Boyleův/);
+    assert.equal((read('p1/tlak.html').match(/Boyle-Mariottův zákon/g) || []).length, 3);
+    for (const id of ['pressure', 'pascal-law', 'atmospheric-pressure', 'hydrostatic-pressure', 'total-pressure', 'gas-pressure']) {
+        assert.doesNotMatch(read(`concepts/cs/${id}.html`), /Boyleův|Mariotteův/, id);
+    }
+    assert.match(read('p1/index.html'), /Boyleův-Mariotteův zákon \(izotermický děj\)/, 'citace osnovy beze změny');
+});
