@@ -993,6 +993,25 @@ details.course-more > summary .course-summary-hint {
     --wc-gas-air: var(--slide-card-bg);
     --wc-gas-water: var(--slide-water);
 }
+/* Vrstva potápěče (model A1 „Potápěč a vztlak“) ve stylu ilustrací: plná tmavá silueta, vzduch v BC lososový
+   jako plyn v B1, síla jako fig-force (zvýraznění s tmavým obrysem). Mimo slide platí záložní barvy
+   z buoyancyLayer.js. */
+.course-slide {
+    --wc-diver: var(--slide-on-accent);
+    --wc-diver-edge: var(--slide-line-strong);
+    --wc-diver-bc: var(--slide-chart-point);
+    --wc-diver-force: var(--slide-highlight);
+    --wc-diver-force-edge: var(--slide-on-accent);
+    --wc-diver-ink: var(--slide-on-accent);
+}
+.course-step-status {
+    margin: 0;
+    font-size: var(--course-model-ui);
+    font-weight: 600;
+    color: var(--text);
+}
+.course-bc-buttons { display: inline-flex; gap: var(--space-2); }
+.course-bc-buttons .course-bc-btn { min-height: 44px; font-size: var(--course-model-ui); }
 /* Náhled na slidu: jen obrázek, ovládá se až otevřený model. */
 .water-column-compact .water-column-readout,
 .water-column-compact .water-column-controls { display: none; }
