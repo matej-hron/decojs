@@ -171,7 +171,8 @@ test('Tlak: kde originál nese myšlenku obrázkem, nese ji i náš slide (12, 1
     assert.equal(slide(12).querySelectorAll('figure svg').length, 2, 'boty a lyže, jehla');
     assert.match(text(slide(12)), /Stejná síla, menší plocha → větší tlak/);
     assert.match(text(slide(12)), /I malá síla může způsobit obrovský tlak/);
-    assert.match(text(slide(12)), /50\s*MPa = 500\s*bar/);
+    assert.match(text(slide(12)), /5\s*N je asi tíha půllitrové lahve vody\. Na hrotu jehly 0,1\s*mm² to dá 50\s*MPa, tedy 500\s*bar\./);
+    assert.doesNotMatch(text(slide(12)), /potápěčské lahvi/, 'srovnání s lahví Matej zrušil');
     assert.match(text(slide(16).querySelector('svg')), /vzduchu ubývá, tlak klesá k\s0/);
     assert.doesNotMatch(text(slide(16).querySelector('svg')), /hranice atmosféry/);
 });
