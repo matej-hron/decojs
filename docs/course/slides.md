@@ -102,7 +102,7 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): malá ilustrace ve stylu kurzu (výstražná
 značka `warn-sign` a `warn-mark` a potápěč, který při výstupu dýchá, výška 15 % slidu) a vedle ní `<p class="course-alert">`
 (na telefonu pod ní). Smí být pod textem kteréhokoli typu, slide 26 ji má
-pod řadou textu a náhledu modelu. `.course-alert` funguje i na jednom slově v textu (červené „2×“ ve slidu 26).
+pod řadou textu a náhledu modelu, slide 34 pod postupem příkladu (delší text stojí vedle značky, ilustrace je kotva). `.course-alert` funguje i na jednom slově v textu (červené „2×“ ve slidu 26).
 
 ### `quote`: citace
 
@@ -314,8 +314,9 @@ výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičk
 
 ## 5. Typy do budoucna (zatím nestavěné)
 
-Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27; použijí ho i
-31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30; použijí ho i 36, 37, 41).
+Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27, 31, 32, 35;
+použijí ho i 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30, 33, 34, 37; použije ho i 41).
+Slide 36 (`models`) má v textu vedle náhledu dvě řady se šipkou `.course-core-row` + `.course-descent` jako slide 27.
 
 Prošel jsem všech 60 slidů přednášky (`resources/FyzikaP12_2025.pdf` a `.txt`). Tyhle slidy budou chtít další typy.
 Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-type`, rozměry jen z proměnných scény):

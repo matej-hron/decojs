@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.269';
+const CACHE_NAME = 'deco-theory-0.6.270';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -35,6 +35,7 @@ const STATIC_ASSETS = [
   './p1/hustota.html',
   './p1/tlak.html',
   './p1/stlacovani-plynu.html',
+  './p1/archimeduv-zakon.html',
   './css/course.css',
   './concepts/cs/density.html',
   './concepts/cs/water-anomaly.html',
@@ -47,6 +48,8 @@ const STATIC_ASSETS = [
   './concepts/cs/boyle-mariotte.html',
   './concepts/cs/body-air-spaces.html',
   './concepts/cs/gas-consumption.html',
+  './concepts/cs/buoyancy.html',
+  './concepts/cs/buoyancy-control.html',
   './concepts/cs/lake-stratification.html',
   './js/course/p1Course.js',
   './js/course/chapter.js',
@@ -60,17 +63,21 @@ const STATIC_ASSETS = [
   './js/course/hustotaPage.js',
   './js/course/tlakPage.js',
   './js/course/stlacovaniPage.js',
+  './js/course/archimedesPage.js',
   './js/course/pressureModel.js',
   './js/course/boyleModel.js',
+  './js/course/buoyancyModel.js',
   './js/physics/waterDensity.js',
   './js/physics/lakeCycle.js',
   './js/physics/pressure.js',
   './js/physics/boyle.js',
+  './js/physics/buoyancy.js',
   './js/components/DensityCurve.js',
   './js/components/LakeCycle.js',
   './js/components/WaterColumn.js',
   './js/components/waterColumn/pressureLayer.js',
   './js/components/waterColumn/gasVolumeLayer.js',
+  './js/components/waterColumn/buoyancyLayer.js',
   './lab/dive-log.html',
   './lab/dive.html',
   './data/cmas-deco-tables.json',

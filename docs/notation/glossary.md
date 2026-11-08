@@ -95,6 +95,8 @@ ISO 80000 určuje jen to, že popisný index je stojatě; jazyk neřeší. Garan
 | tolerovaný | tol | tol | *p*<sub>okol,tol</sub> | *p*<sub>amb,tol</sub> |
 | maximální | max | max | *p*<sub>max</sub> | *p*<sub>max</sub> |
 | upravený (s GF) | upr | adj | *M*<sub>upr</sub> | *M*<sub>adj</sub> |
+| těleso (Archimédův zákon, kurz P1) | t | b | *ρ*<sub>t</sub>, *m*<sub>t</sub> | *ρ*<sub>b</sub>, *m*<sub>b</sub> |
+| voda, kapalina (Archimédův zákon, kurz P1) | v | w | *ρ*<sub>v</sub>, *m*<sub>v</sub> | *ρ*<sub>w</sub>, *m*<sub>w</sub> |
 
 **Slova psaná ve vzorci celá.** Některé indexy nejsou zkratkou, ale běžným slovem;
 ve vzorci se sázejí stojatě a překládají stejně jako zkratky.
@@ -188,6 +190,7 @@ uvádí při prvním výskytu.
 | TTS / TDT | doba do vynoření / celková doba dekomprese | time to surface / total deco time | — | — | — |
 | SI | povrchový interval | surface interval | — | — | — |
 | EAN | obohacený vzduch (nitrox) | enriched air nitrox | — | — | — |
+| BCD | kompenzátor vztlaku (žaket, křídlo); v přednášce P1 i „BC“, kurz píše BCD | buoyancy control device | — | — | — |
 
 Další termíny: **kompartment** (přejaté, běžné), **sycení/nasycení tkáně**,
 **vysycování**, **přesycení**, **inertní plyn**, **dekompresní zastávka**,

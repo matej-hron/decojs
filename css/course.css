@@ -323,7 +323,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-warning svg .fig-limb { fill: none; stroke-width: 8; }
 .course-warning svg .fig-limb-thick { fill: none; stroke-width: 18; }
 .course-warning svg .fig-glass { fill: var(--slide-card-bg); fill-opacity: 0.45; stroke: var(--slide-card-bg); stroke-width: 2; }
-.course-warning > p { margin: 0; font-size: 1.15em; line-height: 1.3; }
+.course-warning > p { flex: 1 1 18em; margin: 0; font-size: 1.15em; line-height: 1.3; } /* delší varování (slide 34) vedle značky, ne pod ní */
 .course-warning .warn-sign { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 4; stroke-linejoin: round; }
 .course-warning .warn-mark { fill: var(--slide-on-accent); }
 
@@ -469,6 +469,8 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-core-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-8); font-size: 0.8em; line-height: 1.3; }
 @media (max-width: 768px) { .course-core-row { font-size: 1em; } } /* telefon: písmo těla (R3-02) */
 .course-core-row > div > p { margin: 0; }
+.course-row .course-core-row { font-size: 0.9em; } /* řádek se šipkou v textu vedle náhledu (slide 36) */
+.course-row .course-core-row ul { margin: 0; }
 .course-core-row > .course-figure { flex: 0 1 auto; }
 .course-core-row > .course-figure { min-width: 0; max-width: 100%; }
 .course-core-row > .course-figure > img { max-height: calc(var(--course-slide-height) * 0.16); width: auto; max-width: 100%; }
@@ -1023,6 +1025,25 @@ details.course-more > summary .course-summary-hint {
     --wc-gas-air: var(--slide-card-bg);
     --wc-gas-water: var(--slide-water);
 }
+/* Vrstva potápěče (model A1 „Potápěč a vztlak“) ve stylu ilustrací: plná tmavá silueta, vzduch v BC lososový
+   jako plyn v B1, síla jako fig-force (zvýraznění s tmavým obrysem). Mimo slide platí záložní barvy
+   z buoyancyLayer.js. */
+.course-slide {
+    --wc-diver: var(--slide-on-accent);
+    --wc-diver-edge: var(--slide-line-strong);
+    --wc-diver-bc: var(--slide-chart-point);
+    --wc-diver-force: var(--slide-highlight);
+    --wc-diver-force-edge: var(--slide-on-accent);
+    --wc-diver-ink: var(--slide-on-accent);
+}
+.course-step-status {
+    margin: 0;
+    font-size: var(--course-model-ui);
+    font-weight: 600;
+    color: var(--text);
+}
+.course-bc-buttons { display: inline-flex; gap: var(--space-2); }
+.course-bc-buttons .course-bc-btn { min-height: 44px; font-size: var(--course-model-ui); }
 /* Náhled na slidu: jen obrázek, ovládá se až otevřený model. */
 .water-column-compact .water-column-readout,
 .water-column-compact .water-column-controls { display: none; }

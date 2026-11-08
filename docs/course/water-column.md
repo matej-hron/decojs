@@ -10,6 +10,11 @@ Druhá vrstva je **objem plynu** (`js/components/waterColumn/gasVolumeLayer.js`,
 Stlačování plynů v `js/course/boyleModel.js`, ukázka `docs/course/model-stlacovani.html`): balónek nebo zvon ve sloupci
 (`zIndex: 10`), panel objemu vedle panelu tlaku, soukromý klíč `gasObject`. Předměty (objem v hloubce, řádky tabulky)
 dává stránka v options továrny, výpočet je v `js/physics/boyle.js`.
+Třetí vrstva je **potápěč a vztlak** (`js/components/waterColumn/buoyancyLayer.js`, `id: 'diver'`, model A1 „Potápěč
+a vztlak“ kapitoly Archimédův zákon v `js/course/buoyancyModel.js`, ukázka `docs/course/model-archimedes.html`):
+potápěč ve sloupci (`zIndex: 10`), šipka výsledné síly v kg, panel „vztlak navíc [kg]“. Soukromé klíče `diverBcAir`
+(vzduch v BCD v bar · l, při přesunu se nemění) a `diverStep` (krok scénáře, zapisuje model). Výpočet je
+v `js/physics/buoyancy.js`, tlak jen v odečtu (bez vrstvy tlaku).
 
 | Soubor | Co |
 |---|---|
@@ -33,7 +38,8 @@ const col = createWaterColumn(document.getElementById('tlak-column'), {
     surface: 'water',           // 'water' | 'ice'
     state: { water: 'fresh' },  // počáteční klíče stránky / vrstev
     // aside: false,            // vypne všechny boční panely
-    // headroom: 3.4,           // em místa nad hladinou (předmět na hladině, zvon nad vodou); dno zůstává
+    // headroom: 3.4,           // em místa nad hladinou (předmět na hladině, zvon nad vodou); dno zůstává.
+    //                          // Nebo funkce ({ width, height, fontSize, maxDepth }) => em: A1 tak bere jen tolik, kolik potřebuje.
     // height: 480,             // px, nebo (width) => px; výchozí defaultHeight(width)
     // labels: { depthAxis: 'hloubka [m]', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
 });
@@ -154,7 +160,7 @@ zapne).
 |---|---|---|---|
 | **kostra** | `WaterColumn.js` | rezervované jméno (`CORE_STATE_KEYS`) | `depth` (m), `maxDepth` (m), `surface` (`'water'`\|`'ice'`) |
 | **scénář** | stránka (kapitola) | bez prefixu, popisuje svět, ne vrstvu | `water` (`'fresh'`\|`'salt'`), `altitude` (m) |
-| **soukromý klíč vrstvy** | jedna vrstva | **prefix = `id` vrstvy, camelCase** | `pressureMode` (`'school'`\|`'exact'`), `diverWeights`, `balloonVolume0` |
+| **soukromý klíč vrstvy** | jedna vrstva | **prefix = `id` vrstvy, camelCase** | `pressureMode` (`'school'`\|`'exact'`), `diverBcAir`, `gasObject` |
 
 Pravidla:
 
