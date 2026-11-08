@@ -59,7 +59,7 @@ test('test SPČR č. 45: 20 l na 200 bar, po vydýchání 3/4 lehčí asi o 3,7 
     close(airMass(20, 200) * 0.75, 3.75, 1e-12);
 });
 
-// ---------------------------------------------------------------- slide 36: oblek a BC v hloubce
+// ---------------------------------------------------------------- slide 36: oblek a BCD v hloubce
 
 test('oblek „pryž + bublinky“: 12 l → 7,6 l v 10 m → 6,2 l ve 20 m (rozhodnutí 3)', () => {
     assert.equal(RUBBER_DENSITY, 1.23);
@@ -71,13 +71,13 @@ test('oblek „pryž + bublinky“: 12 l → 7,6 l v 10 m → 6,2 l ve 20 m (roz
     assert.ok(suitVolume(1000) > 4 / 1.23);
 });
 
-test('test SPČR č. 37: BC se 6 l z hladiny do 20 m má 2 l, chybí 4 kg', () => {
+test('test SPČR č. 37: BCD se 6 l z hladiny do 20 m má 2 l, chybí 4 kg', () => {
     const amount = bcAmount(0, 6);
     assert.equal(bcVolume(20, amount), 2);
     assert.equal(buoyancyKg(6) - buoyancyKg(bcVolume(20, amount)), 4);
 });
 
-test('A1: na hladině s vypuštěným BC je potápěč vyvážený (rozhodnutí 5)', () => {
+test('A1: na hladině s vypuštěným BCD je potápěč vyvážený (rozhodnutí 5)', () => {
     close(netBuoyancy(0, 0), 0, 1e-12);
     assert.equal(balancedAmount(0), 0);
 });
@@ -87,7 +87,7 @@ test('A1: bez přifouknutí v 10 m chybí 4,4 kg, ve 20 m 5,8 kg', () => {
     assert.equal(round1(netBuoyancy(20, 0)), -5.8);
 });
 
-test('A1: vztlak navíc při stálém vzduchu v BC s hloubkou klesá a u hladiny nejrychleji', () => {
+test('A1: vztlak navíc při stálém vzduchu v BCD s hloubkou klesá a u hladiny nejrychleji', () => {
     const amount = balancedAmount(10);
     let prev = Infinity;
     for (let d = 0; d <= 30; d += 5) {
@@ -123,7 +123,7 @@ test('A1 scénář: 10 kroků z pravidel „přesun“ a „vyvážit“, jako t
     assert.deepEqual(steps.map((s) => s.bcChange), [null, null, 'inflate', null, 'inflate', null, 'deflate', null, 'deflate', null]);
 });
 
-test('A1 scénář: každý krok je jedna změna (hloubka, nebo vzduch v BC) a po vyvážení je vztlak navíc 0', () => {
+test('A1 scénář: každý krok je jedna změna (hloubka, nebo vzduch v BCD) a po vyvážení je vztlak navíc 0', () => {
     const steps = buildScenario();
     for (let i = 1; i < steps.length; i++) {
         const a = steps[i - 1];

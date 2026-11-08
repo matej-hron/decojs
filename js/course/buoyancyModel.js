@@ -3,33 +3,31 @@
  *
  * Vodní sloupec (js/components/WaterColumn.js) s vrstvou potápěče (waterColumn/buoyancyLayer.js). Tlak je jen
  * v odečtu, bez panelu a bez přepínače „školní / přesně“ (rozhodnutí Mateje 4d). Potápěč s oblekem ze slidu 33
- * a zátěží 8 kg začíná na hladině vyvážený s vypuštěným BC (rozhodnutí 4e a 5).
+ * a zátěží 8 kg začíná na hladině vyvážený s vypuštěným BCD (rozhodnutí 4e a 5).
  *
  * Ovládání:
  * - šipky ← → (i klikr PageUp/PageDown) a tlačítka ‹ › v otevřeném modelu jdou po krocích scénáře
  *   (js/physics/buoyancy.js `buildScenario`): sestup 0 → 10 → 20 m a výstup 20 → 10 → 5 → 0 m, každý krok je
- *   jedna změna, buď přesun do další hloubky, nebo vyvážení BC (přifouknout / upustit);
+ *   jedna změna, buď přesun do další hloubky, nebo vyvážení BCD (přifouknout / upustit);
  * - doma navíc: tlačítka „přifouknout 1 l“ / „upustit 1 l“ (litr v současné hloubce) a tažení hloubky; množství
- *   vzduchu v BC při tažení zůstane, takže je vidět, co Boyle udělá. Nic se nepřehrává samo.
+ *   vzduchu v BCD při tažení zůstane, takže je vidět, co Boyle udělá. Nic se nepřehrává samo.
  * Předvolby v URL: `?krok=6#model-vztlak` (js/course/modelParams.js), krok 1–10.
  */
 
 import { createWaterColumn } from '../components/WaterColumn.js';
-import { createBuoyancyLayer } from '../components/waterColumn/buoyancyLayer.js';
+import { createBuoyancyLayer, surfaceHeadroom } from '../components/waterColumn/buoyancyLayer.js';
 import { A1_DIVER, buildScenario, schoolPressure } from '../physics/buoyancy.js';
 import { modelArrowDir, modelHeight, stepButton } from './pressureModel.js';
 import { readParams, syncUrl } from './modelParams.js';
 
+const NBSP = '\u00a0';
+
 /** Hloubka sloupce (m): scénář jde do 20 m, pod ním je vidět, že křivka dál klesá. */
 export const MODEL_MAX_DEPTH = 30;
 
-/** Místo nad hladinou v em: potápěč na hladině má nad vodou lahev, vak BC a šipku „stoupá“ s popiskem. */
-export const A1_HEADROOM_EM = 6.5;
-
-/** Kroky scénáře A1 (generované ze dvou pravidel, ne ruční tabulka). */
 export const A1_SCENARIO = Object.freeze(buildScenario().map((s) => Object.freeze(s)));
 
-/** Kolik litrů (v současné hloubce) přidá nebo upustí jedno stisknutí tlačítka BC. */
+/** Kolik litrů (v současné hloubce) přidá nebo upustí jedno stisknutí tlačítka BCD. */
 export const BC_BUTTON_LITRES = 1;
 
 /** Schéma předvoleb v URL: krok scénáře číslovaný od 1 jako v analýze. */
@@ -59,7 +57,8 @@ export function onScenario(state) {
 }
 
 /**
- * Popisek kroku: „Krok 3 z 10: přifouknout BC“, po ruční změně „Krok 3 z 10 (upraveno)“.
+ * Popisek kroku: „Krok 3 z 10: přifouknout BCD v 10 m“, přesun s úsekem „Krok 6 z 10: výstup 20 → 10 m bez upouštění“,
+ * po ruční změně „Krok 3 z 10 (upraveno)“.
  * @param {{depth: number, diverBcAir: number, diverStep: number}} state
  * @returns {string}
  */
@@ -69,11 +68,14 @@ export function stepLabel(state) {
     if (!s) return '';
     const head = `Krok ${i + 1} z ${A1_SCENARIO.length}`;
     if (!onScenario(state)) return `${head} (upraveno)`;
-    const place = s.depth === 0 ? 'na hladině' : `v${' '}${s.depth}${' '}m`;
-    if (s.kind === 'start') return `${head}: vyvážený ${place}, BC vypuštěný`;
-    if (s.kind === 'balance') return `${head}: ${s.bcChange === 'inflate' ? 'přifouknout' : 'upustit'} BC ${place}`;
-    const prev = A1_SCENARIO[i - 1];
-    return `${head}: ${s.depth > prev.depth ? 'sestup' : 'výstup'} ${s.depth === 0 ? 'na hladinu' : `do${' '}${s.depth}${' '}m`}`;
+    const place = s.depth === 0 ? 'na hladině' : `v${NBSP}${s.depth}${NBSP}m`;
+    if (s.kind === 'start') return `${head}: vyvážený ${place}, BCD vypuštěný`;
+    if (s.kind === 'balance') return `${head}: ${s.bcChange === 'inflate' ? 'přifouknout' : 'upustit'} BCD ${place}`;
+    // přesun: úsek a co potápěč cestou nedělá (R7-01), ať se to nečte jako postup „vystoupat, pak upustit“
+    const from = A1_SCENARIO[i - 1].depth;
+    const down = s.depth > from;
+    const span = s.depth === 0 ? `${from}${NBSP}m → hladina` : `${from} → ${s.depth}${NBSP}m`;
+    return `${head}: ${down ? 'sestup' : 'výstup'} ${span} ${down ? 'bez přifukování' : 'bez upouštění'}`;
 }
 
 /**
@@ -87,7 +89,7 @@ export function nextStep(index, dir) {
 }
 
 /**
- * Vzduch v BC po stisknutí tlačítka: ± 1 l v současné hloubce (bar · l = l · p), nikdy pod nulu.
+ * Vzduch v BCD po stisknutí tlačítka: ± 1 l v současné hloubce (bar · l = l · p), nikdy pod nulu.
  * @param {number} amount bar · l
  * @param {number} depth m
  * @param {1|-1} dir přifouknout / upustit
@@ -117,13 +119,16 @@ export function paramsFromState(state) {
 }
 
 /**
- * Místo nad hladinou: nízký náhled na slidu dostane jen 1 em jako B1.
+ * Místo nad hladinou (R7-04): nízký náhled na slidu dostane jen 1 em jako B1, model tolik, kolik potřebuje potápěč
+ * na hladině v kroku 10 (lahev, vak, šipka a popisek), spočítané z rozměrů kresby.
  * @param {boolean} compact
  * @param {number} hostHeight px
- * @returns {number} em
+ * @returns {number|function({width: number, height: number, fontSize: number, maxDepth: number}): number} em
  */
 export function buoyancyHeadroom(compact, hostHeight) {
-    return compact && hostHeight > 0 && hostHeight < 260 ? 1 : A1_HEADROOM_EM;
+    if (compact && hostHeight > 0 && hostHeight < 260) return 1;
+    const amount = A1_SCENARIO.at(-1).amount;
+    return (size) => surfaceHeadroom({ ...size, amount, diver: A1_DIVER });
 }
 
 function bcButton(text, label) {
@@ -177,9 +182,9 @@ export function createBuoyancyModel(host, { controlsHost = null, state = null, c
         const bc = document.createElement('div');
         bc.className = 'course-bc-buttons';
         bc.setAttribute('role', 'group');
-        bc.setAttribute('aria-label', 'Vzduch v BC');
-        const inflate = bcButton('přifouknout 1 l', 'Přifouknout 1 l vzduchu do BC v této hloubce');
-        const deflate = bcButton('upustit 1 l', 'Upustit 1 l vzduchu z BC v této hloubce');
+        bc.setAttribute('aria-label', 'Vzduch v BCD');
+        const inflate = bcButton('přifouknout 1 l', 'Přifouknout 1 l vzduchu do BCD v této hloubce');
+        const deflate = bcButton('upustit 1 l', 'Upustit 1 l vzduchu z BCD v této hloubce');
         inflate.addEventListener('click', () => bcStep(1));
         deflate.addEventListener('click', () => bcStep(-1));
         bc.append(inflate, deflate);

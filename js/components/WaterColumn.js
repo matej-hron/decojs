@@ -275,8 +275,9 @@ export function splitLabel(label, maxWidth, fontSize) {
  * @param {number} [p.fontSize] - px (default `baseFontSize(width)`)
  * @param {number} p.maxDepth - metres
  * @param {number} [p.panels=0] - number of aside panels
- * @param {number} [p.headroom=0] - extra space above the surface in em (an object floating on the surface, a bell
- *   hanging above it); the bottom of the column stays where it was
+ * @param {number|function({width: number, height: number, fontSize: number, maxDepth: number}): number} [p.headroom=0]
+ *   - extra space above the surface in em (an object floating on the surface, a bell hanging above it); the bottom of
+ *   the column stays where it was. A function gets the size of the drawing and returns em (a low model needs less).
  * @returns {Geometry} (without `colors`; `aside` is null — set per layer)
  */
 export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0, headroom = 0 }) {
@@ -288,7 +289,8 @@ export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0,
     const digits = String(Math.round(maxDepth)).length;
     const left = Math.round(1.6 * fs + digits * 0.62 * fs + 0.8 * fs);
     const right = Math.round(n > 0 ? 1.0 * fs : 0.6 * fs);
-    const top = Math.round(1.7 * fs) + Math.round(Math.max(0, headroom) * fs);
+    const room = typeof headroom === 'function' ? headroom({ width: W, height: H, fontSize: fs, maxDepth }) : headroom;
+    const top = Math.round(1.7 * fs) + Math.round(Math.max(0, room || 0) * fs);
     const bottom = Math.round(n > 0 ? 3.4 * fs : 1.0 * fs);
     const inner = Math.max(0, W - left - right);
     const gap = Math.round((W < 600 ? 0.8 : 1.2) * fs);
@@ -479,7 +481,7 @@ let instanceCounter = 0;
  * @param {'water'|'ice'} [options.surface='water']
  * @param {number} [options.step=1] - depth step of the slider and drag, metres
  * @param {boolean} [options.aside=true] - false = no aside panels at all
- * @param {number} [options.headroom=0] - extra space above the surface in em (see computeGeometry)
+ * @param {number|Function} [options.headroom=0] - extra space above the surface in em, or a function (see computeGeometry)
  * @param {number|((width:number)=>number)} [options.height] - SVG height, px
  * @param {Object} [options.labels] - overrides of DEFAULT_LABELS
  * @param {Object} [options.state] - initial page/layer keys merged into state

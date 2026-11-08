@@ -9,9 +9,9 @@
  * Model A1 „Potápěč a vztlak“ (slide 36, rozhodnutí Mateje 1–5 v archimedes-rozhodnuti.md):
  * - tělo potápěče je neutrální: zbytek potápěče (tělo, výstroj, zátěž) se nestlačuje a je vyvážený;
  * - oblek „pryž + bublinky“: pryž obleku se nestlačuje, plyn v bublinkách se řídí Boylem;
- * - vzduch v kompenzátoru (BC) se řídí Boylem; jeho množství je v bar · l (objem × tlak), to se při přesunu nemění;
+ * - vzduch v kompenzátoru (BCD) se řídí Boylem; jeho množství je v bar · l (objem × tlak), to se při přesunu nemění;
  * - zátěž = výsledek slidu 33 (objem olova zanedbán jako v testu SPČR č. 34);
- * - start na hladině vyvážený s vypuštěným BC (rozhodnutí 5).
+ * - start na hladině vyvážený s vypuštěným BCD (rozhodnutí 5).
  *
  * Objemy v litrech, hmotnosti a vztlak v kilogramech, tlaky v barech, hloubka v metrech.
  */
@@ -145,7 +145,7 @@ export function airMass(cylinder, pressure, airDensity = AIR_DENSITY) {
     return (cylinder * pressure * airDensity) / 1000;
 }
 
-// ---------------------------------------------------------------- oblek a BC v hloubce (slide 36)
+// ---------------------------------------------------------------- oblek a BCD v hloubce (slide 36)
 
 /**
  * Objem obleku v hloubce, varianta „pryž + bublinky“ (rozhodnutí 3): pryž (hmotnost / 1,23 kg/l) se nestlačuje,
@@ -162,24 +162,24 @@ export function suitVolume(depth, suit = SLIDE_33_SUIT) {
 }
 
 /**
- * Objem vzduchu v BC v hloubce.
+ * Objem vzduchu v BCD v hloubce.
  * @param {number} depth m
  * @param {number} amount bar · l
  * @returns {number} l
  */
 export function bcVolume(depth, amount) {
-    nonNegative(amount, 'Množství vzduchu v BC');
+    nonNegative(amount, 'Množství vzduchu v BCD');
     return amount / schoolPressure(depth);
 }
 
 /**
- * Kolik vzduchu (bar · l) je v BC, když má v hloubce daný objem.
+ * Kolik vzduchu (bar · l) je v BCD, když má v hloubce daný objem.
  * @param {number} depth m
  * @param {number} volume l
  * @returns {number} bar · l
  */
 export function bcAmount(depth, volume) {
-    nonNegative(volume, 'Objem BC');
+    nonNegative(volume, 'Objem BCD');
     return volume * schoolPressure(depth);
 }
 
@@ -195,7 +195,7 @@ export const A1_DIVER = Object.freeze({ suit: SLIDE_33_SUIT, weights: weightsFor
  * Stav potápěče v hloubce.
  * `net` je vztlak navíc v kg: kladný = přebývá, stoupá; záporný = chybí, klesá; 0 = vznáší se.
  * @param {number} depth m
- * @param {number} amount vzduch v BC (bar · l)
+ * @param {number} amount vzduch v BCD (bar · l)
  * @param {Diver} [diver]
  * @returns {{depth: number, suit: number, bc: number, net: number}} objemy v l, net v kg
  */
@@ -207,7 +207,7 @@ export function diverState(depth, amount, diver = A1_DIVER) {
 }
 
 /**
- * Vztlak navíc v hloubce (kg) při stálém množství vzduchu v BC: křivka v panelu modelu A1.
+ * Vztlak navíc v hloubce (kg) při stálém množství vzduchu v BCD: křivka v panelu modelu A1.
  * @param {number} depth m
  * @param {number} amount bar · l
  * @param {Diver} [diver]
@@ -218,8 +218,8 @@ export function netBuoyancy(depth, amount, diver = A1_DIVER) {
 }
 
 /**
- * Kolik vzduchu (bar · l) musí být v BC, aby se potápěč v hloubce vznášel. Když vztlak přebývá i s prázdným BC
- * (na hladině ze slidu 33 je to přesně 0), vrátí 0: BC víc vypustit nejde.
+ * Kolik vzduchu (bar · l) musí být v BCD, aby se potápěč v hloubce vznášel. Když vztlak přebývá i s prázdným BCD
+ * (na hladině ze slidu 33 je to přesně 0), vrátí 0: BCD víc vypustit nejde.
  * @param {number} depth m
  * @param {Diver} [diver]
  * @returns {number} bar · l
@@ -232,19 +232,19 @@ export function balancedAmount(depth, diver = A1_DIVER) {
 /**
  * Krok scénáře A1.
  * @typedef {Object} ScenarioStep
- * @property {'start'|'move'|'balance'} kind start, přesun do další hloubky, nebo vyvážení BC
+ * @property {'start'|'move'|'balance'} kind start, přesun do další hloubky, nebo vyvážení BCD
  * @property {number} depth m
- * @property {number} amount vzduch v BC (bar · l)
+ * @property {number} amount vzduch v BCD (bar · l)
  * @property {'inflate'|'deflate'|null} bcChange u vyvážení: přifouknout, nebo upustit
  */
 
 /**
  * Kroky scénáře ze dvou pravidel (poučení z modelu lomu: generovat, ne ruční tabulka):
- * 1. „přesun“: do další hloubky cesty, vzduch v BC se nemění (jen Boyle);
- * 2. „vyvážit“: po přesunu pod hladinu, pokud potápěč není vyvážený, BC se přifoukne nebo upustí na nulový vztlak.
+ * 1. „přesun“: do další hloubky cesty, vzduch v BCD se nemění (jen Boyle);
+ * 2. „vyvážit“: po přesunu pod hladinu, pokud potápěč není vyvážený, BCD se přifoukne nebo upustí na nulový vztlak.
  * Na hladině se nevyvažuje: tam potápěč chce plavat.
- * Každý krok je tedy jedna změna: buď hloubka, nebo vzduch v BC.
- * @param {readonly number[]} [route] hloubky (m), první je start vyvážený s vypuštěným BC
+ * Každý krok je tedy jedna změna: buď hloubka, nebo vzduch v BCD.
+ * @param {readonly number[]} [route] hloubky (m), první je start vyvážený s vypuštěným BCD
  * @param {Diver} [diver]
  * @returns {ScenarioStep[]}
  */
