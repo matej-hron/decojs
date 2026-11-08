@@ -317,7 +317,18 @@ export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0 
  * @returns {string}
  */
 export function depthReadout(state, step = 1, label = DEFAULT_LABELS.depth) {
-    return `${label} ${fmtCs(state.depth, decimalsOf(step))}&nbsp;m`;
+    return `${label} ${fmtDepth(state.depth, step)}&nbsp;m`;
+}
+
+/**
+ * Hloubka pro popisky: celé metry bez desetinné části, jinak tolik míst, kolik má krok (12; 12,5).
+ * @param {number} depth - metres
+ * @param {number} [step=1]
+ * @returns {string}
+ */
+export function fmtDepth(depth, step = 1) {
+    const d = decimalsOf(step);
+    return fmtCs(depth, Math.abs(depth - Math.round(depth)) < 1e-9 ? 0 : d);
 }
 
 /**
@@ -510,7 +521,7 @@ export function createWaterColumn(host, options = {}) {
     function syncRange() {
         range.max = String(state.maxDepth);
         range.value = String(state.depth);
-        range.setAttribute('aria-valuetext', `${fmtCs(state.depth, decimalsOf(step))}${NBSP}m`);
+        range.setAttribute('aria-valuetext', `${fmtDepth(state.depth, step)}${NBSP}m`);
     }
 
     function setStateInternal(partial, source) {
@@ -709,7 +720,7 @@ export function createWaterColumn(host, options = {}) {
             y: labelBelow ? py + Math.round(0.45 * fs) : py - Math.round(0.45 * fs),
             dy: labelBelow ? '0.8em' : '0', 'text-anchor': 'end', 'pointer-events': 'none',
             ...haloAttrs(colors, fs),
-            text: `${fmtCs(st.depth, decimalsOf(step))}${NBSP}m`,
+            text: `${fmtDepth(st.depth, step)}${NBSP}m`,
         }, ptr);
 
         // hit band: the only place where touch-action is disabled, so a finger

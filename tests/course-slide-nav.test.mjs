@@ -56,7 +56,10 @@ describe('nextTarget: přes hranice stránek', () => {
 
     it('výchozí pořadí bere ze skutečného kurzu', () => {
         assert.deepEqual(nextTarget({ slug: null, index: 2, count: 3, dir: 1 }), { href: 'hustota.html' });
-        assert.deepEqual(nextTarget({ slug: 'hustota', index: 5, count: 6, dir: 1 }), { href: 'index.html#kapitoly' });
+        // Hustota → Tlak a zpět (poslední zastávka Hustoty); za Tlakem zatím rozcestník.
+        assert.deepEqual(nextTarget({ slug: 'hustota', index: 5, count: 6, dir: 1 }), { href: 'tlak.html' });
+        assert.deepEqual(nextTarget({ slug: 'tlak', index: 0, count: 14, dir: -1 }), { href: 'hustota.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'tlak', index: 13, count: 14, dir: 1 }), { href: 'index.html#kapitoly' });
     });
 });
 

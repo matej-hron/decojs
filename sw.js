@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.255';
+const CACHE_NAME = 'deco-theory-0.6.268';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -33,9 +33,16 @@ const STATIC_ASSETS = [
   './sandbox/deco-table.html',
   './p1/index.html',
   './p1/hustota.html',
+  './p1/tlak.html',
   './css/course.css',
   './concepts/cs/density.html',
   './concepts/cs/water-anomaly.html',
+  './concepts/cs/pressure.html',
+  './concepts/cs/pascal-law.html',
+  './concepts/cs/atmospheric-pressure.html',
+  './concepts/cs/hydrostatic-pressure.html',
+  './concepts/cs/total-pressure.html',
+  './concepts/cs/gas-pressure.html',
   './concepts/cs/lake-stratification.html',
   './js/course/p1Course.js',
   './js/course/chapter.js',
@@ -47,11 +54,15 @@ const STATIC_ASSETS = [
   './js/course/courseLock.js',
   './js/course/hubPage.js',
   './js/course/hustotaPage.js',
+  './js/course/tlakPage.js',
+  './js/course/pressureModel.js',
   './js/physics/waterDensity.js',
   './js/physics/lakeCycle.js',
+  './js/physics/pressure.js',
   './js/components/DensityCurve.js',
   './js/components/LakeCycle.js',
   './js/components/WaterColumn.js',
+  './js/components/waterColumn/pressureLayer.js',
   './lab/dive-log.html',
   './lab/dive.html',
   './data/cmas-deco-tables.json',
@@ -180,6 +191,8 @@ const STATIC_ASSETS = [
   './js/gfLimits.js',
   './js/gfPresets.js',
   './images/gas-particles.gif',
+  './images/course/p1/manometr.jpg',
+  './images/course/p1/pascal.jpg',
   './images/cmas-table-2018.png',
   './js/urlParams.js',
   './js/utils/escHtml.js',

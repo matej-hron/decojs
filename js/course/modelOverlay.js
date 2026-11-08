@@ -6,6 +6,9 @@
  *         <div class="course-model course-slide chart-container" id="model-lom">…</div>
  *     </dialog>
  *
+ * Jeden model může mít náhled na víc slidech (Tlak: M1 na slidech 15 a 20). Překryv leží na slidu, odkud se
+ * otevřel, a po zavření se na něj vrací.
+ *
  * Překryv leží přesně v rámečku slidu, takže nic neuskočí (na telefonu zabere celou obrazovku,
  * to řeší CSS). Zavírá se Esc, křížkem a klikem mimo a vrací na slide. Adresa `#model-lom` otevře
  * stránku se slidem a simulátorem. Model se staví až při prvním otevření, kdy má skutečnou velikost.
@@ -21,13 +24,16 @@ const DESKTOP = '(min-width: 769px)';
 
 /**
  * @param {Object<string, () => ModelController>} factories id modelu → funkce, která model postaví
- * @returns {{open: (id: string) => void, openFromHash: () => void}}
+ * @returns {{open: (id: string, from?: Element|null) => void, openFromHash: () => void}}
  */
 export function initModelOverlays(factories) {
     const controllers = new Map();
     const dialogOf = (id) => document.getElementById(id)?.closest('dialog.course-sim') ?? null;
-    /** Slide, ze kterého se model otevírá: ten, kde je jeho náhled. */
-    const slideOf = (id) => document.querySelector(`[data-open-model="${id}"]`)?.closest('.course-slide') ?? null;
+    /** Výchozí slide modelu: ten s jeho prvním náhledem. */
+    const firstSlideOf = (id) => document.querySelector(`[data-open-model="${id}"]`)?.closest('.course-slide') ?? null;
+    /** Slide, odkud se který model naposledy otevřel. */
+    const openedFrom = new Map();
+    const slideOf = (id) => openedFrom.get(id) ?? firstSlideOf(id);
     let openId = null;
 
     function place(id) {
@@ -47,9 +53,15 @@ export function initModelOverlays(factories) {
         window.history.replaceState(null, '', `${pathname}${search}${anchor ? `#${anchor}` : ''}`);
     }
 
-    function open(id) {
+    /**
+     * @param {string} id
+     * @param {Element|null} [from] prvek na slidu, odkud se otevírá (náhled, odkaz); výchozí je první náhled
+     */
+    function open(id, from = null) {
         const dialog = dialogOf(id);
         if (!dialog || !factories[id] || dialog.open) return;
+        const fromSlide = from?.closest('.course-slide:not(.course-model)') ?? null;
+        openedFrom.set(id, fromSlide ?? firstSlideOf(id));
         slideOf(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });
         place(id);
         dialog.showModal();
@@ -73,7 +85,7 @@ export function initModelOverlays(factories) {
         dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
         dialog.querySelector('.course-sim-close')?.addEventListener('click', () => dialog.close());
         document.querySelectorAll(`[data-open-model="${id}"]`)
-            .forEach(btn => btn.addEventListener('click', () => open(id)));
+            .forEach(btn => btn.addEventListener('click', () => open(id, btn)));
     }
 
     // Změna okna přeskládá stránku pod překryvem: nejdřív vrátit slide na místo, pak překryv.
@@ -90,4 +102,18 @@ export function initModelOverlays(factories) {
     window.addEventListener('hashchange', openFromHash);
 
     return { open, openFromHash };
+}
+
+/**
+ * Odkaz „Ukaž to v modelu“ (`<a href="?mesic=2#model-lom" data-preset-link>`): zapíše předvolbu do adresy
+ * a otevře simulátor bez znovunačtení, na slidu, kde odkaz je.
+ * @param {{open: (id: string, from?: Element|null) => void}} overlays
+ */
+export function initPresetLinks(overlays) {
+    document.querySelectorAll('a[data-preset-link]').forEach(a => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = new URL(a.href);
+        window.history.replaceState(null, '', `${url.pathname}${url.search}${window.location.hash}`);
+        overlays.open(url.hash.slice(1), a);
+    }));
 }

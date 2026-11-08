@@ -151,6 +151,163 @@
             <p class="vzornik-type"><code>data-slide-type="models"</code> + <code>data-slide-fit="compact"</code>, ve vzorníku náhledy simulátor neotevírají</p>
         </section>
 
+        <section id="obrazek" class="course-section">
+            <div class="course-slide" data-slide-number="11" data-slide-type="figure">
+                <h2>Tlak</h2>
+                <div class="course-core">
+                    <div>
+                        <p>Tlak udává, jak velká síla působí kolmo na jednotku plochy.</p>
+                        <p class="course-formula"><var>p</var> = <var>F</var>/<var>S</var> <span class="course-unit">[Pa]</span></p>
+                    </div>
+                    <figure class="course-figure course-illustration">
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Tlaková síla F působí kolmo na plochu S">
+                            <rect class="fig-paper" width="600" height="420" rx="16"/>
+                            <polygon class="fig-solid-front" points="50,300 400,300 400,336 50,336"/>
+                            <polygon class="fig-solid-side" points="400,300 550,206 550,242 400,336"/>
+                            <polygon class="fig-solid-top" points="50,300 200,206 550,206 400,300"/>
+                            <polygon class="fig-force" points="288,30 288,213 270,213 300,253 330,213 312,213 312,30"/>
+                            <text x="328" y="92" class="fig-label-xl">tlaková síla <tspan font-style="italic">F</tspan></text>
+                            <text x="300" y="392" text-anchor="middle" class="fig-label-xl">plocha (obsah) <tspan font-style="italic">S</tspan></text>
+                        </svg>
+                    </figure>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="figure"</code> text a schéma nebo obrázek s popiskem</p>
+        </section>
+
+        <section id="ilustrace" class="course-section">
+            <div class="course-slide" data-slide-number="12" data-slide-type="figure" data-slide-fit="compact">
+                <h2>Tlak – jednotky, příklady</h2>
+                <div class="course-core">
+                    <div>
+                        <h3 class="course-figure-title"><span class="course-highlight">Stejná síla, menší plocha → větší tlak</span></h3>
+                        <figure class="course-figure course-illustration">
+                        <svg viewBox="0 0 600 270" role="img" aria-label="Stejný člověk ve sněhu se stejnou tíhou F: v botách se boří a nechává hluboké stopy, na lyžích se neboří a stopa je mělká">
+                            <rect class="fig-sky" width="600" height="270" rx="16"/>
+                            <path class="fig-hill" d="M0 170C90 120 160 128 250 158S410 112 600 150V270H0Z"/>
+                            <path class="fig-tree" d="M530 74L550 120H540L558 152H502L520 120H510Z"/>
+                            <path class="fig-tree" d="M562 102L576 134H569L582 158H542L555 134H548Z"/>
+                            <circle class="fig-flake" cx="36" cy="34" r="3"/>
+                            <circle class="fig-flake" cx="90" cy="66" r="2.5"/>
+                            <circle class="fig-flake" cx="250" cy="26" r="3"/>
+                            <circle class="fig-flake" cx="300" cy="74" r="2.5"/>
+                            <circle class="fig-flake" cx="360" cy="40" r="3"/>
+                            <circle class="fig-flake" cx="488" cy="30" r="2.5"/>
+                            <circle class="fig-flake" cx="236" cy="100" r="2.5"/>
+                            <circle class="fig-flake" cx="40" cy="120" r="2.5"/>
+                            <circle class="fig-flake" cx="560" cy="44" r="2.5"/>
+                            <path class="fig-snow" d="M0 196C150 186 380 190 600 200V254A16 16 0 0 1 584 270H16A16 16 0 0 1 0 254Z"/>
+                            <ellipse class="fig-track-deep" cx="40" cy="250" rx="15" ry="6"/>
+                            <ellipse class="fig-track-deep" cx="76" cy="236" rx="15" ry="6"/>
+                            <ellipse class="fig-track-deep" cx="112" cy="254" rx="15" ry="6"/>
+                            <ellipse class="fig-track-deep" cx="169" cy="226" rx="15" ry="6"/>
+                            <ellipse class="fig-track-deep" cx="191" cy="226" rx="15" ry="6"/>
+                            <g class="fig-silhouette">
+                                <circle cx="180" cy="126" r="15"/>
+                                <path d="M164 120A16 16 0 0 1 196 120Z"/>
+                                <circle cx="180" cy="102" r="6"/>
+                                <path class="fig-limb-thick" d="M180 152V200"/>
+                                <path class="fig-limb" d="M179 158L160 184L154 208M181 158L200 182L210 202"/>
+                                <path class="fig-limb" d="M175 202L168 228L170 254M185 202L192 228L190 254"/>
+                            </g>
+                            <path class="fig-snow" d="M140 226H220V264H140Z"/>
+                            <path class="fig-snow-lip" d="M155 227Q169 235 183 227M177 227Q191 235 205 227"/>
+                            <path class="fig-track" d="M290 225H346M290 232H346"/>
+                            <g class="fig-silhouette">
+                                <circle cx="430" cy="94" r="15"/>
+                                <path d="M414 88A16 16 0 0 1 446 88Z"/>
+                                <circle cx="430" cy="70" r="6"/>
+                                <path class="fig-limb-thick" d="M430 120V168"/>
+                                <path class="fig-limb" d="M429 126L410 148L400 158M431 126L450 148L460 158"/>
+                                <path class="fig-limb" d="M425 170L418 196L420 222M435 170L442 196L440 222"/>
+                                <path class="fig-pole" d="M400 158L378 226M460 158L484 226"/>
+                                <path d="M352 222H516Q528 222 530 212L533 216Q530 230 516 230H352Z"/>
+                            </g>
+                            <polygon class="fig-force" points="173,36 187,36 187,66 198,66 180,88 162,66 173,66"/>
+                            <polygon class="fig-force" points="423,4 437,4 437,34 448,34 430,56 412,34 423,34"/>
+                            <text x="204" y="66" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="454" y="34" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                        </svg>
+                            <figcaption>Stejná síla, různě velká plocha</figcaption>
+                        </figure>
+                    </div>
+                    <div>
+                        <h3 class="course-figure-title"><span class="course-highlight">I malá síla může způsobit obrovský tlak</span></h3>
+                        <figure class="course-figure course-illustration">
+                        <svg viewBox="0 0 600 270" role="img" aria-label="Injekční stříkačka: síla F = 5&nbsp;N na píst, jehla s hrotem o ploše 0,1&nbsp;mm²">
+                            <rect class="fig-paper" width="600" height="270" rx="16"/>
+                            <g transform="translate(60 0)">
+                            <polygon class="fig-force" points="20,133 56,133 56,122 78,140 56,158 56,147 20,147"/>
+                            <text x="28" y="108" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <rect class="fig-plastic" x="84" y="100" width="12" height="80" rx="4"/>
+                            <rect class="fig-plastic" x="96" y="132" width="78" height="16"/>
+                            <rect class="fig-plastic" x="168" y="88" width="12" height="104" rx="4"/>
+                            <rect class="fig-liquid" x="194" y="112" width="138" height="56"/>
+                            <rect class="fig-ink" x="180" y="112" width="14" height="56" rx="2"/>
+                            <rect class="fig-glass" x="180" y="110" width="156" height="60" rx="6"/>
+                            <path class="fig-ticks" d="M206 110V132M220 110V124M234 110V132M248 110V124M262 110V132M276 110V124M290 110V132M304 110V124M318 110V132"/>
+                            <path class="fig-glass" d="M336 126H350V154H336Z"/>
+                            <path class="fig-hub" d="M350 124H384L392 134V146L384 156H350Z"/>
+                            <path class="fig-needle" d="M392 140H462"/>
+                            <path class="fig-ink" d="M462 137L472 140L462 143Z"/>
+                            <text x="468" y="100" text-anchor="end" class="fig-label-xl">hrot</text>
+                            <path class="fig-pointer" d="M450 110L466 132"/>
+                            </g>
+                        </svg>
+                            <figcaption>5&nbsp;N na hrotu jehly 0,1&nbsp;mm² = 50&nbsp;MPa = 500&nbsp;bar
+                                <span class="course-figure-note">5&nbsp;N ≈ tíha půllitru vody</span></figcaption>
+                        </figure>
+                    </div>
+                    <div class="course-core-row">
+                        <div>
+                            <p><span class="course-highlight">Jednotka pascal (Pa) je (nejen) pro účely potápění malá:</span></p>
+                            <p>1&nbsp;MPa = 1&nbsp;000&nbsp;kPa = 1&nbsp;000&nbsp;000&nbsp;Pa</p>
+                            <p>100&nbsp;kPa = 0,1&nbsp;MPa = 1&nbsp;bar</p>
+                            <p>1&nbsp;atm = 101,325&nbsp;kPa ≈ 1&nbsp;bar</p>
+                        </div>
+                        <figure class="course-figure">
+                            <img src="../../images/course/p1/manometr.jpg" width="420" height="300"
+                                alt="Manometr potápěčské lahve se stupnicí v barech do 400&nbsp;bar">
+                            <figcaption>Foto: Peter Southwood, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs">CC&nbsp;BY-SA&nbsp;4.0</a>,
+                                <a href="https://commons.wikimedia.org/wiki/File:Submersible_pressure_gauge_on_short_HP_hose_P8160037.jpg">Wikimedia Commons</a>, oříznuto.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="figure"</code> se dvěma ilustracemi <code>course-illustration</code>: vzor stylu ilustrací (T6)</p>
+        </section>
+
+        <section id="priklad" class="course-section">
+            <div class="course-slide" data-slide-number="20" data-slide-type="calc" data-slide-fit="compact">
+                <h2>Celkový tlak</h2>
+                <div class="course-core">
+                    <p><span class="course-highlight">Příklad:</span> Jaký je tlak v moři v hloubce 10&nbsp;m?</p>
+                    <details class="course-answer">
+                        <summary>Ukázat postup</summary>
+                        <ol class="course-calc-steps">
+                            <li><var>p</var><sub>h</sub> = 10 · 1&nbsp;000 · 10&nbsp;Pa = 100&nbsp;000&nbsp;Pa = 1&nbsp;bar</li>
+                            <li><var>p</var> = 1 + 1 = 2&nbsp;bar</li>
+                        </ol>
+                        <p class="course-calc-result"><span><var>p</var> = <var>h</var>/10 + 1 <span class="course-unit">[bar]</span></span></p>
+                    </details>
+                    <div class="course-calc-cols">
+                        <div>
+                            <p>Moře</p>
+                            <table class="course-table">
+                                <thead><tr><th scope="col"><var>h</var> [m]</th><th scope="col"><var>p</var> [bar]</th></tr></thead>
+                                <tbody>
+                                    <tr><td class="num">10</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 10&nbsp;m">?</summary>2</details></td></tr>
+                                    <tr><td class="num">40,5</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 40,5&nbsp;m">?</summary>5,05</details></td></tr>
+                                    <tr class="course-alert"><td class="num">66</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 66&nbsp;m">?</summary>7,6</details></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="calc"</code> + <code>data-slide-fit="compact"</code>, postup v odkrytí a tabulka k doplnění (klik na otazník)</p>
+        </section>
+
         <section id="procvic" class="course-section">
             <div class="course-slide" data-slide-type="practice">
                 <h2>Procvič si</h2>

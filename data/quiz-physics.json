@@ -149,7 +149,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Hustota vzduchu závisí na tlaku a teplotě podle stavové rovnice ideálního plynu. Při normálních podmínkách (cca 10 °C, 1 atm) je hustota přibližně 1,25 kg/m³.",
+      "explanation": "Hustota vzduchu závisí na tlaku a teplotě (stavová rovnice ideálního plynu). Při normálním tlaku 101 325 Pa a teplotě 10 °C je asi 1,25 kg/m³, při 0 °C asi 1,29 kg/m³.",
       "category": "vlastnosti-vody-vzduchu"
     },
     {
@@ -724,7 +724,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Tlak je definován jako síla působící kolmo na plochu dělená velikostí této plochy: p = F/S. Jednotkou je Pascal (Pa) = N/m².",
+      "explanation": "Tlak je definován jako síla působící kolmo na plochu dělená velikostí této plochy: p = F/S. Jednotkou je pascal (Pa) = N/m².",
       "category": "tlak-jednotky"
     },
     {
@@ -1299,7 +1299,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Atmosférický tlak ≈ 1 bar ≈ 100 kPa. Hydrostatický tlak 10 m vodního sloupce = 1000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Proto 10 m vody = 1 atmosféra.",
+      "explanation": "Atmosférický tlak ≈ 1 bar ≈ 100 kPa. Hydrostatický tlak 10 m vodního sloupce = 1 000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Proto 10 m vody ≈ 1 bar ≈ tlak atmosféry.",
       "category": "tlak-jednotky"
     },
     {
@@ -1324,7 +1324,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Normální atmosférický tlak = 0,1 MPa = 100 kPa = 1 bar = 1000 mbar. Ostatní možnosti obsahují nesprávné převody jednotek.",
+      "explanation": "Normální atmosférický tlak je 101 325 Pa, tedy přibližně 0,1 MPa = 100 kPa = 1 bar = 1 000 mbar. Ostatní možnosti obsahují nesprávné převody jednotek.",
       "category": "tlak-jednotky"
     },
     {

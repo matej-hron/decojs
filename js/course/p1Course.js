@@ -23,7 +23,7 @@
 /** @type {Chapter[]} */
 export const P1_CHAPTERS = [
     { slug: 'hustota', title: 'Hustota', slides: '8–9', level: 'P★', status: 'ready' },
-    { slug: 'tlak', title: 'Tlak', slides: '10–22', level: 'P★', status: 'planned' },
+    { slug: 'tlak', title: 'Tlak', slides: '10–22', level: 'P★', status: 'ready' },
     { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'planned' },
     { slug: 'archimedes', title: 'Archimedův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'planned' },
     { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'planned' },

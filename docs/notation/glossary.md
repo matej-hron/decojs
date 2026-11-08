@@ -62,6 +62,16 @@ Past: *p*<sub>t</sub> (tkáňový tlak, „t" = tissue → stojatě) vs. *c*<sub
 > **„Doloženo" je počet výskytů v `js/`, ne počet řádků.** Reprodukce pro daný
 > identifikátor: `grep -roE "\b<identifikátor>\b" js/ | wc -l`.
 
+### Jednotky tlaku
+
+Primární jednotka tlaku v DecoJS je **bar** (style-guide §4). Ostatní jen tam, kde je používá zdroj.
+
+| Jednotka | Název | Vztah | Kde | Zdroj |
+|---|---|---|---|---|
+| bar | bar | 1&nbsp;bar = 100&nbsp;kPa = 0,1&nbsp;MPa (přesně) | všude | ISO 80000-4 (jednotka mimo SI) |
+| Pa, kPa, MPa | pascal | 1&nbsp;MPa = 1&nbsp;000&nbsp;kPa = 1&nbsp;000&nbsp;000&nbsp;Pa | kvízy SPČR, kurz P1 (slidy 11, 12, 17) | SI |
+| atm | fyzikální atmosféra | 1&nbsp;atm = 101&nbsp;325&nbsp;Pa = 101,325&nbsp;kPa ≈ 1,013&nbsp;bar | jen převod na slidu 12 kurzu P1 | CGPM 1954; mimo SI |
+
 ## 3. Popisné indexy CZ↔EN
 
 Indexy jsou dvojího druhu a zachází se s nimi různě:

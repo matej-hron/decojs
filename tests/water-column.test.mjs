@@ -138,6 +138,7 @@ test('fmtCs: decimal comma, real minus, no negative zero', () => {
 test('depth readout uses U+00A0 entity and the step decimals', () => {
     assert.equal(depthReadout({ depth: 12 }), 'hloubka 12&nbsp;m');
     assert.equal(depthReadout({ depth: 12.5 }, 0.5), 'hloubka 12,5&nbsp;m');
+    assert.equal(depthReadout({ depth: 12 }, 0.5), 'hloubka 12&nbsp;m', 'celé metry bez „,0“ i při kroku 0,5 m');
     assert.equal(joinReadout(['hloubka 12&nbsp;m', null, '', 'teplota 8&nbsp;°C']),
         'hloubka 12&nbsp;m · teplota 8&nbsp;°C');
 });
@@ -240,4 +241,10 @@ test('createWaterColumn: setState v posluchači — poslední snímek je u všec
     } finally {
         Object.assign(g, saved);
     }
+});
+
+test('náhled sloupce: úchop ukazatele nechytá klik (pointer-events="all" v SVG přebije zdědění, klik má otevřít model)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const css = readFileSync(new URL('../css/course.css', import.meta.url), 'utf8');
+    assert.match(css, /\.water-column-compact \.wc-pointer-hit\s*\{\s*pointer-events:\s*none;\s*\}/);
 });

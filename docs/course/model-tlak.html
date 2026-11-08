@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Ukázka: model Tlak v hloubce – Kurz P1</title>
+    <!-- Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5593 v kořeni repa,
+         pak http://127.0.0.1:5593/docs/course/model-tlak.html. Na stránku kapitoly p1/tlak.html
+         se model napojí v dalším kroku; tady je stejné zapojení jako slide 9 Hustoty. -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/course.css">
+</head>
+<body data-course-chapter="tlak">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <span class="nav-logo">Ukázka modelu M1 kurzu P1</span>
+        </div>
+    </nav>
+
+    <main class="course-page" lang="cs">
+        <!-- Slide 20: jen kostra pro ukázku modelu, text a tabulky slidu přijdou se stránkou kapitoly. -->
+        <section id="celkovy-tlak-tabulka" class="course-section">
+            <div class="course-slide" data-slide-number="20" data-slide-type="models">
+                <h1>Celkový tlak</h1>
+                <div class="course-core">
+                    <div class="course-row">
+                        <ul>
+                            <li>Příklad: doplňme hodnoty celkového tlaku v hloubce.</li>
+                            <li>Moře a horské jezero ve výšce 5&nbsp;500&nbsp;m&nbsp;n.&nbsp;m. (jako v testu SPČR).</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-tlak" aria-label="Otevřít model: tlak v hloubce">
+                            <span class="course-thumb-plot" id="nahled-tlak"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <dialog class="course-sim" aria-labelledby="titulek-tlak">
+                <div class="course-model course-slide chart-container" id="model-tlak">
+                    <div class="chart-header">
+                        <h3 id="titulek-tlak">Model: tlak v hloubce</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-tlak" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít model" aria-label="Zavřít model" autofocus>✕</button>
+                        </div>
+                    </div>
+                    <div class="course-model-controls" id="tlak-ovladani"></div>
+                    <div class="course-plot course-column-host" id="tlak-sloupec"></div>
+                    <p class="course-simplification">Školní čísla jako v přednášce: u moře 1&nbsp;bar, 1&nbsp;bar na každých 10&nbsp;m.
+                        Přesně: standardní atmosféra podle výšky, mořská voda 1&nbsp;025&nbsp;kg/m³, sladká 1&nbsp;000&nbsp;kg/m³.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initChapter } from '../../js/course/chapter.js';
+        import { initModelOverlays } from '../../js/course/modelOverlay.js';
+        import { createPressureModel, initPressureModel } from '../../js/course/pressureModel.js';
+
+        // Náhled: skutečný model ve 20 m, bez ovládání.
+        createPressureModel(document.getElementById('nahled-tlak'), {
+            controls: false,
+            compact: true,
+            state: { depth: 20, altitude: 0, water: 'salt', pressureMode: 'school' },
+        });
+        const overlays = initModelOverlays({
+            'model-tlak': () => initPressureModel({ host: 'tlak-sloupec', controls: 'tlak-ovladani' }),
+        });
+        initChapter().then(() => overlays.openFromHash());
+    </script>
+</body>
+</html>
