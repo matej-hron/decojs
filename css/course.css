@@ -584,6 +584,8 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 }
 .course-formula var { font-family: var(--font-display); }
 .course-formula .course-unit { font-size: 0.8em; margin-left: 0.3em; white-space: nowrap; }
+/* Řádek pod vzorcem: co jednotka znamená (slide 11). */
+.course-formula-note { margin: calc(-1 * var(--space-2)) 0 var(--space-4); text-align: center; font-size: 0.85em; color: var(--slide-subtle); }
 
 .course-table {
     border-collapse: collapse;
