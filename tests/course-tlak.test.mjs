@@ -362,3 +362,15 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
     assert.match(fig13, /pevná látka: krystalická mřížka/);
     assert.match(fig13, /kapalina: tlak se šíří všude stejně/);
 });
+
+// ---------------------------------------------------------------- T8: jednotka pascal u vzorce na slidu 11
+
+test('T8: pod vzorcem p = F/S [Pa] je řádek 1 Pa = 1 N/m² (jednotky stojatě, nedělitelné mezery)', () => {
+    const formula = slide(11).querySelector('.course-formula');
+    const note = formula.nextElementSibling;
+    assert.ok(note?.classList.contains('course-formula-note'), 'řádek hned pod vzorcem');
+    assert.equal(note.textContent.replace(/\s+/g, ' ').trim(), '1 Pa = 1 N/m², síla 1 N na ploše 1 m²');
+    assert.match(note.innerHTML, /^1&nbsp;Pa = 1&nbsp;N\/m², síla 1&nbsp;N na ploše 1&nbsp;m²$/);
+    assert.equal(note.querySelectorAll('var, i, em').length, 0, 'jednotky ani čísla nejsou kurzívou');
+    assert.match(read('css/course.css'), /\.course-formula-note \{[^}]*text-align: center/);
+});
