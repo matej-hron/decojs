@@ -540,7 +540,7 @@
         <section id="hydrostaticky" class="course-section">
             <div class="course-slide" data-slide-number="18" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Hydrostatický tlak</h2>
-                <div class="course-core">
+                <div class="course-core course-core-figure-wide">
                     <div>
                         <ul>
                             <li><span class="course-highlight">Vyvolán tíhou kapaliny (vody):</span>
@@ -548,32 +548,65 @@
                             <li>Závisí na hloubce, hustotě (salinita, teplota) a tíhovém zrychlení.</li>
                             <li><span class="course-highlight">Tlak není závislý na množství vody, ale pouze na výšce vodního
                                 sloupce</span> (hydrostatický paradox).</li>
-                            <li>Pascalův překvapivý pokus na náměstí v Rouenu: sud se roztrhl, přestože tíha vody byla nepatrná.</li>
                         </ul>
+                        <figure class="course-figure course-portrait">
+                            <img src="../images/course/p1/pascal.jpg" width="240" height="320" alt="Blaise Pascal, portrét olejem">
+                            <figcaption>Blaise Pascal (1623–1662)
+                                <span class="course-figure-note">obraz podle F. Quesnela, kolem 1690, Versailles; volné dílo,
+                                    <a href="https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG">Wikimedia Commons</a></span></figcaption>
+                        </figure>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 400" role="img" aria-label="Tři nádoby různého tvaru se stejnou výškou hladiny h: na stejně velké dno S působí stejná síla F">
-                            <rect class="fig-paper" width="600" height="400" rx="16"/>
-                            <polygon class="fig-liquid" points="45,320 135,320 135,110 45,110"/>
-                            <path class="fig-wall" d="M45 46L45 320H135L135 46"/>
-                            <polygon class="fig-force" points="72,200 72,296 62,296 78,316 94,296 84,296 84,200"/>
-                            <text x="98.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="90.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <polygon class="fig-liquid" points="225,320 315,320 358.7,110 181.3,110"/>
-                            <path class="fig-wall" d="M168 46L225 320H315L372 46"/>
-                            <polygon class="fig-force" points="252,200 252,296 242,296 258,316 274,296 264,296 264,200"/>
-                            <text x="278.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="270.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <polygon class="fig-liquid" points="400,320 490,320 468.5,110 421.5,110"/>
-                            <path class="fig-wall" d="M428 46L400 320H490L462 46"/>
-                            <polygon class="fig-force" points="427,200 427,296 417,296 433,316 449,296 439,296 439,200"/>
-                            <text x="453.0" y="262" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
-                            <text x="445.0" y="366" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <path class="fig-guide" d="M24 110H548"/>
-                            <path class="fig-wall" d="M20 320H512"/>
-                            <path class="fig-dim" d="M548 110V320M536 110H560M536 320H560"/>
-                            <text x="568" y="228" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                        <svg viewBox="0 0 600 440" role="img" aria-label="Vlevo tři nádoby různého tvaru se stejnou výškou hladiny h: na stejně velké dno S působí stejná síla F. Vpravo Pascalův sud s vysokou tenkou trubicí: konvička dolije pár litrů, sloupec v trubici je mnohem vyšší než sud a sud praskl, voda tryská ze spár">
+                            <rect class="fig-paper" width="600" height="440" rx="16"/>
+                            <polygon class="fig-liquid" points="20,372 90,372 90,262 20,262"/>
+                            <path class="fig-wall" d="M20 216L20 372H90L90 216"/>
+                            <polygon class="fig-force" points="35,284 35,348 26,348 41,368 56,348 47,348 47,284"/>
+                            <text x="53" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="55" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <polygon class="fig-liquid" points="118,372 188,372 197.9,262 108.1,262"/>
+                            <path class="fig-wall" d="M104 216L118 372H188L202 216"/>
+                            <polygon class="fig-force" points="133,284 133,348 124,348 139,368 154,348 145,348 145,284"/>
+                            <text x="151" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="153" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <polygon class="fig-liquid" points="222,372 292,372 279.3,262 234.7,262"/>
+                            <path class="fig-wall" d="M240 216L222 372H292L274 216"/>
+                            <polygon class="fig-force" points="237,284 237,348 228,348 243,368 258,348 249,348 249,284"/>
+                            <text x="255" y="316" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+                            <text x="257" y="416" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <path class="fig-guide" d="M14 262H318"/>
+                            <path class="fig-wall" d="M14 372H300"/>
+                            <path class="fig-dim" d="M318 262V372M306 262H330M306 372H330"/>
+                            <text x="326" y="330" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                            <path class="fig-jet" d="M386 292Q372 290 366 302"/>
+                            <path class="fig-jet" d="M384 334Q370 334 366 346"/>
+                            <path class="fig-jet" d="M514 292Q528 290 534 302"/>
+                            <path class="fig-jet" d="M516 334Q530 334 534 346"/>
+                            <path class="fig-jet" d="M420 262Q410 246 398 250"/>
+                            <path class="fig-jet" d="M480 262Q490 246 502 250"/>
+                            <circle class="fig-drop" cx="364" cy="316" r="4"/>
+                            <circle class="fig-drop" cx="536" cy="316" r="4"/>
+                            <circle class="fig-drop" cx="364" cy="360" r="4"/>
+                            <circle class="fig-drop" cx="536" cy="360" r="4"/>
+                            <path class="fig-barrel" d="M398 262C380 290 380 344 398 372H502C520 344 520 290 502 262Z"/>
+                            <path class="fig-stave" d="M426 262C418 296 418 338 426 372M450 262V372M474 262C482 296 482 338 474 372"/>
+                            <path class="fig-hoop" d="M392 280Q450 286 508 280M392 354Q450 360 508 354"/>
+                            <path class="fig-wall" d="M376 372H524"/>
+                            <rect class="fig-glass" x="443" y="62" width="14" height="200"/>
+                            <rect class="fig-liquid" x="446" y="76" width="8" height="186"/>
+                            <polygon class="fig-glass" points="430,44 470,44 457,64 443,64"/>
+                            <path class="fig-jet" d="M482 22Q466 26 460 46"/>
+                            <path class="fig-can" d="M494 10H538V48H494ZM494 26L476 16L474 22L494 36Z"/>
+                            <path class="fig-hoop" d="M538 18C556 18 556 40 538 40"/>
+                            <text x="430" y="128" text-anchor="end" class="fig-label-xl"><tspan x="430">pár litrů</tspan><tspan font-size="0"> </tspan><tspan x="430" dy="40">v trubici</tspan></text>
+                            <path class="fig-guide" d="M462 76H556"/>
+                            <path class="fig-dim" d="M568 76V372M556 76H580M556 372H580"/>
+                            <text x="576" y="236" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                            <rect class="fig-tag" x="356" y="386" width="188" height="46" rx="10"/>
+                            <text x="450" y="420" text-anchor="middle" class="fig-label-xl fig-label-tag">sud praskl</text>
                         </svg>
+                        <figcaption class="course-figure-pair"><span>stejná výška <var>h</var>, stejná síla</span>
+                            <span>Pascalův pokus v Rouenu</span></figcaption>
                     </figure>
                 </div>
             </div>
@@ -583,6 +616,9 @@
                     <div class="course-concept" data-concept="hydrostatic-pressure"></div>
                     <p>Slovo „pouze“ na slidu platí pro jednu kapalinu: když se nemění hustota ani tíhové zrychlení, záleží jen na výšce
                         sloupce.</p>
+                    <p>Pokus se sudem je spíš legenda: Pascal ho ve svých dochovaných spisech nikde nepopisuje, připsali mu ho až
+                        francouzští autoři v 19.&nbsp;století (<a href="https://en.wikipedia.org/wiki/Pascal%27s_barrel">Pascal’s barrel</a>,
+                        anglická Wikipedie). Fyzika na obrázku přitom platí: tlak ve dně sudu dává výška sloupce v trubici.</p>
                 </div>
             </details>
         </section>
@@ -635,10 +671,10 @@
                                     <tr><td class="num">20</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 20&nbsp;m">?</summary>3</details></td></tr>
                                     <tr><td class="num">22</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 22&nbsp;m">?</summary>3,2</details></td></tr>
                                     <tr><td class="num">28</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 28&nbsp;m">?</summary>3,8</details></td></tr>
-                                    <tr><td class="num">30</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 30&nbsp;m">?</summary>4</details></td></tr>
+                                    <tr class="course-alert"><td class="num">30</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 30&nbsp;m">?</summary>4</details></td></tr>
                                     <tr><td class="num">33</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 33&nbsp;m">?</summary>4,3</details></td></tr>
-                                    <tr><td class="num">40,5</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 40,5&nbsp;m">?</summary>5,05</details></td></tr>
-                                    <tr class="course-alert"><td class="num">66</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 66&nbsp;m">?</summary>7,6</details></td></tr>
+                                    <tr class="course-alert"><td class="num">40</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 40&nbsp;m">?</summary>5</details></td></tr>
+                                    <tr class="course-alert"><td class="num">56</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 56&nbsp;m">?</summary>6,6</details></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -671,10 +707,11 @@
                     <p>Hloubky v tabulkách jsou hlavně na procvičení. Některé z nich jsou ale meze, které budeš potřebovat (tady trochu
                         předbíháme Daltonův zákon). Pro vzduch:</p>
                     <ul>
-                        <li><strong>28&nbsp;m:</strong> parciální tlak dusíku <var>p</var><sub>N₂</sub> asi 3&nbsp;bar, začátek pásma, kde se
-                            projevuje dusíková narkóza,</li>
-                        <li><strong>40,5&nbsp;m:</strong> <var>p</var><sub>N₂</sub> asi 4&nbsp;bar, mez pro dusík,</li>
-                        <li><strong>66&nbsp;m:</strong> parciální tlak kyslíku <var>p</var><sub>O₂</sub> asi 1,6&nbsp;bar, mez pro kyslík.</li>
+                        <li><strong>30&nbsp;m a 40&nbsp;m:</strong> meze hloubky pro potápění se vzduchem kvůli dusíkové narkóze, podle
+                            systému výcviku je to 30&nbsp;m, nebo 40&nbsp;m,</li>
+                        <li><strong>56&nbsp;m:</strong> parciální tlak kyslíku <var>p</var><sub>O₂</sub> 1,4&nbsp;bar, mez pro kyslík
+                            (MOD vzduchu). Celkový tlak smí být nejvýš 1,4 / 0,21 ≈ 6,7&nbsp;bar, přesně 6,67&nbsp;bar, to je 56,7&nbsp;m,
+                            zaokrouhleno dolů 56&nbsp;m.</li>
                     </ul>
                     <p>Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon.</p>
                     <p>Horské jezero má na hladině 0,5&nbsp;bar podle tabulky na slidu 17 (5&nbsp;500&nbsp;m: 49,8&nbsp;kPa).</p>
@@ -697,27 +734,41 @@
                         <p>V dutinách s plynným obsahem je nutno vyrovnávat tlak s tlakem okolí.</p>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 460" role="img" aria-label="Tělo potápěče: tkáně s tekutinami tlak necítí, dutiny s plynem (obličejové dutiny, dýchací cesty, plíce, trávicí systém) se musí vyrovnávat">
+                        <svg viewBox="0 0 600 460" role="img" aria-label="Tělo potápěče, hlava z profilu: tkáně s tekutinami tlak necítí. Dutiny s plynem se musí vyrovnávat: obličejové dutiny (čelní nad okem, čelistní v líci), střední ucho s Eustachovou trubicí do nosohltanu, dýchací cesty od nosu a úst přes hrtan a průdušnici do průdušek v obou plicích, a trávicí systém (žaludek a střeva)">
                             <rect class="fig-paper" width="600" height="460" rx="16"/>
-                            <path class="fig-body" d="M300 30C328 30 350 54 350 92C350 124 338 146 322 156V180L384 200C404 208 414 222 414 244V460H186V244C186 222 196 208 216 200L278 180V156C262 146 250 124 250 92C250 54 272 30 300 30Z"/>
-                            <ellipse class="fig-cavity" cx="282" cy="90" rx="13" ry="10"/>
-                            <ellipse class="fig-cavity" cx="318" cy="90" rx="13" ry="10"/>
-                            <rect class="fig-cavity" x="292" y="128" width="16" height="110" rx="7"/>
-                            <ellipse class="fig-cavity" cx="262" cy="292" rx="38" ry="62"/>
-                            <ellipse class="fig-cavity" cx="338" cy="292" rx="38" ry="62"/>
-                            <ellipse class="fig-cavity" cx="300" cy="404" rx="64" ry="34"/>
-                            <path class="fig-halo" d="M228 84L270 90"/>
-                            <path class="fig-leader" d="M228 84L270 90"/>
-                            <path class="fig-halo" d="M306 170L372 146"/>
-                            <path class="fig-leader" d="M306 170L372 146"/>
-                            <path class="fig-halo" d="M374 292L432 292"/>
-                            <path class="fig-leader" d="M374 292L432 292"/>
-                            <path class="fig-halo" d="M362 404L432 404"/>
-                            <path class="fig-leader" d="M362 404L432 404"/>
-                            <text x="222" y="70" text-anchor="end" class="fig-label-xl"><tspan x="222">obličejové</tspan><tspan font-size="0"> </tspan><tspan x="222" dy="40">dutiny</tspan></text>
-                            <text x="380" y="120" class="fig-label-xl"><tspan x="380">dýchací</tspan><tspan font-size="0"> </tspan><tspan x="380" dy="40">cesty</tspan></text>
-                            <text x="440" y="304" class="fig-label-xl">plíce</text>
-                            <text x="440" y="396" class="fig-label-xl"><tspan x="440">trávicí</tspan><tspan font-size="0"> </tspan><tspan x="440" dy="40">systém</tspan></text>
+                            <path class="fig-body" d="M226 222L222 176C196 164 176 132 176 96C176 46 214 12 266 12C316 12 346 40 350 74L353 88L346 98L372 128C368 134 362 136 354 134L357 146L350 152L355 158L349 166C355 178 351 192 334 194C322 196 312 198 306 200L310 222Z"/>
+                            <path class="fig-body" d="M226 218L196 230C178 238 170 254 170 276V460H402V276C402 254 394 238 376 230L310 218Z"/>
+                            <path class="fig-lung" d="M276 258C246 250 212 264 204 306C198 342 202 372 214 380C234 388 262 376 276 358Z"/>
+                            <path class="fig-lung" d="M296 258C326 250 360 264 368 306C374 342 370 372 358 380C338 388 310 376 296 358Z"/>
+                            <path class="fig-airway-edge" d="M352 129L342 116L298 116L296 156L294 196L286 268M348 156L298 156M286 268L254 296L232 318M254 296L248 342M286 268L318 296L340 318M318 296L324 342"/>
+                            <path class="fig-eustachian-edge" d="M270 126Q284 132 298 120"/>
+                            <path class="fig-airway" d="M352 129L342 116L298 116L296 156L294 196L286 268M348 156L298 156M286 268L254 296L232 318M254 296L248 342M286 268L318 296L340 318M318 296L324 342"/>
+                            <path class="fig-eustachian" d="M270 126Q284 132 298 120"/>
+                            <circle class="fig-eye" cx="334" cy="98" r="6"/>
+                            <ellipse class="fig-cavity fig-sinus" cx="330" cy="66" rx="11" ry="8"/>
+                            <ellipse class="fig-cavity fig-sinus" cx="320" cy="137" rx="12" ry="7"/>
+                            <path class="fig-auricle" d="M234 98C254 94 262 114 252 130C248 136 242 138 240 146"/>
+                            <ellipse class="fig-cavity fig-middle-ear" cx="262" cy="122" rx="10" ry="8"/>
+                            <path class="fig-stomach" d="M330 392C352 388 364 402 358 418C352 434 330 440 314 432C304 426 306 414 316 414C326 414 334 418 340 410C344 404 340 398 330 400Z"/>
+                            <path class="fig-gut" d="M216 422C216 410 236 410 236 422S256 434 256 422S276 410 276 422S296 434 296 422"/>
+                            <path class="fig-gut" d="M226 450C226 440 244 440 244 450S262 460 262 450S280 440 280 450"/>
+                            <path class="fig-halo" d="M380 58L342 64"/>
+                            <path class="fig-leader" d="M380 58L342 64"/>
+                            <path class="fig-halo" d="M380 92L332 134"/>
+                            <path class="fig-leader" d="M380 92L332 134"/>
+                            <path class="fig-halo" d="M172 118L253 121"/>
+                            <path class="fig-leader" d="M172 118L253 121"/>
+                            <path class="fig-halo" d="M406 206L300 190"/>
+                            <path class="fig-leader" d="M406 206L300 190"/>
+                            <path class="fig-halo" d="M164 326L209 326"/>
+                            <path class="fig-leader" d="M164 326L209 326"/>
+                            <path class="fig-halo" d="M410 410L360 412"/>
+                            <path class="fig-leader" d="M410 410L360 412"/>
+                            <text x="384" y="54" class="fig-label-xl"><tspan x="384">obličejové</tspan><tspan font-size="0"> </tspan><tspan x="384" dy="40">dutiny</tspan></text>
+                            <text x="168" y="96" text-anchor="end" class="fig-label-xl"><tspan x="168">střední</tspan><tspan font-size="0"> </tspan><tspan x="168" dy="40">ucho</tspan></text>
+                            <text x="410" y="218" class="fig-label-xl"><tspan x="410">dýchací</tspan><tspan font-size="0"> </tspan><tspan x="410" dy="40">cesty</tspan></text>
+                            <text x="160" y="338" text-anchor="end" class="fig-label-xl">plíce</text>
+                            <text x="414" y="404" class="fig-label-xl"><tspan x="414">trávicí</tspan><tspan font-size="0"> </tspan><tspan x="414" dy="40">systém</tspan></text>
                         </svg>
                     </figure>
                 </div>
@@ -760,15 +811,16 @@
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
                     <div class="course-concept" data-concept="gas-pressure"></div>
-                    <h3>Nad rámec P★: tři zvláštní děje</h3>
-                    <p>Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na tři zákony. Osnova je řadí do P★★ (slide 4):</p>
+                    <h3>Tři zvláštní děje</h3>
+                    <p>Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na jednodušší zákon:</p>
                     <ul>
-                        <li><strong>izotermický děj</strong> (stálá teplota): Boyle-Mariottův zákon, <var>p</var><var>V</var> = konst.,
-                            podrobně v kapitole Stlačování plynů,</li>
+                        <li><strong>izotermický děj</strong> (stálá teplota): Boyle-Mariottův zákon, <var>p</var><var>V</var> = konst.
+                            Ten je jádrem P★, podrobně v kapitole Stlačování plynů,</li>
                         <li><strong>izobarický děj</strong> (stálý tlak): Gay-Lussacův zákon, <var>V</var>/<var>T</var> = konst.,</li>
                         <li><strong>izochorický děj</strong> (stálý objem): Charlesův zákon, <var>p</var>/<var>T</var> = konst. Tak se mění
                             tlak v lahvi, když se ohřeje nebo ochladí.</li>
                     </ul>
+                    <p>Izobarický a izochorický děj řadí osnova až do P★★ (slide 4), tady jsou pro úplnost.</p>
                     <p>V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon: v zahraniční literatuře se jména obou zákonů
                         používají různě. V testech SPČR platí Gay-Lussac = stálý tlak, Charles = stálý objem.</p>
                     <p>V Pískovišti: <a href="../sandbox/gas-law.html">ohřev a ochlazení lahve</a>,

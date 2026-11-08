@@ -12,7 +12,7 @@ import { registerServiceWorker } from '../swRegister.js';
 /** Náhledy na slidech: skutečný model, statický, bez ovládání. */
 const THUMBS = {
     'nahled-tlak-15': { depth: 10, altitude: 0, water: 'salt', pressureMode: 'school' },
-    'nahled-tlak-20': { depth: 40.5, altitude: 0, water: 'salt', pressureMode: 'school' },
+    'nahled-tlak-20': { depth: 40, altitude: 0, water: 'salt', pressureMode: 'school' },
 };
 
 if (typeof document !== 'undefined') {
