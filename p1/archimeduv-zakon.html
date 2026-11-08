@@ -42,12 +42,12 @@
                         <p><span class="course-highlight">Těleso ponořené do kapaliny je nadlehčováno silou rovnající se tíze kapaliny
                             tělesem vytlačené.</span></p>
                         <p>Pokud je tíha tělesem vytlačené vody větší než tíha tělesa samotného (resp. hustota tělesa je menší než
-                            hustota vody), pak těleso plove.</p>
+                            hustota vody), pak těleso plave.</p>
                         <p>Pokud je tíha tělesem vytlačené vody menší než tíha tělesa (resp. hustota tělesa je větší než hustota
                             vody), pak těleso klesá ke dnu.</p>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 420" role="img" aria-label="Dvě stejně velká tělesa pod vodou. Vztlaková síla je na obě stejná. Lehké těleso má tíhu menší než vztlak a plove, těžké má tíhu větší než vztlak a klesá ke dnu">
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Dvě stejně velká tělesa pod vodou. Vztlaková síla je na obě stejná. Lehké těleso má tíhu menší než vztlak a plave, těžké má tíhu větší než vztlak a klesá ke dnu">
                             <rect class="fig-paper" width="600" height="420" rx="16"/>
                             <path class="fig-liquid" d="M0 92H600V404A16 16 0 0 1 584 420H16A16 16 0 0 1 0 404Z"/>
                             <rect class="fig-plane" x="100" y="200" width="120" height="90" rx="6"/>
@@ -56,7 +56,7 @@
                             <polygon class="fig-force" points="426,200 426,140 406,140 440,104 474,140 454,140 454,200"/>
                             <polygon class="fig-force" points="146,290 146,316 126,316 160,350 194,316 174,316 174,290"/>
                             <polygon class="fig-force" points="426,290 426,376 406,376 440,410 474,376 454,376 454,290"/>
-                            <text x="160" y="62" text-anchor="middle" class="fig-label-xl">plove</text>
+                            <text x="160" y="62" text-anchor="middle" class="fig-label-xl">plave</text>
                             <text x="440" y="62" text-anchor="middle" class="fig-label-xl">klesá ke dnu</text>
                             <text x="204" y="152" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">vz</tspan></text>
                             <text x="484" y="152" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">vz</tspan></text>
@@ -84,7 +84,7 @@
                     </div>
                     <div class="course-concept" data-concept="buoyancy"></div>
                     <p>Na obrázku jsou obě tělesa stejně velká, a proto je na ně vztlaková síla stejná. Lehké těleso stoupá k hladině
-                        a tam plove částečně vynořené, těžké klesá ke dnu.</p>
+                        a tam plave částečně vynořené, těžké klesá ke dnu.</p>
                 </div>
             </details>
         </section>
@@ -347,6 +347,9 @@
                     <p>Model „Potápěč a vztlak“ projde ponor po krocích: šipka → udělá vždy jednu změnu, buď přesun do další hloubky,
                         nebo přifouknutí či upuštění BCD.
                         <a href="?krok=2#model-vztlak" data-preset-link>Sestup do 10&nbsp;m →</a></p>
+                    <p>Po každém vyvážení mají oblek a vzduch v BCD dohromady 12&nbsp;l, stejně jako oblek na hladině
+                        (7,6 + 4,4 = 6,2 + 5,8 = 9,1 + 2,9 = 12&nbsp;l): potápěč vytlačí stejně vody jako na hladině a kompenzátor
+                        nahrazuje přesně to, co ztratil oblek.</p>
                     <p>Výstup je zrádnější než sestup. Při sestupu z 10 do 20&nbsp;m chybí 2,9&nbsp;kg vztlaku
                         (<a href="?krok=4#model-vztlak" data-preset-link>krok 4 →</a>), při výstupu ze 20 do 10&nbsp;m ale přebývá
                         4,4&nbsp;kg (<a href="?krok=6#model-vztlak" data-preset-link>krok 6 →</a>), protože se rozpíná i vzduch,
@@ -371,8 +374,9 @@
                     </div>
                     <div class="course-model-controls" id="vztlak-ovladani"></div>
                     <div class="course-plot course-column-host" id="vztlak-sloupec"></div>
-                    <p class="course-simplification">Zbytek potápěče (tělo, výstroj, zátěž) se nestlačuje a je vyvážený. Potápěč není
-                        v&nbsp;měřítku. Skutečný neopren se stlačuje o&nbsp;něco méně a po ponoru se úplně nevrací.</p>
+                    <p class="course-simplification">Zbytek potápěče (tělo, výstroj, zátěž) se nestlačuje a je vyvážený. Ve skutečnosti
+                        přifukuj a upouštěj průběžně a po malých dávkách. Model dělá kroky po 10&nbsp;m, aby byla změna vidět. Potápěč
+                        není v&nbsp;měřítku. Skutečný neopren se stlačuje o&nbsp;něco méně a po ponoru se úplně nevrací.</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>
             </dialog>

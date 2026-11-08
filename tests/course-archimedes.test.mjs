@@ -150,7 +150,8 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     const [upLight, upHeavy, downLight, downHeavy] = arrows.map(len);
     assert.equal(upLight, upHeavy, 'stejný objem, stejný vztlak');
     assert.ok(downLight < upLight && downHeavy > upHeavy);
-    assert.ok(s31.textContent.includes('plove') && s31.textContent.includes('klesá ke dnu'));
+    assert.ok(s31.textContent.includes('plave') && s31.textContent.includes('klesá ke dnu'));
+    assert.doesNotMatch(html, /plove/, 'plave jednotně jako Hustota a pojmy (krok A4)');
     // 32: síly F1, F2, F0 a hloubky h1, h2; F2 delší než F1
     const s32 = slide(32).querySelector('svg');
     const t32 = s32.textContent.replace(/\s+/g, '');
@@ -172,6 +173,12 @@ test('Archimédův zákon: A1 z náhledu slidu 36 (krok 2), odkazy na kroky, vě
     assert.match(note, /Zbytek potápěče \(tělo, výstroj, zátěž\) se nestlačuje a je vyvážený\./);
     assert.match(note, /Potápěč není v měřítku\./);
     assert.match(note, /Skutečný neopren se stlačuje o něco méně a po ponoru se úplně nevrací\./);
+    assert.match(note, /Ve skutečnosti přifukuj a upouštěj průběžně a po malých dávkách\. Model dělá kroky po 10 m, aby byla změna vidět\./, 'R7-01');
+    assert.match(more(36), /Po každém vyvážení mají oblek a vzduch v BCD dohromady 12 l, .*\(7,6 \+ 4,4 = 6,2 \+ 5,8 = 9,1 \+ 2,9 = 12 l\)/, 'R7-07');
+    for (const i of [2, 4, 8]) {
+        const st = diverState(A1_SCENARIO[i].depth, A1_SCENARIO[i].amount);
+        assert.equal(Math.round((st.suit + st.bc) * 10) / 10, 12, `po vyvážení v kroku ${i + 1}`);
+    }
     const { min, max } = BUOYANCY_PARAMS.krok;
     for (const a of doc.querySelectorAll('a[data-preset-link]')) {
         const url = new URL(a.getAttribute('href'), 'http://x/p1/archimeduv-zakon.html');
@@ -223,7 +230,7 @@ test('pojmy Archimédova zákona: první odstavec obstojí sám, bez hranatých 
     assert.match(first('buoyancy'), /^Archimédův zákon: těleso ponořené do kapaliny je nadlehčováno vztlakovou silou, která se rovná tíze kapaliny tělesem vytlačené: Fvz = V · ρv · g/);
     assert.match(first('buoyancy-control'), /^Kontrola vztlaku: .*vznášet se.*zátěž.*Kompenzátor vztlaku \(BCD\)/);
     const buoyancy = text(new JSDOM(read('concepts/cs/buoyancy.html')).window.document.body);
-    for (const word of ['plove', 'vznáší se', 'klesá']) assert.ok(buoyancy.includes(word), word);
+    for (const word of ['plave', 'vznáší se', 'klesá']) assert.ok(buoyancy.includes(word), word);
     for (const id of ['buoyancy', 'buoyancy-control']) {
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[[^\]]*\]/, `${id}: bez hranatých závorek`);
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\bBC\b|neopré/, id);
