@@ -11,7 +11,7 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { LAKE_MONTH_NAMES, LAKE_STEPS, firstStepOfMonth, modelKeyStep, stepFromParams } from '../physics/lakeCycle.js';
+import { LAKE_MONTH_ABBR, LAKE_MONTH_NAMES, LAKE_STEPS, firstStepOfMonth, modelKeyStep, stepFromParams } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
 import { createLakeCycle } from '../components/LakeCycle.js';
 
@@ -113,7 +113,7 @@ function initLakeModel() {
     const monthButtons = LAKE_MONTH_NAMES.map((name, m) => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.textContent = name[0].toUpperCase();
+        btn.textContent = LAKE_MONTH_ABBR[m];
         btn.title = name;
         btn.setAttribute('aria-label', name);
         btn.addEventListener('click', () => { lake.setStep(firstStepOfMonth(m + 1)); show(); });

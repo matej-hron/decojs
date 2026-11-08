@@ -24,7 +24,10 @@ export const WATER_RANGE = Object.freeze([0, 40]);
 /** Teplota (°C) největší hustoty vody — vrchol Tanakova vzorce, t = −a₁. */
 export const MAX_DENSITY_TEMPERATURE = -A1;
 
-/** Hustota ledu u 0 °C (kg/m³). */
+/**
+ * Hustota ledu u 0 °C (kg/m³), zaokrouhleno. Zdroj: IAPWS R10-06(2009), Revised Release on the Equation of State 2006
+ * for H₂O Ice Ih: 916,72 kg/m³ u normálního bodu tání.
+ */
 export const ICE_DENSITY = 917;
 
 /**

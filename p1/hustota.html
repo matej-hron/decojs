@@ -103,7 +103,7 @@
                             <li>Led je lehčí než voda, plave na hladině a dokonce funguje jako izolace proti ochlazování
                                 vody výměnou tepla se vzduchem.</li>
                         </ul>
-                        <button type="button" class="course-thumb" data-open-model="model-lom" aria-label="Otevřít model: jezero během roku">
+                        <button type="button" class="course-thumb" data-open-model="model-lom" aria-label="Otevřít model: lom během roku">
                             <span class="course-thumb-plot" id="nahled-jezero"></span>
                             <span class="course-thumb-hint">Otevřít model</span>
                         </button>
@@ -118,13 +118,15 @@
                     <div class="course-concept" data-concept="lake-stratification"></div>
                     <div class="course-example" id="priklad-lom">
                         <h3>Řešený příklad</h3>
-                        <p>Jezero je v zimě zamrzlé. Kde pod ledem najdeš nejteplejší vodu a jak bude teplá?</p>
+                        <p>V srpnu se v lomu zanoříš do 15&nbsp;m. Jak teplá tam bude voda a proč?</p>
                         <details class="course-answer">
                             <summary>Ukázat odpověď</summary>
                             <div class="course-answer-body">
-                                <p><strong>U dna, kolem 4&nbsp;°C.</strong> Těsně pod ledem je voda kolem 0&nbsp;°C.
-                                    Nejhustší voda (4&nbsp;°C) klesla ke dnu, chladnější a lehčí voda zůstala nahoře u ledu.</p>
-                                <p><a href="?mesic=2#model-lom" data-preset-link>Ukaž to v modelu (zima) →</a></p>
+                                <p><strong>Kolem 6&nbsp;°C.</strong> V létě slunce ohřívá hladinu. Teplá voda je lehčí a zůstává
+                                    nahoře, v horní vrstvě lomu má kolem 23&nbsp;°C. Hlouběji zůstává chladnější a hustší voda:
+                                    v 15&nbsp;m je kolem 6&nbsp;°C a u dna 4&nbsp;°C. Proto je v létě pod teplou horní vrstvou
+                                    najednou zima.</p>
+                                <p><a href="?mesic=8#model-lom" data-preset-link>Ukaž to v modelu (srpen) →</a></p>
                             </div>
                         </details>
                     </div>
@@ -164,7 +166,7 @@
             <dialog class="course-sim" aria-labelledby="titulek-jezero">
                 <div class="course-model course-slide chart-container" id="model-lom">
                     <div class="chart-header">
-                        <h3 id="titulek-jezero">Model: jezero během roku</h3>
+                        <h3 id="titulek-jezero">Model: lom během roku</h3>
                         <div class="course-sim-actions">
                             <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-lom" title="Celá obrazovka">
                                 <span class="fullscreen-icon">⛶</span>
@@ -184,7 +186,7 @@
                     </div>
                     <p class="course-step-label" id="lom-popisek" aria-live="polite"></p>
                     <div class="course-plot course-plot-clickable" id="lom-scene" title="Další krok"></div>
-                    <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev. Odhad podle hlášení potápěčů, ne měření.</p>
+                    <p class="course-simplification">Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev. Letní teploty vody: odhad podle hlášení potápěčů z lomů Srní, Horní Cerekev a Šífr. Zbytek roku dopočítaný z pravidel modelu. Vzduch: průměr měsíce v ČR (ČHMÚ).</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>
             </dialog>
@@ -195,7 +197,7 @@
                 <h2>Procvič si</h2>
                 <div class="course-core">
                     <p class="course-note">Otázky z testů SPČR/CMAS. Klikni na odpověď.</p>
-                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="6,7,8"></div>
+                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="6,7,8,44"></div>
                     <p><a href="../quiz-physics.html?kategorie=vlastnosti-vody-vzduchu">Všechny otázky z testu fyziky na vlastnosti vody a vzduchu →</a></p>
                 </div>
             </div>
