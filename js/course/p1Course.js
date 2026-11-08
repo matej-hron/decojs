@@ -27,7 +27,7 @@ export const P1_CHAPTERS = [
     { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'ready' },
     { slug: 'archimeduv-zakon', title: 'Archimédův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'ready' },
     { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'ready' },
-    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'planned' },
+    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready' },
     { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'planned' },
     { slug: 'slyseni', title: 'Slyšení pod vodou', slides: '55–56', level: 'P★★', status: 'planned' },
     { slug: 'teplo', title: 'Přenos tepla', slides: '57–59', level: 'P★★', status: 'planned' },
@@ -43,7 +43,7 @@ export const P1_QUESTIONS = [
     { question: 'Jak dlouho tam můžu být?', answeredIn: ['henry'] },
     { question: 'Jak mám naplánovat ponor? Jak rychle dolů, jak zpátky?', answeredIn: ['tlak', 'henry'] },
     { question: 'Jak dlouho mi vydrží vzduch v lahvi?', answeredIn: ['stlacovani-plynu'] },
-    { question: 'Jak předcházet nehodám?', answeredIn: ['tlak', 'stlacovani-plynu', 'archimeduv-zakon'] },
+    { question: 'Jak předcházet nehodám?', answeredIn: ['tlak', 'stlacovani-plynu', 'archimeduv-zakon', 'henry'] },
 ];
 
 /**

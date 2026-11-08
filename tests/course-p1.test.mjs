@@ -114,7 +114,7 @@ test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
 
 const ROOT = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, ROOT), 'utf8');
-const coursePages = ['p1/index.html', 'p1/hustota.html', 'p1/tlak.html', 'p1/stlacovani-plynu.html', 'p1/archimeduv-zakon.html', 'p1/dalton.html'];
+const coursePages = ['p1/index.html', 'p1/hustota.html', 'p1/tlak.html', 'p1/stlacovani-plynu.html', 'p1/archimeduv-zakon.html', 'p1/dalton.html', 'p1/henry.html'];
 
 test('stránky kurzu: vložené bloky pojmů existují a jsou v sw.js', () => {
     const sw = read('sw.js');
@@ -182,7 +182,8 @@ test('rozcestník: hotové kapitoly jsou odkazy, ostatní jen tlumené', () => {
     assert.match(html, /href="stlacovani-plynu\.html"/);
     assert.match(html, /href="archimeduv-zakon\.html"/);
     assert.match(html, /href="dalton\.html"/);
-    assert.doesNotMatch(html, /href="henry\.html"/);
+    assert.match(html, /href="henry\.html"/);
+    assert.doesNotMatch(html, /href="videni\.html"/);
     assert.doesNotMatch(html, /připravujeme/);
     assert.equal((html.match(/is-planned/g) || []).length, P1_CHAPTERS.filter(c => c.status !== 'ready').length);
     for (const c of P1_CHAPTERS) {
@@ -197,7 +198,8 @@ test('rozcestník: každá otázka slidu 6 míří na existující kapitolu', ()
     assert.deepEqual(chapterNeighbours('tlak'), { prev: chapterBySlug('hustota'), next: chapterBySlug('stlacovani-plynu') });
     assert.deepEqual(chapterNeighbours('stlacovani-plynu'), { prev: chapterBySlug('tlak'), next: chapterBySlug('archimeduv-zakon') });
     assert.deepEqual(chapterNeighbours('archimeduv-zakon'), { prev: chapterBySlug('stlacovani-plynu'), next: chapterBySlug('dalton') });
-    assert.deepEqual(chapterNeighbours('dalton'), { prev: chapterBySlug('archimeduv-zakon'), next: null });
+    assert.deepEqual(chapterNeighbours('dalton'), { prev: chapterBySlug('archimeduv-zakon'), next: chapterBySlug('henry') });
+    assert.deepEqual(chapterNeighbours('henry'), { prev: chapterBySlug('dalton'), next: null });
 });
 
 test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“', () => {
@@ -303,7 +305,7 @@ test('kurz P1 píše jednotku v hranatých závorkách, jako přednáška (style
     assert.match(html, /<th scope="col">Hustota \[kg\/m³\]<\/th>/);
     assert.match(html, /<var>ρ<\/var> = <var>m<\/var>\/<var>V<\/var> <span class="course-unit">\[kg\/m³\]<\/span>/);
     assert.doesNotMatch(html, /Jednotka hustoty/);
-    for (const file of ['p1/hustota.html', 'p1/index.html', 'p1/tlak.html', 'js/components/waterColumn/pressureLayer.js', 'js/course/tlakPage.js', 'p1/stlacovani-plynu.html', 'js/components/waterColumn/gasVolumeLayer.js', 'js/course/stlacovaniPage.js', 'js/course/boyleModel.js', 'js/components/DensityCurve.js', 'js/components/LakeCycle.js', 'js/components/WaterColumn.js', 'js/course/hustotaPage.js', 'p1/archimeduv-zakon.html', 'js/course/archimedesPage.js', 'js/course/buoyancyModel.js', 'js/components/waterColumn/buoyancyLayer.js', 'p1/dalton.html', 'js/course/daltonPage.js', 'js/course/gasParticles.js']) {
+    for (const file of ['p1/hustota.html', 'p1/index.html', 'p1/tlak.html', 'js/components/waterColumn/pressureLayer.js', 'js/course/tlakPage.js', 'p1/stlacovani-plynu.html', 'js/components/waterColumn/gasVolumeLayer.js', 'js/course/stlacovaniPage.js', 'js/course/boyleModel.js', 'js/components/DensityCurve.js', 'js/components/LakeCycle.js', 'js/components/WaterColumn.js', 'js/course/hustotaPage.js', 'p1/archimeduv-zakon.html', 'js/course/archimedesPage.js', 'js/course/buoyancyModel.js', 'js/components/waterColumn/buoyancyLayer.js', 'p1/dalton.html', 'js/course/daltonPage.js', 'js/course/gasParticles.js', 'p1/henry.html', 'js/course/henryPage.js']) {
         const src = readFileSync(new URL(file, ROOT), 'utf8');
         assert.doesNotMatch(src, /(hustota|teplota|hloubka|Hustota)[^\n'"]{0,12} \/ (\(|m\b|°C|kg)/, file);
     }
