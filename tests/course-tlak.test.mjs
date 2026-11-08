@@ -175,7 +175,6 @@ test('Tlak: kde originál nese myšlenku obrázkem, nese ji i náš slide (12, 1
     assert.equal(slide(12).querySelectorAll('figure svg').length, 2, 'boty a lyže, jehla');
     assert.match(text(slide(12)), /Stejná síla, menší plocha → větší tlak/);
     assert.match(text(slide(12)), /I malá síla může způsobit obrovský tlak/);
-    assert.match(text(slide(12)), /5\s*N je asi tíha půllitrové lahve vody\. Na hrotu jehly 0,1\s*mm² to dá 50\s*MPa, tedy 500\s*bar\./);
     assert.doesNotMatch(text(slide(12)), /potápěčské lahvi/, 'srovnání s lahví Matej zrušil');
     assert.match(text(slide(16).querySelector('svg')), /vzduchu ubývá, tlak klesá k\s0/);
     assert.doesNotMatch(text(slide(16).querySelector('svg')), /hranice atmosféry/);
@@ -258,6 +257,65 @@ test('R3: Pascalův zákon, počasí, pojmy bez hranatých závorek, citace stla
     assert.match(text(slide(13).querySelector('svg')), /kapalina: tlak se šíří všude stejně/);
     const [boots, needle] = slide(12).querySelectorAll('figure svg');
     const vb = (svg) => svg.getAttribute('viewBox').split(/\s+/).map(Number);
-    assert.equal(vb(boots)[2], vb(needle)[2], 'stejně široké viewBoxy, popisky stejně velké');
-    assert.ok(vb(boots)[2] / vb(boots)[3] >= 2.5, 'obrázek bot je oříznutý na obsah');
+    assert.deepEqual(vb(boots), vb(needle), 'stejně velké obrázky, popisky stejně velké');
+});
+
+// ---------------------------------------------------------------- T6: styl ilustrací, vzor slide 12
+
+test('T6: slide 12 nesou dvě ilustrace s krátkým nadpisem nad a popiskem pod', () => {
+    const halves = [...slide(12).querySelectorAll('.course-core > div:not(.course-core-row)')];
+    assert.equal(halves.length, 2);
+    const titles = halves.map(h => text(h.querySelector('.course-figure-title')));
+    assert.deepEqual(titles, ['Stejná síla, menší plocha → větší tlak', 'I malá síla může způsobit obrovský tlak']);
+    const figs = halves.map(h => h.querySelector('figure.course-illustration'));
+    assert.ok(figs.every(f => f?.querySelector('svg[role="img"][aria-label]')), 'ilustrace jsou SVG s popisem');
+    const caps = figs.map(f => text(f.querySelector('figcaption')));
+    assert.match(caps[0], /^Stejná síla, různě velká plocha$/);
+    assert.match(caps[1], /^5\sN na hrotu jehly 0,1\smm² = 50\sMPa = 500\sbar 5\sN ≈ tíha půllitru vody$/);
+    assert.ok(figs[1].querySelector('figcaption .course-figure-note'), 'kratší řádek o půllitru je doplněk');
+    for (const h of halves) assert.equal(h.querySelectorAll('p').length, 0, 'žádný odstavec, jen nadpis a popisek');
+});
+
+test('T6: scéna se sněhem: boty se boří (hluboké stopy), lyže ne (mělká stopa), stejná šipka F', () => {
+    const [snow, needle] = slide(12).querySelectorAll('figure.course-illustration svg');
+    assert.ok(snow.querySelectorAll('.fig-track-deep').length >= 3, 'hluboké stopy bot');
+    assert.ok(snow.querySelectorAll('.fig-track').length >= 1, 'mělká stopa lyží');
+    assert.equal(snow.querySelectorAll('.fig-silhouette').length, 2, 'stejná postava dvakrát');
+    const arrows = [...snow.querySelectorAll('polygon.fig-force')].map(p => p.getAttribute('points'));
+    assert.equal(arrows.length, 2);
+    const shape = (pts) => {
+        const xy = pts.trim().split(/\s+/).map(p => p.split(',').map(Number));
+        return xy.map(([x, y]) => `${x - xy[0][0]},${y - xy[0][1]}`).join(' ');
+    };
+    assert.equal(shape(arrows[0]), shape(arrows[1]), 'stejná síla = stejná šipka');
+    assert.ok(needle.querySelector('polygon.fig-force'), 'šipka F na pístu stříkačky');
+});
+
+test('T6: ilustrace kreslí jen barvami tématu (třídy), popisky čitelné na projektoru i telefonu', () => {
+    for (const svg of slide(12).querySelectorAll('figure.course-illustration svg')) {
+        assert.doesNotMatch(svg.outerHTML, /\s(fill|stroke|style|color)="/, 'barvy jen z tříd');
+        for (const t of svg.querySelectorAll('text')) assert.match(t.getAttribute('class') ?? '', /fig-label-xl/, text(t));
+    }
+    const css = read('css/course.css');
+    // Popisek v px = písmo ve viewBoxu × výška obrázku / výška viewBoxu. Projektor 1920×1080: slide 959 px, aspoň 31 px.
+    // Telefon: obrázek na šířku 334 px (390 px displej), aspoň 16 px.
+    const font = Number(css.match(/\.fig-label-xl \{[^}]*font-size: (\d+)px/)[1]);
+    const share = Number(css.match(/\.course-illustration > svg \{[^}]*--course-slide-height\) \* ([\d.]+)\)/)[1]);
+    const [, , vbW, vbH] = slide(12).querySelector('figure.course-illustration svg').getAttribute('viewBox').split(/\s+/).map(Number);
+    assert.ok(font * share * 959 / vbH >= 31, `projektor: ${(font * share * 959 / vbH).toFixed(1)} px`);
+    assert.ok(font * 334 / vbW >= 16, `telefon: ${(font * 334 / vbW).toFixed(1)} px`);
+    assert.match(css, /\.course-core-row > \.course-figure > img \{[^}]*max-width: 100%/, 'fotka nepřeteče na telefonu');
+    for (const cls of ['fig-sky', 'fig-snow', 'fig-silhouette', 'fig-track', 'fig-track-deep', 'fig-force', 'fig-glass', 'fig-label-xl']) {
+        const rule = css.match(new RegExp(`\\.${cls} \\{([^}]*)\\}`));
+        assert.ok(rule, cls);
+        assert.doesNotMatch(rule[1], /#[0-9a-f]{3,8}\b|rgb/i, `${cls}: barva z proměnné scény`);
+    }
+    assert.match(css, /\.course-illustration > svg \{[^}]*max-height/);
+});
+
+test('T6: styl ilustrací je popsaný v slides.md a ve vzorníku', () => {
+    const md = read('docs/course/slides.md');
+    assert.match(md, /### Styl ilustrací/);
+    for (const w of ['course-illustration', 'fig-silhouette', 'fig-force', '31\u00a0px|31 px', '16 px', 'loga']) assert.match(md, new RegExp(w), w);
+    assert.ok(read('docs/course/vzornik-slidu.html').includes('course-illustration'));
 });
