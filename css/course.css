@@ -891,6 +891,8 @@ details.course-more > summary .course-summary-hint {
 .water-column-compact .water-column-readout,
 .water-column-compact .water-column-controls { display: none; }
 .water-column-compact { pointer-events: none; }
+/* Úchop ukazatele má v SVG pointer-events="all", ten by jinak přebil zdědění a klik na náhled by posunul hloubku. */
+.water-column-compact .wc-pointer-hit { pointer-events: none; }
 
 /* Kotvy i skoky ze slideNav čtou stejnou pozici scény. */
 .course-model[id], .course-example[id] { scroll-margin-top: var(--course-stage-top); }

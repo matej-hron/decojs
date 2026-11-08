@@ -242,3 +242,9 @@ test('createWaterColumn: setState v posluchači — poslední snímek je u všec
         Object.assign(g, saved);
     }
 });
+
+test('náhled sloupce: úchop ukazatele nechytá klik (pointer-events="all" v SVG přebije zdědění, klik má otevřít model)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const css = readFileSync(new URL('../css/course.css', import.meta.url), 'utf8');
+    assert.match(css, /\.water-column-compact \.wc-pointer-hit\s*\{\s*pointer-events:\s*none;\s*\}/);
+});
