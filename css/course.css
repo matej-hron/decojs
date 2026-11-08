@@ -887,6 +887,14 @@ details.course-more > summary .course-summary-hint {
 .wc-pressure-key-h::before { background: var(--wc-pressure-h, #5dade2); }
 .course-pressure-steps { display: inline-flex; gap: var(--space-2); }
 .course-pressure-steps .course-step-btn { min-width: 44px; font-size: 1.25em; line-height: 1; }
+/* Vrstva objemu plynu (model B1 „Balónek a zvon“): balónek a křivka objemu lososové, odlišné od obou barev tlaku;
+   vzduch ve zvonu světlý, voda ve zvonu jako voda. Mimo slide platí záložní barvy z gasVolumeLayer.js. */
+.course-slide {
+    --wc-gas: var(--slide-chart-point);
+    --wc-gas-ink: var(--slide-on-accent);
+    --wc-gas-air: var(--slide-card-bg);
+    --wc-gas-water: var(--slide-water);
+}
 /* Náhled na slidu: jen obrázek, ovládá se až otevřený model. */
 .water-column-compact .water-column-readout,
 .water-column-compact .water-column-controls { display: none; }

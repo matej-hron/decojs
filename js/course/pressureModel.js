@@ -109,7 +109,14 @@ export function paramsFromState(state) {
 
 const DESKTOP = '(min-width: 769px)';
 
-function segmented(label, options, onPick) {
+/**
+ * Přepínač tlačítek (role group), sdílí ho model B1 kapitoly Stlačování plynů.
+ * @param {string} label aria-label skupiny
+ * @param {Array<[string|number, string]>} options hodnota a HTML popisek
+ * @param {(value: string|number) => void} onPick
+ * @returns {{el: HTMLElement, sync: (value: string|number) => void}}
+ */
+export function segmented(label, options, onPick) {
     const group = document.createElement('div');
     group.className = 'course-segmented';
     group.setAttribute('role', 'group');
@@ -129,7 +136,13 @@ function segmented(label, options, onPick) {
     };
 }
 
-function stepButton(text, label) {
+/**
+ * Tlačítko kroku ‹ › v ovládání modelu.
+ * @param {string} text
+ * @param {string} label
+ * @returns {HTMLButtonElement}
+ */
+export function stepButton(text, label) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'btn course-step-btn';
@@ -137,6 +150,22 @@ function stepButton(text, label) {
     b.title = label;
     b.setAttribute('aria-label', label);
     return b;
+}
+
+/**
+ * Výška SVG sloupce v modelu: náhled podle rámečku, na desktopu celá výška překryvu bez odečtu, na telefonu výchozí.
+ * @param {HTMLElement} host
+ * @param {() => ({readoutEl?: HTMLElement}|null)} getColumn sloupec (vzniká až po této funkci)
+ * @param {boolean} compact náhled na slidu
+ * @returns {(width: number) => number}
+ */
+export function modelHeight(host, getColumn, compact) {
+    return (width) => {
+        if (compact) return Math.max(160, Math.round(host.clientHeight || width * 0.6));
+        if (typeof window === 'undefined' || !window.matchMedia(DESKTOP).matches) return defaultHeight(width);
+        const below = getColumn()?.readoutEl?.offsetHeight || 44;
+        return Math.max(280, Math.floor(host.clientHeight - below - 16));
+    };
 }
 
 /**
@@ -152,12 +181,7 @@ function stepButton(text, label) {
 export function createPressureModel(host, { controlsHost = null, state = null, controls = true, compact = false } = {}) {
     const initial = state ?? initialStateFromParams(readParams('', PRESSURE_PARAMS));
     let column = null;
-    const height = (width) => {
-        if (compact) return Math.max(160, Math.round(host.clientHeight || width * 0.6));
-        if (typeof window === 'undefined' || !window.matchMedia(DESKTOP).matches) return defaultHeight(width);
-        const below = column?.readoutEl?.offsetHeight || 44;
-        return Math.max(280, Math.floor(host.clientHeight - below - 16));
-    };
+    const height = modelHeight(host, () => column, compact);
     column = createWaterColumn(host, {
         maxDepth: MODEL_MAX_DEPTH,
         step: 0.5,

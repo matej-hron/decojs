@@ -6,6 +6,10 @@ a vztlak (Archimedes), parciální tlaky (Dalton), sycení (Henry).
 
 **První skutečná vrstva je tlak** (`js/components/waterColumn/pressureLayer.js`, model M1 „Tlak v hloubce“ v `js/course/pressureModel.js`, ukázka `docs/course/model-tlak.html`). Kapitola Hustota sloupec nepoužívá: model jezera v ní
 vychází z GIFu ze slidu 9 (`js/components/LakeCycle.js`) a vrstvu „teplota“ z pilotu nahradil (2026-11-04).
+Druhá vrstva je **objem plynu** (`js/components/waterColumn/gasVolumeLayer.js`, model B1 „Balónek a zvon“ kapitoly
+Stlačování plynů v `js/course/boyleModel.js`, ukázka `docs/course/model-stlacovani.html`): balónek nebo zvon ve sloupci
+(`zIndex: 10`), panel objemu vedle panelu tlaku, soukromý klíč `gasObject`. Předměty (objem v hloubce, řádky tabulky)
+dává stránka v options továrny, výpočet je v `js/physics/boyle.js`.
 
 | Soubor | Co |
 |---|---|

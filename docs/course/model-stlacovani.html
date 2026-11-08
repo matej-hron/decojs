@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Ukázka: model Balónek a zvon – Kurz P1</title>
+    <!-- Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5595 v kořeni repa,
+         pak http://127.0.0.1:5595/docs/course/model-stlacovani.html. Na stránku kapitoly p1/stlacovani-plynu.html
+         se model napojí v kroku 3; tady je stejné zapojení jako M1 v model-tlak.html. Jeden model má náhled na třech
+         slidech, každý náhled ho otevře se svou předvolbou (data-model-params). -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/course.css">
+</head>
+<body data-course-chapter="stlacovani-plynu">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <span class="nav-logo">Ukázka modelu B1 kurzu P1</span>
+        </div>
+    </nav>
+
+    <main class="course-page" lang="cs">
+        <!-- Slidy 24–26: jen kostra pro ukázku modelu, text a tabulky slidů přijdou se stránkou kapitoly. -->
+        <section id="zvon" class="course-section">
+            <div class="course-slide" data-slide-number="24" data-slide-type="models">
+                <h1>Stlačování plynů</h1>
+                <div class="course-core">
+                    <div class="course-row">
+                        <ul>
+                            <li>Příklad: v potápěčském zvonu je na hladině 1&nbsp;000&nbsp;l vzduchu.</li>
+                            <li>Jaký je objem vzduchu ve zvonu v 10 a ve 20&nbsp;m?</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-boyle" data-model-params="zvon=1"
+                                aria-label="Otevřít model: zvon">
+                            <span class="course-thumb-plot" id="nahled-zvon"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="balonek" class="course-section">
+            <div class="course-slide" data-slide-number="25" data-slide-type="models">
+                <h2>Stlačování plynů</h2>
+                <div class="course-core">
+                    <div class="course-row">
+                        <ul>
+                            <li>Příklad: balónek o objemu 6&nbsp;l vypuštěný z hloubky 40&nbsp;m stoupá k hladině.</li>
+                            <li>Jaký je jeho objem ve 30, 20, 10&nbsp;m a na hladině?</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-boyle" data-model-params="zvon=0"
+                                aria-label="Otevřít model: balónek">
+                            <span class="course-thumb-plot" id="nahled-balonek"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="male-hloubky" class="course-section">
+            <div class="course-slide" data-slide-number="26" data-slide-type="models">
+                <h2>Stlačování plynů</h2>
+                <div class="course-core">
+                    <div class="course-row">
+                        <ul>
+                            <li>Nebezpečí malých hloubek: ze 40 do 30&nbsp;m jen +1,5&nbsp;l, z 10&nbsp;m na hladinu 2×.</li>
+                        </ul>
+                        <button type="button" class="course-thumb" data-open-model="model-boyle" data-model-params="zvon=0&amp;hloubka=0"
+                                aria-label="Otevřít model: balónek u hladiny">
+                            <span class="course-thumb-plot" id="nahled-male-hloubky"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <dialog class="course-sim" aria-labelledby="titulek-boyle">
+                <div class="course-model course-slide chart-container" id="model-boyle">
+                    <div class="chart-header">
+                        <h3 id="titulek-boyle">Model: balónek a zvon</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-boyle" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít model" aria-label="Zavřít model" autofocus>✕</button>
+                        </div>
+                    </div>
+                    <div class="course-model-controls" id="boyle-ovladani"></div>
+                    <div class="course-plot course-column-host" id="boyle-sloupec"></div>
+                    <p class="course-simplification">Balónek a zvon nejsou v&nbsp;měřítku. Školní čísla jako v&nbsp;přednášce
+                        (u&nbsp;hladiny 1&nbsp;bar, 1&nbsp;bar na každých 10&nbsp;m), teplota se nemění.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initChapter } from '../../js/course/chapter.js';
+        import { initModelOverlays } from '../../js/course/modelOverlay.js';
+        import { createBoyleModel, initBoyleModel } from '../../js/course/boyleModel.js';
+
+        // Náhledy: skutečný model bez ovládání, každý se stavem svého slidu.
+        const thumb = (id, state) => createBoyleModel(document.getElementById(id), { controls: false, compact: true, state });
+        thumb('nahled-zvon', { gasObject: 'bell', depth: 20 });
+        thumb('nahled-balonek', { gasObject: 'balloon', depth: 0 });
+        thumb('nahled-male-hloubky', { gasObject: 'balloon', depth: 10 });
+        const overlays = initModelOverlays({
+            'model-boyle': () => initBoyleModel({ host: 'boyle-sloupec', controls: 'boyle-ovladani' }),
+        });
+        initChapter().then(() => overlays.openFromHash());
+    </script>
+</body>
+</html>
