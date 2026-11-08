@@ -155,7 +155,8 @@ převzatého obrázku). Výška obrázku je nejvýš polovina slidu (`--course-s
 
 Schéma kreslíme jako jednoduché české SVG s `role="img"` a `aria-label`. Barvy nebere ze svých atributů, ale
 z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čárkovaná pomocná čára), `fig-arrow` (síla),
-`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek).
+`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek),
+`fig-label-lg` (větší popisek pro obrázek, který se kvůli výšce zmenší víc než jeho soused).
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
 Varianty těla:

@@ -6,7 +6,7 @@ Schémata kurzu (SVG přímo ve stránkách `p1/*.html`) jsou vlastní a tady ne
 
 | Soubor | Slide | Autor | Licence | Zdroj | Úpravy | Ověřeno |
 |---|---|---|---|---|---|---|
-| `images/course/p1/manometr.jpg` | Tlak, slide 12 | Peter Southwood (Pbsouthwood) | CC BY-SA 4.0 | [File:Submersible pressure gauge on short HP hose P8160037.jpg](https://commons.wikimedia.org/wiki/File:Submersible_pressure_gauge_on_short_HP_hose_P8160037.jpg) | zmenšeno na 960 px a oříznuto na manometr (420 × 300 px) | 2026-11-08 |
+| `images/course/p1/manometr.jpg` | Tlak, slide 12 | Peter Southwood (Pbsouthwood) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.cs) | [File:Submersible pressure gauge on short HP hose P8160037.jpg](https://commons.wikimedia.org/wiki/File:Submersible_pressure_gauge_on_short_HP_hose_P8160037.jpg) | zmenšeno na 960 px a oříznuto na manometr (420 × 300 px) | 2026-11-08 |
 | `images/gas-particles.gif` | Tlak, slide 22 (a `pressure.html`) | A. Greg (Greg L, anglická Wikipedie) | volné dílo (public domain): „This image of simple geometry is ineligible for copyright“ | [File:Translational motion.gif](https://commons.wikimedia.org/wiki/File:Translational_motion.gif) | beze změny | 2026-11-08 |
 
-Úprava díla pod CC BY-SA (ořez) se šíří pod stejnou licencí CC BY-SA 4.0.
+Úprava díla pod CC BY-SA (ořez) se šíří pod stejnou licencí [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.cs). Pod fotkou na slidu je odkaz na text licence.

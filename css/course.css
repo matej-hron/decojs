@@ -335,6 +335,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-ground { fill: var(--slide-ground); }
 .course-figure svg text { fill: var(--slide-fg); font-size: 18px; }
 .course-figure svg .fig-label-strong { font-weight: 600; fill: var(--slide-highlight); }
+.course-figure svg .fig-label-lg { font-size: 22px; } /* popisky obrázku, který se kvůli výšce zmenší víc (slide 12) */
 @media (min-width: 900px) {
     .course-slide[data-slide-type="figure"] .course-core {
         display: grid;
@@ -345,6 +346,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 }
 /* Dva obrázky vedle sebe a pod nimi řádek přes celou šířku (slide 12): obrázky menší, řádek drobnějším písmem. */
 .course-core-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-8); font-size: 0.8em; line-height: 1.3; }
+@media (max-width: 768px) { .course-core-row { font-size: 1em; } } /* telefon: písmo těla (R3-02) */
 .course-core-row > div > p { margin: 0; }
 .course-core-row > .course-figure { flex: 0 1 auto; }
 .course-core-row > .course-figure > img { max-height: calc(var(--course-slide-height) * 0.14); width: auto; }

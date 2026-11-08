@@ -187,9 +187,10 @@ test('Tlak: fotka manometru má autora, licenci a záznam v SOURCES.md', () => {
     const cap = text(img.closest('figure').querySelector('figcaption'));
     assert.match(cap, /Peter Southwood/);
     assert.match(cap, /CC BY-SA 4\.0/);
+    assert.equal(img.closest('figure').querySelector('figcaption a[href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs"]')?.textContent.replace(/\s+/g, ' '), 'CC BY-SA 4.0');
     const sources = read('images/course/p1/SOURCES.md');
     for (const f of ['images/course/p1/manometr.jpg', 'images/gas-particles.gif']) assert.ok(sources.includes(f), f);
-    assert.match(sources, /CC BY-SA 4\.0/);
+    assert.match(sources, /\[CC BY-SA 4\.0\]\(https:\/\/creativecommons\.org\/licenses\/by-sa\/4\.0\/deed\.cs\)/);
     assert.ok(read('sw.js').includes("'./images/course/p1/manometr.jpg'"));
 });
 
@@ -227,7 +228,9 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(20), /předbíháme Daltonův zákon/);
     for (const d of ['28', '40,5', '66']) assert.match(more(20), new RegExp(`${d}\\s?m:`), d);
     assert.match(more(22), /Nad rámec P★/);
-    assert.match(more(22), /anglicky/);
+    assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
+    assert.match(more(22), /V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon/);
+    assert.match(more(22), /V testech SPČR platí Gay-Lussac = stálý tlak, Charles = stálý objem\./);
     for (const href of ['../sandbox/gas-law.html', '../sandbox/transfilling.html', '../sandbox/cascade-filling.html']) {
         assert.ok(slide(22).closest('section').querySelector(`details.course-more a[href="${href}"]`), href);
     }
@@ -240,4 +243,21 @@ test('pojmy Tlaku: první odstavec obstojí sám, se vzorcem nebo definicí a je
         'hydrostatic-pressure': /ph = h · ρ · g/, 'total-pressure': /p = patm \+ ph/, 'gas-pressure': /pV = nRT/,
     };
     for (const [id, re] of Object.entries(cases)) assert.match(text(first(id)), re, id);
+});
+
+test('R3: Pascalův zákon, počasí, pojmy bez hranatých závorek, citace stlačitelnosti, slide 13 a 12', () => {
+    const pascal = read('concepts/cs/pascal-law.html');
+    assert.match(pascal, /se přenáší do všech\s+míst kapaliny stejně: všude se tlak zvětší o stejnou hodnotu/);
+    assert.match(pascal, /U většiny látek mají částice v kapalině větší rozestupy/);
+    assert.match(pascal, /doi:10\.1021\/je60064a005/);
+    assert.doesNotMatch(pascal, /CRC/);
+    assert.match(read('concepts/cs/atmospheric-pressure.html'), /nejvýš asi o desetinu/);
+    for (const id of ['pressure', 'pascal-law', 'atmospheric-pressure', 'hydrostatic-pressure', 'total-pressure', 'gas-pressure']) {
+        assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[(bar|Pa|m|kPa)\]/, `${id}: bez hranatých závorek`);
+    }
+    assert.match(text(slide(13).querySelector('svg')), /kapalina: tlak se šíří všude stejně/);
+    const [boots, needle] = slide(12).querySelectorAll('figure svg');
+    const vb = (svg) => svg.getAttribute('viewBox').split(/\s+/).map(Number);
+    assert.equal(vb(boots)[2], vb(needle)[2], 'stejně široké viewBoxy, popisky stejně velké');
+    assert.ok(vb(boots)[2] / vb(boots)[3] >= 2.5, 'obrázek bot je oříznutý na obsah');
 });
