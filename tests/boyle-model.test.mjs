@@ -252,3 +252,13 @@ test('R4-01: místo nad hladinou pojme zvon i balónek na hladině', async () =>
     assert.ok(BELL_SHAPE.height * BELL_MAX_WIDTH_EM <= above - 0.2, 'zvon');
     assert.ok(BALLOON_MAX_RADIUS_EM <= above - 0.2, 'balónek');
 });
+
+test('S5: nízký náhled na telefonu má místo nad hladinou jen 1 em, ať sloupec není jen pár pixelů', async () => {
+    const { boyleHeadroom, BOYLE_HEADROOM_EM } = await import('../js/course/boyleModel.js');
+    assert.equal(boyleHeadroom(true, 150), 1);
+    assert.equal(boyleHeadroom(true, 320), BOYLE_HEADROOM_EM);
+    assert.equal(boyleHeadroom(false, 150), BOYLE_HEADROOM_EM, 'otevřený model má plné místo');
+    const { computeGeometry } = await import('../js/components/WaterColumn.js');
+    const g = computeGeometry({ width: 324, height: 160, maxDepth: 40, panels: 2, headroom: boyleHeadroom(true, 150) });
+    assert.ok(g.column.h >= 60, `sloupec ${g.column.h} px`);
+});

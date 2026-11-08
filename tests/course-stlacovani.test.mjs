@@ -129,9 +129,11 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
     assert.doesNotMatch(text(s), /násiln/i);
     const svg = s.querySelector('figure svg');
     assert.ok(svg.getAttribute('role') === 'img' && svg.getAttribute('aria-label'));
-    for (const label of ['obličejové', 'masky', 'plíce', 'bubínek', 'střední ucho', 'Eustachova', 'aktivně']) {
+    // R5-04: ucho je velké a popsané (popisky fig-label-lg jako jehla na slidu 12 Tlaku), tělo je malé, dutiny jmenuje text
+    for (const label of ['zvukovod', 'bubínek', 'střední ucho', 'Eustachova', 'trubice', 'automaticky', '(maska', 'aktivně)', 'sestup']) {
         assert.ok(svg.textContent.includes(label), label);
     }
+    assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-lg')), 'všechny popisky velké');
     assert.ok(s.querySelector('a[href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290"]'));
 });
 

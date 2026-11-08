@@ -40,6 +40,17 @@ export const BOYLE_OBJECTS = Object.freeze({
     bell: Object.freeze({ kind: 'bell', label: 'zvon', volume: 1000, depth: 0, rows: Object.freeze([0, 10, 20]) }),
 });
 
+/**
+ * Místo nad hladinou pro daný sloupec. Nízký náhled (telefon: 150 px) by s plným místem nad hladinou nechal sloupci
+ * jen pár pixelů; předměty se tam velikostí řídí výškou sloupce, takže jim stačí 1 em.
+ * @param {boolean} compact náhled na slidu
+ * @param {number} hostHeight px
+ * @returns {number} em
+ */
+export function boyleHeadroom(compact, hostHeight) {
+    return compact && hostHeight > 0 && hostHeight < 260 ? 1 : BOYLE_HEADROOM_EM;
+}
+
 /** Schéma předvoleb v URL. */
 export const BOYLE_PARAMS = Object.freeze({
     zvon: { min: 0, max: 1, step: 1, default: 0 },
@@ -98,7 +109,7 @@ export function createBoyleModel(host, { controlsHost = null, state = null, cont
         depth: initial.depth,
         state: { gasObject: initial.gasObject, pressureMode: PRESSURE_MODES.SCHOOL, altitude: 0, water: 'salt' },
         height: modelHeight(host, () => column, compact),
-        headroom: BOYLE_HEADROOM_EM,
+        headroom: boyleHeadroom(compact, host.clientHeight),
         labels: { figure: 'Vodní sloupec: objem plynu v hloubce' },
     });
     if (compact) column.el.classList.add('water-column-compact');
