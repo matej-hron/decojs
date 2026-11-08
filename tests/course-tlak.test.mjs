@@ -359,7 +359,7 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
         16: ['vzduchu ubývá, tlak klesá k 0', 'Mount Everest 8 850 m', '31 kPa', 'hladina moře', '101 kPa'],
         17: ['horské sedlo'],
         18: ['F', 'F', 'F', 'S', 'S', 'S', 'h', 'h', 'pár litrů v trubici', 'sud praskl'],
-        21: ['obličejové dutiny', 'dýchací cesty', 'plíce', 'trávicí systém'],
+        21: ['obličejové dutiny', 'střední ucho', 'dýchací cesty', 'plíce', 'trávicí systém'],
     };
     for (const [n, want] of Object.entries(labels)) {
         const got = [...slide(n).querySelectorAll('figure svg text')].map(t => t.textContent.replace(/\s+/g, ' ').trim());
@@ -436,4 +436,43 @@ test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem 
     assert.ok([...fig.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG'));
     assert.match(read('images/course/p1/SOURCES.md'), /`images\/course\/p1\/pascal\.jpg` \| Tlak, slide 18 \|.*PD-art-old-100-expired.*File:Blaise Pascal Versailles\.JPG/);
     assert.match(read('sw.js'), /'\.\/images\/course\/p1\/pascal\.jpg'/);
+});
+
+// ---------------------------------------------------------------- T11: nová kresba těla na slidu 21
+
+/** Obdélník kolem bodů atributu d (řídicí body křivek bereme jako body, na hrubou kontrolu stačí). */
+function pathBox(d) {
+    const n = d.match(/-?\d+(\.\d+)?/g).map(Number);
+    const xs = n.filter((_, i) => i % 2 === 0), ys = n.filter((_, i) => i % 2 === 1);
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+test('T11: slide 21 má hlavu z profilu, dutiny nejsou na místě očí a ucho je vidět', () => {
+    const svg = slide(21).querySelector('figure svg');
+    const eye = svg.querySelector('.fig-eye');
+    assert.ok(eye, 'oko z profilu, aby se dutiny nečetly jako oči');
+    const ey = +eye.getAttribute('cy');
+    const sinus = [...svg.querySelectorAll('.fig-sinus')].map(e => +e.getAttribute('cy')).sort((a, b) => a - b);
+    assert.equal(sinus.length, 2, 'čelní a čelistní dutina');
+    assert.ok(sinus[0] < ey && ey < sinus[1], `čelní nad okem, čelistní pod ním (${sinus}, oko ${ey})`);
+    assert.ok(svg.querySelector('.fig-middle-ear'), 'střední ucho');
+    assert.ok(svg.querySelector('.fig-auricle'), 'boltec, ať je jasné, kde je ucho');
+    assert.equal(svg.querySelectorAll('.fig-eustachian').length, 1, 'Eustachova trubice');
+});
+
+test('T11: dýchací cesty jsou jedna souvislá cesta od nosu a úst do obou plic, trávicí systém je menší než plíce', () => {
+    const svg = slide(21).querySelector('figure svg');
+    const airways = svg.querySelectorAll('path.fig-airway');
+    assert.equal(airways.length, 1, 'jedna cesta, ne kusy');
+    const d = airways[0].getAttribute('d');
+    const lungs = [...svg.querySelectorAll('.fig-lung')].map(l => pathBox(l.getAttribute('d')));
+    assert.equal(lungs.length, 2);
+    // každá větev (podcesta M…) začíná na cestě, která už vede, kromě první (nos) a druhé (ústa)
+    const ends = [...d.matchAll(/L(\d+) (\d+)(?=M|$)/g)].map(m => [+m[1], +m[2]]);
+    for (const lung of lungs) {
+        assert.ok(ends.some(([x, y]) => x > lung.x0 && x < lung.x1 && y > lung.y0 && y < lung.y1), 'průdušky končí v plíci');
+    }
+    const stomach = pathBox(svg.querySelector('.fig-stomach').getAttribute('d'));
+    assert.ok(svg.querySelector('.fig-gut'), 'náznak střev');
+    assert.ok(stomach.w * stomach.h < lungs[0].w * lungs[0].h, 'žaludek menší než plíce');
 });

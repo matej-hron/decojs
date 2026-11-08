@@ -400,6 +400,17 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-cavity { fill: var(--slide-accent); stroke: var(--slide-card-bg); stroke-width: 2.5; }
 .course-figure svg .fig-halo { fill: none; stroke: var(--slide-card-bg); stroke-width: 8; stroke-linecap: round; }
 .course-figure svg .fig-leader { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; stroke-linecap: round; }
+/* Tělo potápěče (slide 21, T11): plíce, souvislá cesta vzduchu s obrysem, Eustachova trubice, oko a boltec jako obrys,
+   žaludek a střeva. Dutiny s plynem mají barvu fig-cavity; sémantické třídy fig-sinus a fig-middle-ear jsou bez vlastní barvy. */
+.course-figure svg .fig-lung { fill: var(--slide-accent); fill-opacity: 0.5; stroke: var(--slide-card-bg); stroke-width: 2.5; }
+.course-figure svg .fig-airway-edge { fill: none; stroke: var(--slide-card-bg); stroke-width: 17; stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-airway { fill: none; stroke: var(--slide-accent); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-eustachian-edge { fill: none; stroke: var(--slide-card-bg); stroke-width: 10; stroke-linecap: round; }
+.course-figure svg .fig-eustachian { fill: none; stroke: var(--slide-accent); stroke-width: 6; stroke-linecap: round; }
+.course-figure svg .fig-eye { fill: none; stroke: var(--slide-card-bg); stroke-width: 3; }
+.course-figure svg .fig-auricle { fill: none; stroke: var(--slide-card-bg); stroke-width: 4; stroke-linecap: round; }
+.course-figure svg .fig-stomach { fill: var(--slide-accent); stroke: var(--slide-card-bg); stroke-width: 2.5; }
+.course-figure svg .fig-gut { fill: none; stroke: var(--slide-accent); stroke-width: 9; stroke-linecap: round; }
 /* Pascalův sud (slide 18, T9): dřevo, obruče, spáry, tryskající voda, konvička. */
 .course-figure svg .fig-barrel { fill: var(--slide-ground); stroke: var(--slide-on-accent); stroke-width: 3.5; stroke-linejoin: round; }
 .course-figure svg .fig-stave { fill: none; stroke: var(--slide-on-accent); stroke-width: 2; }

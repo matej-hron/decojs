@@ -220,6 +220,11 @@ Stlačování a Hustota se projdou zvlášť.
   `fig-leader` s `fig-halo` (odkazová čára čitelná na tmavém i světlém).
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
+- **Tělo potápěče (T11, slide 21):** hlava z profilu a trup zepředu (`fig-body`). Dutiny s plynem `fig-cavity`
+  (čelní a čelistní dutina mají navíc `fig-sinus`, střední ucho `fig-middle-ear`), oko a boltec jen obrysem
+  (`fig-eye`, `fig-auricle`), aby se dutiny nečetly jako oči. Cesta vzduchu je jedna souvislá čára `fig-airway`
+  s obrysem `fig-airway-edge` od nosu a úst do průdušek v obou plicích (`fig-lung`), Eustachova trubice
+  `fig-eustachian` (s `fig-eustachian-edge`), žaludek `fig-stomach` a střeva `fig-gut`.
 - **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
   neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
 - **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý
