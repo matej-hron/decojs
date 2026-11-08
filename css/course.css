@@ -336,6 +336,44 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg text { fill: var(--slide-fg); font-size: 18px; }
 .course-figure svg .fig-label-strong { font-weight: 600; fill: var(--slide-highlight); }
 .course-figure svg .fig-label-lg { font-size: 22px; } /* popisky obrázku, který se kvůli výšce zmenší víc (slide 12) */
+
+/* Styl ilustrací kurzu (T6, vzor slide 12): obrázek nese slide. Plné siluety a výplně ve světlém rámu
+   (obloha, papír), jen barvami scény Hladina; síla je výrazná blokově kreslená šipka s tmavým obrysem.
+   Obrázek je hlavní prvek: nad ním krátký nadpis, pod ním krátký popisek písmem těla, ne odstavec. */
+.course-figure-title { margin: 0 0 var(--space-2); font-size: 1em; font-weight: 600; line-height: 1.25; }
+.course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.25); }
+.course-illustration > figcaption { margin-top: var(--space-2); font-size: 0.85em; line-height: 1.3; color: var(--slide-fg); }
+.course-figure-note { display: block; font-size: 0.85em; color: var(--slide-subtle); }
+@media (max-width: 768px) { /* telefon: popisek písmem těla, doplněk aspoň 16 px, poloviny od sebe */
+    .course-illustration > figcaption { font-size: 1em; }
+    .course-figure-note { font-size: 0.9em; }
+    .course-core > div + div > .course-figure-title { margin-top: var(--space-6); }
+    .course-core:has(> div > .course-illustration) > .course-core-row { margin-top: var(--space-6); }
+}
+.course-illustration svg text { fill: var(--slide-on-accent); }
+.course-figure svg .fig-label-xl { font-size: 36px; font-weight: 600; } /* viewBox výšky 270 na 25 % slidu: 1920×1080 32 px, telefon 25 px */
+.course-figure svg .fig-sky { fill: var(--slide-accent); }
+.course-figure svg .fig-paper { fill: var(--slide-card-bg); }
+.course-figure svg .fig-hill { fill: var(--slide-card-bg); fill-opacity: 0.6; }
+.course-figure svg .fig-tree { fill: var(--slide-ok-bg); }
+.course-figure svg .fig-flake { fill: var(--slide-card-bg); }
+.course-figure svg .fig-snow { fill: var(--slide-card-bg); }
+.course-figure svg .fig-snow-lip { fill: none; stroke: var(--slide-line-strong); stroke-width: 2.5; stroke-linecap: round; }
+.course-figure svg .fig-track { fill: none; stroke: var(--slide-line-strong); stroke-width: 3; stroke-linecap: round; }
+.course-figure svg .fig-track-deep { fill: var(--slide-bg); stroke: var(--slide-line-strong); stroke-width: 3; }
+.course-figure svg .fig-silhouette { fill: var(--slide-on-accent); stroke: var(--slide-on-accent); stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-silhouette .fig-limb { fill: none; stroke-width: 13; }
+.course-figure svg .fig-silhouette .fig-limb-thick { fill: none; stroke-width: 30; }
+.course-figure svg .fig-silhouette .fig-pole { fill: none; stroke-width: 4; }
+.course-figure svg .fig-force { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-glass { fill: var(--slide-card-bg); fill-opacity: 0.35; stroke: var(--slide-on-accent); stroke-width: 3.5; }
+.course-figure svg .fig-plastic { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; }
+.course-figure svg .fig-liquid { fill: var(--slide-water); fill-opacity: 0.55; }
+.course-figure svg .fig-ink { fill: var(--slide-on-accent); }
+.course-figure svg .fig-ticks { fill: none; stroke: var(--slide-on-accent); stroke-width: 2.5; }
+.course-figure svg .fig-hub { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 3; }
+.course-figure svg .fig-needle { fill: none; stroke: var(--slide-on-accent); stroke-width: 3.5; stroke-linecap: round; }
+.course-figure svg .fig-pointer { fill: none; stroke: var(--slide-on-accent); stroke-width: 2; }
 @media (min-width: 900px) {
     .course-slide[data-slide-type="figure"] .course-core {
         display: grid;
@@ -349,9 +387,8 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 @media (max-width: 768px) { .course-core-row { font-size: 1em; } } /* telefon: písmo těla (R3-02) */
 .course-core-row > div > p { margin: 0; }
 .course-core-row > .course-figure { flex: 0 1 auto; }
-.course-core-row > .course-figure > img { max-height: calc(var(--course-slide-height) * 0.14); width: auto; }
-.course-core:has(> .course-core-row) > div > .course-figure > svg { max-height: calc(var(--course-slide-height) * 0.19); }
-.course-core:has(> .course-core-row) > div > p { margin-top: var(--space-2); }
+.course-core-row > .course-figure { min-width: 0; max-width: 100%; }
+.course-core-row > .course-figure > img { max-height: calc(var(--course-slide-height) * 0.16); width: auto; max-width: 100%; }
 @media (min-width: 900px) {
     .course-slide[data-slide-type="figure"] .course-core:has(> .course-core-row) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); row-gap: var(--space-3); }
     .course-core-row { grid-column: 1 / -1; }

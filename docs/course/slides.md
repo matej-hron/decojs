@@ -162,8 +162,9 @@ Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 Varianty těla:
 - **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slidy 13 a 17): `<figure class="course-figure">`
   na konci sloupce, výška nejvýš 20 % slidu.
-- **Dva obrázky vedle sebe a pod nimi řádek přes celou šířku** (slide 12): tělo má dva `<div>` (obrázek a věta pod ním)
-  a za nimi `<div class="course-core-row">` s drobnějším textem a malou fotkou. Obrázky jsou nejvýš 19 % slidu, fotka 14 %.
+- **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
+  (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
+  `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
 - **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` s autorem, licencí a odkazem na zdroj,
   záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
 
@@ -179,6 +180,45 @@ Varianty těla:
             <svg viewBox="0 0 420 300" role="img" aria-label="Tlaková síla F kolmo na plochu S">…</svg>
         </figure>
     </div>
+</div>
+```
+
+### Styl ilustrací
+
+Vzor je slide 12 (T6). Platí pro nové obrázky kurzu; starší schémata v Tlaku a ve Stlačování se podle něj projdou,
+až Matej styl schválí.
+
+- **Obrázek nese slide.** Ilustrace je hlavní prvek: v těle zabere víc místa než text. Nad ní je krátký nadpis
+  (`<h3 class="course-figure-title">` se zvýrazněním), pod ní krátký popisek písmem těla v `<figcaption>`, ne odstavec.
+  Doplněk popisku (kratší druhý řádek) je `<span class="course-figure-note">`.
+- **Plné tvary a scéna, ne technický nákres.** Siluety a výplně ve světlém rámu (obloha `fig-sky`, papír `fig-paper`),
+  silné tahy, kus scény (sníh, kopec, stromy). Barvy jen ze tříd, které berou proměnné scény Hladina, nikdy natvrdo
+  v atributech `fill`, `stroke` nebo `style`:
+  `fig-silhouette` (postava, uvnitř `fig-limb`, `fig-limb-thick`, `fig-pole`), `fig-snow`, `fig-snow-lip`, `fig-hill`,
+  `fig-tree`, `fig-flake`, `fig-track` (mělká stopa), `fig-track-deep` (hluboká stopa), `fig-glass` (průhledný plast),
+  `fig-plastic`, `fig-liquid`, `fig-ink` (tmavé detaily), `fig-ticks`, `fig-hub`, `fig-needle`, `fig-pointer`.
+- **Síla je výrazná.** `fig-force`: plná bloková šipka v barvě zvýraznění s tmavým obrysem, popisek
+  `<tspan font-style="italic">F</tspan>`. Stejná síla = stejný tvar šipky.
+- **Fotky:** kde je skutečná věc názornější než kresba (manometr, výstroj), fotka z volného zdroje (public domain, CC0,
+  CC BY, CC BY-SA) s autorem a licencí pod obrázkem a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
+  výrobců, ani vyražené na výrobku. Když volná fotka bez značky není, plná kresba v tomhle stylu.
+- **Čitelnost:** popisky v ilustraci mají `fig-label-xl` (36 px ve viewBoxu výšky 270). Na projektoru 1920×1080
+  to je aspoň 31 px (ilustrace 25 % slidu), na telefonu aspoň 16 px (obrázek na šířku displeje). Kontrast podle pravidel
+  v oddílu 1, tmavé popisky na světlém rámu.
+- **Rozměr:** obě ilustrace slidu mají stejný viewBox (600 × 270), takže mají stejně velké popisky.
+
+```html
+<div>
+    <h3 class="course-figure-title"><span class="course-highlight">Stejná síla, menší plocha → větší tlak</span></h3>
+    <figure class="course-figure course-illustration">
+        <svg viewBox="0 0 600 270" role="img" aria-label="Stejný člověk ve sněhu …">
+            <rect class="fig-sky" width="600" height="270" rx="16"/>
+            <g class="fig-silhouette">…</g>
+            <polygon class="fig-force" points="…"/>
+            <text x="…" y="…" class="fig-label-xl"><tspan font-style="italic">F</tspan></text>
+        </svg>
+        <figcaption>Stejná síla, různě velká plocha</figcaption>
+    </figure>
 </div>
 ```
 
