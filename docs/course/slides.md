@@ -150,18 +150,20 @@ se kliklo. Popisek „Otevřít model“ dej nahoru (`course-thumb-hint-top`), k
 ### `figure`: text a obrázek nebo schéma
 
 Text vlevo, obrázek vpravo (od 900 px vedle sebe, na telefonu pod sebou), jako slidy 11, 14, 16, 18 a 22.
-Obrázek je `<figure class="course-figure">` s jedním `<svg>` nebo `<img>` a nepovinným `<figcaption>` (zdroj a licence
-převzatého obrázku). Výška obrázku je nejvýš polovina slidu (`--course-slide-height`), takže se slide vždy vejde.
+Obrázek je `<figure class="course-figure course-illustration">` s jedním `<svg>` (styl ilustrací níže) nebo
+`<figure class="course-figure">` s `<img>`, oboje s nepovinným `<figcaption>` (popisek, u převzatého obrázku zdroj a licence).
+Výška obrázku je nejvýš polovina slidu (`--course-slide-height`), takže se slide vždy vejde.
 
-Schéma kreslíme jako jednoduché české SVG s `role="img"` a `aria-label`. Barvy nebere ze svých atributů, ale
-z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čárkovaná pomocná čára), `fig-arrow` (síla),
-`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek),
-`fig-label-lg` (větší popisek pro obrázek, který se kvůli výšce zmenší víc než jeho soused).
+Schéma kreslíme jako české SVG s `role="img"` a `aria-label` ve stylu ilustrací (oddíl níže). Starší třídy čárových
+schémat (`fig-line`, `fig-thin`, `fig-arrow`, `fig-water`, `fig-surface`, `fig-particle`, `fig-piston`, `fig-ground`,
+`fig-label-strong`, `fig-label-lg`) v CSS zůstávají pro schémata, která ještě nejsou předělaná (Stlačování);
+nové obrázky je nepoužívají.
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
 Varianty těla:
-- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slidy 13 a 17): `<figure class="course-figure">`
-  na konci sloupce, výška nejvýš 20 % slidu.
+- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slidy 13 a 17): ilustrace na konci sloupce,
+  výška nejvýš 22 % slidu. Nízký pás (viewBox 600 × 200, slide 17) má navíc `course-illustration-band` a nejvýš 20 %.
+  Ilustrace ze dvou částí (slide 13) má popisek pod každou částí: `<figcaption class="course-figure-pair">` se dvěma `<span>`.
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
@@ -173,11 +175,11 @@ Varianty těla:
     <h2>Tlak</h2>
     <div class="course-core">
         <div>
-            <p>Tlak je definován velikostí síly působící na plochu.</p>
+            <p>Tlak udává, jak velká síla působí kolmo na jednotku plochy.</p>
             <p class="course-formula"><var>p</var> = <var>F</var>/<var>S</var> <span class="course-unit">[Pa]</span></p>
         </div>
-        <figure class="course-figure">
-            <svg viewBox="0 0 420 300" role="img" aria-label="Tlaková síla F kolmo na plochu S">…</svg>
+        <figure class="course-figure course-illustration">
+            <svg viewBox="0 0 600 420" role="img" aria-label="Tlaková síla F působí kolmo na plochu S">…</svg>
         </figure>
     </div>
 </div>
@@ -185,8 +187,8 @@ Varianty těla:
 
 ### Styl ilustrací
 
-Vzor je slide 12 (T6). Platí pro nové obrázky kurzu; starší schémata v Tlaku a ve Stlačování se podle něj projdou,
-až Matej styl schválí.
+Vzor je slide 12 (T6), Matej ho schválil. V Tlaku jsou podle něj všechna schémata (T7: slidy 11–18 a 21);
+Stlačování a Hustota se projdou zvlášť.
 
 - **Obrázek nese slide.** Ilustrace je hlavní prvek: v těle zabere víc místa než text. Nad ní je krátký nadpis
   (`<h3 class="course-figure-title">` se zvýrazněním), pod ní krátký popisek písmem těla v `<figcaption>`, ne odstavec.
@@ -205,7 +207,16 @@ až Matej styl schválí.
 - **Čitelnost:** popisky v ilustraci mají `fig-label-xl` (36 px ve viewBoxu výšky 270). Na projektoru 1920×1080
   to je aspoň 31 px (ilustrace 25 % slidu), na telefonu aspoň 16 px (obrázek na šířku displeje). Kontrast podle pravidel
   v oddílu 1, tmavé popisky na světlém rámu.
-- **Rozměr:** obě ilustrace slidu mají stejný viewBox (600 × 270), takže mají stejně velké popisky.
+- **Rozměr:** všechny ilustrace mají viewBox šířky 600 (výška podle obsahu), takže mají při stejné šířce stejně velké
+  popisky. Na projektoru se to ověřuje měřením: nejmenší popisek v ilustraci aspoň 31 px na 1920×1080.
+- **Další třídy (T7):** `fig-air` (částice plynu), `fig-gas` (prostor s plynem), `fig-wall` (stěna nádoby), `fig-guide`
+  (čárkovaná vodorovná pomocná čára), `fig-dim` (kóta), `fig-rock` (hora), `fig-sea`, `fig-solid-top`/`-front`/`-side`
+  (deska v perspektivě), `fig-atom`, `fig-bond`, `fig-road`, `fig-road-line`, `fig-plane`, `fig-body`, `fig-cavity`,
+  `fig-leader` s `fig-halo` (odkazová čára čitelná na tmavém i světlém).
+- **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
+  neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
+- **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý
+  („vzduchu ubývá, tlak klesá k 0“) a zarovnání vpravo nerozhodila mezera.
 
 ```html
 <div>

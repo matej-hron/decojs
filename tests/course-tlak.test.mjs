@@ -254,7 +254,7 @@ test('R3: Pascalův zákon, počasí, pojmy bez hranatých závorek, citace stla
     for (const id of ['pressure', 'pascal-law', 'atmospheric-pressure', 'hydrostatic-pressure', 'total-pressure', 'gas-pressure']) {
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[(bar|Pa|m|kPa)\]/, `${id}: bez hranatých závorek`);
     }
-    assert.match(text(slide(13).querySelector('svg')), /kapalina: tlak se šíří všude stejně/);
+    assert.match(text(slide(13).querySelector('figure')), /kapalina: tlak se šíří všude stejně/);
     const [boots, needle] = slide(12).querySelectorAll('figure svg');
     const vb = (svg) => svg.getAttribute('viewBox').split(/\s+/).map(Number);
     assert.deepEqual(vb(boots), vb(needle), 'stejně velké obrázky, popisky stejně velké');
@@ -300,7 +300,7 @@ test('T6: ilustrace kreslí jen barvami tématu (třídy), popisky čitelné na 
     // Popisek v px = písmo ve viewBoxu × výška obrázku / výška viewBoxu. Projektor 1920×1080: slide 959 px, aspoň 31 px.
     // Telefon: obrázek na šířku 334 px (390 px displej), aspoň 16 px.
     const font = Number(css.match(/\.fig-label-xl \{[^}]*font-size: (\d+)px/)[1]);
-    const share = Number(css.match(/\.course-illustration > svg \{[^}]*--course-slide-height\) \* ([\d.]+)\)/)[1]);
+    const share = Number(css.match(/\.course-core:has\(> \.course-core-row\) \.course-illustration > svg \{[^}]*--course-slide-height\) \* ([\d.]+)\)/)[1]);
     const [, , vbW, vbH] = slide(12).querySelector('figure.course-illustration svg').getAttribute('viewBox').split(/\s+/).map(Number);
     assert.ok(font * share * 959 / vbH >= 31, `projektor: ${(font * share * 959 / vbH).toFixed(1)} px`);
     assert.ok(font * 334 / vbW >= 16, `telefon: ${(font * 334 / vbW).toFixed(1)} px`);
@@ -310,7 +310,7 @@ test('T6: ilustrace kreslí jen barvami tématu (třídy), popisky čitelné na 
         assert.ok(rule, cls);
         assert.doesNotMatch(rule[1], /#[0-9a-f]{3,8}\b|rgb/i, `${cls}: barva z proměnné scény`);
     }
-    assert.match(css, /\.course-illustration > svg \{[^}]*max-height/);
+    assert.match(css, /\.course-core:has\(> \.course-core-row\) \.course-illustration > svg \{[^}]*max-height/);
 });
 
 test('T6: styl ilustrací je popsaný v slides.md a ve vzorníku', () => {
@@ -318,4 +318,47 @@ test('T6: styl ilustrací je popsaný v slides.md a ve vzorníku', () => {
     assert.match(md, /### Styl ilustrací/);
     for (const w of ['course-illustration', 'fig-silhouette', 'fig-force', '31\u00a0px|31 px', '16 px', 'loga']) assert.match(md, new RegExp(w), w);
     assert.ok(read('docs/course/vzornik-slidu.html').includes('course-illustration'));
+});
+
+// ---------------------------------------------------------------- T7: styl ilustrací na všech schématech
+
+const ILLUSTRATED = [11, 12, 13, 14, 16, 17, 18, 21];
+
+test('T7: všechna schémata kapitoly jsou ilustrace ve světlém rámu se stejnou šířkou viewBoxu', () => {
+    for (const n of ILLUSTRATED) {
+        const svgs = [...slide(n).querySelectorAll('figure svg')];
+        assert.ok(svgs.length > 0, `slide ${n}`);
+        for (const svg of svgs) {
+            assert.ok(svg.closest('figure').classList.contains('course-illustration'), `slide ${n}: course-illustration`);
+            assert.equal(svg.getAttribute('viewBox').split(/\s+/)[2], '600', `slide ${n}: viewBox šířky 600 = stejně velké popisky`);
+            assert.match(svg.firstElementChild.getAttribute('class'), /^fig-(sky|paper)$/, `slide ${n}: světlý rám`);
+            assert.doesNotMatch(svg.outerHTML, /\s(fill|stroke|style|color)="/, `slide ${n}: barvy jen z tříd`);
+            for (const t of svg.querySelectorAll('text')) assert.match(t.getAttribute('class') ?? '', /fig-label-xl/, `slide ${n}: ${text(t)}`);
+        }
+    }
+});
+
+test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
+    const labels = {
+        11: ['tlaková síla F', 'plocha (obsah) S'],
+        13: ['F'],
+        14: ['nízký tlak', 'vysoký tlak'],
+        16: ['vzduchu ubývá, tlak klesá k 0', 'Mount Everest 8 850 m', '31 kPa', 'hladina moře', '101 kPa'],
+        17: ['horské sedlo'],
+        18: ['F', 'F', 'F', 'S', 'S', 'S', 'h'],
+        21: ['obličejové dutiny', 'dýchací cesty', 'plíce', 'trávicí systém'],
+    };
+    for (const [n, want] of Object.entries(labels)) {
+        const got = [...slide(n).querySelectorAll('figure svg text')].map(t => t.textContent.replace(/\s+/g, ' ').trim());
+        assert.deepEqual(got.sort(), [...want].sort(), `slide ${n}`);
+    }
+    const forces = (n) => slide(n).querySelectorAll('figure svg .fig-force').length;
+    assert.equal(forces(11), 1, 'tlaková síla');
+    assert.equal(forces(13), 9, 'síla na píst a tlak do všech směrů (8 šipek)');
+    assert.equal(forces(18), 3, 'stejná síla na tři dna');
+    assert.equal(forces(14) + forces(16) + forces(17) + forces(21), 0, 'bez nových sil');
+    assert.equal(slide(14).querySelectorAll('.fig-air').length, 20, 'stejné množství plynu v obou válcích');
+    const fig13 = text(slide(13).querySelector('figure figcaption'));
+    assert.match(fig13, /pevná látka: krystalická mřížka/);
+    assert.match(fig13, /kapalina: tlak se šíří všude stejně/);
 });
