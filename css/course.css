@@ -905,11 +905,6 @@ details.course-more > summary .course-summary-hint {
 @media (min-width: 900px) {
     .course-practice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-/* Šest otázek (Tlak): compact zmenší písmo, ať se dvě řady vejdou do rámečku i s vyhodnocením. Telefon beze změny. */
-@media (min-width: 769px) {
-    .course-slide[data-slide-type="practice"][data-slide-fit="compact"] .course-core { font-size: calc(var(--course-practice-text) * 0.66); }
-    .course-slide[data-slide-type="practice"][data-slide-fit="compact"] .course-practice { gap: var(--space-3) var(--space-5); }
-}
 /* Přebírá styly kvízu: ty počítají se světlým pozadím a odpovědi animují posunem. */
 .course-practice .question-card,
 .course-practice .feedback { animation: none; }

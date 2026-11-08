@@ -235,8 +235,8 @@ Poslední zastávka kapitoly: otázky z testů SPČR/CMAS vedle sebe. Nemá čí
 
 Jediná varianta, platí pro každý typ: menší písmo těla (`--course-slide-text-compact`, 0,8 × tělo). Nadpis
 ani začátek těla se neposouvají. U citace navíc seznam do dvou sloupců, u odrážek a tabulek menší mezery.
-Teď ji mají slidy 3, 4, 8, 9, 12, 13, 15, 17, 18, 19, 20, 21 a 22. U `practice` zmenší písmo otázek (Tlak má šest
-otázek ve dvou řadách); po vyhodnocení odpovědí smí slide narůst, jako u Hustoty. Na telefonu písmo nezmenšuje.
+Teď ji mají slidy 3, 4, 8, 9, 12, 13, 15, 17, 18, 19, 20, 21 a 22. Procvič si ji nemá: na slide patří tři otázky,
+zbytek je v kvízu. Na telefonu písmo nezmenšuje.
 
 Jestli se slide vejde, ověř měřením přes `getBoundingClientRect` na 1280×720, 1440×800, 1728×1000 a 1920×1080:
 výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičkou a další slide začíná pod oknem.

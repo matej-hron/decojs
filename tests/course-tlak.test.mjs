@@ -125,6 +125,9 @@ test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
     assert.match(cap, /Wikimedia Commons/);
     assert.match(cap, /volné dílo|public domain/i);
     assert.match(slide(22).innerHTML, /<var>p<\/var><var>V<\/var> = <var>n<\/var><var>R<\/var><var>T<\/var>/);
+    assert.match(text(slide(22)), /Víc částic plynu \(větší látkové množství n\) → větší tlak\./);
+    assert.match(text(slide(22)), /Vyšší teplota T \(částice mají větší energii\) → větší tlak\./);
+    assert.doesNotMatch(text(slide(22)), /počet částic plynu \(n\)|energie částic \(T\)/);
 });
 
 test('Tlak: schémata jsou česká SVG (síla na plochu, píst, sloupec vzduchu, tři nádoby)', () => {
@@ -148,7 +151,8 @@ test('Tlak: M1 se otevírá z náhledu na slidu 15 i 20, simulátor je jeden', (
 
 test('Tlak: Procvič si má otázky z analýzy a odkaz na kategorii tlak-jednotky', () => {
     const practice = doc.querySelector('#procvic .course-practice');
-    assert.equal(practice.dataset.questionIds, '29,1,53,2,59,54');
+    assert.equal(practice.dataset.questionIds, '29,59,54');
+    assert.equal(doc.querySelector('#procvic .course-slide').dataset.slideFit, undefined, 'bez compact');
     assert.ok(doc.querySelector('#procvic a[href="../quiz-physics.html?kategorie=tlak-jednotky"]'));
 });
 
@@ -203,4 +207,37 @@ test('kvíz: vysvětlení otázek 6, 53, 52 a 29 (R1-03, R2-08), doslovné U+00A
     assert.ok(q[52].explanation.endsWith(`Proto 10${N}m vody ≈ 1${N}bar ≈ tlak atmosféry.`));
     assert.ok(q[29].explanation.includes('Jednotkou je pascal (Pa)'));
     assert.doesNotMatch(q[52].explanation, /= 1 atmosféra/);
+});
+
+test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme“', () => {
+    assert.doesNotMatch(html, /Připravujeme/);
+    const concepts = (n) => [...slide(n).closest('section').querySelectorAll('details.course-more [data-concept]')].map(e => e.dataset.concept);
+    assert.deepEqual(concepts(11), ['pressure']);
+    assert.deepEqual(concepts(13), ['pascal-law']);
+    assert.deepEqual(concepts(15), ['total-pressure']);
+    assert.deepEqual(concepts(16), ['atmospheric-pressure']);
+    assert.deepEqual(concepts(18), ['hydrostatic-pressure']);
+    assert.deepEqual(concepts(22), ['gas-pressure']);
+    const more = (n) => text(slide(n).closest('section').querySelector('details.course-more'));
+    assert.match(read('concepts/cs/total-pressure.html'), /Přetlak/, 'přetlak a podtlak pod slidem 15 (R2-03)');
+    assert.match(read('concepts/cs/total-pressure.html'), /podtlak/);
+    assert.match(more(17), /standardní atmosféř/);
+    assert.match(more(17), /Plánování ponorů/);
+    assert.doesNotMatch(more(17), /300\s*m|hodin/, 'pravidlo 300 m bez zdroje a doby před odletem ne');
+    assert.match(more(20), /předbíháme Daltonův zákon/);
+    for (const d of ['28', '40,5', '66']) assert.match(more(20), new RegExp(`${d}\\s?m:`), d);
+    assert.match(more(22), /Nad rámec P★/);
+    assert.match(more(22), /anglicky/);
+    for (const href of ['../sandbox/gas-law.html', '../sandbox/transfilling.html', '../sandbox/cascade-filling.html']) {
+        assert.ok(slide(22).closest('section').querySelector(`details.course-more a[href="${href}"]`), href);
+    }
+});
+
+test('pojmy Tlaku: první odstavec obstojí sám, se vzorcem nebo definicí a jednotkou', () => {
+    const first = (id) => new JSDOM(read(`concepts/cs/${id}.html`)).window.document.querySelector('p');
+    const cases = {
+        pressure: /p = F\/S.*pascal/, 'pascal-law': /Pascalův zákon/, 'atmospheric-pressure': /101\s325\sPa/,
+        'hydrostatic-pressure': /ph = h · ρ · g/, 'total-pressure': /p = patm \+ ph/, 'gas-pressure': /pV = nRT/,
+    };
+    for (const [id, re] of Object.entries(cases)) assert.match(text(first(id)), re, id);
 });

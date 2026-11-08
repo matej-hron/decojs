@@ -42,9 +42,14 @@
                 <summary>Více <span class="course-summary-hint">o kapitole</span></summary>
                 <div class="course-more-body">
                     <div class="course-chapter-intro">
-                        <h3>Úvod</h3>
-                        <p>Připravujeme: proč je tlak pro potápěče nejzávažnější vliv a kde ho budeme potřebovat dál
-                            (Stlačování plynů, spotřeba vzduchu, Daltonův zákon).</p>
+                        <p>Tlak je pro potápěče nejzávažnější ze všech fyzikálních vlivů a roste s každým metrem hloubky.</p>
+                        <div class="course-hooks">
+                            <p><strong>Budeme ho potřebovat dál:</strong></p>
+                            <ul>
+                                <li>celkový tlak v hloubce → <strong>stlačování plynů</strong> (Boyleův-Mariotteův zákon) a <strong>spotřeba vzduchu</strong>,</li>
+                                <li>tlak v hloubce → <strong>parciální tlaky</strong> (Daltonův zákon) a sycení tkání.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </details>
@@ -77,9 +82,7 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Tlak a tlaková síla</h3>
-                    <p>Připravujeme: rozdíl mezi tlakem a tlakovou silou a výpočet síly na víko komory nebo průzor
-                        pouzdra (<var>F</var> = <var>p</var> · <var>S</var>).</p>
+                    <div class="course-concept" data-concept="pressure"></div>
                 </div>
             </details>
         </section>
@@ -157,8 +160,18 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Jednotky tlaku</h3>
-                    <p>Připravujeme: převody mezi Pa, kPa, MPa, bar a atm a řešený příklad s jehlou.</p>
+                    <div class="course-example" id="priklad-jehla">
+                        <h3>Řešený příklad</h3>
+                        <p>Jaký tlak vyvine síla 5&nbsp;N na hrot jehly o ploše 0,1&nbsp;mm²?</p>
+                        <details class="course-answer">
+                            <summary>Ukázat postup</summary>
+                            <div class="course-answer-body">
+                                <p>Plochu převedeme na metry čtvereční: 1&nbsp;mm² = 0,000&nbsp;001&nbsp;m², takže 0,1&nbsp;mm² = 0,000&nbsp;000&nbsp;1&nbsp;m².</p>
+                                <p><var>p</var> = <var>F</var>/<var>S</var> = 5&nbsp;N / 0,000&nbsp;000&nbsp;1&nbsp;m² = 50&nbsp;000&nbsp;000&nbsp;Pa = 50&nbsp;MPa = 500&nbsp;bar.</p>
+                                <p>5&nbsp;N je asi tíha půllitrové lahve vody (0,5&nbsp;kg · 9,81&nbsp;m/s² ≈ 4,9&nbsp;N).</p>
+                            </div>
+                        </details>
+                    </div>
                 </div>
             </details>
         </section>
@@ -235,8 +248,7 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Pascalův zákon</h3>
-                    <p>Připravujeme: proč jsou kapaliny prakticky nestlačitelné a proč je voda u ledu výjimka (viz Hustota).</p>
+                    <div class="course-concept" data-concept="pascal-law"></div>
                 </div>
             </details>
         </section>
@@ -291,8 +303,7 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Plyny jsou stlačitelné</h3>
-                    <p>Připravujeme: co se děje s plynem pod pístem; navazuje kapitola Stlačování plynů.</p>
+                    <p>Jak přesně se objem plynu mění s tlakem, ukáže další kapitola Stlačování plynů (Boyleův-Mariotteův zákon).</p>
                 </div>
             </details>
         </section>
@@ -321,8 +332,10 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Celkový tlak</h3>
-                    <p>Připravujeme: jak se celkový tlak skládá z atmosférického a hydrostatického a jak to ukazuje model.</p>
+                    <div class="course-concept" data-concept="total-pressure"></div>
+                    <p>V modelu „Tlak v hloubce“ je atmosférický tlak žlutý pás, který je v každé hloubce stejně široký, a hydrostatický
+                        tlak modrý klín, který s hloubkou roste. Voda nad potápěčem je ve sloupci obarvená stejně jako klín: právě její tíha
+                        dělá hydrostatický tlak.</p>
                 </div>
             </details>
             <dialog class="course-sim" aria-labelledby="titulek-tlak">
@@ -421,8 +434,9 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Atmosférický tlak</h3>
-                    <p>Připravujeme: proč tlak vzduchu klesá s výškou a proč počasí potápění neovlivní.</p>
+                    <div class="course-concept" data-concept="atmospheric-pressure"></div>
+                    <p>Text slidu počítá se 100&nbsp;kPa = 1&nbsp;bar, obrázek ukazuje 101&nbsp;kPa. Obojí je zaokrouhlení normálního tlaku
+                        101,325&nbsp;kPa.</p>
                 </div>
             </details>
         </section>
@@ -471,8 +485,13 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Nadmořská výška a potápění</h3>
-                    <p>Připravujeme: proč je ve výšce jiná dekomprese, přejezd přes horská sedla a let po ponoru.</p>
+                    <p>Tabulka odpovídá standardní atmosféře (ISO 2533) přepočtené tak, aby u hladiny moře vyšlo přesně 100&nbsp;kPa.
+                        Od takto přepočtené standardní atmosféry se liší nejvýš o 0,1&nbsp;kPa.</p>
+                    <p>Proč na výšce záleží: při výstupu klesne tlak u horského jezera ve větším poměru než u moře. Z 20&nbsp;m na hladinu
+                        je to u moře 3&nbsp;bar → 1&nbsp;bar (třikrát méně), u jezera v 5&nbsp;500&nbsp;m 2,5&nbsp;bar → 0,5&nbsp;bar (pětkrát
+                        méně). Proto se pro potápění ve výšce dekomprese počítá jinak.</p>
+                    <p>Kdy smíš po ponoru letět nebo přejíždět horské sedlo, probírá přednáška
+                        <a href="index.html#plan">Plánování ponorů, dekompresní postupy</a>.</p>
                 </div>
             </details>
         </section>
@@ -525,8 +544,9 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Hydrostatický tlak a paradox</h3>
-                    <p>Připravujeme: proč tlak závisí jen na výšce sloupce, ne na množství vody, a Pascalův sud (jak se traduje).</p>
+                    <div class="course-concept" data-concept="hydrostatic-pressure"></div>
+                    <p>Slovo „pouze“ na slidu platí pro jednu kapalinu: když se nemění hustota ani tíhové zrychlení, záleží jen na výšce
+                        sloupce.</p>
                 </div>
             </details>
         </section>
@@ -554,8 +574,10 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Školní a přesná čísla</h3>
-                    <p>Připravujeme: kdy stačí 1&nbsp;bar na 10&nbsp;m a jak se počítá přesně (mořská voda, standardní atmosféra).</p>
+                    <p>Příklad počítá jako přednáška a testy SPČR s hustotou 1&nbsp;000&nbsp;kg/m³ a tíhovým zrychlením 10&nbsp;m/s²,
+                        i když jde o moře. Přesně (mořská voda, normální atmosférický tlak) vyjde 2,02&nbsp;bar. V modelu to ukáže přepínač
+                        „přesně“: <a href="?hloubka=10&amp;presne=1#model-tlak" data-preset-link>10&nbsp;m moře přesně →</a></p>
+                    <p>Pravidlo <var>p</var> = <var>h</var>/10 + 1 [bar] platí jen pro hloubku v metrech a dá tlak v barech.</p>
                 </div>
             </details>
         </section>
@@ -610,9 +632,16 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Hloubky, které jsou meze</h3>
-                    <p>Připravujeme: které hloubky z tabulky jsou meze pro dusík a kyslík (28; 40,5 a 66&nbsp;m) a proč má
-                        horské jezero na hladině jen 0,5&nbsp;bar.</p>
+                    <p>Hloubky v tabulkách jsou hlavně na procvičení. Některé z nich jsou ale meze, které budeš potřebovat (tady trochu
+                        předbíháme Daltonův zákon). Pro vzduch:</p>
+                    <ul>
+                        <li><strong>28&nbsp;m:</strong> parciální tlak dusíku <var>p</var><sub>N₂</sub> asi 3&nbsp;bar, začátek pásma, kde se
+                            projevuje dusíková narkóza,</li>
+                        <li><strong>40,5&nbsp;m:</strong> <var>p</var><sub>N₂</sub> asi 4&nbsp;bar, mez pro dusík,</li>
+                        <li><strong>66&nbsp;m:</strong> parciální tlak kyslíku <var>p</var><sub>O₂</sub> asi 1,6&nbsp;bar, mez pro kyslík.</li>
+                    </ul>
+                    <p>Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon.</p>
+                    <p>Horské jezero má na hladině 0,5&nbsp;bar podle tabulky na slidu 17 (5&nbsp;500&nbsp;m: 49,8&nbsp;kPa).</p>
                 </div>
             </details>
         </section>
@@ -651,8 +680,8 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Tlak a tělo</h3>
-                    <p>Připravujeme: proč tekutiny tlak necítí a které dutiny se musí vyrovnávat; navazuje kapitola Stlačování plynů.</p>
+                    <p>Tkáně těla jsou z velké části voda a ta je prakticky nestlačitelná (slide 13), tlak je proto nezmenší. Plyn
+                        v dutinách se ale stlačí. Co se s ním děje a jak se tlak vyrovnává, probere kapitola Stlačování plynů.</p>
                 </div>
             </details>
         </section>
@@ -666,8 +695,8 @@
                         <p><span class="course-highlight">Tlak je vyvolán nárazy částic plynu do stěn.</span>
                             Ale na čem závisí?</p>
                         <ul>
-                            <li>Větší počet částic plynu (<var>n</var>) → větší tlak.</li>
-                            <li>Větší energie částic (<var>T</var>) → větší tlak.</li>
+                            <li>Víc částic plynu (větší látkové množství <var>n</var>) → větší tlak.</li>
+                            <li>Vyšší teplota <var>T</var> (částice mají větší energii) → větší tlak.</li>
                             <li>Čím větší objem (<var>V</var>) → menší tlak.</li>
                         </ul>
                         <p>Stavová rovnice ideálního plynu:</p>
@@ -685,19 +714,29 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <h3>Stavová rovnice</h3>
-                    <p>Připravujeme: tlak jako nárazy částic, tři zvláštní případy stavové rovnice (nad rámec P★) a odkazy
-                        do Sandboxu.</p>
+                    <div class="course-concept" data-concept="gas-pressure"></div>
+                    <h3>Nad rámec P★: tři zvláštní děje</h3>
+                    <p>Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na tři zákony. Osnova je řadí do P★★ (slide 4):</p>
+                    <ul>
+                        <li><strong>izotermický děj</strong> (stálá teplota): Boyleův-Mariotteův zákon, <var>p</var><var>V</var> = konst.,
+                            podrobně v kapitole Stlačování plynů,</li>
+                        <li><strong>izobarický děj</strong> (stálý tlak): Gay-Lussacův zákon, <var>V</var>/<var>T</var> = konst.,</li>
+                        <li><strong>izochorický děj</strong> (stálý objem): Charlesův zákon, <var>p</var>/<var>T</var> = konst. Tak se mění
+                            tlak v lahvi, když se ohřeje nebo ochladí.</li>
+                    </ul>
+                    <p>V Pískovišti (anglicky): <a href="../sandbox/gas-law.html">ohřev a ochlazení lahve</a>,
+                        <a href="../sandbox/transfilling.html">přepouštění mezi lahvemi</a>,
+                        <a href="../sandbox/cascade-filling.html">plnění z kaskády</a>.</p>
                 </div>
             </details>
         </section>
 
         <section id="procvic" class="course-section">
-            <div class="course-slide" data-slide-type="practice" data-slide-fit="compact">
+            <div class="course-slide" data-slide-type="practice">
                 <h2>Procvič si</h2>
                 <div class="course-core">
                     <p class="course-note">Otázky z testů SPČR/CMAS. Klikni na odpověď.</p>
-                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="29,1,53,2,59,54"></div>
+                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="29,59,54"></div>
                     <p><a href="../quiz-physics.html?kategorie=tlak-jednotky">Všechny otázky z testu fyziky na tlak a jednotky →</a></p>
                 </div>
             </div>
