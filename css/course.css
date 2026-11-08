@@ -358,7 +358,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
    (obloha, papír), jen barvami scény Hladina; síla je výrazná blokově kreslená šipka s tmavým obrysem.
    Obrázek je hlavní prvek: nad ním krátký nadpis, pod ním krátký popisek písmem těla, ne odstavec. */
 .course-figure-title { margin: 0 0 var(--space-2); font-size: 1em; font-weight: 600; line-height: 1.25; }
-.course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.25); }
+/* Výška ilustrace podle rozložení: vedle textu (figure) nejvýš polovina slidu jako každý obrázek, dvě vedle sebe
+   s řádkem pod nimi (slide 12) 25 %, pod textem ve sloupci (slide 13) 27 %, nízký pás pod textem (slide 17) 20 %. */
+.course-core:has(> .course-core-row) .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.25); }
 .course-illustration > figcaption { margin-top: var(--space-2); font-size: 0.85em; line-height: 1.3; color: var(--slide-fg); }
 .course-figure-note { display: block; font-size: 0.85em; color: var(--slide-subtle); }
 @media (max-width: 768px) { /* telefon: popisek písmem těla, doplněk aspoň 16 px, poloviny od sebe */
@@ -366,6 +368,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     .course-figure-note { font-size: 0.9em; }
     .course-core > div + div > .course-figure-title { margin-top: var(--space-6); }
     .course-core:has(> div > .course-illustration) > .course-core-row { margin-top: var(--space-6); }
+    .course-core-cols .course-illustration { margin-bottom: var(--space-6); }
 }
 .course-illustration svg text { fill: var(--slide-on-accent); }
 .course-figure svg .fig-label-xl { font-size: 36px; font-weight: 600; } /* viewBox výšky 270 na 25 % slidu: 1920×1080 32 px, telefon 25 px */
@@ -391,15 +394,39 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-hub { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 3; }
 .course-figure svg .fig-needle { fill: none; stroke: var(--slide-on-accent); stroke-width: 3.5; stroke-linecap: round; }
 .course-figure svg .fig-pointer { fill: none; stroke: var(--slide-on-accent); stroke-width: 2; }
+.course-figure svg .fig-air { fill: var(--slide-bg); }
+.course-figure svg .fig-gas { fill: var(--slide-accent); fill-opacity: 0.6; }
+.course-figure svg .fig-wall { fill: none; stroke: var(--slide-on-accent); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+.course-figure svg .fig-guide { fill: none; stroke: var(--slide-on-accent); stroke-width: 2.5; stroke-dasharray: 10 8; }
+.course-figure svg .fig-dim { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; }
+.course-figure svg .fig-tag { fill: var(--slide-on-accent); }
+.course-figure svg .fig-tag-light { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 2; }
+.course-illustration svg .fig-label-tag { fill: var(--slide-highlight); }
+.course-illustration svg .fig-label-light { fill: var(--slide-fg); }
+.course-figure svg .fig-rock { fill: var(--slide-ground); }
+.course-figure svg .fig-sea { fill: var(--slide-water); }
+.course-figure svg .fig-solid-top { fill: var(--slide-accent); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-solid-front { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-solid-side { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-atom { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; }
+.course-figure svg .fig-bond { fill: none; stroke: var(--slide-on-accent); stroke-width: 5; }
+.course-figure svg .fig-road { fill: none; stroke: var(--slide-on-accent); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-road-line { fill: none; stroke: var(--slide-highlight); stroke-width: 2; stroke-dasharray: 8 8; }
+.course-figure svg .fig-plane { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-body { fill: var(--slide-on-accent); }
+.course-figure svg .fig-cavity { fill: var(--slide-accent); stroke: var(--slide-card-bg); stroke-width: 2.5; }
+.course-figure svg .fig-halo { fill: none; stroke: var(--slide-card-bg); stroke-width: 8; stroke-linecap: round; }
+.course-figure svg .fig-leader { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; stroke-linecap: round; }
+/* Dvě části jedné ilustrace s popisky pod každou z nich (slide 13). */
+.course-figure-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
 /* Stlačování plynů (S7): válce s písty a graf p–V (slide 23), tělo a ucho (slide 27). */
-.course-figure svg .fig-gas { fill: var(--slide-accent); fill-opacity: 0.7; } /* plyn ve válci */
+/* fig-gas, fig-guide a fig-cavity (dutiny v těle jako na slidu 21) jsou společné s Tlakem (T7). */
+.course-figure svg .fig-cavity-light { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; } /* vzduch ve středním uchu na světlé tkáni */
 .course-figure svg .fig-molecule { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 2; } /* částice plynu */
 .course-figure svg .fig-weight { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2.5; } /* závaží na pístu */
 .course-figure svg .fig-axis { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; }
-.course-figure svg .fig-guide { fill: none; stroke: var(--slide-on-accent); stroke-opacity: 0.45; stroke-width: 2; stroke-dasharray: 7 6; }
 .course-figure svg .fig-curve { fill: none; stroke: var(--slide-water); stroke-width: 5; stroke-linecap: round; } /* křivka grafu */
 .course-figure svg .fig-dot { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 3; } /* bod na křivce */
-.course-figure svg .fig-cavity { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; } /* vzduch v těle */
 .course-figure svg .fig-tissue { fill: var(--slide-accent); }
 .course-figure svg .fig-tube-wall { fill: none; stroke: var(--slide-on-accent); stroke-width: 30; }
 .course-figure svg .fig-tube { fill: none; stroke: var(--slide-card-bg); stroke-width: 24; }
@@ -427,6 +454,8 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 /* Obrázek pod textem ve dvou sloupcích obsahového slidu (slidy 13, 17). */
 .course-core-cols .course-figure { margin-top: var(--space-3); }
 .course-core-cols .course-figure > svg { max-height: calc(var(--course-slide-height) * 0.2); }
+.course-core-cols .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.22); }
+.course-core-cols .course-illustration-band > svg { max-height: calc(var(--course-slide-height) * 0.2); }
 
 /* calc: příklad. Zadání vidět, postup v jednom odkrytí; tabulka k doplnění, kde klik na buňku odkryje
    výsledek (slidy 19, 20). */
