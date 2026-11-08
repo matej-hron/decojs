@@ -25,6 +25,12 @@ import { readParams, syncUrl } from './modelParams.js';
 export const MODEL_MAX_DEPTH = 40;
 
 /**
+ * Místo nad hladinou v em (WaterColumn `headroom`): zvon na hladině visí nad vodou a balónek na hladině z ní vyčnívá
+ * (review R4-01). Nad hladinou je i tak 1,7 em kostry, dohromady se vejde zvon (1,15 · 4,1 em) i balónek (4,3 em).
+ */
+export const BOYLE_HEADROOM_EM = 3.4;
+
+/**
  * Předměty ze slidů: balónek 6 l vypuštěný ze 40 m (slide 25) a zvon s 1 000 l vzduchu na hladině (slide 24).
  * `rows` jsou hloubky řádků tabulky ve směru slidu.
  * @type {Readonly<Record<'balloon'|'bell', import('../components/waterColumn/gasVolumeLayer.js').GasObject>>}
@@ -92,6 +98,7 @@ export function createBoyleModel(host, { controlsHost = null, state = null, cont
         depth: initial.depth,
         state: { gasObject: initial.gasObject, pressureMode: PRESSURE_MODES.SCHOOL, altitude: 0, water: 'salt' },
         height: modelHeight(host, () => column, compact),
+        headroom: BOYLE_HEADROOM_EM,
         labels: { figure: 'Vodní sloupec: objem plynu v hloubce' },
     });
     if (compact) column.el.classList.add('water-column-compact');
@@ -110,7 +117,7 @@ export function createBoyleModel(host, { controlsHost = null, state = null, cont
             (key) => column.setState({ gasObject: key, depth: startDepth(key) }));
         target.append(steps, picker.el);
     }
-    column.addLayer(createPressureLayer({ controls: false }));
+    column.addLayer(createPressureLayer({ controls: false, exactScale: false }));
     column.addLayer(createGasVolumeLayer({ objects: BOYLE_OBJECTS, defaultObject: 'balloon' }));
     picker?.sync(column.getState().gasObject);
     column.on('change', (s) => picker?.sync(s.gasObject));

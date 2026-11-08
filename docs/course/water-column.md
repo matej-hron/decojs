@@ -33,6 +33,7 @@ const col = createWaterColumn(document.getElementById('tlak-column'), {
     surface: 'water',           // 'water' | 'ice'
     state: { water: 'fresh' },  // počáteční klíče stránky / vrstev
     // aside: false,            // vypne všechny boční panely
+    // headroom: 3.4,           // em místa nad hladinou (předmět na hladině, zvon nad vodou); dno zůstává
     // height: 480,             // px, nebo (width) => px; výchozí defaultHeight(width)
     // labels: { depthAxis: 'hloubka [m]', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
 });
@@ -236,7 +237,8 @@ Barvy **dat** vrstvy smí mít vrstva vlastní, ale přepsatelné CSS proměnnou
 
 Z `WaterColumn.js` (čisté, bez DOM, testované v Node):
 `clamp`, `decimalsOf`, `fmtCs`, `fmtDepth`, `snapDepth`, `niceStep`, `niceTicks`, `depthTicks`, `baseFontSize`,
-`defaultHeight`, `computeGeometry`, `depthReadout`, `joinReadout`, `sortLayers`, `estimateTextWidth`,
+`defaultHeight`, `computeGeometry`, `depthReadout`, `joinReadout`, `sortLayers`, `estimateTextWidth`, `placeBarLabel`
+(popisek pruhu v panelu: za pruh, do něj, nebo bez jednotky, nikdy do sousedního panelu),
 `splitLabel`, `wavePath`, konstanty `CORE_STATE_KEYS`, `DEFAULT_LABELS`.
 DOM pomocníci: `svgEl(tag, attrs, parent)` (`attrs.text` = textContent), `haloAttrs`, `readColors`.
 

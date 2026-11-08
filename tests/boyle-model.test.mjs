@@ -169,9 +169,86 @@ test('volumeTicks: popisky osy objemu se nepřekrývají ani v úzkém panelu te
     assert.deepEqual(volumeTicks(1000, 70, 14), [0, 1000], 'zvon na 390 px');
     assert.deepEqual(volumeTicks(30, 340, 20), [0, 5, 10, 15, 20, 25, 30], 'balónek na desktopu');
     assert.ok(volumeTicks(1000, 340, 20).length >= 5, 'zvon na desktopu');
-    for (const [v, w, fs] of [[1000, 70, 14], [1000, 120, 14], [30, 70, 14], [1000, 340, 20]]) {
-        const t = volumeTicks(v, w, fs);
-        const labelW = (0.56 * '1 000'.length + 0.6) * fs;
-        if (t.length > 1 && v === 1000) assert.ok(w / (t.length - 1) >= labelW, `${v} l, ${w} px`);
+    const { tickLabelBoxes } = await import('../js/components/waterColumn/gasVolumeLayer.js');
+    for (const [v, w, fs] of [[1000, 70, 14], [1000, 120, 14], [30, 70, 14], [30, 102, 14], [1000, 340, 20], [30, 340, 20]]) {
+        const boxes = tickLabelBoxes(volumeTicks(v, w, fs), v, w, fs);
+        boxes.forEach((b, i) => { if (i) assert.ok(b.left - boxes[i - 1].right >= 0.4 * fs, `${v} l, ${w} px`); });
+        assert.ok(boxes.at(-1).right <= w + 0.9 * fs + 1e-9, 'maximum nepřeteče okraj SVG');
     }
+});
+
+// ---------------------------------------------------------------- R4: zvon podle plochy, poloha předmětů
+
+test('R4-03: hladina ve zvonu podle plochy nakresleného tvaru (ve 20 m vzduch třetina plochy, v 10 m polovina)', async () => {
+    const { BELL_SHAPE, bellAreaAbove, bellAirDepth } = await import('../js/components/waterColumn/gasVolumeLayer.js');
+    const { height: h, dome } = BELL_SHAPE;
+    const total = bellAreaAbove(h, 1, h, dome);
+    // numerická kontrola uzavřeného tvaru plochy: šířka kopule w(1 − t²), t = 1 − √(u/dome)
+    let num = 0; const n = 20000;
+    for (let i = 0; i < n; i++) {
+        const u = ((i + 0.5) / n) * h;
+        const t = u < dome ? 1 - Math.sqrt(u / dome) : 0;
+        num += (1 - t * t) * (h / n);
+    }
+    assert.ok(Math.abs(num - total) < 1e-4, `${num} vs ${total}`);
+    for (const [depth, share] of [[0, 1], [10, 1 / 2], [20, 1 / 3], [30, 1 / 4]]) {
+        const u = bellAirDepth(share, 1, h, dome);
+        assert.ok(Math.abs(bellAreaAbove(u, 1, h, dome) / total - share) < 1e-9, `${depth} m`);
+    }
+    assert.equal(bellAirDepth(1, 1, h, dome), h, 'na hladině je celý zvon vzduch');
+    assert.equal(bellAirDepth(0, 1, h, dome), 0);
+});
+
+test('R4-01: model nechává nad hladinou místo pro zvon a balónek na hladině (headroom)', async () => {
+    const { computeGeometry } = await import('../js/components/WaterColumn.js');
+    const base = computeGeometry({ width: 800, height: 500, maxDepth: 40, panels: 2 });
+    const roomy = computeGeometry({ width: 800, height: 500, maxDepth: 40, panels: 2, headroom: 4.8 });
+    assert.equal(roomy.column.y - base.column.y, Math.round(4.8 * base.fontSize));
+    assert.equal(roomy.column.y + roomy.column.h, base.column.y + base.column.h, 'dno sloupce zůstává');
+});
+
+test('R4-04: osa tlaku jen ze školního režimu, když model přepínač nemá', async () => {
+    const { pressureScaleMax } = await import('../js/components/waterColumn/pressureLayer.js');
+    assert.equal(pressureScaleMax(40, { exact: false }), 5);
+    assert.equal(pressureScaleMax(40), 6, 'M1 s přepínačem počítá i s přesným režimem');
+});
+
+test('R4-04: úzký panel objemu má popisky 0, polovina a maximum, když se vejdou', async () => {
+    const { volumeTicks } = await import('../js/components/waterColumn/gasVolumeLayer.js');
+    const { tickLabelBoxes } = await import('../js/components/waterColumn/gasVolumeLayer.js');
+    for (const w of [60, 70, 102, 140]) {
+        const ticks = volumeTicks(30, w, 14);
+        assert.equal(ticks[0], 0); assert.equal(ticks.at(-1), 30, `${w} px končí na 30`);
+        const boxes = tickLabelBoxes(ticks, 30, w, 14);
+        boxes.forEach((b, i) => { if (i) assert.ok(b.left - boxes[i - 1].right >= 0.4 * 14, `balónek ${w} px: ${ticks}`); });
+    }
+    assert.ok([[0, 15, 30], [0, 30]].some(a => JSON.stringify(a) === JSON.stringify(volumeTicks(30, 40, 14))), 'velmi úzký panel: 0, polovina, maximum, jinak 0 a maximum');
+    assert.deepEqual(volumeTicks(1000, 120, 14), [0, 500, 1000], 'zvon na užším panelu');
+    assert.deepEqual(volumeTicks(1000, 70, 14), [0, 1000], 'zvon na telefonu: polovina se nevejde');
+});
+
+test('R4-04: popisek pruhu nepřeleze do sousedního panelu ani přes osu', async () => {
+    const { placeBarLabel } = await import('../js/components/WaterColumn.js');
+    const fs = 14;
+    // dost místa vpravo: za pruhem
+    const a = placeBarLabel({ x0: 0, x1: 20, right: 200, fs, labels: ['2 bar', '2'] });
+    assert.equal(a.anchor, 'start');
+    assert.equal(a.text, '2 bar');
+    // dlouhý pruh: dovnitř
+    const b = placeBarLabel({ x0: 0, x1: 190, right: 200, fs, labels: ['5 bar', '5'] });
+    assert.deepEqual([b.anchor, b.inside, b.text], ['end', true, '5 bar']);
+    // úzký panel telefonu: plný popisek se nevejde ani za pruh, ani do něj → jen číslo
+    const c = placeBarLabel({ x0: 0, x1: 28, right: 70, fs, labels: ['2 bar', '2'] });
+    assert.equal(c.text, '2');
+    const end = c.anchor === 'start' ? c.x + c.width : c.x;
+    const start = c.anchor === 'start' ? c.x : c.x - c.width;
+    assert.ok(end <= 70 && start >= 0, `${start}–${end}`);
+});
+
+test('R4-01: místo nad hladinou pojme zvon i balónek na hladině', async () => {
+    const { BOYLE_HEADROOM_EM } = await import('../js/course/boyleModel.js');
+    const { BELL_SHAPE, BELL_MAX_WIDTH_EM, BALLOON_MAX_RADIUS_EM } = await import('../js/components/waterColumn/gasVolumeLayer.js');
+    const above = 1.7 + BOYLE_HEADROOM_EM; // em nad hladinou: okraj kostry + headroom
+    assert.ok(BELL_SHAPE.height * BELL_MAX_WIDTH_EM <= above - 0.2, 'zvon');
+    assert.ok(BALLOON_MAX_RADIUS_EM <= above - 0.2, 'balónek');
 });

@@ -199,6 +199,30 @@ export function estimateTextWidth(text, fontSize) {
 }
 
 /**
+ * Where to put the value label of a horizontal bar in a panel: after the bar if it fits, else inside its end,
+ * never over the panel's left axis or into the neighbouring panel. `labels` go from the fullest to the shortest
+ * ('2 bar', '2'); the first one that fits wins, the last one is used after the bar as a fallback.
+ * @param {Object} p
+ * @param {number} p.x0 - left edge of the panel (bar start), px
+ * @param {number} p.x1 - bar end, px
+ * @param {number} p.right - right edge of the panel, px
+ * @param {number} p.fs - font size, px
+ * @param {string[]} p.labels
+ * @returns {{text: string, x: number, anchor: 'start'|'end', inside: boolean, width: number}}
+ */
+export function placeBarLabel({ x0, x1, right, fs, labels }) {
+    const pad = 0.4 * fs;
+    for (const text of labels) {
+        const width = text.length * 0.6 * fs; // bold digits: a little wider than estimateTextWidth
+        if (x1 + pad + width <= right) return { text, x: x1 + pad, anchor: 'start', inside: false, width };
+        if (x1 - pad - width >= x0 + 0.2 * fs) return { text, x: x1 - pad, anchor: 'end', inside: true, width };
+    }
+    const text = labels[labels.length - 1];
+    const width = text.length * 0.6 * fs;
+    return { text, x: Math.min(x1 + pad, right - width), anchor: 'start', inside: false, width };
+}
+
+/**
  * Split a label into at most two lines so that it fits `maxWidth`.
  * Breaks at the space nearest the middle. A label that fits stays one line.
  *
@@ -251,9 +275,11 @@ export function splitLabel(label, maxWidth, fontSize) {
  * @param {number} [p.fontSize] - px (default `baseFontSize(width)`)
  * @param {number} p.maxDepth - metres
  * @param {number} [p.panels=0] - number of aside panels
+ * @param {number} [p.headroom=0] - extra space above the surface in em (an object floating on the surface, a bell
+ *   hanging above it); the bottom of the column stays where it was
  * @returns {Geometry} (without `colors`; `aside` is null — set per layer)
  */
-export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0 }) {
+export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0, headroom = 0 }) {
     const W = Math.max(0, width);
     const fs = fontSize || baseFontSize(W);
     const H = height || defaultHeight(W);
@@ -262,7 +288,7 @@ export function computeGeometry({ width, height, fontSize, maxDepth, panels = 0 
     const digits = String(Math.round(maxDepth)).length;
     const left = Math.round(1.6 * fs + digits * 0.62 * fs + 0.8 * fs);
     const right = Math.round(n > 0 ? 1.0 * fs : 0.6 * fs);
-    const top = Math.round(1.7 * fs);
+    const top = Math.round(1.7 * fs) + Math.round(Math.max(0, headroom) * fs);
     const bottom = Math.round(n > 0 ? 3.4 * fs : 1.0 * fs);
     const inner = Math.max(0, W - left - right);
     const gap = Math.round((W < 600 ? 0.8 : 1.2) * fs);
@@ -453,6 +479,7 @@ let instanceCounter = 0;
  * @param {'water'|'ice'} [options.surface='water']
  * @param {number} [options.step=1] - depth step of the slider and drag, metres
  * @param {boolean} [options.aside=true] - false = no aside panels at all
+ * @param {number} [options.headroom=0] - extra space above the surface in em (see computeGeometry)
  * @param {number|((width:number)=>number)} [options.height] - SVG height, px
  * @param {Object} [options.labels] - overrides of DEFAULT_LABELS
  * @param {Object} [options.state] - initial page/layer keys merged into state
@@ -602,7 +629,7 @@ export function createWaterColumn(host, options = {}) {
         if (width <= 0) return; // hidden (e.g. closed <details>); ResizeObserver re-renders
         const height = typeof options.height === 'function' ? options.height(width) : options.height;
         const asideLayers = asideEnabled ? entries.filter((e) => e.layer.aside) : [];
-        geom = computeGeometry({ width, height, maxDepth: state.maxDepth, panels: asideLayers.length });
+        geom = computeGeometry({ width, height, maxDepth: state.maxDepth, panels: asideLayers.length, headroom: options.headroom });
         geom.colors = readColors(root);
 
         svg.setAttribute('width', String(geom.width));

@@ -12,7 +12,7 @@
  * Výpočet: js/physics/pressure.js. Barvy dat: CSS `--wc-pressure-atm`, `--wc-pressure-h`, `--wc-pressure-ink`, `--wc-pressure-shade`.
  */
 
-import { svgEl, fmtCs, niceTicks, haloAttrs } from '../WaterColumn.js';
+import { svgEl, fmtCs, niceTicks, haloAttrs, placeBarLabel } from '../WaterColumn.js';
 import { PRESSURE_MODES, pressureAt } from '../../physics/pressure.js';
 
 const NBSP = ' ';
@@ -77,13 +77,16 @@ export function pressureReadout(state) {
 
 /**
  * Konec vodorovné osy tlaku: stejný pro obě hladiny i oba režimy, aby šlo porovnávat.
+ * Model bez přepínače režimu (B1, jen školní čísla) ho bere jen ze školního režimu, jinak by poslední dílek
+ * zůstal prázdný (review R4-04).
  * @param {number} maxDepth m
+ * @param {{exact?: boolean}} [options] exact: false = jen školní režim
  * @returns {number} bar, celé číslo
  */
-export function pressureScaleMax(maxDepth) {
+export function pressureScaleMax(maxDepth, { exact = true } = {}) {
     const highest = Math.max(
         pressureAt(maxDepth, { mode: PRESSURE_MODES.SCHOOL }).total,
-        pressureAt(maxDepth, { mode: PRESSURE_MODES.EXACT, water: 'salt' }).total,
+        exact ? pressureAt(maxDepth, { mode: PRESSURE_MODES.EXACT, water: 'salt' }).total : 0,
     );
     return Math.ceil(highest - 1e-9);
 }
@@ -104,9 +107,10 @@ function readDataColors(el) {
  * @param {string} [options.id='pressure']
  * @param {HTMLElement} [options.controlsHost] kam dát přepínač „školní / přesně“ (výchozí: ovládání sloupce)
  * @param {boolean} [options.controls=true] false = vrstva žádné ovládání nepřidá
+ * @param {boolean} [options.exactScale=true] false = osa tlaku jen pro školní čísla (model bez přepínače režimu)
  * @returns {import('../WaterColumn.js').Layer}
  */
-export function createPressureLayer({ id = 'pressure', controlsHost = null, controls = true } = {}) {
+export function createPressureLayer({ id = 'pressure', controlsHost = null, controls = true, exactScale = true } = {}) {
     let group = null;
     let buttons = [];
 
@@ -155,7 +159,7 @@ export function createPressureLayer({ id = 'pressure', controlsHost = null, cont
 
             const p = geom.aside;
             if (!p) return;
-            const pMax = pressureScaleMax(state.maxDepth);
+            const pMax = pressureScaleMax(state.maxDepth, { exact: exactScale });
             const xOf = (bar) => p.x + (bar / pMax) * p.w;
             const yTop = geom.depthToY(0);
             const yBottom = geom.depthToY(state.maxDepth);
@@ -201,14 +205,14 @@ export function createPressureLayer({ id = 'pressure', controlsHost = null, cont
             if (xNow - xAtm > 0.5) {
                 svgEl('rect', { class: 'wc-pressure-bar-h', x: xAtm, y: barY, width: xNow - xAtm, height: barH, fill: data.hydro }, g);
             }
-            const label = `${displayedTotal(state)}${NBSP}bar`;
-            const labelW = label.length * 0.6 * fs;
-            const inside = xNow + 0.4 * fs + labelW > p.x + p.w;
+            // za pruh, nebo do něj; na úzkém panelu telefonu bez jednotky (osa říká „tlak [bar]“), nikdy do sousedního panelu
+            const total = displayedTotal(state);
+            const lab = placeBarLabel({ x0: p.x, x1: xNow, right: p.x + p.w - 0.3 * fs, fs, labels: [`${total}${NBSP}bar`, total] });
             svgEl('text', {
-                x: inside ? xNow - 0.3 * fs : xNow + 0.4 * fs, y: barY + barH / 2, dy: '0.35em',
-                'text-anchor': inside ? 'end' : 'start', 'font-weight': 600,
-                ...(inside ? { fill: data.ink } : haloAttrs(colors, fs)),
-                text: label,
+                x: lab.x, y: barY + barH / 2, dy: '0.35em',
+                'text-anchor': lab.anchor, 'font-weight': 600,
+                ...(lab.inside ? { fill: data.ink } : haloAttrs(colors, fs)),
+                text: lab.text,
             }, g);
         },
 
