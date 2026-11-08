@@ -151,6 +151,59 @@
             <p class="vzornik-type"><code>data-slide-type="models"</code> + <code>data-slide-fit="compact"</code>, ve vzorníku náhledy simulátor neotevírají</p>
         </section>
 
+        <section id="obrazek" class="course-section">
+            <div class="course-slide" data-slide-number="11" data-slide-type="figure">
+                <h2>Tlak</h2>
+                <div class="course-core">
+                    <div>
+                        <p>Tlak je definován velikostí síly působící na plochu.</p>
+                        <p class="course-formula"><var>p</var> = <var>F</var>/<var>S</var> <span class="course-unit">[Pa]</span></p>
+                    </div>
+                    <figure class="course-figure">
+                        <svg viewBox="0 0 420 300" role="img" aria-label="Tlaková síla F kolmo na plochu S">
+                            <polygon class="fig-surface" points="30,250 140,180 400,180 290,250"/>
+                            <line class="fig-arrow" x1="215" y1="20" x2="215" y2="198"/>
+                            <polygon class="fig-arrow" points="205.2,198 224.8,198 215,212"/>
+                            <text x="232" y="48" class="fig-label-strong">tlaková síla <tspan font-style="italic">F</tspan></text>
+                            <text x="140" y="285">plocha (obsah) <tspan font-style="italic">S</tspan></text>
+                        </svg>
+                    </figure>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="figure"</code> text a schéma nebo obrázek s popiskem</p>
+        </section>
+
+        <section id="priklad" class="course-section">
+            <div class="course-slide" data-slide-number="20" data-slide-type="calc" data-slide-fit="compact">
+                <h2>Celkový tlak</h2>
+                <div class="course-core">
+                    <p><span class="course-highlight">Příklad:</span> Jaký je tlak v moři v hloubce 10&nbsp;m?</p>
+                    <details class="course-answer">
+                        <summary>Ukázat postup</summary>
+                        <ol class="course-calc-steps">
+                            <li><var>p</var><sub>h</sub> = 10 · 1&nbsp;000 · 10&nbsp;Pa = 100&nbsp;000&nbsp;Pa = 1&nbsp;bar</li>
+                            <li><var>p</var> = 1 + 1 = 2&nbsp;bar</li>
+                        </ol>
+                        <p class="course-calc-result"><span><var>p</var> = <var>h</var>/10 + 1 <span class="course-unit">[bar]</span></span></p>
+                    </details>
+                    <div class="course-calc-cols">
+                        <div>
+                            <p>Moře</p>
+                            <table class="course-table">
+                                <thead><tr><th scope="col"><var>h</var> [m]</th><th scope="col"><var>p</var> [bar]</th></tr></thead>
+                                <tbody>
+                                    <tr><td class="num">10</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 10&nbsp;m">?</summary>2</details></td></tr>
+                                    <tr><td class="num">40,5</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 40,5&nbsp;m">?</summary>5,05</details></td></tr>
+                                    <tr class="course-alert"><td class="num">66</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 66&nbsp;m">?</summary>7,6</details></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="calc"</code> + <code>data-slide-fit="compact"</code>, postup v odkrytí a tabulka k doplnění (klik na otazník)</p>
+        </section>
+
         <section id="procvic" class="course-section">
             <div class="course-slide" data-slide-type="practice">
                 <h2>Procvič si</h2>

@@ -128,6 +128,8 @@ Ve variantě `compact` jde seznam od 900 px šířky do dvou sloupců.
 
 Nadpis a řady text + náhled. Klik na náhled otevře simulátor v překryvu přesně v rámečku slidu (slide 9).
 Řada `course-row-flip` dává náhled doleva. Náhledy vykreslí modul stránky, simulátory jsou v `<dialog>` pod Více.
+Jeden model smí mít náhled na víc slidech (M1 kapitoly Tlak na slidech 15 a 20): překryv se otevře na slidu, odkud
+se kliklo. Popisek „Otevřít model“ dej nahoru (`course-thumb-hint-top`), když dole v náhledu je popisek osy.
 
 ```html
 <div class="course-slide" data-slide-number="9" data-slide-type="models" data-slide-fit="compact">
@@ -139,6 +141,65 @@ Nadpis a řady text + náhled. Klik na náhled otevře simulátor v překryvu p�
                 <span class="course-thumb-plot" id="nahled-hustota"></span>
                 <span class="course-thumb-hint">Otevřít model</span>
             </button>
+        </div>
+    </div>
+</div>
+```
+
+### `figure`: text a obrázek nebo schéma
+
+Text vlevo, obrázek vpravo (od 900 px vedle sebe, na telefonu pod sebou), jako slidy 11, 14, 16, 18 a 22.
+Obrázek je `<figure class="course-figure">` s jedním `<svg>` nebo `<img>` a nepovinným `<figcaption>` (zdroj a licence
+převzatého obrázku). Výška obrázku je nejvýš polovina slidu (`--course-slide-height`), takže se slide vždy vejde.
+
+Schéma kreslíme jako jednoduché české SVG s `role="img"` a `aria-label`. Barvy nebere ze svých atributů, ale
+z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čárkovaná pomocná čára), `fig-arrow` (síla),
+`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek).
+Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
+
+```html
+<div class="course-slide" data-slide-number="11" data-slide-type="figure">
+    <h2>Tlak</h2>
+    <div class="course-core">
+        <div>
+            <p>Tlak je definován velikostí síly působící na plochu.</p>
+            <p class="course-formula"><var>p</var> = <var>F</var>/<var>S</var> <span class="course-unit">[Pa]</span></p>
+        </div>
+        <figure class="course-figure">
+            <svg viewBox="0 0 420 300" role="img" aria-label="Tlaková síla F kolmo na plochu S">…</svg>
+        </figure>
+    </div>
+</div>
+```
+
+### `calc`: příklad
+
+Zadání je vidět, výsledek se odkrývá (slidy 19 a 20). Dvě podoby, které jdou kombinovat:
+
+- **Výpočet:** postup v jednom `<details class="course-answer">` „Ukázat postup“, řádky v `<ol class="course-calc-steps">`,
+  výsledné pravidlo v `.course-calc-result` (první `<span>` je rámeček, vedle smí být odkaz na model). Odkaz `data-preset-link` může otevřít model s předvolbou na tomtéž slidu.
+- **Tabulka k doplnění:** `.course-table`, kde buňka s výsledkem je `<details class="course-cell"><summary>?</summary>2</details>`.
+  Klik na otazník odkryje hodnotu (nativní `<details>`, funguje i bez JS). Víc tabulek a náhled modelu vedle sebe dává
+  `.course-calc-cols` (každý sloupec je jeden `<div>` nebo náhled). Řádek `class="course-alert"` je zvýraznění „pozor“
+  jako červená čísla v přednášce (`--slide-alert`).
+
+```html
+<div class="course-slide" data-slide-number="20" data-slide-type="calc" data-slide-fit="compact">
+    <h2>Celkový tlak</h2>
+    <div class="course-core">
+        <p><span class="course-highlight">Příklad:</span> doplňme hodnoty celkového tlaku v hloubce.</p>
+        <div class="course-calc-cols">
+            <div>
+                <p>Moře</p>
+                <table class="course-table">
+                    <thead><tr><th scope="col"><var>h</var> [m]</th><th scope="col"><var>p</var> [bar]</th></tr></thead>
+                    <tbody>
+                        <tr><td class="num">10</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 10&nbsp;m">?</summary>2</details></td></tr>
+                        <tr class="course-alert"><td class="num">66</td><td class="num"><details class="course-cell"><summary aria-label="Ukázat tlak v 66&nbsp;m">?</summary>7,6</details></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="course-thumb" data-open-model="model-tlak" aria-label="Otevřít model: tlak v hloubce">…</button>
         </div>
     </div>
 </div>
@@ -164,24 +225,25 @@ Poslední zastávka kapitoly: otázky z testů SPČR/CMAS vedle sebe. Nemá čí
 ## 4. Varianta pro dlouhý obsah: `data-slide-fit="compact"`
 
 Jediná varianta, platí pro každý typ: menší písmo těla (`--course-slide-text-compact`, 0,8 × tělo). Nadpis
-ani začátek těla se neposouvají. U citace navíc seznam do dvou sloupců. Teď ji mají slidy 3, 4, 8 a 9.
-Na telefonu písmo nezmenšuje.
+ani začátek těla se neposouvají. U citace navíc seznam do dvou sloupců, u odrážek a tabulek menší mezery.
+Teď ji mají slidy 3, 4, 8, 9, 12, 13, 15, 17, 18, 19, 20, 21 a 22. U `practice` zmenší písmo otázek (Tlak má šest
+otázek ve dvou řadách); po vyhodnocení odpovědí smí slide narůst, jako u Hustoty. Na telefonu písmo nezmenšuje.
 
 Jestli se slide vejde, ověř měřením přes `getBoundingClientRect` na 1280×720, 1440×800, 1728×1000 a 1920×1080:
 výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičkou a další slide začíná pod oknem.
 
 ## 5. Typy do budoucna (zatím nestavěné)
 
+Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22; použijí ho i
+23, 27, 31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19 a 20; použijí ho i 24, 25, 28–30, 36, 37, 41).
+
 Prošel jsem všech 60 slidů přednášky (`resources/FyzikaP12_2025.pdf` a `.txt`). Tyhle slidy budou chtít další typy.
 Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-type`, rozměry jen z proměnných scény):
 
 | Typ | Co obsahuje | Slidy přednášky |
 |---|---|---|
-| `title` jako úvod kapitoly | velký název kapitoly, už existuje | 10 (Tlak) |
-| obrázek / schéma s popiskem | text a obrázek nebo schéma vedle sebe, popisky v obrázku | 11, 12, 14, 16, 18, 21, 22, 23, 27, 31, 32, 35, 40, 42–45, 48, 49, 53–55, 59 |
 | velký obrázek | fotka nebo schéma přes většinu slidu s jednou větou pod ním | 50, 51, 52 |
-| výpočet krok za krokem | zadání příkladu, dosazení po řádcích, výsledek; tabulka hodnot k doplnění | 19, 20, 24, 25, 28–30, 36, 37, 41 |
-| tabulka nebo graf s textem | datová tabulka či graf vedle výkladu | 17, 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
+| tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`, slide 17) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
 | upozornění | výrazné varování se značkou nebezpečí („Nikdy nezadržujte dech!“) | 26, 34, 44 |
 | velká věta | jedna až dvě krátké věty přes celý slide | 56 („Rychlejší… Není jasné, odkud zvuk přichází“) |
 | konec | závěrečný slide s fotkou a jednou větou | 60 („Konec … A hurá do vody“) |

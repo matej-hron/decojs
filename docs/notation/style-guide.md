@@ -162,6 +162,7 @@ Praktické důsledky pro DecoJS:
 | bar | Bar, BAR | bar **není** odvozen od jména osoby |
 | kPa | KPa | k = kilo, malé |
 | MPa | mPa | mPa = **milipascal**, 10⁹× menší než MPa |
+| atm | ATM, Atm | fyzikální atmosféra (101&nbsp;325&nbsp;Pa); v DecoJS jen v převodech jednotek (kurz P1, slide 12), jinak bar |
 | K | k | K = kelvin (osoba: Kelvin), k = kilo |
 | m, s, kg, mol, min | M, S, KG | metr, sekunda, kilogram… nejsou od osob |
 

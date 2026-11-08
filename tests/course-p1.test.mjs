@@ -114,7 +114,7 @@ test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
 
 const ROOT = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, ROOT), 'utf8');
-const coursePages = ['p1/index.html', 'p1/hustota.html'];
+const coursePages = ['p1/index.html', 'p1/hustota.html', 'p1/tlak.html'];
 
 test('stránky kurzu: vložené bloky pojmů existují a jsou v sw.js', () => {
     const sw = read('sw.js');
@@ -178,7 +178,8 @@ import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours } from '../
 test('rozcestník: hotové kapitoly jsou odkazy, ostatní jen tlumené', () => {
     const html = chaptersHtml();
     assert.match(html, /href="hustota\.html"/);
-    assert.doesNotMatch(html, /href="tlak\.html"/);
+    assert.match(html, /href="tlak\.html"/);
+    assert.doesNotMatch(html, /href="stlacovani-plynu\.html"/);
     assert.doesNotMatch(html, /připravujeme/);
     assert.equal((html.match(/is-planned/g) || []).length, P1_CHAPTERS.filter(c => c.status !== 'ready').length);
     for (const c of P1_CHAPTERS) {
@@ -189,14 +190,16 @@ test('rozcestník: hotové kapitoly jsou odkazy, ostatní jen tlumené', () => {
 test('rozcestník: každá otázka slidu 6 míří na existující kapitolu', () => {
     for (const q of P1_QUESTIONS) for (const s of q.answeredIn) assert.ok(chapterBySlug(s), s);
     assert.equal((questionsHtml().match(/<li>/g) || []).length, 6);
-    assert.deepEqual(chapterNeighbours('hustota'), { prev: null, next: null });
+    assert.deepEqual(chapterNeighbours('hustota'), { prev: null, next: chapterBySlug('tlak') });
+    assert.deepEqual(chapterNeighbours('tlak'), { prev: chapterBySlug('hustota'), next: null });
 });
 
 test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“', () => {
     assert.doesNotMatch(questionsHtml(), /Odpověď v kapitole/);
     assert.doesNotMatch(chaptersHtml(), /slidy|P★/);
     assert.equal((answersHtml().match(/Odpověď v kapitole/g) || []).length, P1_QUESTIONS.length);
-    assert.match(answersHtml(), /Tlak \(připravujeme\)/);
+    assert.doesNotMatch(answersHtml(), /Tlak \(připravujeme\)/);
+    assert.match(answersHtml(), /href="tlak\.html"/);
     assert.match(chapterDetailsHtml(), /Hustota: P★, slidy 8–9/);
 });
 
@@ -215,7 +218,9 @@ for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
         const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
         const more = html.slice(html.indexOf('<details class="course-more">'));
         assert.match(more, /^<details class="course-more">\s*<summary>.*?<\/summary>\s*<div class="course-more-body">\s*<div class="course-chapter-intro">/s);
-        assert.ok(more.indexOf('course-chapter-intro') < more.indexOf('data-concept'), 'úvod je před blokem pojmu');
+        if (more.includes('data-concept')) {
+            assert.ok(more.indexOf('course-chapter-intro') < more.indexOf('data-concept'), 'úvod je před blokem pojmu');
+        }
     });
 }
 
@@ -234,16 +239,17 @@ for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 're
         const stops = [...main.matchAll(/<section[^>]*class="course-section">\s*<div class="course-slide"([^>]*)>/g)].map(m => m[1]);
         assert.ok(stops.length > 0);
         for (const attrs of stops) {
-            assert.match(attrs, /data-slide-type="(title|content|quote|models|practice)"/, attrs);
+            assert.match(attrs, /data-slide-type="(title|content|quote|models|figure|calc|practice)"/, attrs);
             assert.doesNotMatch(attrs, /\bclass=|style=/, attrs);
             const fit = attrs.match(/data-slide-fit="([^"]*)"/);
             if (fit) assert.equal(fit[1], 'compact');
         }
         assert.doesNotMatch(main, /course-core-(outline|rows|practice)|course-slide-cover/, 'typ místo třídy pro jeden slide');
-        // Titulní typ: na rozcestníku jen první zastávka.
+        // Titulní typ: nejvýš jeden a jen jako první zastávka (rozcestník; kapitola, pokud ho přednáška má).
         const titles = stops.filter(a => a.includes('data-slide-type="title"')).length;
-        assert.equal(titles, page === 'p1/index.html' ? 1 : 0);
-        if (page === 'p1/index.html') assert.ok(stops[0].includes('data-slide-type="title"'));
+        assert.ok(titles <= 1, `${page}: ${titles} titulních slidů`);
+        if (titles === 1) assert.ok(stops[0].includes('data-slide-type="title"'), 'titulní slide je první');
+        if (page === 'p1/index.html') assert.equal(titles, 1);
         // každý slide má hlavičku jako první potomek, tělo až za ní
         for (const m of main.matchAll(/class="course-(?:model course-)?slide(?: [^"]*)?"[^>]*>\s*(<\w+[^>]*>)/g)) {
             assert.match(m[1], /^<(h1|h2|div class="chart-header")/, m[1]);
@@ -279,7 +285,7 @@ test('Hustota: slide 9 má jedno „Více“ a v něm oba výklady i řešený p
 test('slidy mají jediný styl Hladina, žádný přepínač', () => {
     const css = readFileSync(new URL('css/course.css', ROOT), 'utf8');
     assert.doesNotMatch(css, /data-slide=|svetly/);
-    for (const page of ['p1/index.html', 'p1/hustota.html']) {
+    for (const page of coursePages) {
         assert.doesNotMatch(readFileSync(new URL(page, ROOT), 'utf8'), /svetly|dataset\.slide/);
     }
 });
@@ -289,7 +295,7 @@ test('kurz P1 píše jednotku v hranatých závorkách, jako přednáška (style
     assert.match(html, /<th scope="col">Hustota \[kg\/m³\]<\/th>/);
     assert.match(html, /<var>ρ<\/var> = <var>m<\/var>\/<var>V<\/var> <span class="course-unit">\[kg\/m³\]<\/span>/);
     assert.doesNotMatch(html, /Jednotka hustoty/);
-    for (const file of ['p1/hustota.html', 'p1/index.html', 'js/components/DensityCurve.js', 'js/components/LakeCycle.js', 'js/components/WaterColumn.js', 'js/course/hustotaPage.js']) {
+    for (const file of ['p1/hustota.html', 'p1/index.html', 'p1/tlak.html', 'js/components/waterColumn/pressureLayer.js', 'js/course/tlakPage.js', 'js/components/DensityCurve.js', 'js/components/LakeCycle.js', 'js/components/WaterColumn.js', 'js/course/hustotaPage.js']) {
         const src = readFileSync(new URL(file, ROOT), 'utf8');
         assert.doesNotMatch(src, /(hustota|teplota|hloubka|Hustota)[^\n'"]{0,12} \/ (\(|m\b|°C|kg)/, file);
     }
@@ -349,7 +355,7 @@ test('typy slidů jsou zdokumentované a vzorník ukazuje každý z nich', () =>
     const doc = readFileSync(new URL('docs/course/slides.md', ROOT), 'utf8');
     const sample = readFileSync(new URL('docs/course/vzornik-slidu.html', ROOT), 'utf8');
     const typesIn = (html) => new Set([...html.matchAll(/data-slide-type="([^"]+)"/g)].map(m => m[1]));
-    const used = new Set(['p1/index.html', 'p1/hustota.html'].flatMap(p => [...typesIn(readFileSync(new URL(p, ROOT), 'utf8'))]));
+    const used = new Set(coursePages.flatMap(p => [...typesIn(readFileSync(new URL(p, ROOT), 'utf8'))]));
     for (const type of used) {
         assert.match(doc, new RegExp(`^### \`${type}\``, 'm'), `${type} v slides.md`);
         assert.ok(typesIn(sample).has(type), `${type} ve vzorníku`);

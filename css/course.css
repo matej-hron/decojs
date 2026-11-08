@@ -71,6 +71,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     --slide-accent: #bfe0f2;
     --slide-on-accent: #0d3550;
     --slide-highlight: #ffd98a;
+    --slide-alert: #ffcabd; /* „pozor“ jako červená v přednášce; na #17627f kontrast 4,67:1 */
     --slide-water: var(--blue-600);
     --slide-chart-line: #bfe0f2;
     --slide-chart-point: #ffc4b6;
@@ -230,6 +231,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 
 /* Dlouhý obsah: jediná varianta, menší písmo těla. Poloha nadpisu i těla se nemění. */
 .course-slide[data-slide-fit="compact"] .course-core { font-size: var(--course-slide-text-compact); line-height: 1.35; }
+.course-slide[data-slide-fit="compact"] .course-core li { margin-bottom: var(--space-1); }
+.course-slide[data-slide-fit="compact"] .course-table th,
+.course-slide[data-slide-fit="compact"] .course-table td { padding-block: 0.2em; }
 
 /* quote: citovaný dokument jako výstřižek, zdroj pod ním. */
 .course-quote { margin: 0; }
@@ -297,6 +301,88 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     .course-row-flip .course-thumb { order: -1; }
     .course-row .course-thumb { height: 100%; }
 }
+
+/* Zvýraznění „pozor“ jako červená čísla v přednášce (slide 20: 66 m). */
+.course-slide .course-alert,
+.course-slide .course-alert > td { color: var(--slide-alert); font-weight: 600; }
+
+/* figure: text a schéma nebo obrázek vedle sebe (slidy 11, 14, 16, 18, 22). Obrázek se vejde do těla slidu. */
+.course-figure { margin: 0; text-align: center; }
+.course-figure > svg,
+.course-figure > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: calc(var(--course-slide-height) * 0.5);
+    margin: 0 auto;
+    object-fit: contain;
+}
+.course-figure > figcaption { margin-top: var(--space-2); font-size: 0.6em; line-height: 1.35; color: var(--slide-subtle); }
+.course-figure > figcaption a { color: var(--slide-accent); }
+/* Schémata kreslí barvami slidu, popisky jsou text slidu. */
+.course-figure svg { font-family: var(--font-body); overflow: visible; }
+.course-figure svg .fig-line { fill: none; stroke: var(--slide-fg); stroke-width: 2; stroke-linejoin: round; }
+.course-figure svg .fig-thin { fill: none; stroke: var(--slide-line-strong); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.course-figure svg .fig-arrow { fill: var(--slide-highlight); stroke: var(--slide-highlight); stroke-width: 3; }
+.course-figure svg .fig-water { fill: var(--slide-water); }
+.course-figure svg .fig-surface { fill: var(--slide-accent); fill-opacity: 0.35; stroke: var(--slide-accent); stroke-width: 1.5; }
+.course-figure svg .fig-particle { fill: var(--slide-accent); }
+.course-figure svg .fig-piston { fill: var(--slide-line-strong); }
+.course-figure svg .fig-ground { fill: var(--slide-ground); }
+.course-figure svg text { fill: var(--slide-fg); font-size: 18px; }
+.course-figure svg .fig-label-strong { font-weight: 600; fill: var(--slide-highlight); }
+@media (min-width: 900px) {
+    .course-slide[data-slide-type="figure"] .course-core {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        gap: var(--space-8);
+        align-items: start;
+    }
+}
+
+/* calc: příklad. Zadání vidět, postup v jednom odkrytí; tabulka k doplnění, kde klik na buňku odkryje
+   výsledek (slidy 19, 20). */
+.course-calc-cols { display: grid; gap: var(--space-4) var(--space-8); }
+@media (min-width: 900px) {
+    .course-calc-cols { grid-template-columns: repeat(auto-fit, minmax(12em, 1fr)); align-items: stretch; }
+    .course-calc-cols > .course-thumb { min-height: 0; height: 100%; }
+}
+.course-calc-cols > div > p { margin: 0 0 var(--space-1); font-size: 0.7em; color: var(--slide-subtle); }
+.course-slide[data-slide-type="calc"] .course-table { margin: 0; }
+.course-slide[data-slide-type="calc"] .course-table { line-height: 1.2; }
+.course-slide[data-slide-type="calc"] .course-table th,
+.course-slide[data-slide-type="calc"] .course-table td { padding-block: 0.1em; }
+.course-slide[data-slide-type="calc"] details.course-answer { border-top-color: var(--slide-line-strong); }
+.course-slide details.course-answer > summary { color: var(--slide-accent); font-size: 0.75em; }
+.course-calc-steps { margin: 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+.course-calc-steps li { margin: 0 0 var(--space-1); }
+.course-calc-result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-6);
+    margin: var(--space-2) 0 0;
+}
+.course-calc-result > span:first-child {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border: 2px solid var(--slide-highlight);
+    border-radius: var(--radius-md);
+}
+/* Buňka k doplnění: otazník, klik ukáže hodnotu (nativní <details>, funguje i bez JS). */
+details.course-cell { display: inline-block; }
+details.course-cell > summary {
+    list-style: none;
+    cursor: pointer;
+    min-width: 2.2em;
+    padding: 0 0.4em;
+    border: 1px dashed var(--slide-line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--slide-subtle);
+    text-align: center;
+}
+details.course-cell > summary::-webkit-details-marker { display: none; }
+details.course-cell[open] > summary { display: none; }
 
 /* --- simulátor v překryvu: leží přesně v rámečku slidu (rozměry zapisuje modelOverlay.js) --- */
 
@@ -797,6 +883,11 @@ details.course-more > summary .course-summary-hint {
 .course-practice { display: grid; gap: var(--space-5); align-items: start; }
 @media (min-width: 900px) {
     .course-practice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* Šest otázek (Tlak): compact zmenší písmo, ať se dvě řady vejdou do rámečku i s vyhodnocením. Telefon beze změny. */
+@media (min-width: 769px) {
+    .course-slide[data-slide-type="practice"][data-slide-fit="compact"] .course-core { font-size: calc(var(--course-practice-text) * 0.66); }
+    .course-slide[data-slide-type="practice"][data-slide-fit="compact"] .course-practice { gap: var(--space-3) var(--space-5); }
 }
 /* Přebírá styly kvízu: ty počítají se světlým pozadím a odpovědi animují posunem. */
 .course-practice .question-card,
