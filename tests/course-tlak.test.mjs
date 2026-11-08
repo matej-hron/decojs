@@ -96,7 +96,7 @@ test('Tlak: slide 20, obě tabulky odkryjí školní odpovědi spočítané z pr
     const [sea, lake] = s.querySelectorAll('table.course-table');
     assert.ok(sea && lake);
     const seaRows = tableAnswers(sea);
-    assert.deepEqual(seaRows.map(r => r[0]), [0, 10, 20, 22, 28, 30, 33, 40.5, 66]);
+    assert.deepEqual(seaRows.map(r => r[0]), [0, 10, 20, 22, 28, 30, 33, 40, 56]);
     for (const [h, answer] of seaRows) assert.equal(answer, formatBar(pressureAt(h).total, 'school'), `moře ${h} m`);
     const lakeRows = tableAnswers(lake);
     assert.deepEqual(lakeRows.map(r => r[0]), [0, 10, 20, 30, 40, 45, 51, 55.5]);
@@ -108,12 +108,13 @@ test('Tlak: slide 20, obě tabulky odkryjí školní odpovědi spočítané z pr
     assert.match(text(s), /Los Gigantes, Kanárské ostrovy|Los Gigantes, Canary Islands/);
 });
 
-test('Tlak: slide 20, 66 m je červeně jako na slidu', () => {
+test('Tlak: slide 20, meze 30, 40 a 56 m jsou zvýrazněné (T10), 28 m je cvičný řádek', () => {
     const rows = [...slide(20).querySelectorAll('table.course-table')[0].querySelectorAll('tbody tr')];
+    const alerts = rows.filter(r => r.classList.contains('course-alert')).map(r => text(r.querySelector('td')));
+    assert.deepEqual(alerts, ['30', '40', '56']);
     const last = rows.at(-1);
-    assert.equal(text(last.querySelector('td')), '66');
-    assert.ok(last.classList.contains('course-alert'), '66 m má course-alert');
-    assert.equal(rows.filter(r => r.classList.contains('course-alert')).length, 1);
+    assert.equal(text(last.querySelector('td')), '56');
+    assert.equal(text(last.querySelector('details')).replace(/^\?/, ''), '6,6', '56 m: 6,6 bar');
 });
 
 test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
@@ -225,7 +226,12 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(17), /Plánování ponorů/);
     assert.doesNotMatch(more(17), /300\s*m|hodin/, 'pravidlo 300 m bez zdroje a doby před odletem ne');
     assert.match(more(20), /předbíháme Daltonův zákon/);
-    for (const d of ['28', '40,5', '66']) assert.match(more(20), new RegExp(`${d}\\s?m:`), d);
+    // T10: meze podle Mateje: 30 a 40 m se vzduchem podle systému výcviku, 56 m = pO₂ 1,4 bar (MOD vzduchu)
+    for (const d of ['30', '40', '56']) assert.match(more(20), new RegExp(`${d}\\s?m`), d);
+    assert.match(more(20), /systému výcviku/);
+    assert.match(more(20), /1,4 \/ 0,21 ≈ 6,7\s?bar/);
+    assert.doesNotMatch(more(20), /28\s?m|40,5|66\s?m|1,6\s?bar|pN₂ asi [34]/, 'žádné meze z pN₂ 3 nebo 4 bar ani 1,6 bar');
+    assert.match(more(20), /Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon\./);
     assert.match(more(22), /Nad rámec P★/);
     assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
     assert.match(more(22), /V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon/);
