@@ -138,6 +138,7 @@ test('fmtCs: decimal comma, real minus, no negative zero', () => {
 test('depth readout uses U+00A0 entity and the step decimals', () => {
     assert.equal(depthReadout({ depth: 12 }), 'hloubka 12&nbsp;m');
     assert.equal(depthReadout({ depth: 12.5 }, 0.5), 'hloubka 12,5&nbsp;m');
+    assert.equal(depthReadout({ depth: 12 }, 0.5), 'hloubka 12&nbsp;m', 'celé metry bez „,0“ i při kroku 0,5 m');
     assert.equal(joinReadout(['hloubka 12&nbsp;m', null, '', 'teplota 8&nbsp;°C']),
         'hloubka 12&nbsp;m · teplota 8&nbsp;°C');
 });
