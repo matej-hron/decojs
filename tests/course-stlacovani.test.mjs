@@ -237,3 +237,23 @@ test('jméno zákona: v kapitole Tlak „Boyle-Mariottův zákon“ (rozhodnutí
     }
     assert.match(read('p1/index.html'), /Boyleův-Mariotteův zákon \(izotermický děj\)/, 'citace osnovy beze změny');
 });
+
+test('R5-01, R5-02: bezpečnostní věty v pojmu dutin a pod slidem 26', () => {
+    const t = (s) => s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+    const spaces = t(read('concepts/cs/body-air-spaces.html'));
+    assert.match(spaces, /Automaticky se tlak vyrovná v plicích a dýchacích cestách, dokud dýcháš normálně: při sestupu automatika dodává vzduch o tlaku okolí, při výstupu rozpínající se vzduch volně vydechneš\./);
+    assert.match(spaces, /polknutím, pohybem čelistí, nebo jemným vydechnutím proti ucpanému nosu \(Valsalvův manévr\)/);
+    assert.match(spaces, /Vyrovnávej od hladiny a často, dřív než ucho zabolí\. Když to nejde, vystoupej o kus výš a zkus to znovu, nikdy nepokračuj přes bolest\. S rýmou nebo ucpaným nosem se nepotápěj\./);
+    assert.match(spaces, /František Novomeský, Pan Eustach, Strany potápěčské/);
+    assert.match(more(26), /Zadržený dech při výstupu může plíce roztrhnout, a to i při výstupu z malé hloubky/);
+    assert.match(more(26), /vydechuj plynule celou cestu nahoru/);
+});
+
+test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spodního okraje zvonu', () => {
+    const gas = read('concepts/cs/gas-consumption.html');
+    assert.match(gas, /hladinová spotřeba · <var>p<\/var> \/ \(1&nbsp;bar\)/);
+    assert.match(gas, /asi 3&nbsp;000&nbsp;l vzduchu přepočteného na hladinu \(počítáno jako ideální plyn, jako v testech SPČR\)/);
+    assert.match(more(24), /Tlak počítáme v hloubce spodního okraje zvonu\./);
+    assert.doesNotMatch(answer(28), /hladinová spotřeba · p =/);
+    assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
+});

@@ -258,7 +258,7 @@ Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-typ
 |---|---|---|
 | velký obrázek | fotka nebo schéma přes většinu slidu s jednou větou pod ním | 50, 51, 52 |
 | tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`, slide 17) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
-| upozornění | výrazné varování se značkou nebezpečí přes celý slide; slide 26 vystačil s částí `.course-warning` (§3, `content`) | 34, 44 |
+| upozornění | výrazné varování se značkou nebezpečí přes celý slide; slide 26 (typ `models`) vystačil s částí `.course-warning` (popsaná v §3 u typu `content`) | 34, 44 |
 | velká věta | jedna až dvě krátké věty přes celý slide | 56 („Rychlejší… Není jasné, odkud zvuk přichází“) |
 | konec | závěrečný slide s fotkou a jednou větou | 60 („Konec … A hurá do vody“) |
 
