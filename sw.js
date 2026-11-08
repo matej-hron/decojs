@@ -49,6 +49,7 @@ const STATIC_ASSETS = [
   './js/course/hustotaPage.js',
   './js/physics/waterDensity.js',
   './js/physics/lakeCycle.js',
+  './js/physics/pressure.js',
   './js/components/DensityCurve.js',
   './js/components/LakeCycle.js',
   './js/components/WaterColumn.js',
