@@ -757,6 +757,32 @@ details.course-more > summary .course-summary-hint {
 }
 .water-column-depth input[type="range"] { flex: 1; height: 2rem; accent-color: var(--brand); }
 
+/* Vrstva tlaku (model M1 „Tlak v hloubce“): atmosférický díl teplý, hydrostatický modrý jako voda.
+   Mimo slide (světlé/tmavé téma webu) platí záložní barvy z pressureLayer.js. */
+.course-slide {
+    --wc-pressure-atm: var(--slide-highlight);
+    --wc-pressure-h: var(--slide-accent);
+    --wc-pressure-ink: var(--slide-on-accent);
+}
+.wc-pressure-key { white-space: nowrap; }
+.wc-pressure-key::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-right: 0.2em;
+    border-radius: 2px;
+    vertical-align: baseline;
+}
+.wc-pressure-key-atm::before { background: var(--wc-pressure-atm, #e8a317); }
+.wc-pressure-key-h::before { background: var(--wc-pressure-h, #5dade2); }
+.course-pressure-steps { display: inline-flex; gap: var(--space-2); }
+.course-pressure-steps .course-step-btn { min-width: 44px; font-size: 1.25em; line-height: 1; }
+/* Náhled na slidu: jen obrázek, ovládá se až otevřený model. */
+.water-column-compact .water-column-readout,
+.water-column-compact .water-column-controls { display: none; }
+.water-column-compact { pointer-events: none; }
+
 /* Kotvy i skoky ze slideNav čtou stejnou pozici scény. */
 .course-model[id], .course-example[id] { scroll-margin-top: var(--course-stage-top); }
 

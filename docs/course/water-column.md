@@ -4,7 +4,7 @@ Vodní sloupec je **sdílený model kurzu P1** (spec `docs/superpowers/specs/202
 §6). Kapitoly ho nekopírují, ale **přidávají do něj vrstvy**: tlak + balónek/zvon (Tlak, Boyle), potápěč
 a vztlak (Archimedes), parciální tlaky (Dalton), sycení (Henry).
 
-**První skutečná vrstva přijde s kapitolou Tlak.** Kapitola Hustota sloupec nepoužívá: model jezera v ní
+**První skutečná vrstva je tlak** (`js/components/waterColumn/pressureLayer.js`, model M1 „Tlak v hloubce“ v `js/course/pressureModel.js`, ukázka `docs/course/model-tlak.html`). Kapitola Hustota sloupec nepoužívá: model jezera v ní
 vychází z GIFu ze slidu 9 (`js/components/LakeCycle.js`) a vrstvu „teplota“ z pilotu nahradil (2026-11-04).
 
 | Soubor | Co |
@@ -167,8 +167,8 @@ Registrované scénářové klíče:
 
 | Klíč | Typ | Kdo zapisuje | Význam |
 |---|---|---|---|
-| `water` | `'fresh'` \| `'salt'` | stránka kapitoly (Tlak, Archimedes) — **rezervováno pro 2. týden** | sladká / slaná voda (hustota pro tlak i vztlak) |
-| `altitude` | m n. m. | stránka kapitoly (Tlak) — **rezervováno pro 2. týden** | nadmořská výška hladiny (atmosférický tlak) |
+| `water` | `'fresh'` \| `'salt'` | stránka kapitoly (Tlak: model M1 podle hladiny; Archimedes) | sladká / slaná voda (hustota pro tlak i vztlak) |
+| `altitude` | m n. m. | stránka kapitoly (Tlak: model M1, moře 0 / horské jezero 5 500) | nadmořská výška hladiny (atmosférický tlak) |
 
 ## 5. Hloubka, ovládání, přístupnost
 
@@ -231,7 +231,7 @@ Barvy **dat** vrstvy smí mít vrstva vlastní, ale přepsatelné CSS proměnnou
 ## 8. Exporty pro vrstvy a testy
 
 Z `WaterColumn.js` (čisté, bez DOM, testované v Node):
-`clamp`, `decimalsOf`, `fmtCs`, `snapDepth`, `niceStep`, `niceTicks`, `depthTicks`, `baseFontSize`,
+`clamp`, `decimalsOf`, `fmtCs`, `fmtDepth`, `snapDepth`, `niceStep`, `niceTicks`, `depthTicks`, `baseFontSize`,
 `defaultHeight`, `computeGeometry`, `depthReadout`, `joinReadout`, `sortLayers`, `estimateTextWidth`,
 `splitLabel`, `wavePath`, konstanty `CORE_STATE_KEYS`, `DEFAULT_LABELS`.
 DOM pomocníci: `svgEl(tag, attrs, parent)` (`attrs.text` = textContent), `haloAttrs`, `readColors`.
@@ -265,7 +265,7 @@ scénářový klíč stránky (§4).
 
 ## 10. Jak přidat vrstvu — příklad „tlak“
 
-Jen ilustrace rozhraní (skutečná vrstva přijde s kapitolou Tlak a musí sedět se slovníčkem notace).
+Jen ilustrace rozhraní. Skutečná vrstva je `js/components/waterColumn/pressureLayer.js` (výpočet v `js/physics/pressure.js`).
 
 ```js
 // js/components/waterColumn/pressureLayer.js
