@@ -55,6 +55,9 @@ npm run test:watch    # Watch mode for development
 - CSS variables in `:root` for theming
 - JSDoc comments for public functions
 - Bug fixes must include regression tests
+- P1 course slides (`p1/*.html`): compose every slide from the slide types in `docs/course/slides.md`
+  (`data-slide-type` on `.course-slide`); no per-slide classes or sizes. Sample of all types: `docs/course/vzornik-slidu.html`
+  (local only, open from a local server)
 
 ## Known Limitations / Roadmap
 

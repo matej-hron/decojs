@@ -229,7 +229,21 @@ for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 're
         assert.doesNotMatch(main, /course-bar|course-toc|course-breadcrumb|course-slide-ref/);
         assert.match(main, /^<main[^>]*>\s*(?:<!--.*?-->\s*)*<section[^>]*class="course-section">\s*<div class="course-slide"/);
         assert.equal((main.match(/<h1[\s>]/g) || []).length, 1, 'jediné h1');
-        assert.doesNotMatch(main, /data-slide-stop|course-slide-cover|course-title/);
+        assert.doesNotMatch(main, /data-slide-stop|course-title/);
+        // Každá zastávka je jeden z typů šablony (docs/course/slides.md), vlastní třídy těla nemá.
+        const stops = [...main.matchAll(/<section[^>]*class="course-section">\s*<div class="course-slide"([^>]*)>/g)].map(m => m[1]);
+        assert.ok(stops.length > 0);
+        for (const attrs of stops) {
+            assert.match(attrs, /data-slide-type="(title|content|quote|models|practice)"/, attrs);
+            assert.doesNotMatch(attrs, /\bclass=|style=/, attrs);
+            const fit = attrs.match(/data-slide-fit="([^"]*)"/);
+            if (fit) assert.equal(fit[1], 'compact');
+        }
+        assert.doesNotMatch(main, /course-core-(outline|rows|practice)|course-slide-cover/, 'typ místo třídy pro jeden slide');
+        // Titulní typ: na rozcestníku jen první zastávka.
+        const titles = stops.filter(a => a.includes('data-slide-type="title"')).length;
+        assert.equal(titles, page === 'p1/index.html' ? 1 : 0);
+        if (page === 'p1/index.html') assert.ok(stops[0].includes('data-slide-type="title"'));
         // každý slide má hlavičku jako první potomek, tělo až za ní
         for (const m of main.matchAll(/class="course-(?:model course-)?slide(?: [^"]*)?"[^>]*>\s*(<\w+[^>]*>)/g)) {
             assert.match(m[1], /^<(h1|h2|div class="chart-header")/, m[1]);
@@ -293,7 +307,7 @@ test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', (
     assert.equal(title('plan'), 'Fyzika – plán');
     assert.deepEqual(items('plan'), ['Fyzika, teorie (dnes)', 'Fyziologie', 'Plánování ponorů, dekompresní postupy']);
     assert.equal(title('osnova-p1'), 'Fyzika – osnova výcviku');
-    assert.equal(dom.querySelector('#osnova-p1 .course-outline-title').textContent.replace(/\s+/g, ' ').trim(), 'P★: T4 Základy potápěčské fyziky (2 × 45 min)');
+    assert.equal(dom.querySelector('#osnova-p1 .course-quote-head').textContent.replace(/\s+/g, ' ').trim(), 'P★: T4 Základy potápěčské fyziky (2 × 45 min)');
     assert.deepEqual(items('osnova-p1'), [
         'Základní fyzikální pojmy spojené s potápěním (veličiny a jednotky, vysvětlení pojmů).',
         'Atmosférický, hydrostatický a celkový tlak, přetlak, podtlak (vysvětlení pojmů, vzájemná souvislost, výpočet celkového tlaku v určité hloubce).',
@@ -305,7 +319,7 @@ test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', (
         'Nebezpečí malých hloubek.',
         'Archimedův zákon, vyvážení potápěče, změny vyvážení během ponoru.',
     ]);
-    assert.equal(dom.querySelector('#osnova-p2 .course-outline-title').textContent.replace(/\s+/g, ' ').trim(), 'P★★: T1 Potápěčská fyzika (2 × 45 min)');
+    assert.equal(dom.querySelector('#osnova-p2 .course-quote-head').textContent.replace(/\s+/g, ' ').trim(), 'P★★: T1 Potápěčská fyzika (2 × 45 min)');
     assert.deepEqual(items('osnova-p2'), [
         'opakování Boyleův – Mariottův zákon, rozšíření na stavovou rovnici ideálního plynu, důsledky jednotlivých dějů (isotermický, isochorický, isobarický) na potápěčskou praxi (výpočty jednoduchých příkladů s využitím stavové rovnice ideálního plynu, přepouštění plynů)',
         'parciální tlak plynu (vysvětlení pojmu), výpočet parciálního tlaku',
@@ -328,3 +342,17 @@ test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', (
     }
 });
 
+
+// --- šablona slidů: každý typ, který stránky a vzorník používají, je popsaný v docs/course/slides.md ---
+
+test('typy slidů jsou zdokumentované a vzorník ukazuje každý z nich', () => {
+    const doc = readFileSync(new URL('docs/course/slides.md', ROOT), 'utf8');
+    const sample = readFileSync(new URL('docs/course/vzornik-slidu.html', ROOT), 'utf8');
+    const typesIn = (html) => new Set([...html.matchAll(/data-slide-type="([^"]+)"/g)].map(m => m[1]));
+    const used = new Set(['p1/index.html', 'p1/hustota.html'].flatMap(p => [...typesIn(readFileSync(new URL(p, ROOT), 'utf8'))]));
+    for (const type of used) {
+        assert.match(doc, new RegExp(`^### \`${type}\``, 'm'), `${type} v slides.md`);
+        assert.ok(typesIn(sample).has(type), `${type} ve vzorníku`);
+    }
+    assert.deepEqual([...typesIn(sample)].filter(t => !used.has(t)), [], 'vzorník nemá typ, který stránky nepoužívají');
+});

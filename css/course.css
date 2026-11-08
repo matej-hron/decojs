@@ -20,11 +20,33 @@
     --course-slide-text: clamp(1.15rem, min(2.3vw, 4.1vh), 2.6rem);
     --course-slide-title: clamp(1.6rem, min(3.4vw, 6.5vh), 3.4rem);
     --course-slide-head: calc(var(--course-slide-title) * 1.7);
-    --course-slide-pad: clamp(1rem, 4vw, 4rem);
+    /* Rozložení slidu jako v originálu přednášky: okraj textu kolem 8 % šířky slidu,
+       horní hrana nadpisu v 10 % výšky, tělo začíná v 28 % výšky. */
+    --course-slide-pad: clamp(1rem, 7.5vw, 8.2rem);
+    --course-slide-title-top: calc(var(--course-slide-height) * 0.1);
+    --course-slide-body-top: calc(var(--course-slide-height) * 0.28);
+    /* Varianta pro dlouhý obsah (data-slide-fit="compact"): jen menší písmo těla. */
+    --course-slide-text-compact: calc(var(--course-slide-text) * 0.8);
+    /* Citace: písmo výstřižku vůči písmu těla, jako drobnější text dokumentu v originálu. */
+    --course-quote-scale: 0.75;
+    /* Titulní slide: větší nadpis, jeho horní hrana pevně ve spodní třetině. */
+    --course-title-slide-title: calc(var(--course-slide-title) * 1.35);
+    --course-title-slide-top: calc(var(--course-slide-height) * 0.67);
+    /* Procvič si: tři otázky vedle sebe. */
+    --course-practice-text: clamp(0.9rem, 2.05vh, 1.4rem);
 }
 @media (max-width: 768px) {
-    /* Telefon: normální tok a posouvání. */
-    :root { --course-nav-height: 57px; --course-foot-height: 2rem; }
+    /* Telefon: normální tok a posouvání, hlavička jen tak vysoká, jak je potřeba. */
+    :root {
+        --course-nav-height: 57px;
+        --course-foot-height: 2rem;
+        --course-slide-pad: clamp(1rem, 4vw, 4rem);
+        --course-slide-title-top: var(--space-3);
+        --course-slide-body-top: var(--course-slide-head);
+        /* Bez pevné výšky není co šetřit: dlouhý obsah i citace zůstávají čitelné. */
+        --course-slide-text-compact: var(--course-slide-text);
+        --course-quote-scale: 0.9;
+    }
 }
 
 html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění šířku scény */
@@ -58,6 +80,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     --slide-ground: #6e4f3c;
     --slide-ok-bg: #12402f;
     --slide-bad-bg: #4a2020;
+    /* Citace: světlý výstřižek dokumentu s tmavým textem. */
+    --slide-card-bg: #f4f7f9;
+    --slide-card-fg: #142530;
 
     max-width: 1640px;
     margin: 0 auto;
@@ -122,20 +147,32 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 }
 .course-section > .course-slide + .course-slide { margin-top: var(--course-gap); }
 
-/* Hlavička slidu: všude stejná výška a velikost nadpisu, liší se jen barva. */
+/* Hlavička slidu: všude stejná velikost nadpisu, liší se jen barva. */
 .course-slide > h1,
 .course-slide > h2,
 .course-slide > .chart-header {
     box-sizing: border-box;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    min-height: var(--course-slide-head);
     margin: 0 calc(-1 * var(--course-slide-pad)) var(--space-3);
     padding: 0 var(--course-slide-pad);
     border: 0;
     color: var(--slide-fg);
 }
+/* Obsahový slide: nadpis pevně na --course-slide-title-top, tělo pevně od --course-slide-body-top. */
+.course-slide > h1,
+.course-slide > h2 {
+    align-items: flex-start;
+    min-height: var(--course-slide-body-top);
+    margin-bottom: 0;
+    padding-top: var(--course-slide-title-top);
+}
+@media (max-width: 768px) {
+    .course-slide > h1,
+    .course-slide > h2 { margin-bottom: var(--space-3); }
+}
+/* Model v překryvu má vlastní kompaktní hlavičku: graf potřebuje výšku. */
+.course-slide > .chart-header { align-items: center; min-height: var(--course-slide-head); }
 .course-slide > .chart-header > h3 { margin: 0; color: inherit; }
 .course-slide > h1,
 .course-slide > h2,
@@ -158,7 +195,6 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-slide .course-core-cols > div > :last-child { margin-bottom: 0; }
 .course-slide .course-highlight { color: var(--slide-highlight); font-weight: 600; }
 .course-slide .course-table { width: 100%; font-size: 0.85em; }
-.course-lead { margin: 0; max-width: 56ch; }
 
 /* Desktop a projektor: pevná scéna. Slide na nízkém okně smí narůst, obsah se neořezává.
    Slide bez vlastního „Více“ si řádek nechá prázdný, další zastávka je tak vždy až pod oknem. */
@@ -176,18 +212,50 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     }
 }
 
-/* Osnovy výcviku (slidy 3 a 4): dlouhý seznam ve dvou sloupcích, ať se vejde do rámečku. */
-.course-slide .course-core-outline { font-size: calc(var(--course-slide-text) * 0.8); line-height: 1.35; }
-.course-outline-title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--space-4); }
-.course-core-outline li:not(:has(ul)) { break-inside: avoid; } /* sloupec se láme mezi body, ne uvnitř bodu */
-.course-core-outline ul ul { margin: var(--space-1) 0 0; }
-.course-core-outline ul ul li { margin-bottom: var(--space-1); }
-@media (min-width: 900px) {
-    .course-core-outline > ul { column-count: 2; column-gap: var(--space-8); }
+/* --- typy slidů: data-slide-type na .course-slide, popis a HTML ke zkopírování v docs/course/slides.md ---
+   Typy jen skládají proměnné scény z :root, vlastní rozměry nemají. */
+
+/* title: velký nadpis ve spodní třetině, pod ním jeden menší řádek, jako titulní slide originálu. */
+.course-slide[data-slide-type="title"] { padding-top: var(--space-8); }
+.course-slide[data-slide-type="title"] > h1,
+.course-slide[data-slide-type="title"] > h2 {
+    min-height: 0;
+    padding-top: 0;
+    font-size: var(--course-title-slide-title);
+}
+.course-slide-sub { margin: var(--space-2) 0 0; font-size: var(--course-slide-text); color: var(--slide-subtle); }
+@media (min-width: 769px) {
+    .course-slide[data-slide-type="title"] { padding-top: var(--course-title-slide-top); }
 }
 
-/* Slide 9 a podobné: řady text + náhled modelu, jako v přednášce. */
-.course-slide .course-core-rows { gap: var(--space-3); }
+/* Dlouhý obsah: jediná varianta, menší písmo těla. Poloha nadpisu i těla se nemění. */
+.course-slide[data-slide-fit="compact"] .course-core { font-size: var(--course-slide-text-compact); line-height: 1.35; }
+
+/* quote: citovaný dokument jako výstřižek, zdroj pod ním. */
+.course-quote { margin: 0; }
+.course-quote > blockquote {
+    margin: 0;
+    padding: 0.6em 1em;
+    border-radius: var(--radius-sm);
+    font-size: calc(var(--course-quote-scale) * 1em);
+    background: var(--slide-card-bg);
+    color: var(--slide-card-fg);
+}
+.course-quote > blockquote > :first-child { margin-top: 0; }
+.course-quote > blockquote > :last-child { margin-bottom: 0; }
+.course-quote li:not(:has(ul)) { break-inside: avoid; } /* sloupec se láme mezi body, ne uvnitř bodu */
+.course-quote ul ul { margin: var(--space-1) 0 0; }
+.course-quote ul ul li { margin-bottom: var(--space-1); }
+.course-quote > figcaption { margin-top: var(--space-2); font-size: 0.7em; color: var(--slide-subtle); }
+/* Hlavička citovaného dokumentu: název vlevo, rozsah vpravo. */
+.course-quote-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 var(--space-4); }
+/* Dlouhá citace (compact): seznam ve dvou sloupcích, ať se karta vejde do rámečku. */
+@media (min-width: 900px) {
+    .course-slide[data-slide-fit="compact"] .course-quote > blockquote > ul { column-count: 2; column-gap: var(--space-8); }
+}
+
+/* models: řady text + náhled modelu, jako slide 9 přednášky. */
+.course-slide[data-slide-type="models"] .course-core { gap: var(--space-3); }
 .course-row { display: grid; gap: var(--space-3) var(--space-6); }
 .course-slide .course-row ul { margin: 0; }
 .course-thumb {
@@ -223,7 +291,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-thumb-hint-top { top: var(--space-2); bottom: auto; } /* graf klesá doprava, nahoře je místo */
 @media (min-width: 900px) {
     /* Text má přednost: řady rostou podle něj, zbylé místo vyplní náhledy. */
-    .course-slide .course-core-rows { display: grid; grid-template-rows: auto auto; align-content: stretch; }
+    .course-slide[data-slide-type="models"] .course-core { display: grid; grid-template-rows: auto auto; align-content: stretch; }
     .course-row { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); align-items: stretch; }
     .course-row-flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); }
     .course-row-flip .course-thumb { order: -1; }
@@ -692,14 +760,14 @@ details.course-more > summary .course-summary-hint {
 /* Kotvy i skoky ze slideNav čtou stejnou pozici scény. */
 .course-model[id], .course-example[id] { scroll-margin-top: var(--course-stage-top); }
 
-/* --- Procvič si: otázky ve sloupcích vedle sebe, ať se vejdou do rámečku --- */
+/* --- practice: Procvič si, otázky ve sloupcích vedle sebe, ať se vejdou do rámečku --- */
 
-.course-slide .course-core-practice {
-    font-size: clamp(0.9rem, 2.05vh, 1.4rem);
+.course-slide[data-slide-type="practice"] .course-core {
+    font-size: var(--course-practice-text);
     line-height: 1.3;
 }
-.course-slide .course-core-practice .course-note { font-size: 1em; margin: 0 0 var(--space-2); }
-.course-slide .course-core-practice > p:last-child { margin: var(--space-2) 0 0; }
+.course-slide[data-slide-type="practice"] .course-core .course-note { font-size: 1em; margin: 0 0 var(--space-2); }
+.course-slide[data-slide-type="practice"] .course-core > p:last-child { margin: var(--space-2) 0 0; }
 .course-practice { display: grid; gap: var(--space-5); align-items: start; }
 @media (min-width: 900px) {
     .course-practice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
