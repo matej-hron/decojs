@@ -73,7 +73,9 @@ test('Archimédův zákon: opravy z rozhodnutí 8 a překlepy', () => {
     const first = core.indexOf('BCD');
     assert.equal(core.slice(first - 'kompenzátoru vztlaku ('.length, first), 'kompenzátoru vztlaku (');
     // rozhodnutí 8 (4): hustota vzduchu při 10 °C, objem slovy
-    assert.match(text(slide(37)), /1,25\skg\/m³ při 10\s°C/);
+    assert.match(text(slide(37)), /naplněné na 200\sbar\. \(Hustota vzduchu je 1,25\skg\/m³ při normálním tlaku a 10\s°C\.\)/, 'R8-02, R8-03');
+    assert.match(slide(37).innerHTML, /200&nbsp;bar\./);
+    assert.doesNotMatch(text(slide(37)), /barů/);
     assert.match(answer(37), /objem vzduchu přepočtený na hladinu: 12\sl · 200 = 2\s400\sl = 2,4\sm³/);
     assert.doesNotMatch(text(slide(37)), /Vr|V<sub>r/);
 });
@@ -158,6 +160,12 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     for (const label of ['F1', 'F2', 'F0', 'h1', 'h2', 'V', 'S']) assert.ok(t32.includes(label), label);
     const [f1, f2] = [...s32.querySelectorAll('.fig-force')].slice(0, 2).map(p => len(p.getAttribute('points').split(' ').map(xy => xy.split(',').map(Number))));
     assert.ok(f2 > f1, 'zespodu tlačí voda víc');
+    const widths = [...s32.querySelectorAll('.fig-force')].slice(2).map(p => {
+        const xs = p.getAttribute('points').split(' ').map(xy => Number(xy.split(',')[0]));
+        return Math.max(...xs) - Math.min(...xs);
+    });
+    assert.equal(widths.length, 2);
+    assert.equal(widths[0], widths[1], 'R8-04: boční síly F0 stejně velké');
     // 35: kompenzátor a opasek, bez značek výrobce
     const t35 = slide(35).querySelector('svg').textContent;
     assert.ok(t35.includes('kompenzátor') && t35.includes('(BCD)') && t35.includes('zátěžový opasek'));
@@ -173,7 +181,11 @@ test('Archimédův zákon: A1 z náhledu slidu 36 (krok 2), odkazy na kroky, vě
     assert.match(note, /Zbytek potápěče \(tělo, výstroj, zátěž\) se nestlačuje a je vyvážený\./);
     assert.match(note, /Potápěč není v měřítku\./);
     assert.match(note, /Skutečný neopren se stlačuje o něco méně a po ponoru se úplně nevrací\./);
-    assert.match(note, /Ve skutečnosti přifukuj a upouštěj průběžně a po malých dávkách\. Model dělá kroky po 10 m, aby byla změna vidět\./, 'R7-01');
+    assert.match(note, /Ve skutečnosti přifukuj a upouštěj průběžně a po malých dávkách\. Model dělá velké kroky, aby byla změna vidět\./, 'R7-01, krok A5');
+    assert.match(more(36), /z 5 m na hladinu, tedy na polovičním úseku, přebývá zase 4,4 kg \(krok 10 →\)/, 'R8-01');
+    assert.ok(slide(36).closest('section').querySelector('details.course-more a[href="?krok=10#model-vztlak"]'));
+    assert.match(more(32), /Proto je ve vzorci jen hydrostatický tlak\./, 'R8-08');
+    assert.match(more(35), /Příklad na slidu 33 ukazuje princip\. Kolik zátěže potřebuje konkrétní potápěč, se nepočítá/, 'R8-07');
     assert.match(more(36), /Po každém vyvážení mají oblek a vzduch v BCD dohromady 12 l, .*\(7,6 \+ 4,4 = 6,2 \+ 5,8 = 9,1 \+ 2,9 = 12 l\)/, 'R7-07');
     for (const i of [2, 4, 8]) {
         const st = diverState(A1_SCENARIO[i].depth, A1_SCENARIO[i].amount);
@@ -228,12 +240,13 @@ test('pojmy Archimédova zákona: první odstavec obstojí sám, bez hranatých 
     assert.deepEqual(concepts(35), ['buoyancy-control']);
     const first = (id) => text(new JSDOM(read(`concepts/cs/${id}.html`)).window.document.querySelector('p'));
     assert.match(first('buoyancy'), /^Archimédův zákon: těleso ponořené do kapaliny je nadlehčováno vztlakovou silou, která se rovná tíze kapaliny tělesem vytlačené: Fvz = V · ρv · g/);
+    assert.match(first('buoyancy'), /nadlehčuje každý litr ponořeného objemu přibližně jako tíha 1 kg\. Vztlak se proto dá počítat v kilogramech, jak to dělají i testy SPČR\.$/, 'R8-06');
     assert.match(first('buoyancy-control'), /^Kontrola vztlaku: .*vznášet se.*zátěž.*Kompenzátor vztlaku \(BCD\)/);
     const buoyancy = text(new JSDOM(read('concepts/cs/buoyancy.html')).window.document.body);
     for (const word of ['plave', 'vznáší se', 'klesá']) assert.ok(buoyancy.includes(word), word);
     for (const id of ['buoyancy', 'buoyancy-control']) {
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[[^\]]*\]/, `${id}: bez hranatých závorek`);
-        assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\bBC\b|neopré/, id);
+        assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\bBC\b|neopré|plove/, id);
     }
 });
 
