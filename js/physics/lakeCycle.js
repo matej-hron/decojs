@@ -1,6 +1,8 @@
 /**
  * Modelový lom během roku (kapitola P1 Hustota, slide 9), zjednodušený na 5 stejných vrstev.
- * Odhad podle hlášení potápěčů, ne měření. Teploty jsou ve °C.
+ * Letní teploty vody (LAKE_START, LAKE_SUMMER_TARGETS): odhad podle hlášení potápěčů z lomů Srní, Horní Cerekev a Šífr.
+ * Zbytek roku dopočítaný z pravidel modelu níže, profil pod ledem (LAKE_UNDER_ICE) je zvolený tvar, ne hlášení.
+ * Vzduch: průměr měsíce v ČR (ČHMÚ), viz LAKE_MONTH_SCENE. Teploty jsou ve °C.
  *
  * Průběh roku se negeneruje z ruční tabulky, ale ze dvou pravidel. Jeden krok je právě jedna změna:
  *   1. jedna vrstva se změní o 1 °C,
@@ -34,6 +36,12 @@ const LAKE_SUMMER_TARGETS = Object.freeze([
 
 /**
  * Co patří k měsíci: teplota vzduchu, vítr, strom a listí na zemi.
+ * Vzduch: průměr měsíce v ČR, normál ČHMÚ 1991–2020 (územní průměr Česko), zaokrouhleno na celé °C.
+ * Zdroj: https://opendata.chmi.cz/meteorology/products/regional_averages/temperature/Normal_1991_2020_areal_temperature.csv
+ * (leden −1,4, únor −0,4, březen 3,2, duben 8,5, květen 13,1, červen 16,5, červenec 18,3, srpen 17,9,
+ * září 13,0, říjen 8,2, listopad 3,5, prosinec −0,4 °C; ověřeno 2026-11-08).
+ * `wind` říká, jestli se v měsíci hladina ohřívá ('warm'), nebo chladne ('cold'). Příčinu neurčuje: v létě hladinu
+ * ohřívá hlavně slunce, ne vzduch (srpen: vzduch 18 °C, hladina 23 °C).
  * @type {Readonly<Record<string, {air: number, wind: 'warm'|'cold', tree: string, groundLeaves: number}>>}
  */
 const LAKE_MONTH_SCENE = Object.freeze({
@@ -53,6 +61,8 @@ const LAKE_MONTH_SCENE = Object.freeze({
 
 /** Pořadí měsíců pro `?mesic=1..12` a tlačítka měsíců. */
 export const LAKE_MONTH_NAMES = Object.freeze(Object.keys(LAKE_MONTH_SCENE));
+/** Zkratky na tlačítka měsíců: dvě písmena, ať se leden a listopad ani červen a červenec nepletou. */
+export const LAKE_MONTH_ABBR = Object.freeze(['Le', 'Ún', 'Bř', 'Du', 'Kv', 'Čn', 'Čc', 'Sr', 'Zá', 'Ří', 'Li', 'Pr']);
 
 /** @param {string} month @returns {number} teplota vzduchu v měsíci */
 export const airOf = (month) => LAKE_MONTH_SCENE[month].air;
@@ -259,12 +269,35 @@ export function lakeFrame(pos) {
 
 /**
  * Popisek teploty vzduchu: se skutečným minusem a nedělitelnou mezerou před jednotkou.
+ * Je to průměr měsíce včetně nocí, proto to popisek říká: jinak mate vedle teplejší hladiny.
  * @param {number} t teplota ve °C
+ * @param {{short?: boolean}} [options] `short` = úzký průřez (telefon, náhled): jen „průměr“
  * @returns {string}
  */
-export function formatAirTemperature(t) {
+export function formatAirTemperature(t, { short = false } = {}) {
     const r = Math.round(t) + 0; // + 0: bez −0
-    return `vzduch ${r < 0 ? '−' : ''}${Math.abs(r)} °C`;
+    return `vzduch ${r < 0 ? '−' : ''}${Math.abs(r)} °C (${short ? 'průměr' : 'průměr měsíce'})`;
+}
+
+/**
+ * Popisek šipky u hladiny: jen co se s hladinou v měsíci děje, ne kdo to způsobuje.
+ * Vzduch to být nemusí: v srpnu má vzduch 18 °C a hladina 23 °C, ohřívá ji slunce.
+ * @param {number} warm 0–1, podíl „ohřívá se“ v přechodu mezi měsíci
+ * @returns {string}
+ */
+export function windLabelText(warm) {
+    return warm >= 0.5 ? 'hladina se ohřívá' : 'hladina chladne';
+}
+
+/**
+ * Popisek šipky u hladiny v daném kroku. Při výměně vrstev je prázdný: hladina se tam mění prohozením, ne ohřevem
+ * či chlazením, a vysvětlení nese popisek kroku („Vrstvy se prohodí…“). Jinak by třeba v březnu tvrdil
+ * „hladina se ohřívá“, zatímco číslo hladiny klesne.
+ * @param {number} index krok (0 = krok 1)
+ * @returns {string}
+ */
+export function surfaceArrowLabel(index) {
+    return LAKE_STEPS[index].kind === 'výměna' ? '' : windLabelText(lakeFrame(index).warm);
 }
 
 /**

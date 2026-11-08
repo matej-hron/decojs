@@ -637,14 +637,14 @@ details.course-more > summary .course-summary-hint {
 .course-months button {
     flex: 1 1 0;
     min-width: 0;
-    height: 1.9rem;
+    height: 2.2rem;
     padding: 0;
     border: 1px solid var(--slide-line-strong);
     border-radius: var(--radius-sm);
     background: transparent;
     color: var(--slide-fg);
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: 1rem; /* jako tlačítka kroků (.btn), čitelné i z dálky */
     cursor: pointer;
 }
 .course-months button:hover,
@@ -770,7 +770,7 @@ details.course-more > summary .course-summary-hint {
 .course-slide[data-slide-type="practice"] .course-core > p:last-child { margin: var(--space-2) 0 0; }
 .course-practice { display: grid; gap: var(--space-5); align-items: start; }
 @media (min-width: 900px) {
-    .course-practice { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .course-practice { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); } /* všechny otázky vedle sebe */
 }
 /* Přebírá styly kvízu: ty počítají se světlým pozadím a odpovědi animují posunem. */
 .course-practice .question-card,

@@ -180,8 +180,10 @@ Modely:
    Posun: tlačítka „‹ předchozí krok“ a „další krok ›“, klik do průřezu, v otevřeném simulátoru i šipky (funguje klikr), posuvník kroků,
    řada dvanácti tlačítek skočí na první krok měsíce, předvolby `?krok=` a `?mesic=1..12`, které po zavření z adresy zmizí. Výchozí je
    srpen. Automatické přehrávání není. Při prohození se čísla asi 1,5 s míjejí a šipky ukazují jen dotčenou dvojici vrstev; krok `těžší`
-   má krátké šipky dolů v povrchové vrstvě. Náhled na slidu je statický srpen. Je to **odhad podle hlášení potápěčů, ne měření**.
-- Řešený příklad (návrh builderu: „Kde pod ledem najdeš nejteplejší vodu?“) se schovanou odpovědí.
+   má krátké šipky dolů v povrchové vrstvě. Náhled na slidu je statický srpen. Letní teploty vody jsou **odhad podle hlášení potápěčů** z lomů Srní,
+   Horní Cerekev a Šífr, zbytek roku dopočítají pravidla modelu, vzduch je normál ČHMÚ 1991–2020 (R1, 2026-11-08).
+- Řešený příklad: „V srpnu se v lomu zanoříš do 15 m. Jak teplá tam bude voda a proč?“ se schovanou odpovědí a odkazem do modelu
+  (`?mesic=8`). Zimní otázku pokrývá otázka 8 v Procvič si (R1, 2026-11-08).
 - Odkaz na kvíz kategorie `vlastnosti-vody-vzduchu`.
 
 ### Zámek kurzu na webu (2026-11-05)
