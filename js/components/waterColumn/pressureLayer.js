@@ -8,7 +8,8 @@
  * Stav (docs/course/water-column.md §4):
  * - scénářové klíče stránky: `altitude` (m n. m.), `water` ('fresh' | 'salt');
  * - soukromý klíč vrstvy: `pressureMode` ('school' | 'exact').
- * Výpočet: js/physics/pressure.js. Barvy dat: CSS `--wc-pressure-atm`, `--wc-pressure-h`, `--wc-pressure-ink`.
+ * Ve sloupci je voda nad ukazatelem obarvená jako klín p_h, pod ním tlumená: tlak dělá voda nad potápěčem.
+ * Výpočet: js/physics/pressure.js. Barvy dat: CSS `--wc-pressure-atm`, `--wc-pressure-h`, `--wc-pressure-ink`, `--wc-pressure-shade`.
  */
 
 import { svgEl, fmtCs, niceTicks, haloAttrs } from '../WaterColumn.js';
@@ -44,6 +45,21 @@ export function layerPressure(state, depth = state.depth) {
     });
 }
 
+/** Zaokrouhlení na setiny baru, stejné jako ve výpisu (formatBar). */
+const toHundredths = (v) => Math.round(v * 100) / 100;
+
+/**
+ * Celkový tlak k zobrazení: součet zobrazených (zaokrouhlených) složek, aby se odečet sečetl
+ * (přesně v 28 m moře: 1,01 + 2,81 = 3,82, ne 3,83; review R2-01).
+ * @param {Object} state
+ * @returns {string}
+ */
+export function displayedTotal(state) {
+    const mode = state.pressureMode ?? PRESSURE_MODES.SCHOOL;
+    const { atm, hydro } = layerPressure(state);
+    return formatBar(toHundredths(atm) + toHundredths(hydro), mode);
+}
+
 /**
  * Odečet: p = p_atm + p_h = 1 + 1 = 2 bar (HTML, barevné klíče u značek).
  * @param {Object} state
@@ -51,12 +67,12 @@ export function layerPressure(state, depth = state.depth) {
  */
 export function pressureReadout(state) {
     const mode = state.pressureMode ?? PRESSURE_MODES.SCHOOL;
-    const { atm, hydro, total } = layerPressure(state);
+    const { atm, hydro } = layerPressure(state);
     const f = (v) => formatBar(v, mode);
     return '<var>p</var> = '
         + '<span class="wc-pressure-key wc-pressure-key-atm"><var>p</var><sub>atm</sub></span> + '
         + '<span class="wc-pressure-key wc-pressure-key-h"><var>p</var><sub>h</sub></span>'
-        + ` = ${f(atm)} + ${f(hydro)} = ${f(total)}&nbsp;bar`;
+        + ` = ${f(atm)} + ${f(hydro)} = ${displayedTotal(state)}&nbsp;bar`;
 }
 
 /**
@@ -79,6 +95,7 @@ function readDataColors(el) {
         atm: v('--wc-pressure-atm', '#e8a317'),
         hydro: v('--wc-pressure-h', '#5dade2'),
         ink: v('--wc-pressure-ink', '#0d3550'),
+        shade: v('--wc-pressure-shade', '#0a2b47'),
     };
 }
 
@@ -124,11 +141,20 @@ export function createPressureLayer({ id = 'pressure', controlsHost = null, cont
         },
 
         render(g, geom, state) {
-            const p = geom.aside;
-            if (!p) return;
             syncButtons(state.pressureMode);
             const { colors, fontSize: fs } = geom;
             const data = readDataColors(g.ownerSVGElement ?? g);
+
+            // Ve sloupci: voda nad ukazatelem má barvu klínu p_h (tlak dělá voda nad potápěčem), pod ním je tlumená (R2-09).
+            const c = geom.column;
+            const yDepth = geom.depthToY(state.depth);
+            svgEl('rect', { class: 'wc-pressure-above', x: c.x, y: c.y, width: c.w, height: Math.max(0, yDepth - c.y),
+                fill: data.hydro, 'fill-opacity': 0.45 }, g);
+            svgEl('rect', { class: 'wc-pressure-below', x: c.x, y: yDepth, width: c.w, height: Math.max(0, c.y + c.h - yDepth),
+                fill: data.shade, 'fill-opacity': 0.35 }, g);
+
+            const p = geom.aside;
+            if (!p) return;
             const pMax = pressureScaleMax(state.maxDepth);
             const xOf = (bar) => p.x + (bar / pMax) * p.w;
             const yTop = geom.depthToY(0);
@@ -175,8 +201,7 @@ export function createPressureLayer({ id = 'pressure', controlsHost = null, cont
             if (xNow - xAtm > 0.5) {
                 svgEl('rect', { class: 'wc-pressure-bar-h', x: xAtm, y: barY, width: xNow - xAtm, height: barH, fill: data.hydro }, g);
             }
-            const mode = state.pressureMode ?? PRESSURE_MODES.SCHOOL;
-            const label = `${formatBar(now.total, mode)}${NBSP}bar`;
+            const label = `${displayedTotal(state)}${NBSP}bar`;
             const labelW = label.length * 0.6 * fs;
             const inside = xNow + 0.4 * fs + labelW > p.x + p.w;
             svgEl('text', {

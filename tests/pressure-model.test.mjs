@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatBar, pressureReadout, pressureScaleMax, layerPressure } from '../js/components/waterColumn/pressureLayer.js';
+import { formatBar, pressureReadout, pressureScaleMax, layerPressure, displayedTotal } from '../js/components/waterColumn/pressureLayer.js';
 import {
     SLIDE20_DEPTHS, PRESSURE_PARAMS, MODEL_MAX_DEPTH, stepTableDepth, surfaceScenario, tableDepths, modelArrowDir,
     initialStateFromParams, paramsFromState,
@@ -127,5 +127,35 @@ test('výstup nepoužívá tečku jako desetinný oddělovač ani běžnou mezer
         assert.doesNotMatch(html, / bar/);
         assert.doesNotMatch(html, new RegExp(`${NBSP}bar`), 'v HTML entita, ne znak');
         assert.match(html, /&nbsp;bar$/);
+    }
+});
+
+// ---------------------------------------------------------------- R2-01: odečet se musí sečíst
+
+test('odečet sčítá zobrazené složky: všechny hloubky slidu 20, oba režimy, obě hladiny', () => {
+    const num = (s) => Number(s.replace(',', '.'));
+    for (const pressureMode of ['school', 'exact']) {
+        for (const [altitude, water, depths] of [[0, 'salt', SLIDE20_DEPTHS.sea], [5500, 'fresh', SLIDE20_DEPTHS.lake]]) {
+            for (const depth of depths) {
+                const html = pressureReadout({ depth, altitude, water, pressureMode });
+                const m = html.match(/= ([\d,]+) \+ ([\d,]+) = ([\d,]+)&nbsp;bar$/);
+                assert.ok(m, html);
+                const [atm, hydro, total] = m.slice(1).map(num);
+                assert.equal(Math.round((atm + hydro) * 100), Math.round(total * 100),
+                    `${pressureMode}, hladina ${altitude} m, ${depth} m: ${m[1]} + ${m[2]} ≠ ${m[3]}`);
+            }
+        }
+    }
+});
+
+test('odečet v přesném režimu: 28 m a 66 m v moři (R2-01)', () => {
+    assert.match(pressureReadout({ depth: 28, altitude: 0, water: 'salt', pressureMode: 'exact' }), /= 1,01 \+ 2,81 = 3,82&nbsp;bar$/);
+    assert.match(pressureReadout({ depth: 66, altitude: 0, water: 'salt', pressureMode: 'exact' }), /= 1,01 \+ 6,63 = 7,64&nbsp;bar$/);
+});
+
+test('popisek pruhu ukazuje stejný celkový tlak jako odečet', () => {
+    for (const depth of SLIDE20_DEPTHS.sea) {
+        const state = { depth, altitude: 0, water: 'salt', pressureMode: 'exact' };
+        assert.ok(pressureReadout(state).endsWith(`= ${displayedTotal(state)}&nbsp;bar`), `${depth} m`);
     }
 });
