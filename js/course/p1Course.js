@@ -24,7 +24,7 @@
 export const P1_CHAPTERS = [
     { slug: 'hustota', title: 'Hustota', slides: '8–9', level: 'P★', status: 'ready' },
     { slug: 'tlak', title: 'Tlak', slides: '10–22', level: 'P★', status: 'ready' },
-    { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'planned' },
+    { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'ready' },
     { slug: 'archimedes', title: 'Archimedův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'planned' },
     { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'planned' },
     { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'planned' },

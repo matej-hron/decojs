@@ -99,6 +99,9 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 
 Části těla, které typ zná: `.course-highlight` (zvýraznění jako v přednášce), `.course-formula` (vzorec na řádku),
 `.course-unit`, `.course-table` (tabulka, čísla ve sloupci `class="num"`), `.course-note` (drobná poznámka).
+Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): výstražná značka (inline SVG s třídami
+`warn-sign` a `warn-mark`) a vedle ní `<p class="course-alert">`. Smí být pod textem kteréhokoli typu, slide 26 ji má
+pod řadou textu a náhledu modelu. `.course-alert` funguje i na jednom slově v textu (červené „2×“ ve slidu 26).
 
 ### `quote`: citace
 
@@ -155,7 +158,8 @@ převzatého obrázku). Výška obrázku je nejvýš polovina slidu (`--course-s
 
 Schéma kreslíme jako jednoduché české SVG s `role="img"` a `aria-label`. Barvy nebere ze svých atributů, ale
 z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čárkovaná pomocná čára), `fig-arrow` (síla),
-`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-label-strong` (zvýrazněný popisek),
+`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-weight` (závaží), `fig-ground`, `fig-curve` a
+`fig-point` (křivka a body grafu, slide 23), `fig-label-strong` (zvýrazněný popisek),
 `fig-label-lg` (větší popisek pro obrázek, který se kvůli výšce zmenší víc než jeho soused).
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
@@ -244,8 +248,8 @@ výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičk
 
 ## 5. Typy do budoucna (zatím nestavěné)
 
-Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22; použijí ho i
-23, 27, 31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19 a 20; použijí ho i 24, 25, 28–30, 36, 37, 41).
+Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27; použijí ho i
+31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30; použijí ho i 36, 37, 41).
 
 Prošel jsem všech 60 slidů přednášky (`resources/FyzikaP12_2025.pdf` a `.txt`). Tyhle slidy budou chtít další typy.
 Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-type`, rozměry jen z proměnných scény):
@@ -254,7 +258,7 @@ Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-typ
 |---|---|---|
 | velký obrázek | fotka nebo schéma přes většinu slidu s jednou větou pod ním | 50, 51, 52 |
 | tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`, slide 17) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
-| upozornění | výrazné varování se značkou nebezpečí („Nikdy nezadržujte dech!“) | 26, 34, 44 |
+| upozornění | výrazné varování se značkou nebezpečí přes celý slide; slide 26 vystačil s částí `.course-warning` (§3, `content`) | 34, 44 |
 | velká věta | jedna až dvě krátké věty přes celý slide | 56 („Rychlejší… Není jasné, odkud zvuk přichází“) |
 | konec | závěrečný slide s fotkou a jednou větou | 60 („Konec … A hurá do vody“) |
 
