@@ -56,10 +56,12 @@ describe('nextTarget: přes hranice stránek', () => {
 
     it('výchozí pořadí bere ze skutečného kurzu', () => {
         assert.deepEqual(nextTarget({ slug: null, index: 2, count: 3, dir: 1 }), { href: 'hustota.html' });
-        // Hustota → Tlak a zpět (poslední zastávka Hustoty); za Tlakem zatím rozcestník.
+        // Hustota → Tlak → Stlačování plynů a zpět; za Stlačováním plynů zatím rozcestník.
         assert.deepEqual(nextTarget({ slug: 'hustota', index: 5, count: 6, dir: 1 }), { href: 'tlak.html' });
         assert.deepEqual(nextTarget({ slug: 'tlak', index: 0, count: 14, dir: -1 }), { href: 'hustota.html#procvic' });
-        assert.deepEqual(nextTarget({ slug: 'tlak', index: 13, count: 14, dir: 1 }), { href: 'index.html#kapitoly' });
+        assert.deepEqual(nextTarget({ slug: 'tlak', index: 13, count: 14, dir: 1 }), { href: 'stlacovani-plynu.html' });
+        assert.deepEqual(nextTarget({ slug: 'stlacovani-plynu', index: 0, count: 10, dir: -1 }), { href: 'tlak.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'stlacovani-plynu', index: 9, count: 10, dir: 1 }), { href: 'index.html#kapitoly' });
     });
 });
 

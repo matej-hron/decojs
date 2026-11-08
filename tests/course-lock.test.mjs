@@ -19,6 +19,7 @@ const cipherOf = (html) => JSON.parse(html.match(/<script type="application\/jso
 const SECRET = {
     'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'V srpnu se v lomu zanoříš', 'Modelový lom hluboký'],
     'p1/index.html': ['Fyzika – plán', 'Deco for Divers', 'Základy potápěčské fyziky', 'Přednáška fyziky pro kurz'],
+    'p1/stlacovani-plynu.html': ['V potápěčském zvonu je na hladině', 'Nikdy nezadržujte dech', 'Pan Eustach', 'Stanovte jeho hladinovou spotřebu'],
 };
 
 const runBuild = (out, code) => {
@@ -165,10 +166,12 @@ describe('sestavení', () => {
     }
 
     it('každá stránka má vlastní IV a kapitola si nese body atributy', async () => {
-        const [hub, chapter] = Object.keys(SECRET).reverse().map(p => cipherOf(readFileSync(join(out, p), 'utf8')));
-        assert.notEqual(hub.iv, chapter.iv);
-        const page = await decryptPage(chapter, await deriveCourseKey(CODE));
-        assert.deepEqual(page.bodyAttrs, [['data-course-chapter', 'hustota']]);
+        const cipher = (p) => cipherOf(readFileSync(join(out, p), 'utf8'));
+        const [hub, chapter, boyle] = ['p1/index.html', 'p1/hustota.html', 'p1/stlacovani-plynu.html'].map(cipher);
+        assert.equal(new Set([hub.iv, chapter.iv, boyle.iv]).size, 3);
+        const key = await deriveCourseKey(CODE);
+        assert.deepEqual((await decryptPage(chapter, key)).bodyAttrs, [['data-course-chapter', 'hustota']]);
+        assert.deepEqual((await decryptPage(boyle, key)).bodyAttrs, [['data-course-chapter', 'stlacovani-plynu']]);
     });
 
     it('příznak zámku je přepnutý jen ve výstupu', () => {

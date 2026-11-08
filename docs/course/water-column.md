@@ -6,6 +6,10 @@ a vztlak (Archimedes), parciální tlaky (Dalton), sycení (Henry).
 
 **První skutečná vrstva je tlak** (`js/components/waterColumn/pressureLayer.js`, model M1 „Tlak v hloubce“ v `js/course/pressureModel.js`, ukázka `docs/course/model-tlak.html`). Kapitola Hustota sloupec nepoužívá: model jezera v ní
 vychází z GIFu ze slidu 9 (`js/components/LakeCycle.js`) a vrstvu „teplota“ z pilotu nahradil (2026-11-04).
+Druhá vrstva je **objem plynu** (`js/components/waterColumn/gasVolumeLayer.js`, model B1 „Balónek a zvon“ kapitoly
+Stlačování plynů v `js/course/boyleModel.js`, ukázka `docs/course/model-stlacovani.html`): balónek nebo zvon ve sloupci
+(`zIndex: 10`), panel objemu vedle panelu tlaku, soukromý klíč `gasObject`. Předměty (objem v hloubce, řádky tabulky)
+dává stránka v options továrny, výpočet je v `js/physics/boyle.js`.
 
 | Soubor | Co |
 |---|---|
@@ -29,6 +33,7 @@ const col = createWaterColumn(document.getElementById('tlak-column'), {
     surface: 'water',           // 'water' | 'ice'
     state: { water: 'fresh' },  // počáteční klíče stránky / vrstev
     // aside: false,            // vypne všechny boční panely
+    // headroom: 3.4,           // em místa nad hladinou (předmět na hladině, zvon nad vodou); dno zůstává
     // height: 480,             // px, nebo (width) => px; výchozí defaultHeight(width)
     // labels: { depthAxis: 'hloubka [m]', depth: 'hloubka', slider: 'Hloubka', ice: 'led', figure: 'Vodní sloupec' },
 });
@@ -232,7 +237,8 @@ Barvy **dat** vrstvy smí mít vrstva vlastní, ale přepsatelné CSS proměnnou
 
 Z `WaterColumn.js` (čisté, bez DOM, testované v Node):
 `clamp`, `decimalsOf`, `fmtCs`, `fmtDepth`, `snapDepth`, `niceStep`, `niceTicks`, `depthTicks`, `baseFontSize`,
-`defaultHeight`, `computeGeometry`, `depthReadout`, `joinReadout`, `sortLayers`, `estimateTextWidth`,
+`defaultHeight`, `computeGeometry`, `depthReadout`, `joinReadout`, `sortLayers`, `estimateTextWidth`, `placeBarLabel`
+(popisek pruhu v panelu: za pruh, do něj, nebo bez jednotky, nikdy do sousedního panelu),
 `splitLabel`, `wavePath`, konstanty `CORE_STATE_KEYS`, `DEFAULT_LABELS`.
 DOM pomocníci: `svgEl(tag, attrs, parent)` (`attrs.text` = textContent), `haloAttrs`, `readColors`.
 

@@ -12,7 +12,12 @@
  * Překryv leží přesně v rámečku slidu, takže nic neuskočí (na telefonu zabere celou obrazovku,
  * to řeší CSS). Zavírá se Esc, křížkem a klikem mimo a vrací na slide. Adresa `#model-lom` otevře
  * stránku se slidem a simulátorem. Model se staví až při prvním otevření, kdy má skutečnou velikost.
+ *
+ * Náhled může nést předvolbu `data-model-params="zvon=1"`: před otevřením se zapíše do adresy, takže ji model
+ * načte stejně jako předvolbu z odkazu (po zavření ji model z adresy smaže).
  */
+
+import { withPreset } from './modelParams.js';
 
 const DESKTOP = '(min-width: 769px)';
 
@@ -60,6 +65,11 @@ export function initModelOverlays(factories) {
     function open(id, from = null) {
         const dialog = dialogOf(id);
         if (!dialog || !factories[id] || dialog.open) return;
+        const preset = from?.getAttribute?.('data-model-params');
+        if (preset) {
+            const { pathname, search, hash } = window.location;
+            window.history.replaceState(null, '', `${pathname}${withPreset(search, preset)}${hash}`);
+        }
         const fromSlide = from?.closest('.course-slide:not(.course-model)') ?? null;
         openedFrom.set(id, fromSlide ?? firstSlideOf(id));
         slideOf(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });

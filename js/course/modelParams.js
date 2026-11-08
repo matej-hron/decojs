@@ -64,6 +64,17 @@ export function writeParams(search, values) {
 }
 
 /**
+ * Předvolba náhledu (`data-model-params="zvon=1&hloubka=20"`) sloučená do query stringu: jeden model s náhledy
+ * na víc slidech se tak z každého otevře jinak (Stlačování plynů: zvon na slidu 24, balónek na slidu 25).
+ * @param {string} search současný query string
+ * @param {string} preset parametry ve tvaru query stringu (bez `?`)
+ * @returns {string} nový query string včetně `?` (nebo prázdný řetězec)
+ */
+export function withPreset(search, preset) {
+    return writeParams(search, Object.fromEntries(new URLSearchParams(preset)));
+}
+
+/**
  * Promítne hodnoty do adresního řádku (bez nového záznamu v historii).
  * @param {Object<string, number>} values
  */

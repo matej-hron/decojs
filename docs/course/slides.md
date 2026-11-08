@@ -99,6 +99,10 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 
 Části těla, které typ zná: `.course-highlight` (zvýraznění jako v přednášce), `.course-formula` (vzorec na řádku),
 `.course-unit`, `.course-table` (tabulka, čísla ve sloupci `class="num"`), `.course-note` (drobná poznámka).
+Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): malá ilustrace ve stylu kurzu (výstražná
+značka `warn-sign` a `warn-mark` a potápěč, který při výstupu dýchá, výška 15 % slidu) a vedle ní `<p class="course-alert">`
+(na telefonu pod ní). Smí být pod textem kteréhokoli typu, slide 26 ji má
+pod řadou textu a náhledu modelu. `.course-alert` funguje i na jednom slově v textu (červené „2×“ ve slidu 26).
 
 ### `quote`: citace
 
@@ -156,8 +160,8 @@ Výška obrázku je nejvýš polovina slidu (`--course-slide-height`), takže se
 
 Schéma kreslíme jako české SVG s `role="img"` a `aria-label` ve stylu ilustrací (oddíl níže). Starší třídy čárových
 schémat (`fig-line`, `fig-thin`, `fig-arrow`, `fig-water`, `fig-surface`, `fig-particle`, `fig-piston`, `fig-ground`,
-`fig-label-strong`, `fig-label-lg`) v CSS zůstávají pro schémata, která ještě nejsou předělaná (Stlačování);
-nové obrázky je nepoužívají.
+`fig-label-strong`, `fig-label-lg`) v CSS zůstávají pro starší
+schémata; nové obrázky je nepoužívají.
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
 Varianty těla:
@@ -218,6 +222,9 @@ Stlačování a Hustota se projdou zvlášť.
   (čárkovaná vodorovná pomocná čára), `fig-dim` (kóta), `fig-rock` (hora), `fig-sea`, `fig-solid-top`/`-front`/`-side`
   (deska v perspektivě), `fig-atom`, `fig-bond`, `fig-road`, `fig-road-line`, `fig-plane`, `fig-body`, `fig-cavity`,
   `fig-leader` s `fig-halo` (odkazová čára čitelná na tmavém i světlém).
+- **Další třídy (S7, Stlačování plynů):** `fig-molecule` (částice plynu ve válci), `fig-weight` (závaží), `fig-axis`,
+  `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-cavity-light` (vzduch na světlé tkáni, střední ucho), `fig-tissue`
+  (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
 - **Tělo potápěče (T11, slide 21):** hlava z profilu a trup zepředu (`fig-body`). Dutiny s plynem `fig-cavity`
@@ -307,8 +314,8 @@ výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičk
 
 ## 5. Typy do budoucna (zatím nestavěné)
 
-Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22; použijí ho i
-23, 27, 31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19 a 20; použijí ho i 24, 25, 28–30, 36, 37, 41).
+Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27; použijí ho i
+31, 32, 35, 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30; použijí ho i 36, 37, 41).
 
 Prošel jsem všech 60 slidů přednášky (`resources/FyzikaP12_2025.pdf` a `.txt`). Tyhle slidy budou chtít další typy.
 Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-type`, rozměry jen z proměnných scény):
@@ -317,7 +324,7 @@ Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-typ
 |---|---|---|
 | velký obrázek | fotka nebo schéma přes většinu slidu s jednou větou pod ním | 50, 51, 52 |
 | tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`, slide 17) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
-| upozornění | výrazné varování se značkou nebezpečí („Nikdy nezadržujte dech!“) | 26, 34, 44 |
+| upozornění | výrazné varování se značkou nebezpečí přes celý slide; slide 26 (typ `models`) vystačil s částí `.course-warning` (popsaná v §3 u typu `content`) | 34, 44 |
 | velká věta | jedna až dvě krátké věty přes celý slide | 56 („Rychlejší… Není jasné, odkud zvuk přichází“) |
 | konec | závěrečný slide s fotkou a jednou větou | 60 („Konec … A hurá do vody“) |
 
