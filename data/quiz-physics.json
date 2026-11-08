@@ -899,7 +899,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Objem oceli: 2400/8000 = 0,3 m³ = 300 l. Celkový objem válce: 3000 + 300 = 3300 l. Pro vztlak potřebujeme vytlačit vodu z válce. Jedna lahev 12 l × 180 bar = 2160 l vzduchu na hladině = 720 l v 20 m. Potřebujeme cca 2400 l → 3 lahve.",
+      "explanation": "Objem oceli: 2 400/8 000 = 0,3 m³ = 300 l. Ocel je tedy pod vodou nadlehčována jako 300 kg a válec „váží“ 2 400 − 300 = 2 100 kg. Vzduch proto musí vytlačit z válce 2 100 l vody ve 20 m (3 bar). Jedna lahev 12 l × 180 bar = 2 160 l vzduchu na hladině, ve 20 m 2 160/3 = 720 l. 2 100/720 ≈ 2,9 → 3 lahve. Vnitřní objem válce 3 000 l na to stačí.",
       "category": "vztlak-vystroj"
     },
     {
