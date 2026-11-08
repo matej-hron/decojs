@@ -56,7 +56,7 @@ test('Stlačování plynů: nadpisy slidů podle přednášky', () => {
 
 test('Stlačování plynů: opravy z rozhodnutí 4 a překlepy', () => {
     const core = [...doc.querySelectorAll('main .course-core')].map(text).join(' ');
-    assert.match(text(slide(23)), /Boyle-Mariottův zákon říká, že součin tlaku a objemu plynu je stálý/);
+    assert.match(text(slide(23)), /Boyle-Mariottův zákon: pV = konst\..*Součin tlaku a objemu plynu je stálý\./);
     assert.match(slide(23).innerHTML, /<var>p<\/var><var>V<\/var> = konst\./, 'v jádru pV = konst. jako na slidu');
     assert.match(text(slide(23)), /izotermický děj/);
     assert.match(text(slide(24)), /po spuštění zvonu do 10 a do 20\sm/);
@@ -123,17 +123,26 @@ test('Stlačování plynů: slide 26, změny 1,5 l a 2×, varování červeně s
 test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně, maska aktivně)', () => {
     const s = slide(27);
     assert.equal(s.dataset.slideType, 'figure');
-    const t = text(s.querySelector('.course-core > div'));
-    assert.match(t, /Automatické vyrovnání tlaku: plíce, trávicí systém, obličejové dutiny, dýchací cesty\./);
-    assert.match(t, /Aktivní vyrovnání tlaku: střední ucho \(Eustachova trubice\), prostor uvnitř masky\./);
+    // S7: dvě ilustrace ve stylu slidu 12 Tlaku, nadpis nad každou a výčet dutin v popisku pod ní
+    const [auto, active] = [...s.querySelectorAll('.course-core > div:not(.course-core-row)')];
+    assert.equal(text(auto.querySelector('.course-figure-title')), 'Automatické vyrovnání tlaku');
+    assert.equal(text(auto.querySelector('figcaption')), 'plíce, trávicí systém, obličejové dutiny, dýchací cesty');
+    assert.equal(text(active.querySelector('.course-figure-title')), 'Aktivní vyrovnání tlaku');
+    assert.equal(text(active.querySelector('figcaption')), 'střední ucho (Eustachova trubice), prostor uvnitř masky');
     assert.doesNotMatch(text(s), /násiln/i);
-    const svg = s.querySelector('figure svg');
-    assert.ok(svg.getAttribute('role') === 'img' && svg.getAttribute('aria-label'));
-    // R5-04: ucho je velké a popsané (popisky fig-label-lg jako jehla na slidu 12 Tlaku), tělo je malé, dutiny jmenuje text
-    for (const label of ['zvukovod', 'bubínek', 'střední ucho', 'Eustachova', 'trubice', 'automaticky', '(maska', 'aktivně)', 'sestup']) {
-        assert.ok(svg.textContent.includes(label), label);
+    const [body, ear] = [auto, active].map(div => div.querySelector('figure.course-illustration svg'));
+    for (const svg of [body, ear]) {
+        assert.ok(svg.getAttribute('role') === 'img' && svg.getAttribute('aria-label'));
+        assert.equal(svg.getAttribute('viewBox'), '0 0 600 270');
+        assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-xl')), 'popisky fig-label-xl');
+        assert.ok(![...svg.querySelectorAll('*')].some(el => el.hasAttribute('fill') || el.hasAttribute('stroke') || el.hasAttribute('style')), 'barvy jen ze tříd');
     }
-    assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-lg')), 'všechny popisky velké');
+    for (const label of ['maska', '(aktivně)', 'dutiny s plynem', '(slide 21)']) assert.ok(body.textContent.includes(label), label);
+    for (const label of ['zvukovod', 'bubínek', 'střední ucho', 'Eustachova', 'trubice']) assert.ok(ear.textContent.includes(label), label);
+    assert.ok(ear.querySelector('.fig-force'), 'voda tlačí zvukovodem na bubínek');
+    const row = s.querySelector('.course-core-row');
+    assert.match(text(row), /Sestup: tlak roste\./);
+    assert.ok(row.querySelector('svg[role="img"][aria-label] .fig-force'), 'šipka sestupu');
     assert.ok(s.querySelector('a[href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290"]'));
 });
 
@@ -160,17 +169,32 @@ test('Stlačování plynů: slidy 28–30 mají zadání vidět a postup v jedno
 });
 
 test('Stlačování plynů: slide 23 má české SVG válců s písty a grafu p–V (4 bar 1 l, 2 bar 2 l, 1 bar 4 l)', () => {
-    const svg = slide(23).querySelector('figure svg');
-    assert.ok(svg.getAttribute('role') === 'img' && svg.getAttribute('aria-label'));
-    const t = svg.textContent.replace(/\s+/g, ' ');
+    // S7: dvě ilustrace ve stylu slidu 12 Tlaku (viewBox 600 × 270, popisky fig-label-xl, barvy jen ze tříd)
+    const svgs = [...slide(23).querySelectorAll('figure.course-illustration svg')];
+    assert.equal(svgs.length, 2);
+    for (const svg of svgs) {
+        assert.ok(svg.getAttribute('role') === 'img' && svg.getAttribute('aria-label'));
+        assert.equal(svg.getAttribute('viewBox'), '0 0 600 270');
+        assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-xl')));
+        assert.ok(![...svg.querySelectorAll('*')].some(el => el.hasAttribute('fill') || el.hasAttribute('stroke') || el.hasAttribute('style')));
+    }
+    const [cylinders, graph] = svgs;
+    const t = svgs.map(svg => svg.textContent).join(' ').replace(/\s+/g, ' ');
     for (const label of ['4 bar', '2 bar', '1 bar', '1 l', '2 l', '4 l', 'objem [l]', 'tlak [bar]']) {
         assert.ok(t.includes(label), label);
     }
     assert.doesNotMatch(t, /Druck|Volumen|Liter/);
-    assert.equal(svg.querySelectorAll('.fig-weight').length, 4 + 2 + 1, 'závaží 4, 2 a 1');
-    assert.equal(svg.querySelectorAll('.fig-point').length, 3);
-    const particles = svg.querySelectorAll('.fig-particle').length;
-    assert.equal(particles % 3, 0, 've všech válcích stejně částic');
+    assert.equal(cylinders.querySelectorAll('.fig-weight').length, 4 + 2 + 1, 'závaží 4, 2 a 1');
+    // objem plynu pod pístem 1 : 2 : 4
+    assert.deepEqual([...cylinders.querySelectorAll('.fig-gas')].map(r => Number(r.getAttribute('height'))), [32, 64, 128]);
+    assert.equal(cylinders.querySelectorAll('.fig-molecule').length, 3 * 8, 've všech válcích stejně částic');
+    assert.equal(graph.querySelectorAll('.fig-dot').length, 3);
+    // body grafu leží na p · V = 4 bar · l (x = 120 + 100 · V, y = 190 − 38 · p)
+    for (const dot of graph.querySelectorAll('.fig-dot')) {
+        const V = (Number(dot.getAttribute('cx')) - 120) / 100;
+        const p = (190 - Number(dot.getAttribute('cy'))) / 38;
+        assert.equal(p * V, 4);
+    }
 });
 
 test('Stlačování plynů: B1 se otevírá z náhledů na slidech 24, 25 a 26 se svou předvolbou', () => {

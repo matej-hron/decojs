@@ -99,8 +99,9 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 
 Části těla, které typ zná: `.course-highlight` (zvýraznění jako v přednášce), `.course-formula` (vzorec na řádku),
 `.course-unit`, `.course-table` (tabulka, čísla ve sloupci `class="num"`), `.course-note` (drobná poznámka).
-Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): výstražná značka (inline SVG s třídami
-`warn-sign` a `warn-mark`) a vedle ní `<p class="course-alert">`. Smí být pod textem kteréhokoli typu, slide 26 ji má
+Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): malá ilustrace ve stylu kurzu (výstražná
+značka `warn-sign` a `warn-mark` a potápěč, který při výstupu dýchá, výška 15 % slidu) a vedle ní `<p class="course-alert">`
+(na telefonu pod ní). Smí být pod textem kteréhokoli typu, slide 26 ji má
 pod řadou textu a náhledu modelu. `.course-alert` funguje i na jednom slově v textu (červené „2×“ ve slidu 26).
 
 ### `quote`: citace
@@ -158,8 +159,8 @@ převzatého obrázku). Výška obrázku je nejvýš polovina slidu (`--course-s
 
 Schéma kreslíme jako jednoduché české SVG s `role="img"` a `aria-label`. Barvy nebere ze svých atributů, ale
 z tříd, které berou barvy stylu Hladina: `fig-line` (obrys), `fig-thin` (čárkovaná pomocná čára), `fig-arrow` (síla),
-`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-weight` (závaží), `fig-ground`, `fig-curve` a
-`fig-point` (křivka a body grafu, slide 23), `fig-label-strong` (zvýrazněný popisek),
+`fig-water`, `fig-surface` (plocha), `fig-particle`, `fig-piston`, `fig-ground`, `fig-point` (bod grafu),
+`fig-label-strong` (zvýrazněný popisek),
 `fig-label-lg` (větší popisek pro obrázek, který se kvůli výšce zmenší víc než jeho soused).
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
@@ -201,6 +202,9 @@ až Matej styl schválí.
   `fig-silhouette` (postava, uvnitř `fig-limb`, `fig-limb-thick`, `fig-pole`), `fig-snow`, `fig-snow-lip`, `fig-hill`,
   `fig-tree`, `fig-flake`, `fig-track` (mělká stopa), `fig-track-deep` (hluboká stopa), `fig-glass` (průhledný plast),
   `fig-plastic`, `fig-liquid`, `fig-ink` (tmavé detaily), `fig-ticks`, `fig-hub`, `fig-needle`, `fig-pointer`.
+  Stlačování plynů (S7) přidává: `fig-gas` (plyn ve válci), `fig-molecule` (částice plynu), `fig-weight` (závaží),
+  `fig-axis`, `fig-guide` (čárkovaná pomocná čára), `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-cavity`
+  (vzduch v těle), `fig-tissue` (tkáň), `fig-tube-wall` a `fig-tube` (trubice).
 - **Síla je výrazná.** `fig-force`: plná bloková šipka v barvě zvýraznění s tmavým obrysem, popisek
   `<tspan font-style="italic">F</tspan>`. Stejná síla = stejný tvar šipky.
 - **Fotky:** kde je skutečná věc názornější než kresba (manometr, výstroj), fotka z volného zdroje (public domain, CC0,
