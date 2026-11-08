@@ -10,7 +10,7 @@
  */
 
 import {
-    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeRange, formatAirTemperature, lakeFrame, windLabelText,
+    LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_STEPS, airOf, exchangeRange, formatAirTemperature, lakeFrame, surfaceArrowLabel,
     lakeTemperatureColor, lakeTextColor, mixColors,
 } from '../physics/lakeCycle.js';
 
@@ -262,7 +262,7 @@ export function createLakeCycle(host, options = {}) {
         paintLabels(frame, iceH, tween?.swap ? easeInOut(tween.x) : null);
         refs.air.textContent = formatAirTemperature(frame.air, { short: refs.shortAir });
         refs.windArrow.setAttribute('fill', mixColors(c.cold, c.warm, frame.warm));
-        refs.windLabel.textContent = windLabelText(frame.warm);
+        refs.windLabel.textContent = surfaceArrowLabel(frame.step);
         // Šipky podle druhu cílového kroku. Pohyb jen při kroku dopředu, jinak stojí uprostřed.
         const { kind } = LAKE_STEPS[step];
         refs.heavier.setAttribute('opacity', kind === 'těžší' ? 1 : 0);

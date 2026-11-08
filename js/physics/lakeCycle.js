@@ -290,6 +290,17 @@ export function windLabelText(warm) {
 }
 
 /**
+ * Popisek šipky u hladiny v daném kroku. Při výměně vrstev je prázdný: hladina se tam mění prohozením, ne ohřevem
+ * či chlazením, a vysvětlení nese popisek kroku („Vrstvy se prohodí…“). Jinak by třeba v březnu tvrdil
+ * „hladina se ohřívá“, zatímco číslo hladiny klesne.
+ * @param {number} index krok (0 = krok 1)
+ * @returns {string}
+ */
+export function surfaceArrowLabel(index) {
+    return LAKE_STEPS[index].kind === 'výměna' ? '' : windLabelText(lakeFrame(index).warm);
+}
+
+/**
  * Krok modelu z klávesy. V otevřeném simulátoru šipky patří krokům i na posuvníku, jen tak funguje
  * krok dokola a prezentační klikr. Mimo simulátor přepínají slidy (`slideNav.js`).
  * @param {{key: string, altKey: boolean, ctrlKey: boolean, metaKey: boolean, shiftKey: boolean}} e

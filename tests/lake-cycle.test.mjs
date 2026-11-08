@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 import {
     LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTH_NAMES, LAKE_STEPS, airOf, exchangeRange, firstStepOfMonth,
-    LAKE_MONTH_ABBR, formatAirTemperature, lakeFrame, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
+    LAKE_MONTH_ABBR, formatAirTemperature, lakeFrame, surfaceArrowLabel, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
     treeOf, unstablePair,
 } from '../js/physics/lakeCycle.js';
 import { waterDensity } from '../js/physics/waterDensity.js';
@@ -288,6 +288,20 @@ test('šipka u hladiny: popisek říká, jestli se hladina ohřívá, nebo chlad
     assert.equal(labelOf('září'), 'hladina chladne');
     assert.equal(labelOf('leden'), 'hladina chladne');
     for (const warm of [0, 1]) assert.doesNotMatch(windLabelText(warm), /vzduch|vítr/);
+});
+
+test('popisek šipky u hladiny nikdy neříká opak toho, co dělá číslo hladiny; při výměně je schovaný', () => {
+    for (let i = 0; i < N; i++) {
+        const delta = LAKE_STEPS[i].temps[0] - LAKE_STEPS[(i - 1 + N) % N].temps[0];
+        const label = surfaceArrowLabel(i);
+        const where = `krok ${i + 1} (${LAKE_STEPS[i].month}, hladina ${delta > 0 ? '+' : ''}${delta}): „${label}“`;
+        if (LAKE_STEPS[i].kind === 'výměna') assert.equal(label, '', where);
+        if (delta > 0) assert.notEqual(label, 'hladina chladne', where);
+        if (delta < 0) assert.notEqual(label, 'hladina se ohřívá', where);
+    }
+    assert.equal(surfaceArrowLabel(15), '', 'krok 16: podzimní výměna, hladina 9 → 10 °C');
+    assert.equal(surfaceArrowLabel(55), '', 'krok 56: jarní výměna, hladina 3 → 2 °C');
+    assert.equal(surfaceArrowLabel(58), '', 'krok 59: dubnová výměna, hladina 4 → 3 °C');
 });
 
 test('teploty vzduchu odpovídají normálu ČHMÚ 1991–2020 pro ČR (zaokrouhleno)', () => {
