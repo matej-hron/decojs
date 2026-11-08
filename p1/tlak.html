@@ -58,7 +58,7 @@
                     <div>
                         <p><span class="course-highlight">Tlak (a tlaková síla, kterou vyvolává) je nejzávažnější ze všech
                             vlivů působících při potápění.</span></p>
-                        <p>Tlak je definován velikostí síly působící na plochu.</p>
+                        <p>Tlak udává, jak velká síla působí kolmo na jednotku plochy.</p>
                         <p class="course-formula" aria-label="tlak rovná se síla lomeno plocha, v pascalech">
                             <var>p</var> = <var>F</var>/<var>S</var> <span class="course-unit">[Pa]</span>
                         </p>
@@ -86,17 +86,73 @@
 
         <!-- Slide 12 -->
         <section id="jednotky" class="course-section">
-            <div class="course-slide" data-slide-number="12" data-slide-type="content" data-slide-fit="compact">
+            <div class="course-slide" data-slide-number="12" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Tlak – jednotky, příklady</h2>
                 <div class="course-core">
-                    <ul>
-                        <li>Stejná síla působící na různě velkých plochách.</li>
-                        <li>Síla 5&nbsp;N na ploše hrotu jehly 0,1&nbsp;mm² vyvine tlak 50&nbsp;MPa.</li>
-                        <li><span class="course-highlight">Jednotka pascal (Pa) je (nejen) pro účely potápění malá:</span></li>
-                    </ul>
-                    <p class="course-formula">1&nbsp;MPa = 1&nbsp;000&nbsp;kPa = 1&nbsp;000&nbsp;000&nbsp;Pa</p>
-                    <p class="course-formula">100&nbsp;kPa = 0,1&nbsp;MPa = 1&nbsp;bar</p>
-                    <p class="course-formula">1&nbsp;atm = 101,325&nbsp;kPa ≈ 1&nbsp;bar</p>
+                    <div>
+                        <figure class="course-figure">
+                        <svg viewBox="0 0 380 250" role="img" aria-label="Stejný člověk ve sněhu: v botách se boří, na lyžích ne">
+                            <rect class="fig-surface" x="0" y="170" width="380" height="50"/>
+                            <circle class="fig-line" cx="95" cy="87" r="13"/>
+                            <line class="fig-line" x1="95" y1="100" x2="95" y2="150"/>
+                            <line class="fig-line" x1="71" y1="127" x2="119" y2="127"/>
+                            <line class="fig-line" x1="95" y1="150" x2="81" y2="205"/>
+                            <line class="fig-line" x1="95" y1="150" x2="109" y2="205"/>
+                            <rect class="fig-piston" x="75" y="200" width="20" height="9" rx="3"/>
+                            <rect class="fig-piston" x="96" y="200" width="20" height="9" rx="3"/>
+                            <circle class="fig-line" cx="285" cy="48" r="13"/>
+                            <line class="fig-line" x1="285" y1="61" x2="285" y2="111"/>
+                            <line class="fig-line" x1="261" y1="88" x2="309" y2="88"/>
+                            <line class="fig-line" x1="285" y1="111" x2="271" y2="166"/>
+                            <line class="fig-line" x1="285" y1="111" x2="299" y2="166"/>
+                            <rect class="fig-piston" x="215" y="166" width="140" height="6" rx="3"/>
+                            <line class="fig-arrow" x1="95.0" y1="40.0" x2="95.0" y2="60.0"/>
+                            <polygon class="fig-arrow" points="89.0,60.0 101.0,60.0 95.0,70.0"/>
+                            <line class="fig-arrow" x1="285.0" y1="2.0" x2="285.0" y2="21.0"/>
+                            <polygon class="fig-arrow" points="279.0,21.0 291.0,21.0 285.0,31.0"/>
+                            <text x="105" y="60"><tspan font-style="italic">F</tspan></text>
+                            <text x="295" y="22"><tspan font-style="italic">F</tspan></text>
+                            <text x="95" y="242" text-anchor="middle">v botách se boří</text>
+                            <text x="285" y="242" text-anchor="middle">na lyžích ne</text>
+                        </svg>
+                        </figure>
+                        <p><span class="course-highlight">Stejná síla, menší plocha → větší tlak.</span></p>
+                    </div>
+                    <div>
+                        <figure class="course-figure">
+                        <svg viewBox="0 44 380 120" role="img" aria-label="Injekční stříkačka: síla 5&nbsp;N na hrot jehly o ploše 0,1&nbsp;mm² vyvine tlak 50&nbsp;MPa">
+                            <rect class="fig-line" x="70" y="80" width="150" height="40" rx="4"/>
+                            <line class="fig-line" x1="70" y1="100" x2="30" y2="100"/>
+                            <line class="fig-line" x1="30" y1="78" x2="30" y2="122"/>
+                            <rect class="fig-piston" x="72" y="82" width="12" height="36"/>
+                            <path class="fig-line" d="M220 92H236V108H220"/>
+                            <line class="fig-line" x1="236" y1="100" x2="356" y2="100"/>
+                            <polygon class="fig-arrow" points="356,97 372,100 356,103"/>
+                            <line class="fig-arrow" x1="4.0" y1="100.0" x2="18.0" y2="100.0"/>
+                            <polygon class="fig-arrow" points="18.0,106.0 18.0,94.0 28.0,100.0"/>
+                            <text x="4" y="66"><tspan font-style="italic">F</tspan> = 5&nbsp;N</text>
+                            <text x="372" y="66" text-anchor="end">hrot 0,1&nbsp;mm²</text>
+                            <text x="372" y="150" text-anchor="end" class="fig-label-strong">50&nbsp;MPa = 500&nbsp;bar</text>
+                        </svg>
+                        </figure>
+                        <p><span class="course-highlight">I malá síla může způsobit obrovský tlak:</span> síla 5&nbsp;N na ploše
+                            hrotu jehly 0,1&nbsp;mm² vyvine tlak 50&nbsp;MPa = 500&nbsp;bar<span>, víc než tlak
+                            v plné potápěčské lahvi (asi 200–&#8288;300&nbsp;bar)</span>.</p>
+                    </div>
+                    <div class="course-core-row">
+                        <div>
+                            <p><span class="course-highlight">Jednotka pascal (Pa) je (nejen) pro účely potápění malá:</span></p>
+                            <p>1&nbsp;MPa = 1&nbsp;000&nbsp;kPa = 1&nbsp;000&nbsp;000&nbsp;Pa</p>
+                            <p>100&nbsp;kPa = 0,1&nbsp;MPa = 1&nbsp;bar</p>
+                            <p>1&nbsp;atm = 101,325&nbsp;kPa ≈ 1&nbsp;bar</p>
+                        </div>
+                        <figure class="course-figure">
+                            <img src="../images/course/p1/manometr.jpg" width="420" height="300"
+                                alt="Manometr potápěčské lahve se stupnicí v barech do 400&nbsp;bar">
+                            <figcaption>Foto: Peter Southwood, CC&nbsp;BY-SA&nbsp;4.0,
+                                <a href="https://commons.wikimedia.org/wiki/File:Submersible_pressure_gauge_on_short_HP_hose_P8160037.jpg">Wikimedia Commons</a>, oříznuto.</figcaption>
+                        </figure>
+                    </div>
                 </div>
             </div>
             <details class="course-more">
@@ -119,6 +175,50 @@
                             <li>Částice blízko sebe, vázány v krystalické mřížce.</li>
                             <li>Při působení tlaku nemění tvar ani objem.</li>
                         </ul>
+                        <figure class="course-figure">
+                        <svg viewBox="0 0 380 190" role="img" aria-label="Vlevo pevná látka: částice v krystalické mřížce. Vpravo kapalina v uzavřené kouli s pístem: tlak působí ve všech místech stejně">
+                            <line class="fig-thin" x1="30" y1="30" x2="110" y2="30"/>
+                            <line class="fig-thin" x1="30" y1="30" x2="30" y2="110"/>
+                            <line class="fig-thin" x1="30" y1="70" x2="110" y2="70"/>
+                            <line class="fig-thin" x1="70" y1="30" x2="70" y2="110"/>
+                            <line class="fig-thin" x1="30" y1="110" x2="110" y2="110"/>
+                            <line class="fig-thin" x1="110" y1="30" x2="110" y2="110"/>
+                            <circle class="fig-particle" cx="30" cy="30" r="8"/>
+                            <circle class="fig-particle" cx="30" cy="70" r="8"/>
+                            <circle class="fig-particle" cx="30" cy="110" r="8"/>
+                            <circle class="fig-particle" cx="70" cy="30" r="8"/>
+                            <circle class="fig-particle" cx="70" cy="70" r="8"/>
+                            <circle class="fig-particle" cx="70" cy="110" r="8"/>
+                            <circle class="fig-particle" cx="110" cy="30" r="8"/>
+                            <circle class="fig-particle" cx="110" cy="70" r="8"/>
+                            <circle class="fig-particle" cx="110" cy="110" r="8"/>
+                            <path class="fig-water" d="M262 58V40H278V58A42 42 0 1 1 262 58Z"/>
+                            <path class="fig-line" d="M262 58V24M278 58V24M262 58A42 42 0 1 0 278 58"/>
+                            <rect class="fig-piston" x="258" y="30" width="24" height="8"/>
+                            <line class="fig-arrow" x1="270.0" y1="2.0" x2="270.0" y2="20.0"/>
+                            <polygon class="fig-arrow" points="265.2,20.0 274.8,20.0 270.0,28.0"/>
+                            <line class="fig-arrow" x1="252.4" y1="140.5" x2="246.7" y2="154.4"/>
+                            <polygon class="fig-arrow" points="242.8,152.7 250.5,156.0 244.0,160.8"/>
+                            <line class="fig-arrow" x1="227.5" y1="115.6" x2="213.6" y2="121.3"/>
+                            <polygon class="fig-arrow" points="212.0,117.5 215.3,125.2 207.2,124.0"/>
+                            <line class="fig-arrow" x1="227.5" y1="80.4" x2="213.6" y2="74.7"/>
+                            <polygon class="fig-arrow" points="215.3,70.8 212.0,78.5 207.2,72.0"/>
+                            <line class="fig-arrow" x1="252.4" y1="55.5" x2="246.7" y2="41.6"/>
+                            <polygon class="fig-arrow" points="250.5,40.0 242.8,43.3 244.0,35.2"/>
+                            <line class="fig-arrow" x1="287.6" y1="55.5" x2="293.3" y2="41.6"/>
+                            <polygon class="fig-arrow" points="297.2,43.3 289.5,40.0 296.0,35.2"/>
+                            <line class="fig-arrow" x1="312.5" y1="80.4" x2="326.4" y2="74.7"/>
+                            <polygon class="fig-arrow" points="328.0,78.5 324.7,70.8 332.8,72.0"/>
+                            <line class="fig-arrow" x1="312.5" y1="115.6" x2="326.4" y2="121.3"/>
+                            <polygon class="fig-arrow" points="324.7,125.2 328.0,117.5 332.8,124.0"/>
+                            <line class="fig-arrow" x1="287.6" y1="140.5" x2="293.3" y2="154.4"/>
+                            <polygon class="fig-arrow" points="289.5,156.0 297.2,152.7 296.0,160.8"/>
+                            <text x="70" y="150" text-anchor="middle">pevná látka:</text>
+                            <text x="70" y="172" text-anchor="middle">krystalická mřížka</text>
+                            <text x="270" y="182" text-anchor="middle">kapalina: tlak všude stejný</text>
+                            <text x="284" y="16"><tspan font-style="italic">F</tspan></text>
+                        </svg>
+                        </figure>
                     </div>
                     <div>
                         <p><span class="course-highlight">Kapaliny</span></p>
@@ -262,10 +362,9 @@
                         </ul>
                     </div>
                     <figure class="course-figure">
-                        <svg viewBox="0 0 440 320" role="img" aria-label="Sloupec vzduchu nad hladinou moře: nahoře 0&nbsp;kPa, na Mount Everestu 31&nbsp;kPa, u moře 101&nbsp;kPa">
+                        <svg viewBox="0 0 440 320" role="img" aria-label="Sloupec vzduchu nad hladinou moře: nahoru vzduchu ubývá a tlak klesá k nule, na Mount Everestu 31&nbsp;kPa, u moře 101&nbsp;kPa">
                             <polygon class="fig-ground" points="0,292 40,250 110,92 150,150 190,205 230,292"/>
                             <rect class="fig-water" x="0" y="292" width="440" height="28"/>
-                            <line class="fig-thin" x1="0" y1="20" x2="440" y2="20"/>
                             <line class="fig-thin" x1="110" y1="92" x2="440" y2="92"/>
                             <circle class="fig-particle" cx="279" cy="34" r="4"/>
                             <circle class="fig-particle" cx="283" cy="54" r="4"/>
@@ -311,8 +410,7 @@
                             <circle class="fig-particle" cx="264" cy="259" r="4"/>
                             <circle class="fig-particle" cx="292" cy="270" r="4"/>
                             <circle class="fig-particle" cx="258" cy="261" r="4"/>
-                            <text x="4" y="14">hranice atmosféry</text>
-                            <text x="436" y="14" text-anchor="end" class="fig-label-strong">0&nbsp;kPa</text>
+                            <text x="436" y="14" text-anchor="end">vzduchu ubývá, tlak klesá k&nbsp;0</text>
                             <text x="242" y="84" text-anchor="end">Mount Everest 8&nbsp;850&nbsp;m</text>
                             <text x="436" y="84" text-anchor="end" class="fig-label-strong">31&nbsp;kPa</text>
                             <text x="236" y="314">hladina moře</text>
@@ -360,6 +458,14 @@
                             <li>Odlet letadlem po potápění.</li>
                             <li>Tlak v přetlakové kabině letadla jako ve výšce asi 2&nbsp;200&nbsp;m.</li>
                         </ul>
+                        <figure class="course-figure">
+                        <svg viewBox="0 0 380 170" role="img" aria-label="Silnice přes horské sedlo a letadlo nad horami">
+                            <polygon class="fig-ground" points="0,160 70,70 130,110 190,60 260,120 320,80 380,160"/>
+                            <path class="fig-thin" d="M20 160C70 140 110 118 130 110S200 140 260 160"/>
+                            <path class="fig-particle" d="M210 30h120c10 0 16 4 16 8s-6 8-16 8h-120l-14-8zM262 30l-26-22h14l34 22zM262 46l-26 22h14l34-22zM300 30l-6-12h8l10 12z"/>
+                            <text x="130" y="104" text-anchor="middle">horské sedlo</text>
+                        </svg>
+                        </figure>
                     </div>
                 </div>
             </div>
@@ -437,11 +543,11 @@
                         <ol class="course-calc-steps">
                             <li><var>p</var> = <var>p</var><sub>atm</sub> + <var>p</var><sub>h</sub></li>
                             <li><var>p</var><sub>h</sub> = <var>h</var> · <var>ρ</var> · <var>g</var> <span class="course-unit">[Pa]</span></li>
-                            <li><var>p</var><sub>h</sub> = 10 · 1&nbsp;000 · 10&nbsp;Pa = 100&nbsp;000&nbsp;Pa = 1&nbsp;bar</li>
+                            <li><var>p</var><sub>h</sub> = 10&nbsp;m · 1&nbsp;000&nbsp;kg/m³ · 10&nbsp;m/s² = 100&nbsp;000&nbsp;Pa = 1&nbsp;bar</li>
                             <li><var>p</var><sub>atm</sub> = 1&nbsp;bar</li>
                             <li><var>p</var> = 1 + 1 = 2&nbsp;bar</li>
                         </ol>
-                        <p class="course-calc-result"><span><var>p</var> = <var>h</var>/10 + 1 <span class="course-unit">[bar]</span></span>
+                        <p class="course-calc-result"><span><var>p</var> = <var>h</var>/10 + 1 <span class="course-unit">[bar]</span>, <var>h</var> v metrech</span>
                             <a href="?hloubka=10#model-tlak" data-preset-link>Ukaž to v modelu (10&nbsp;m) →</a></p>
                     </details>
                 </div>
@@ -480,7 +586,7 @@
                             </table>
                         </div>
                         <div>
-                            <p>horské jezero ve výšce 5&nbsp;500&nbsp;m&nbsp;n.&nbsp;m. (jako v testu SPČR)</p>
+                            <p>Horské jezero ve výšce 5&nbsp;500&nbsp;m&nbsp;n.&nbsp;m. (jako v testu SPČR)</p>
                             <table class="course-table">
                                 <thead><tr><th scope="col"><var>h</var> [m]</th><th scope="col"><var>p</var> [bar]</th></tr></thead>
                                 <tbody>
@@ -514,26 +620,33 @@
 
         <!-- Slide 21 -->
         <section id="dusledky" class="course-section">
-            <div class="course-slide" data-slide-number="21" data-slide-type="content" data-slide-fit="compact">
+            <div class="course-slide" data-slide-number="21" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Důsledky zvýšeného tlaku</h2>
-                <div class="course-core course-core-cols">
+                <div class="course-core">
                     <div>
                         <p>Proti tlakové síle vyvolané okolním tlakem lze potápěče chránit:</p>
                         <ul>
                             <li><span class="course-highlight">Pevnými vnějšími stěnami</span> (ponorka, pouzdro na foťák).</li>
                             <li><span class="course-highlight">Vnitřním tlakem</span> (náš případ).</li>
                         </ul>
-                    </div>
-                    <div>
                         <p>Tlak nemá žádný vliv na ty části těla, které jsou vyplněny tekutinami.</p>
-                        <p>V dutinách s plynným obsahem je nutno vyrovnávat tlak s tlakem okolí:</p>
-                        <ul>
-                            <li>obličejové dutiny,</li>
-                            <li>dýchací cesty,</li>
-                            <li>plíce,</li>
-                            <li>trávicí systém.</li>
-                        </ul>
+                        <p>V dutinách s plynným obsahem je nutno vyrovnávat tlak s tlakem okolí.</p>
                     </div>
+                    <figure class="course-figure">
+                        <svg viewBox="0 0 360 280" role="img" aria-label="Tělo potápěče: tkáně s tekutinami tlak necítí, dutiny s plynem (obličejové dutiny, dýchací cesty, plíce, trávicí systém) se musí vyrovnávat">
+                            <path class="fig-water" d="M150 20a30 34 0 0 1 60 0v34a30 30 0 0 1-12 22l58 18c14 6 20 16 20 30v150H84V124c0-14 6-24 20-30l58-18a30 30 0 0 1-12-22z"/>
+                            <ellipse class="fig-surface" cx="168" cy="40" rx="8" ry="6"/>
+                            <ellipse class="fig-surface" cx="192" cy="40" rx="8" ry="6"/>
+                            <rect class="fig-surface" x="175" y="70" width="10" height="56" rx="4"/>
+                            <ellipse class="fig-surface" cx="150" cy="150" rx="28" ry="42"/>
+                            <ellipse class="fig-surface" cx="210" cy="150" rx="28" ry="42"/>
+                            <ellipse class="fig-surface" cx="180" cy="230" rx="44" ry="26"/>
+                            <line class="fig-thin" x1="160" y1="40" x2="96" y2="24"/><text x="94" y="20" text-anchor="end">obličejové</text><text x="94" y="40" text-anchor="end">dutiny</text>
+                            <line class="fig-thin" x1="186" y1="90" x2="262" y2="70"/><text x="266" y="66">dýchací</text><text x="266" y="86">cesty</text>
+                            <line class="fig-thin" x1="234" y1="150" x2="290" y2="150"/><text x="294" y="156">plíce</text>
+                            <line class="fig-thin" x1="224" y1="236" x2="290" y2="236"/><text x="294" y="230">trávicí</text><text x="294" y="250">systém</text>
+                        </svg>
+                    </figure>
                 </div>
             </div>
             <details class="course-more">

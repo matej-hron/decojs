@@ -44,6 +44,7 @@ Rozložení odpovídá originálu přednášky (`resources/FyzikaP12_2025.pdf`, 
 | `--course-title-slide-title` | 1,35 × písmo nadpisu | stejné | nadpis titulního slidu |
 | `--course-title-slide-top` | 67 % výšky slidu (začátek spodní třetiny) | (nepoužije se) | horní hrana nadpisu titulního slidu |
 | `--course-practice-text` | `clamp(0.9rem, 2.05vh, 1.4rem)` | stejné | písmo Procvič si |
+| `--course-model-ui` | `clamp(0.95rem, 1.7vh, 1.25rem)`, na 1920×1080 kolem 18 px | stejné | přepínače, popisky a poznámka `.course-simplification` v simulátorech |
 
 Barvy stylu Hladina jsou proměnné `--slide-*` na `.course-page` (výstřižek citace: `--slide-card-bg`, `--slide-card-fg`).
 

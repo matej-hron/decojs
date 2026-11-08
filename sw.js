@@ -185,6 +185,7 @@ const STATIC_ASSETS = [
   './js/gfLimits.js',
   './js/gfPresets.js',
   './images/gas-particles.gif',
+  './images/course/p1/manometr.jpg',
   './images/cmas-table-2018.png',
   './js/urlParams.js',
   './js/utils/escHtml.js',

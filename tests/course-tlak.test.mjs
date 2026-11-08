@@ -48,8 +48,11 @@ test('Tlak: nadpisy slidů podle přednášky (s opravenými překlepy)', () => 
 });
 
 test('Tlak: věcné opravy z rozhodnutí 5 a překlepy', () => {
-    const core = [...doc.querySelectorAll('.course-core')].map(text).join(' ');
+    // Verze licence (CC BY-SA 4.0) je označení, ne desetinné číslo.
+    const core = [...doc.querySelectorAll('.course-core')].map(text).join(' ').replace(/CC BY-SA \d\.\d/g, '');
     assert.match(text(slide(11)), /Tlak \(a tlaková síla, kterou vyvolává\) je nejzávažnější/);
+    assert.match(text(slide(11)), /Tlak udává, jak velká síla působí kolmo na jednotku plochy\./);
+    assert.doesNotMatch(text(slide(11)), /definován velikostí síly/);
     assert.match(text(slide(18)), /tíhovém zrychlení/);
     assert.match(text(slide(16)), /tíhou vzdušného obalu Země/);
     assert.match(text(slide(13)), /prakticky nestlačitelné/);
@@ -72,8 +75,8 @@ test('Tlak: slide 19 má zadání vidět a postup v jednom odkrytí', () => {
     assert.match(text(s), /Jaký je tlak v moři v hloubce 10\s*m\?/);
     const answers = s.querySelectorAll('details.course-answer');
     assert.equal(answers.length, 1);
-    assert.match(text(answers[0]), /100\s*000\s*Pa = 1\s*bar/);
-    assert.match(text(answers[0]), /p = h\/10 \+ 1/);
+    assert.match(text(answers[0]), /10\s*m · 1\s*000\s*kg\/m³ · 10\s*m\/s² = 100\s*000\s*Pa = 1\s*bar/, 'jednotky v dosazení (R2-04)');
+    assert.match(text(answers[0]), /p = h\/10 \+ 1 \[bar\], h v metrech/);
 });
 
 /** Odpovědi tabulky slidu 20: [hloubka, odkrytý text] po řádcích. */
@@ -100,7 +103,8 @@ test('Tlak: slide 20, obě tabulky odkryjí školní odpovědi spočítané z pr
     for (const [h, answer] of lakeRows) {
         assert.equal(answer, formatBar(pressureAt(h, { altitude: 5500 }).total, 'school'), `jezero ${h} m`);
     }
-    assert.match(text(s), /horské jezero ve výšce 5\s*500\s*m n\. m\. \(jako v testu SPČR\)/);
+    assert.match(text(s), /Horské jezero ve výšce 5\s*500\s*m n\. m\. \(jako v testu SPČR\)/);
+    assert.match(text(s), /Moře \(Los Gigantes/);
     assert.match(text(s), /Los Gigantes, Kanárské ostrovy|Los Gigantes, Canary Islands/);
 });
 
@@ -124,7 +128,7 @@ test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
 });
 
 test('Tlak: schémata jsou česká SVG (síla na plochu, píst, sloupec vzduchu, tři nádoby)', () => {
-    for (const n of [11, 14, 16, 18]) {
+    for (const n of [11, 12, 14, 16, 18, 21]) {
         const s = slide(n);
         assert.equal(s.dataset.slideType, 'figure', `slide ${n}`);
         const svg = s.querySelector('figure svg');
@@ -157,4 +161,45 @@ test('Tlak: stránka, její modul a GIF jsou offline (sw.js)', () => {
 test('slovníček: jednotka atm je ve slovníčku i ve style-guide', () => {
     assert.match(read('docs/notation/glossary.md'), /\| atm \| fyzikální atmosféra/);
     assert.match(read('docs/notation/style-guide.md'), /\| atm \| ATM/);
+});
+
+test('Tlak: kde originál nese myšlenku obrázkem, nese ji i náš slide (12, 13, 17, 21)', () => {
+    for (const n of [12, 13, 17, 21]) {
+        const svgs = [...slide(n).querySelectorAll('figure svg[role="img"]')];
+        assert.ok(svgs.length > 0 && svgs.every(svg => svg.getAttribute('aria-label')), `slide ${n}`);
+    }
+    assert.equal(slide(12).querySelectorAll('figure svg').length, 2, 'boty a lyže, jehla');
+    assert.match(text(slide(12)), /Stejná síla, menší plocha → větší tlak/);
+    assert.match(text(slide(12)), /I malá síla může způsobit obrovský tlak/);
+    assert.match(text(slide(12)), /50\s*MPa = 500\s*bar/);
+    assert.match(text(slide(16).querySelector('svg')), /vzduchu ubývá, tlak klesá k\s0/);
+    assert.doesNotMatch(text(slide(16).querySelector('svg')), /hranice atmosféry/);
+});
+
+test('Tlak: fotka manometru má autora, licenci a záznam v SOURCES.md', () => {
+    const img = slide(12).querySelector('img');
+    assert.match(img.getAttribute('src'), /\.\.\/images\/course\/p1\/manometr\.jpg$/);
+    const cap = text(img.closest('figure').querySelector('figcaption'));
+    assert.match(cap, /Peter Southwood/);
+    assert.match(cap, /CC BY-SA 4\.0/);
+    const sources = read('images/course/p1/SOURCES.md');
+    for (const f of ['images/course/p1/manometr.jpg', 'images/gas-particles.gif']) assert.ok(sources.includes(f), f);
+    assert.match(sources, /CC BY-SA 4\.0/);
+    assert.ok(read('sw.js').includes("'./images/course/p1/manometr.jpg'"));
+});
+
+test('Tlak: 66 m na slidu 20 není zvýrazněné jen barvou', () => {
+    const css = read('css/course.css');
+    assert.match(css, /\.course-alert > td:first-child \{[^}]*text-decoration: underline/);
+    assert.match(css, /\.course-alert > td \{[^}]*font-weight: 700/);
+});
+
+test('kvíz: vysvětlení otázek 6, 53, 52 a 29 (R1-03, R2-08), doslovné U+00A0', () => {
+    const q = Object.fromEntries(JSON.parse(read('data/quiz-physics.json')).questions.map(x => [x.id, x]));
+    const N = ' ';
+    assert.ok(q[6].explanation.includes(`101${N}325${N}Pa a teplotě 10${N}°C je asi 1,25${N}kg/m³, při 0${N}°C asi 1,29${N}kg/m³`));
+    assert.ok(q[53].explanation.startsWith(`Normální atmosférický tlak je 101${N}325${N}Pa, tedy přibližně 0,1${N}MPa`));
+    assert.ok(q[52].explanation.endsWith(`Proto 10${N}m vody ≈ 1${N}bar ≈ tlak atmosféry.`));
+    assert.ok(q[29].explanation.includes('Jednotkou je pascal (Pa)'));
+    assert.doesNotMatch(q[52].explanation, /= 1 atmosféra/);
 });
