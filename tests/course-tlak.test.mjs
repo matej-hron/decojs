@@ -228,7 +228,11 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(20), /předbíháme Daltonův zákon/);
     // T10: meze podle Mateje: 30 a 40 m se vzduchem podle systému výcviku, 56 m = pO₂ 1,4 bar (MOD vzduchu)
     for (const d of ['30', '40', '56']) assert.match(more(20), new RegExp(`${d}\\s?m`), d);
-    assert.match(more(20), /systému výcviku/);
+    // T13: mez dusíku pN₂ 4 bar → 40 m, 30 m jako přísnější mez některých systémů výcviku
+    const limits = [...slide(20).closest('section').querySelectorAll('details.course-more li')].map(text);
+    assert.deepEqual(limits.map(t => t.match(/^\d+ m/)?.[0]), ['40 m', '30 m', '56 m']);
+    assert.match(limits[0], /^40 m: parciální tlak dusíku pN₂ 4 bar, mez pro dusík\. Celkový tlak smí být nejvýš 4 \/ 0,79 ≈ 5,06 bar, to je 40,6 m, zaokrouhleno dolů 40 m\.$/);
+    assert.match(limits[1], /^30 m: některé systémy výcviku omezují hloubku se vzduchem víc, na 30 m \(kvůli dusíkové narkóze\)/);
     assert.match(more(20), /1,4 \/ 0,21 ≈ 6,7\s?bar/);
     assert.doesNotMatch(more(20), /28\s?m|40,5|66\s?m|1,6\s?bar|pN₂ asi [34]/, 'žádné meze z pN₂ 3 nebo 4 bar ani 1,6 bar');
     assert.match(more(20), /Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon\./);
@@ -409,7 +413,7 @@ test('T9: slide 18 má nádoby i Pascalův sud vedle sebe v jedné ilustraci, ro
     assert.doesNotMatch(text(slide(18).querySelector('ul')), /Rouen/);
     const caps = [...fig.querySelectorAll('figcaption.course-figure-pair > span')].map(text);
     assert.equal(caps.length, 2);
-    assert.deepEqual(caps, ['stejná výška h, stejná síla', 'Pascalův pokus v Rouenu']);
+    assert.deepEqual(caps, ['stejná výška h, stejný tlak na dno', 'Pascalův pokus v Rouenu']);
     // obraz nese slide: sloupec s obrázkem je širší než text
     assert.ok(slide(18).querySelector('.course-core').classList.contains('course-core-figure-wide'));
     assert.match(read('css/course.css'), /\.course-core-figure-wide \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1\.35fr\)/);
@@ -475,4 +479,28 @@ test('T11: dýchací cesty jsou jedna souvislá cesta od nosu a úst do obou pli
     const stomach = pathBox(svg.querySelector('.fig-stomach').getAttribute('d'));
     assert.ok(svg.querySelector('.fig-gut'), 'náznak střev');
     assert.ok(stomach.w * stomach.h < lungs[0].w * lungs[0].h, 'žaludek menší než plíce');
+});
+
+// ---------------------------------------------------------------- T13: odkrytá buňka nemění výšku řádku
+
+test('T13: odkrytá buňka má stejný rámeček jako otazník, tabulka se nezkrátí a náhled modelu se neořízne', () => {
+    const css = read('css/course.css');
+    const summary = css.match(/details\.course-cell > summary \{([^}]*)\}/)[1];
+    assert.match(summary, /border: 1px dashed/);
+    assert.match(summary, /padding: 0 0\.4em/);
+    const open = css.match(/details\.course-cell\[open\] \{([^}]*)\}/)?.[1] ?? '';
+    assert.match(open, /border: 1px solid transparent/, 'stejně vysoký rámeček, jen neviditelný');
+    assert.match(open, /padding: 0 0\.4em/);
+});
+
+// ---------------------------------------------------------------- T14: popisek pod nádobami a paradox ve „Více“
+
+test('T14: pod nádobami „stejný tlak na dno“, ve „Více“ věta o síle na dno a tíze vody', () => {
+    const cap = slide(18).querySelector('figcaption.course-figure-pair > span');
+    assert.match(cap.innerHTML, /^stejná výška <var>h<\/var>, stejný&nbsp;tlak&nbsp;na&nbsp;dno$/, '„stejný tlak na dno“ se neláme, dno nezůstane samo');
+    const more = slide(18).closest('section').querySelector('details.course-more');
+    const p = [...more.querySelectorAll('p')].find(el => /paradox/.test(text(el)));
+    assert.ok(p, 'věta o paradoxu');
+    assert.equal(text(p), 'Síla na dno F = p · S je ve všech třech nádobách stejná, i když tíha vody je v každé jiná: to je hydrostatický paradox.');
+    assert.match(p.innerHTML, /<var>F<\/var> = <var>p<\/var> · <var>S<\/var>/);
 });

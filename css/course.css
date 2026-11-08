@@ -529,6 +529,9 @@ details.course-cell > summary {
 }
 details.course-cell > summary::-webkit-details-marker { display: none; }
 details.course-cell[open] > summary { display: none; }
+/* Odkrytá hodnota má stejný (neviditelný) rámeček jako otazník: řádek nezmění výšku, tabulka neposkočí
+   a náhled modelu vedle ní (natažený na výšku tabulek) se nezmenší pod vykreslený graf (T13). */
+details.course-cell[open] { min-width: 2.2em; padding: 0 0.4em; border: 1px solid transparent; }
 
 /* --- simulátor v překryvu: leží přesně v rámečku slidu (rozměry zapisuje modelOverlay.js) --- */
 
