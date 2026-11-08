@@ -59,9 +59,9 @@ test('osa tlaku: pevná pro obě hladiny i režimy, celé bary nad maximem', () 
 // ---------------------------------------------------------------- tabulka slidu 20
 
 test('hloubky tabulek ze slidu 20', () => {
-    assert.deepEqual(SLIDE20_DEPTHS.sea, [0, 10, 20, 22, 28, 30, 33, 40.5, 66]);
+    assert.deepEqual(SLIDE20_DEPTHS.sea, [0, 10, 20, 22, 28, 30, 33, 40, 56]);
     assert.deepEqual(SLIDE20_DEPTHS.lake, [0, 10, 20, 30, 40, 45, 51, 55.5]);
-    assert.ok(MODEL_MAX_DEPTH >= 66);
+    assert.ok(MODEL_MAX_DEPTH >= 56);
     assert.equal(tableDepths(0), SLIDE20_DEPTHS.sea);
     assert.equal(tableDepths(5500), SLIDE20_DEPTHS.lake);
 });
@@ -71,7 +71,7 @@ test('krokování po tabulce: další a předchozí hloubka, na koncích stojí'
     assert.equal(stepTableDepth(0, d, 1), 10);
     assert.equal(stepTableDepth(22, d, 1), 28);
     assert.equal(stepTableDepth(28, d, -1), 22);
-    assert.equal(stepTableDepth(66, d, 1), 66);
+    assert.equal(stepTableDepth(56, d, 1), 56);
     assert.equal(stepTableDepth(0, d, -1), 0);
 });
 
@@ -80,7 +80,7 @@ test('krokování z hloubky mimo tabulku jde na nejbližší v daném směru', (
     assert.equal(stepTableDepth(25, d, 1), 28);
     assert.equal(stepTableDepth(25, d, -1), 22);
     assert.equal(stepTableDepth(70, d, 1), 70, 'za koncem tabulky zůstane');
-    assert.equal(stepTableDepth(70, d, -1), 66);
+    assert.equal(stepTableDepth(70, d, -1), 56);
 });
 
 // ---------------------------------------------------------------- hladina a URL

@@ -15,7 +15,7 @@ import { createPressureLayer } from '../components/waterColumn/pressureLayer.js'
 import { PRESSURE_MODES } from '../physics/pressure.js';
 import { readParams, syncUrl } from './modelParams.js';
 
-/** Hloubka sloupce (m): vejde se tabulka moře do 66 m. */
+/** Hloubka sloupce (m): vejde se tabulka moře do 56 m. */
 export const MODEL_MAX_DEPTH = 70;
 
 /** Nadmořská výška horského jezera ze slidu 20 a testu SPČR č. 54 (m). */
@@ -23,7 +23,7 @@ export const LAKE_ALTITUDE = 5500;
 
 /** Hloubky (m) tabulek „doplňme hodnoty celkového tlaku“ ze slidu 20. */
 export const SLIDE20_DEPTHS = Object.freeze({
-    sea: Object.freeze([0, 10, 20, 22, 28, 30, 33, 40.5, 66]),
+    sea: Object.freeze([0, 10, 20, 22, 28, 30, 33, 40, 56]),
     lake: Object.freeze([0, 10, 20, 30, 40, 45, 51, 55.5]),
 });
 

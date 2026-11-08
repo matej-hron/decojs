@@ -173,6 +173,11 @@ Varianty těla:
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
 - **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` s autorem, licencí a odkazem na zdroj,
   záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
+- **Obrázek nese víc než text** (slide 18: nádoby a Pascalův sud v jedné ilustraci): `course-core course-core-figure-wide`
+  prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` jako slide 13.
+- **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
+  na telefonu 120 px) a popiskem vedle: jméno a roky, pod tím `course-figure-note` s autorem díla, licencí a odkazem.
+  Jen když se vejde a je k němu volný zdroj.
 
 ```html
 <div class="course-slide" data-slide-number="11" data-slide-type="figure">
@@ -191,7 +196,7 @@ Varianty těla:
 
 ### Styl ilustrací
 
-Vzor je slide 12 (T6), Matej ho schválil. V Tlaku jsou podle něj všechna schémata (T7: slidy 11–18 a 21);
+Vzor je slide 12 (T6), Matej ho schválil. V Tlaku jsou podle něj všechna schémata (T7: slidy 11–18 a 21, T9: Pascalův sud na slidu 18);
 Stlačování a Hustota se projdou zvlášť.
 
 - **Obrázek nese slide.** Ilustrace je hlavní prvek: v těle zabere víc místa než text. Nad ní je krátký nadpis
@@ -220,6 +225,13 @@ Stlačování a Hustota se projdou zvlášť.
 - **Další třídy (S7, Stlačování plynů):** `fig-molecule` (částice plynu ve válci), `fig-weight` (závaží), `fig-axis`,
   `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-cavity-light` (vzduch na světlé tkáni, střední ucho), `fig-tissue`
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
+- **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
+  konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
+- **Tělo potápěče (T11, slide 21):** hlava z profilu a trup zepředu (`fig-body`). Dutiny s plynem `fig-cavity`
+  (čelní a čelistní dutina mají navíc `fig-sinus`, střední ucho `fig-middle-ear`), oko a boltec jen obrysem
+  (`fig-eye`, `fig-auricle`), aby se dutiny nečetly jako oči. Cesta vzduchu je jedna souvislá čára `fig-airway`
+  s obrysem `fig-airway-edge` od nosu a úst do průdušek v obou plicích (`fig-lung`), Eustachova trubice
+  `fig-eustachian` (s `fig-eustachian-edge`), žaludek `fig-stomach` a střeva `fig-gut`.
 - **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
   neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
 - **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý

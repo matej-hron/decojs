@@ -96,7 +96,7 @@ test('Tlak: slide 20, obě tabulky odkryjí školní odpovědi spočítané z pr
     const [sea, lake] = s.querySelectorAll('table.course-table');
     assert.ok(sea && lake);
     const seaRows = tableAnswers(sea);
-    assert.deepEqual(seaRows.map(r => r[0]), [0, 10, 20, 22, 28, 30, 33, 40.5, 66]);
+    assert.deepEqual(seaRows.map(r => r[0]), [0, 10, 20, 22, 28, 30, 33, 40, 56]);
     for (const [h, answer] of seaRows) assert.equal(answer, formatBar(pressureAt(h).total, 'school'), `moře ${h} m`);
     const lakeRows = tableAnswers(lake);
     assert.deepEqual(lakeRows.map(r => r[0]), [0, 10, 20, 30, 40, 45, 51, 55.5]);
@@ -108,12 +108,13 @@ test('Tlak: slide 20, obě tabulky odkryjí školní odpovědi spočítané z pr
     assert.match(text(s), /Los Gigantes, Kanárské ostrovy|Los Gigantes, Canary Islands/);
 });
 
-test('Tlak: slide 20, 66 m je červeně jako na slidu', () => {
+test('Tlak: slide 20, meze 30, 40 a 56 m jsou zvýrazněné (T10), 28 m je cvičný řádek', () => {
     const rows = [...slide(20).querySelectorAll('table.course-table')[0].querySelectorAll('tbody tr')];
+    const alerts = rows.filter(r => r.classList.contains('course-alert')).map(r => text(r.querySelector('td')));
+    assert.deepEqual(alerts, ['30', '40', '56']);
     const last = rows.at(-1);
-    assert.equal(text(last.querySelector('td')), '66');
-    assert.ok(last.classList.contains('course-alert'), '66 m má course-alert');
-    assert.equal(rows.filter(r => r.classList.contains('course-alert')).length, 1);
+    assert.equal(text(last.querySelector('td')), '56');
+    assert.equal(text(last.querySelector('details')).replace(/^\?/, ''), '6,6', '56 m: 6,6 bar');
 });
 
 test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
@@ -225,8 +226,20 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(17), /Plánování ponorů/);
     assert.doesNotMatch(more(17), /300\s*m|hodin/, 'pravidlo 300 m bez zdroje a doby před odletem ne');
     assert.match(more(20), /předbíháme Daltonův zákon/);
-    for (const d of ['28', '40,5', '66']) assert.match(more(20), new RegExp(`${d}\\s?m:`), d);
-    assert.match(more(22), /Nad rámec P★/);
+    // T10: meze podle Mateje: 30 a 40 m se vzduchem podle systému výcviku, 56 m = pO₂ 1,4 bar (MOD vzduchu)
+    for (const d of ['30', '40', '56']) assert.match(more(20), new RegExp(`${d}\\s?m`), d);
+    assert.match(more(20), /systému výcviku/);
+    assert.match(more(20), /1,4 \/ 0,21 ≈ 6,7\s?bar/);
+    assert.doesNotMatch(more(20), /28\s?m|40,5|66\s?m|1,6\s?bar|pN₂ asi [34]/, 'žádné meze z pN₂ 3 nebo 4 bar ani 1,6 bar');
+    assert.match(more(20), /Co je parciální tlak a proč jsou to meze, vysvětlí kapitola Složení vzduchu a Daltonův zákon\./);
+    // T12: Boyle je jádro P★, nad rámec jsou jen izobarický a izochorický děj
+    const h22 = text(slide(22).closest('section').querySelector('details.course-more h3'));
+    assert.equal(h22, 'Tři zvláštní děje');
+    assert.doesNotMatch(more(22), /Nad rámec P★|Osnova je řadí/);
+    assert.match(more(22), /Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na jednodušší zákon:/);
+    assert.match(more(22), /Boyle-Mariottův zákon, pV = konst\. Ten je jádrem P★, podrobně v kapitole Stlačování plynů/);
+    assert.match(more(22), /Izobarický a izochorický děj řadí osnova až do P★★ \(slide 4\), tady jsou pro úplnost\./);
+    assert.doesNotMatch(text(doc.body), /Boyleův|Mariotteův/, 'jedno jméno zákona: Boyle-Mariottův');
     assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
     assert.match(more(22), /V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon/);
     assert.match(more(22), /V testech SPČR platí Gay-Lussac = stálý tlak, Charles = stálý objem\./);
@@ -345,8 +358,8 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
         14: ['nízký tlak', 'vysoký tlak'],
         16: ['vzduchu ubývá, tlak klesá k 0', 'Mount Everest 8 850 m', '31 kPa', 'hladina moře', '101 kPa'],
         17: ['horské sedlo'],
-        18: ['F', 'F', 'F', 'S', 'S', 'S', 'h'],
-        21: ['obličejové dutiny', 'dýchací cesty', 'plíce', 'trávicí systém'],
+        18: ['F', 'F', 'F', 'S', 'S', 'S', 'h', 'h', 'pár litrů v trubici', 'sud praskl'],
+        21: ['obličejové dutiny', 'střední ucho', 'dýchací cesty', 'plíce', 'trávicí systém'],
     };
     for (const [n, want] of Object.entries(labels)) {
         const got = [...slide(n).querySelectorAll('figure svg text')].map(t => t.textContent.replace(/\s+/g, ' ').trim());
@@ -373,4 +386,93 @@ test('T8: pod vzorcem p = F/S [Pa] je řádek 1 Pa = 1 N/m² (jednotky stojatě,
     assert.match(note.innerHTML, /^1&nbsp;Pa = 1&nbsp;N\/m², síla 1&nbsp;N na ploše 1&nbsp;m²$/);
     assert.equal(note.querySelectorAll('var, i, em').length, 0, 'jednotky ani čísla nejsou kurzívou');
     assert.match(read('css/course.css'), /\.course-formula-note \{[^}]*text-align: center/);
+});
+
+// ---------------------------------------------------------------- T9: Pascalův sud na slidu 18
+
+test('T9: slide 18 má nádoby i Pascalův sud vedle sebe v jedné ilustraci, rozhoduje výška', () => {
+    const fig = slide(18).querySelector('figure.course-illustration');
+    const svg = fig.querySelector('svg');
+    assert.match(svg.getAttribute('aria-label'), /sud/);
+    assert.ok(svg.querySelector('.fig-barrel'), 'sud');
+    assert.ok(svg.querySelectorAll('.fig-jet').length >= 4, 'voda tryská ze spár sudu');
+    assert.ok(svg.querySelector('.fig-can'), 'konvička, která dolévá');
+    // stejná kóta h u nádob i u sudu, u sudu (trubice) výrazně vyšší
+    const dims = [...svg.querySelectorAll('.fig-dim')].map(p => {
+        const [, y0, y1] = p.getAttribute('d').match(/^M\d+ (\d+)V(\d+)/).map(Number);
+        return Math.abs(y1 - y0);
+    });
+    assert.equal(dims.length, 2, 'kóta h u nádob a u sudu');
+    const [vessels, barrel] = dims.sort((a, b) => a - b);
+    assert.ok(barrel >= 2.5 * vessels, `trubice výrazně vyšší: ${barrel} vs ${vessels}`);
+    // poslední odrážka je popisek pod sudem, myšlenka v jedné větě
+    assert.doesNotMatch(text(slide(18).querySelector('ul')), /Rouen/);
+    const caps = [...fig.querySelectorAll('figcaption.course-figure-pair > span')].map(text);
+    assert.equal(caps.length, 2);
+    assert.deepEqual(caps, ['stejná výška h, stejná síla', 'Pascalův pokus v Rouenu']);
+    // obraz nese slide: sloupec s obrázkem je širší než text
+    assert.ok(slide(18).querySelector('.course-core').classList.contains('course-core-figure-wide'));
+    assert.match(read('css/course.css'), /\.course-core-figure-wide \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1\.35fr\)/);
+});
+
+test('T9: „Více“ u slidu 18 poctivě říká, že pokus se sudem je spíš legenda, se zdrojem', () => {
+    const more = slide(18).closest('section').querySelector('details.course-more');
+    const p = [...more.querySelectorAll('p')].find(el => /sud/.test(text(el)));
+    assert.ok(p, 'věta o pokusu');
+    assert.match(text(p), /19\. století/);
+    assert.ok([...p.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://en.wikipedia.org/wiki/Pascal%27s_barrel'), 'zdroj');
+});
+
+test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem i v SOURCES.md', () => {
+    const fig = slide(18).querySelector('figure.course-portrait');
+    assert.ok(fig, 'portrét');
+    const img = fig.querySelector('img');
+    assert.equal(img.getAttribute('src'), '../images/course/p1/pascal.jpg');
+    assert.ok(img.getAttribute('width') && img.getAttribute('height'), 'rozměry proti poskakování');
+    assert.match(img.getAttribute('alt'), /Blaise Pascal/);
+    const cap = text(fig.querySelector('figcaption'));
+    assert.match(cap, /Blaise Pascal \(1623–1662\)/);
+    assert.match(cap, /volné dílo/);
+    assert.ok([...fig.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG'));
+    assert.match(read('images/course/p1/SOURCES.md'), /`images\/course\/p1\/pascal\.jpg` \| Tlak, slide 18 \|.*PD-art-old-100-expired.*File:Blaise Pascal Versailles\.JPG/);
+    assert.match(read('sw.js'), /'\.\/images\/course\/p1\/pascal\.jpg'/);
+});
+
+// ---------------------------------------------------------------- T11: nová kresba těla na slidu 21
+
+/** Obdélník kolem bodů atributu d (řídicí body křivek bereme jako body, na hrubou kontrolu stačí). */
+function pathBox(d) {
+    const n = d.match(/-?\d+(\.\d+)?/g).map(Number);
+    const xs = n.filter((_, i) => i % 2 === 0), ys = n.filter((_, i) => i % 2 === 1);
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+test('T11: slide 21 má hlavu z profilu, dutiny nejsou na místě očí a ucho je vidět', () => {
+    const svg = slide(21).querySelector('figure svg');
+    const eye = svg.querySelector('.fig-eye');
+    assert.ok(eye, 'oko z profilu, aby se dutiny nečetly jako oči');
+    const ey = +eye.getAttribute('cy');
+    const sinus = [...svg.querySelectorAll('.fig-sinus')].map(e => +e.getAttribute('cy')).sort((a, b) => a - b);
+    assert.equal(sinus.length, 2, 'čelní a čelistní dutina');
+    assert.ok(sinus[0] < ey && ey < sinus[1], `čelní nad okem, čelistní pod ním (${sinus}, oko ${ey})`);
+    assert.ok(svg.querySelector('.fig-middle-ear'), 'střední ucho');
+    assert.ok(svg.querySelector('.fig-auricle'), 'boltec, ať je jasné, kde je ucho');
+    assert.equal(svg.querySelectorAll('.fig-eustachian').length, 1, 'Eustachova trubice');
+});
+
+test('T11: dýchací cesty jsou jedna souvislá cesta od nosu a úst do obou plic, trávicí systém je menší než plíce', () => {
+    const svg = slide(21).querySelector('figure svg');
+    const airways = svg.querySelectorAll('path.fig-airway');
+    assert.equal(airways.length, 1, 'jedna cesta, ne kusy');
+    const d = airways[0].getAttribute('d');
+    const lungs = [...svg.querySelectorAll('.fig-lung')].map(l => pathBox(l.getAttribute('d')));
+    assert.equal(lungs.length, 2);
+    // každá větev (podcesta M…) začíná na cestě, která už vede, kromě první (nos) a druhé (ústa)
+    const ends = [...d.matchAll(/L(\d+) (\d+)(?=M|$)/g)].map(m => [+m[1], +m[2]]);
+    for (const lung of lungs) {
+        assert.ok(ends.some(([x, y]) => x > lung.x0 && x < lung.x1 && y > lung.y0 && y < lung.y1), 'průdušky končí v plíci');
+    }
+    const stomach = pathBox(svg.querySelector('.fig-stomach').getAttribute('d'));
+    assert.ok(svg.querySelector('.fig-gut'), 'náznak střev');
+    assert.ok(stomach.w * stomach.h < lungs[0].w * lungs[0].h, 'žaludek menší než plíce');
 });
