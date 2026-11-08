@@ -263,11 +263,11 @@ test('pojmy Tlaku: první odstavec obstojí sám, se vzorcem nebo definicí a je
 
 test('R3: Pascalův zákon, počasí, pojmy bez hranatých závorek, citace stlačitelnosti, slide 13 a 12', () => {
     const pascal = read('concepts/cs/pascal-law.html');
-    assert.match(pascal, /se přenáší do všech\s+míst kapaliny stejně: všude se tlak zvětší o stejnou hodnotu/);
-    assert.match(pascal, /U většiny látek mají částice v kapalině větší rozestupy/);
+    assert.match(pascal, /se přenáší do všech\s+míst kapaliny stejně: všude se tlak zvětší o&nbsp;stejnou hodnotu/);
+    assert.match(pascal, /U&nbsp;většiny látek mají částice v&nbsp;kapalině větší rozestupy/);
     assert.match(pascal, /doi:10\.1021\/je60064a005/);
     assert.doesNotMatch(pascal, /CRC/);
-    assert.match(read('concepts/cs/atmospheric-pressure.html'), /nejvýš asi o desetinu/);
+    assert.match(read('concepts/cs/atmospheric-pressure.html'), /nejvýš asi o&nbsp;desetinu/);
     for (const id of ['pressure', 'pascal-law', 'atmospheric-pressure', 'hydrostatic-pressure', 'total-pressure', 'gas-pressure']) {
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[(bar|Pa|m|kPa)\]/, `${id}: bez hranatých závorek`);
     }
