@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Vzorník slidů – Kurz P1</title>
+    <!-- Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5591 v kořeni repa,
+         pak http://127.0.0.1:5591/docs/course/vzornik-slidu.html. Popis typů: docs/course/slides.md. -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/course.css">
+    <style>
+        /* Jen vzorník: popisek typu v řádku pod slidem, kde je jinak „Více“. */
+        .vzornik-type {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            min-height: var(--course-more-row);
+            margin: 0;
+            font-size: var(--text-sm);
+            color: var(--text-subtle);
+        }
+        .vzornik-type code { font-size: inherit; }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <span class="nav-logo">Vzorník slidů kurzu P1</span>
+        </div>
+    </nav>
+
+    <main class="course-page" lang="cs">
+        <section id="titulni" class="course-section">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-slide-sub">Fyzika P★, P★★ podle přednášky SPČR</p>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="title"</code> titulní slide kurzu</p>
+        </section>
+
+        <section id="kapitola" class="course-section">
+            <div class="course-slide" data-slide-number="10" data-slide-type="title">
+                <h2>Tlak</h2>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="title"</code> úvodní slide kapitoly (slide 10), řádek pod nadpisem je nepovinný</p>
+        </section>
+
+        <section id="obsahovy" class="course-section">
+            <div class="course-slide" data-slide-number="2" data-slide-type="content">
+                <h2>Fyzika – plán</h2>
+                <div class="course-core">
+                    <ul>
+                        <li>Fyzika, teorie (dnes)</li>
+                        <li>Fyziologie</li>
+                        <li>Plánování ponorů, dekompresní postupy</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="content"</code> text nebo odrážky</p>
+        </section>
+
+        <section id="obsahovy-sloupce" class="course-section">
+            <div class="course-slide" data-slide-number="8" data-slide-type="content" data-slide-fit="compact">
+                <h2>Hustota</h2>
+                <div class="course-core course-core-cols">
+                    <div>
+                        <p>Hustota je definovaná jako hmotnost tělesa na jednotku objemu.</p>
+                        <p class="course-formula" aria-label="hustota rovná se hmotnost lomeno objem, v kilogramech na metr krychlový">
+                            <var>ρ</var> = <var>m</var>/<var>V</var> <span class="course-unit">[kg/m³]</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p>Příklady látek:</p>
+                        <table class="course-table">
+                            <thead>
+                                <tr><th scope="col">Látka</th><th scope="col">Hustota [kg/m³]</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Voda sladká</td><td class="num">1&nbsp;000</td></tr>
+                                <tr><td>Voda slaná</td><td class="num">1&nbsp;020–1&nbsp;030</td></tr>
+                                <tr><td>Led</td><td class="num">920</td></tr>
+                                <tr><td>Vzduch <span class="course-table-note">(normální tlak, 10&nbsp;°C)</span></td><td class="num">1,25</td></tr>
+                                <tr><td>Olovo</td><td class="num">11&nbsp;340</td></tr>
+                                <tr><td>Ocel</td><td class="num">7&nbsp;850</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="content"</code> + <code>course-core-cols</code> + <code>data-slide-fit="compact"</code></p>
+        </section>
+
+        <section id="citace" class="course-section">
+            <div class="course-slide" data-slide-number="3" data-slide-type="quote" data-slide-fit="compact">
+                <h2>Fyzika – osnova výcviku</h2>
+                <div class="course-core">
+                    <figure class="course-quote">
+                        <blockquote>
+                            <p class="course-quote-head"><strong>P★: T4 Základy potápěčské fyziky</strong> <span>(2&nbsp;×&nbsp;45&nbsp;min)</span></p>
+                            <ul>
+                                <li>Základní fyzikální pojmy spojené s potápěním (veličiny a jednotky, vysvětlení pojmů).</li>
+                                <li>Atmosférický, hydrostatický a celkový tlak, přetlak, podtlak (vysvětlení pojmů, vzájemná souvislost, výpočet celkového tlaku v určité hloubce).</li>
+                                <li>Vliv tlaku na plyny, kapaliny a tuhé látky.</li>
+                                <li>Složení vzduchu, hustota vzduchu.</li>
+                                <li>Boyleův-Mariotteův zákon (izotermický děj) ve vztahu k potápěčské praxi (praktické příklady a výpočty).
+                                    <ul>
+                                        <li>Tělesné a přídavné dutiny, nebezpečí jejich poškození, nutnost vydechování při výstupu.</li>
+                                        <li>Kompenzace tlaku ve středouší a v masce.</li>
+                                        <li>Nebezpečí malých hloubek.</li>
+                                    </ul>
+                                </li>
+                                <li>Archimedův zákon, vyvážení potápěče, změny vyvážení během ponoru.</li>
+                            </ul>
+                        </blockquote>
+                        <figcaption>Citace z osnovy výcviku SPČR (CMAS), kurz P★</figcaption>
+                    </figure>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="quote"</code> + <code>data-slide-fit="compact"</code></p>
+        </section>
+
+        <section id="modely" class="course-section">
+            <div class="course-slide" data-slide-number="9" data-slide-type="models" data-slide-fit="compact">
+                <h2>Závislost hustoty na teplotě</h2>
+                <div class="course-core">
+                    <div class="course-row">
+                        <ul>
+                            <li>Většina látek při ochlazování zvětšuje hustotu.</li>
+                            <li><span class="course-highlight">Anomálie vody:</span> voda má největší hustotu při 4&nbsp;°C.</li>
+                        </ul>
+                        <button type="button" class="course-thumb" aria-label="Náhled modelu: hustota vody a teplota">
+                            <span class="course-thumb-plot" id="nahled-hustota"></span>
+                            <span class="course-thumb-hint course-thumb-hint-top">Otevřít model</span>
+                        </button>
+                    </div>
+                    <div class="course-row course-row-flip">
+                        <ul>
+                            <li>„Těžká“ voda vlivem gravitace klesá dolů. Proto v zimě promrzá voda od hladiny,
+                                a to umožňuje rybám přežít zimu.</li>
+                            <li>Led je lehčí než voda, plave na hladině a dokonce funguje jako izolace proti ochlazování
+                                vody výměnou tepla se vzduchem.</li>
+                        </ul>
+                        <button type="button" class="course-thumb" aria-label="Náhled modelu: jezero během roku">
+                            <span class="course-thumb-plot" id="nahled-jezero"></span>
+                            <span class="course-thumb-hint">Otevřít model</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="models"</code> + <code>data-slide-fit="compact"</code>, ve vzorníku náhledy simulátor neotevírají</p>
+        </section>
+
+        <section id="procvic" class="course-section">
+            <div class="course-slide" data-slide-type="practice">
+                <h2>Procvič si</h2>
+                <div class="course-core">
+                    <p class="course-note">Otázky z testů SPČR/CMAS. Klikni na odpověď.</p>
+                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="6,7,8"></div>
+                    <p><a href="../../quiz-physics.html?kategorie=vlastnosti-vody-vzduchu">Všechny otázky z testu fyziky na vlastnosti vody a vzduchu →</a></p>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="practice"</code></p>
+        </section>
+    </main>
+
+    <script type="module">
+        import { slideFootHtml } from '../../js/course/slideNav.js';
+        import { initPractice } from '../../js/course/practice.js';
+        import { createDensityCurve } from '../../js/components/DensityCurve.js';
+        import { createLakeCycle } from '../../js/components/LakeCycle.js';
+
+        // Patička jako na stránkách kurzu (tam ji doplní initSlideNav).
+        for (const slide of document.querySelectorAll('main > section > .course-slide')) {
+            const foot = document.createElement('div');
+            foot.className = 'course-foot';
+            foot.innerHTML = slideFootHtml(slide.dataset.slideNumber ?? null);
+            slide.appendChild(foot);
+        }
+        createDensityCurve(document.getElementById('nahled-hustota'), { range: [0, 10], temperature: 4, compact: true });
+        createLakeCycle(document.getElementById('nahled-jezero'), { compact: true });
+        initPractice(document);
+    </script>
+</body>
+</html>

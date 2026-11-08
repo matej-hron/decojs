@@ -98,7 +98,7 @@ async function reveal(page) {
 
 function showForm(cipher) {
     const main = document.querySelector('main');
-    main.innerHTML = `<section class="course-section"><div class="course-slide">
+    main.innerHTML = `<section class="course-section"><div class="course-slide" data-slide-type="content">
         <h1>Kurz</h1>
         <div class="course-core">
             <form class="course-lock-form">

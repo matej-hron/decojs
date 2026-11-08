@@ -106,6 +106,9 @@ Kurzy se překrývají (P2 použije tlak, Boyla… znovu, jen hlouběji). Proto 
    i začátek těla, přepnutí vypadá jako v PowerPointu. Zastávka = slide + řádek „Více“ a vyplní celou výšku pod
    hlavičkou webu (řádek zůstane prázdný, když „Více“ není), další slide tedy není vidět. Písmo závisí jen na okně. Rozměry jsou
    jedny v `css/course.css`, slide na nízkém okně smí narůst, obsah se neořezává. Telefon: normální tok, žádná pevná výška.
+   **Šablona slidů** (2026-11-08, P22–P24): rozložení podle originálu (nadpis v 10 % výšky, tělo od 28 %, okraje kolem 8 %
+   šířky) a typy `data-slide-type` = `title`, `content`, `quote`, `models`, `practice`. Kapitoly se skládají jen z nich,
+   popis a HTML ke zkopírování je v `docs/course/slides.md`, vzorník v `docs/course/vzornik-slidu.html`.
    **Styl slidů je jeden, Hladina** (přechod tyrkysová → tmavomodrá, nahoře vlnka, rozhodnuto 2026-11-04); přepínač se nestaví,
    světlý styl přibude, jen pokud Hladina neobstojí na projektoru v učebně. Kontrast textu aspoň 4,5:1, ovládání aspoň 3:1.
    Krátký úvod (proč to potápěč potřebuje) a **háčky dopředu** („tohle budeme potřebovat u tlaku a u vztlaku“) patří
