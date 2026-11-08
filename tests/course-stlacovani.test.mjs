@@ -257,5 +257,7 @@ test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spod
     assert.match(gas, /asi 3&nbsp;000&nbsp;l vzduchu přepočteného na hladinu \(počítáno jako ideální plyn, jako v testech SPČR\)/);
     assert.match(more(24), /Tlak počítáme v hloubce spodního okraje zvonu\./);
     assert.doesNotMatch(answer(28), /hladinová spotřeba · p =/);
+    assert.match(answer(28), /spotřeba v hloubce = hladinová spotřeba krát tlak v barech: 30\sl\/min · 3,5 = 105\sl\/min/, 'R6-01');
+    assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s plynem\s*\(slide 21\)/, 'R6-02');
     assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
 });
