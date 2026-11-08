@@ -17,10 +17,10 @@ const cipherOf = (html) => JSON.parse(html.match(/<script type="application\/jso
 
 /** Věty ze slidů a výkladu, které bez kódu nesmí být vidět. */
 const SECRET = {
-    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'V srpnu se v lomu zanoříš', 'Modelový lom hluboký'],
+    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'V&nbsp;srpnu se v&nbsp;lomu zanoříš', 'Modelový lom hluboký'],
     'p1/index.html': ['Fyzika – plán', 'Deco for Divers', 'Základy potápěčské fyziky', 'Přednáška fyziky pro kurz'],
-    'p1/stlacovani-plynu.html': ['V potápěčském zvonu je na hladině', 'Nikdy nezadržujte dech', 'Pan Eustach', 'Stanovte jeho hladinovou spotřebu'],
-    'p1/archimeduv-zakon.html': ['Neoprenový oblek o hmotnosti', 'Nikdy nic nevynášíme', 'vypuštěným BCD a téměř prázdnou lahví', 'vynést partnera v nesnázích'],
+    'p1/stlacovani-plynu.html': ['V&nbsp;potápěčském zvonu je na hladině', 'Nikdy nezadržujte dech', 'Pan Eustach', 'Stanovte jeho hladinovou spotřebu'],
+    'p1/archimeduv-zakon.html': ['Neoprenový oblek o&nbsp;hmotnosti', 'Nikdy nic nevynášíme', 'vypuštěným BCD a&nbsp;téměř prázdnou lahví', 'vynést partnera v&nbsp;nesnázích'],
 };
 
 const runBuild = (out, code) => {

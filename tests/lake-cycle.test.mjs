@@ -328,12 +328,12 @@ test('stránka a výklad: ovládání po krocích, poznámka a srpen podle nové
     assert.match(html, /další krok/);
     assert.match(html, new RegExp(`id="krok-slider" min="1" max="${N}"`));
     assert.match(html, /id="lom-mesice"/);
-    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z lomů Srní, Horní Cerekev a Šífr\. Zbytek roku dopočítaný z pravidel modelu\. Vzduch: průměr měsíce v ČR \(ČHMÚ\)\./);
+    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z&nbsp;lomů Srní, Horní Cerekev a&nbsp;Šífr\. Zbytek roku dopočítaný z&nbsp;pravidel modelu\. Vzduch: průměr měsíce v&nbsp;ČR \(ČHMÚ\)\./);
     assert.match(html, /<a href="\?mesic=8#model-lom" data-preset-link>/, 'řešený příklad vede na srpen');
     assert.doesNotMatch(html, /jezero během roku/, 'model se jmenuje lom během roku');
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8');
     assert.match(concept, /Proč hladina nevychladne na teplotu vzduchu\?/);
-    assert.match(concept, /horní vrstva kolem 23&nbsp;°C, vrstva v hloubce 6 až 12&nbsp;m kolem 10&nbsp;°C a u dna jsou 4&nbsp;°C/);
+    assert.match(concept, /horní vrstva kolem 23&nbsp;°C, vrstva v&nbsp;hloubce 6 až 12&nbsp;m kolem 10&nbsp;°C a&nbsp;u&nbsp;dna jsou 4&nbsp;°C/);
 });
 
 test('barvy: teplé červené, 4 °C světlá, pod 4 °C modré', () => {
