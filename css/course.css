@@ -435,6 +435,13 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-jet { fill: none; stroke: var(--slide-water); stroke-width: 5; stroke-linecap: round; }
 .course-figure svg .fig-drop { fill: var(--slide-water); }
 .course-figure svg .fig-can { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+/* Dalton (DH2): plyny ve vzduchu, stejné barvy na koláči (slide 38) i v animaci částic (slide 40). */
+.course-figure svg .fig-n2 { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 2; }
+.course-figure svg .fig-o2 { fill: var(--slide-wind-warm); stroke: var(--slide-on-accent); stroke-width: 2; }
+.course-figure svg .fig-other-gas { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2; }
+.course-figure svg .fig-hit { fill: none; stroke-width: 5; } /* náraz do stěny blikne v barvě částice */
+.course-figure svg .fig-hit-o2 { stroke: var(--slide-wind-warm); }
+.course-figure svg .fig-hit-n2 { stroke: var(--slide-water); }
 /* Malý portrét pod textem s popiskem vedle (slide 18: Pascal). Na telefonu stejně, jen menší. */
 .course-portrait { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-4); }
 .course-portrait > img { height: calc(var(--course-slide-height) * 0.17); width: auto; border-radius: var(--radius-md); flex: none; }
