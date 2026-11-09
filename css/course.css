@@ -541,6 +541,14 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     /* Obrázek nese víc než text (slide 18: nádoby a Pascalův sud vedle sebe): širší je sloupec s obrázkem. */
     .course-slide[data-slide-type="figure"] .course-core-figure-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
 }
+/* Dvě fotky vedle sebe, každá s krátkým popiskem a odkazem zdroj (slide 35: BCD a zátěžový opasek na výšku).
+   Podíly šířek odpovídají poměrům stran ořezů (440 × 411 a 312 × 500), takže obě fotky mají stejnou výšku. */
+.course-photo-pair { display: flex; gap: var(--space-3); align-items: flex-start; }
+.course-photo-pair > figure { flex: 1.07 1 0; min-width: 0; margin: 0; }
+.course-photo-pair > figure.course-photo-narrow { flex-grow: 0.624; }
+.course-photo-pair img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
+.course-photo-pair figcaption { margin-top: var(--space-1); font-size: 0.75em; line-height: 1.3; color: var(--slide-fg); }
+@media (max-width: 768px) { .course-photo-pair figcaption { font-size: 0.9em; } } /* telefon: popisek fotky aspoň 16 px */
 /* Vysoký obrázek, který nese slide (slide 21: celá postava z profilu): víc výšky než polovina slidu. */
 .course-core-figure-tall .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.62); }
 /* Dva obrázky vedle sebe a pod nimi řádek přes celou šířku (slide 12): obrázky menší, řádek drobnějším písmem. */
