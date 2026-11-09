@@ -24,6 +24,11 @@ opravu udělá `python3 docs/notation/tools/nbsp.py --check --words -v <soubory>
 (`--thousands` přidá i oddělovač tisíců, `600 000 Pa`);
 podrobnosti v [authoring.md §6.1](../../docs/notation/authoring.md).
 
+**Za jednopísmennou předložkou a spojkou nedělitelná mezera.** Za k, s, v, z, o, u, a, i
+(i velkými) píše český text v HTML `&nbsp;`: `v&nbsp;hloubce`, `a&nbsp;proto`. Jen v textu
+prvků, nikdy v atributech, komentářích, `<script>`, `<style>` ani v `<var>` (*a* jako veličina).
+Pravidlo a test: [slides.md §1](../../docs/course/slides.md), `tests/course-nbsp.test.mjs`.
+
 ## Špatně × správně
 
 | ✗ Špatně | ✓ Správně |

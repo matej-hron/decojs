@@ -137,7 +137,7 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
         assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-xl')), 'popisky fig-label-xl');
         assert.ok(![...svg.querySelectorAll('*')].some(el => el.hasAttribute('fill') || el.hasAttribute('stroke') || el.hasAttribute('style')), 'barvy jen ze tříd');
     }
-    for (const label of ['maska', '(aktivně)', 'dutiny s plynem', '(slide 21)']) assert.ok(body.textContent.includes(label), label);
+    for (const label of ['maska', '(aktivně)', `dutiny s${N}plynem`, '(slide 21)']) assert.ok(body.textContent.includes(label), label);
     for (const label of ['zvukovod', 'bubínek', 'střední ucho', 'Eustachova', 'trubice']) assert.ok(ear.textContent.includes(label), label);
     assert.ok(ear.querySelector('.fig-force'), 'voda tlačí zvukovodem na bubínek');
     const row = s.querySelector('.course-core-row');
@@ -278,10 +278,10 @@ test('R5-01, R5-02: bezpečnostní věty v pojmu dutin a pod slidem 26', () => {
 test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spodního okraje zvonu', () => {
     const gas = read('concepts/cs/gas-consumption.html');
     assert.match(gas, /hladinová spotřeba · <var>p<\/var> \/ \(1&nbsp;bar\)/);
-    assert.match(gas, /asi 3&nbsp;000&nbsp;l vzduchu přepočteného na hladinu \(počítáno jako ideální plyn, jako v testech SPČR\)/);
+    assert.match(gas, /asi 3&nbsp;000&nbsp;l vzduchu přepočteného na hladinu \(počítáno jako ideální plyn, jako v&nbsp;testech SPČR\)/);
     assert.match(more(24), /Tlak počítáme v hloubce spodního okraje zvonu\./);
     assert.doesNotMatch(answer(28), /hladinová spotřeba · p =/);
     assert.match(answer(28), /spotřeba v hloubce = hladinová spotřeba krát tlak v barech: 30\sl\/min · 3,5 = 105\sl\/min/, 'R6-01');
-    assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s plynem\s*\(slide 21\)/, 'R6-02');
+    assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s\splynem\s*\(slide 21\)/, 'R6-02');
     assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
 });

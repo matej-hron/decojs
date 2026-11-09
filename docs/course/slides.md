@@ -28,6 +28,11 @@ Rozložení odpovídá originálu přednášky (`resources/FyzikaP12_2025.pdf`, 
 - **Model** je simulátor v `<dialog class="course-sim">` a otevírá se z náhledu na slidu typu `models`. Simulátor má
   vlastní kompaktní hlavičku (`.chart-header`), protože graf potřebuje výšku. Není to zastávka a typ nemá.
 - **Text slidu** se přepisuje přesně podle přednášky. Výklad navíc patří do Více.
+- **Jednopísmenná slova:** za předložkami a spojkami k, s, v, z, o, u, a, i (i velkými) stojí `&nbsp;`, aby
+  nezůstaly samy na konci řádku: `v&nbsp;hloubce`, `a&nbsp;proto`, `S&nbsp;hloubkou`. Platí pro text prvků
+  (odstavce, odrážky, popisky, `figcaption`, `summary`, SVG `<text>`), ne pro atributy, komentáře, `<script>`,
+  `<style>` a proměnné v `<var>`. Když ve zdrojovém HTML připadne mezera na konec řádku, slovo se přesune na
+  začátek dalšího (`v&nbsp;hloubce` zůstane pohromadě). Na `p1/` a `concepts/cs/` to hlídá `tests/course-nbsp.test.mjs`.
 
 ## 2. Proměnné scény (`css/course.css`, `:root`)
 
