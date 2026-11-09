@@ -330,3 +330,35 @@ test('T17: slide 27 vlevo má stejnou postavu jako slide 21 (sdílený symbol), 
     assert.ok(body.querySelector('.fig-glass'), 'maska');
     assert.equal(body.querySelectorAll('.fig-leader-dot').length, body.querySelectorAll('path.fig-leader').length);
 });
+
+// ---------------------------------------------------------------- T21: postup přes p · V = konst.
+
+test('T21: postup ve „Více“ slidů 24 a 25 jde přes p · V = konst., jeden řádek na hloubku', () => {
+    const rows = (id) => [...doc.querySelectorAll(`#${id} li`)].map(li => text(li));
+    assert.match(text(doc.querySelector('#postup-zvon')), /Množství vzduchu ve zvonu se nemění, proto součin tlaku a objemu zůstává stejný \(Boyle-Mariottův zákon\)/);
+    assert.deepEqual(rows('postup-zvon'), [
+        '0 m: 1 · 1 000 = 1 000,',
+        '10 m: 2 · V2 = 1 000 → V2 = 500 l,',
+        '20 m: 3 · V3 = 1 000 → V3 ≈ 333 l.',
+    ]);
+    assert.match(text(doc.querySelector('#postup-balonek')), /Množství vzduchu v balónku se nemění, proto součin tlaku a objemu zůstává stejný \(Boyle-Mariottův zákon\)/);
+    assert.deepEqual(rows('postup-balonek'), [
+        '40 m: 5 · 6 = 30,',
+        '30 m: 4 · V = 30 → V = 7,5 l,',
+        '20 m: 3 · V = 30 → V = 10 l,',
+        '10 m: 2 · V = 30 → V = 15 l,',
+        'hladina: 1 · V = 30 → V = 30 l.',
+    ]);
+    for (const id of ['postup-zvon', 'postup-balonek']) {
+        const bare = doc.querySelector(`#${id}`).cloneNode(true);
+        bare.querySelectorAll('var').forEach(v => v.remove());
+        assert.doesNotMatch(bare.textContent, /(^|[\s·=(])[Vp]($|[\s·=),])/, `${id}: veličiny kurzívou`);
+    }
+    // Tabulky na slidech zůstávají beze sloupce p · V (Matej, úprava T21).
+    for (const n of [24, 25]) {
+        assert.deepEqual([...slide(n).querySelectorAll('thead th')].map(th => text(th)), ['Hloubka [m]', 'Tlak [bar]', 'Objem [l]']);
+    }
+    // Slide 26 už neodkazuje na odečet změny proti předchozímu řádku, model ho nemá.
+    assert.doesNotMatch(text(slide(26).closest('section')), /odečet změny/);
+});
+

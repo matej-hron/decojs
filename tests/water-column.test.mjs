@@ -141,6 +141,9 @@ test('depth readout uses U+00A0 entity and the step decimals', () => {
     assert.equal(depthReadout({ depth: 12 }, 0.5), 'hloubka 12&nbsp;m', 'celé metry bez „,0“ i při kroku 0,5 m');
     assert.equal(joinReadout(['hloubka 12&nbsp;m', null, '', 'teplota 8&nbsp;°C']),
         'hloubka 12&nbsp;m · teplota 8&nbsp;°C');
+    // část začínající <br> jde na nový řádek bez tečky (B1: tlak na prvním řádku, p · V na druhém, T21)
+    assert.equal(joinReadout(['hloubka 10&nbsp;m', '<var>p</var> = 2&nbsp;bar', '<br><var>V</var> = 500&nbsp;l']),
+        'hloubka 10&nbsp;m · <var>p</var> = 2&nbsp;bar<br><var>V</var> = 500&nbsp;l');
 });
 
 test('sortLayers: zIndex first, then insertion order', () => {

@@ -93,7 +93,8 @@ Vrstva je obyčejný objekt (typicky z továrny `create<Název>Layer(options)`):
    a zavolá `render(g, geom, state)`. Vrstva tedy kreslí vždy celé znovu, nic si nepamatuje v DOM.
    Stav je zmrazený (`Object.freeze`) — vrstva ho nemění, změny jdou přes `ctx.setState`.
 3. Po vykreslení se sestaví odečet: `hloubka … · readout(vrstva 1) · readout(vrstva 2) …`
-   (pořadí přidání; `null` nebo prázdný řetězec se vynechá).
+   (pořadí přidání; `null` nebo prázdný řetězec se vynechá). Část, která začíná `<br>`, jde na nový řádek
+   bez tečky: B1 má pod tlakem řádek s *p* · *V* (T21).
 4. `removeLayer(id)` / `destroy()` → `layer.destroy()`.
 
 Výjimka v `render`/`readout` jedné vrstvy se zaloguje (`console.error`) a ostatní vrstvy se vykreslí dál.

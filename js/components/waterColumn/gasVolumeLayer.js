@@ -3,8 +3,8 @@
  *
  * Ve sloupci v hloubce ukazatele je předmět s plynem: balónek (poloměr úměrný třetí odmocnině objemu) nebo zvon
  * (voda uvnitř podle podílu vzduchu). V panelu vedle sloupce je křivka objemu *V*(*h*), body řádků tabulky
- * ze slidu a pruh objemu v hloubce ukazatele. Odečet píše objem a změnu proti předchozímu řádku tabulky
- * ve směru slidu („10 m → hladina: +15 l, ×2“, slide 26).
+ * ze slidu a pruh objemu v hloubce ukazatele. Odečet má pod řádkem tlaku druhý řádek s výpočtem jako postup
+ * ve „Více“ slidů 24 a 25: „p · V = 1 · 1 000 = 1 000 → V = 1 000 / 2 = 500 l“ (T21).
  *
  * Stav (docs/course/water-column.md §4):
  * - soukromý klíč vrstvy: `gasObject` (klíč předmětu v `objects`);
@@ -17,6 +17,7 @@
 import { svgEl, fmtCs, niceTicks, haloAttrs, clamp, estimateTextWidth, placeBarLabel } from '../WaterColumn.js';
 import { fmtGroup } from '../../format.js';
 import { volumeAtDepth } from '../../physics/boyle.js';
+import { pressureAt } from '../../physics/pressure.js';
 
 const NBSP = ' ';
 const MINUS = '−';
@@ -38,27 +39,6 @@ const MINUS = '−';
 export function formatLitres(litres) {
     const v = Math.abs(litres) >= 100 ? Math.round(litres) : Math.round(litres * 10) / 10;
     return fmtGroup(v, 1, 'cs');
-}
-
-/**
- * Změna objemu se znaménkem (+1,5; −500).
- * @param {number} litres
- * @returns {string}
- */
-export function formatSignedLitres(litres) {
-    const text = formatLitres(Math.abs(litres));
-    if (text === '0') return '0';
-    return `${litres < 0 ? MINUS : '+'}${text}`;
-}
-
-/**
- * Kolikrát se objem změnil: zvětšení „×2“, zmenšení „÷2“ (na setiny, bez koncových nul).
- * @param {number} ratio nový / původní objem
- * @returns {string}
- */
-export function formatRatio(ratio) {
-    const factor = ratio >= 1 ? ratio : 1 / ratio;
-    return `${ratio >= 1 ? '×' : '÷'}${fmtGroup(Math.round(factor * 100) / 100, 2, 'cs')}`;
 }
 
 /**
@@ -114,35 +94,19 @@ export function objectVolume(depth, obj, state = {}) {
     });
 }
 
-/**
- * Změna objemu proti předchozímu řádku tabulky ve směru slidu (slide 26), nebo null.
- * @param {number} depth m
- * @param {GasObject} obj
- * @param {Object} [state]
- * @returns {{fromDepth: number, toDepth: number, from: number, to: number, delta: number, ratio: number}|null}
- */
-export function rowChange(depth, obj, state = {}) {
-    const fromDepth = previousRow(depth, obj.rows);
-    if (fromDepth === null) return null;
-    const from = objectVolume(fromDepth, obj, state);
-    const to = objectVolume(depth, obj, state);
-    return { fromDepth, toDepth: depth, from, to, delta: to - from, ratio: to / from };
-}
+/** Celkový tlak v hloubce ve stejném režimu jako objem (bar). */
+const totalPressure = (depth, state = {}) => pressureAt(depth, {
+    mode: state.pressureMode ?? 'school',
+    altitude: state.altitude ?? 0,
+    water: state.water ?? 'salt',
+}).total;
+
+/** Tlak do odečtu: na setiny bez koncových nul (2; 2,2; 1,01). */
+const formatPressure = (bar) => fmtGroup(Math.round(bar * 100) / 100, 2, 'cs');
 
 /**
- * Text změny: „10 m → hladina: +15 l, ×2“, „40 → 30 m: +1,5 l, ×1,25“ (jednotka u druhé hloubky jen jednou).
- * @param {ReturnType<typeof rowChange>} change
- * @returns {string} prostý text s U+00A0
- */
-export function changeReadout(change) {
-    if (!change) return '';
-    const { fromDepth, toDepth } = change;
-    const from = fromDepth !== 0 && toDepth !== 0 ? fmtCs(fromDepth, Number.isInteger(fromDepth) ? 0 : 1) : depthLabel(fromDepth);
-    return `${from} → ${depthLabel(toDepth)}: ${formatSignedLitres(change.delta)}${NBSP}l, ${formatRatio(change.ratio)}`;
-}
-
-/**
- * Odečet vrstvy (HTML): „V = 30 l (10 m → hladina: +15 l, ×2)“.
+ * Odečet vrstvy (HTML), druhý řádek pod tlakem: součin p · V z výchozího stavu předmětu je stálý, objem je jeho podíl
+ * a tlaku. „<br>p · V = 5 · 6 = 30 → V = 30 / 2 = 15 l“; když objem zaokrouhlujeme, je místo „=“ „≈“ (333 l).
  * @param {number} depth
  * @param {GasObject} obj
  * @param {Object} [state]
@@ -150,9 +114,14 @@ export function changeReadout(change) {
  */
 export function gasReadout(depth, obj, state = {}) {
     const html = (s) => s.replaceAll(NBSP, '&nbsp;');
-    const volume = `<var>V</var> = ${html(formatLitres(objectVolume(depth, obj, state)))}&nbsp;l`;
-    const change = rowChange(depth, obj, state);
-    return change ? `${volume} (${html(changeReadout(change))})` : volume;
+    const p0 = totalPressure(obj.depth, state);
+    const p = totalPressure(depth, state);
+    const product = html(formatLitres(p0 * obj.volume));
+    const volume = objectVolume(depth, obj, state);
+    const shown = formatLitres(volume);
+    const exact = Math.abs(Number(shown.replace(/\s/g, '').replace(',', '.')) - volume) < 1e-9;
+    return `<br><var>p</var> · <var>V</var> = ${formatPressure(p0)} · ${html(formatLitres(obj.volume))} = ${product}`
+        + ` → <var>V</var> = ${product} / ${formatPressure(p)} ${exact ? '=' : '≈'} ${html(shown)}&nbsp;l`;
 }
 
 /**
