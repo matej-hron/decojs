@@ -322,8 +322,14 @@ Poslední zastávka kapitoly: otázky z testů SPČR/CMAS vedle sebe. Nemá čí
 
 Jediná varianta, platí pro každý typ: menší písmo těla (`--course-slide-text-compact`, 0,8 × tělo). Nadpis
 ani začátek těla se neposouvají. U citace navíc seznam do dvou sloupců, u odrážek a tabulek menší mezery.
-Teď ji mají slidy 3, 4, 8, 9, 12, 13, 15, 17, 18, 19, 20, 21 a 22. Procvič si ji nemá: na slide patří tři otázky,
+Má ji většina slidů kapitol (přehled dá `grep data-slide-fit p1/*.html`), v Tlaku všechny kromě titulního slidu 10. Procvič si ji nemá: na slide patří tři otázky,
 zbytek je v kvízu. Na telefonu písmo nezmenšuje.
+
+**Pokračování mají stejné písmo (T22).** Sousední slidy se stejným nadpisem (pokračování tématu, třeba Tlak 13 a 14,
+Stlačování 29 a 30, Henry 42 až 44) mají stejné `data-slide-fit`, i když by se jeden vešel i bez `compact`:
+jinak při přechodu poskočí velikost písma. Platí i pro sousední slidy stejného typu, kde to jde (Tlak 11 a 12).
+Pravidlo: když se slide s `compact` vejde i bez něj (s rozbaleným postupem), `compact` zruš, jinak ho dej oběma.
+Titulní slide (`title`) má vlastní velikosti a nepočítá se. Test `T22` v `tests/course-p1.test.mjs` hlídá stejný nadpis.
 
 Jestli se slide vejde, ověř měřením přes `getBoundingClientRect` na 1280×720, 1440×800, 1728×1000 a 1920×1080:
 výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičkou a další slide začíná pod oknem.
