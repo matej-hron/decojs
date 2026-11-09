@@ -285,3 +285,20 @@ test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spod
     assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s\splynem\s*\(slide 21\)/, 'R6-02');
     assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
 });
+
+test('T16: střední ucho a Eustachova trubice na slidu 27 mají tvar jako na slidu 21 (Tlak)', () => {
+    const ear = [...slide(27).querySelectorAll('figure.course-illustration svg')][1];
+    const cavity = ear.querySelector('rect.fig-cavity-light');
+    const [w, h, rx, y] = ['width', 'height', 'rx', 'y'].map(a => +cavity.getAttribute(a));
+    assert.ok(w > h, 'dutina středního ucha je širší než vysoká, jako na slidu 21');
+    assert.ok(rx / h > 0.3 && rx / h < 0.45, 'stejně zaoblené rohy');
+    // trubice vychází ze spodku dutiny a vede šikmo dolů dopředu v mírném oblouku (Q), stěna i průsvit stejnou cestou
+    const tubes = [...ear.querySelectorAll('path.fig-tube-wall, path.fig-tube')].map(p => p.getAttribute('d'));
+    assert.equal(tubes.length, 2);
+    assert.equal(tubes[0], tubes[1]);
+    const m = tubes[0].match(/^M(\d+) (\d+)Q(\d+) (\d+) (\d+) (\d+)$/);
+    assert.ok(m, tubes[0]);
+    const [x0, y0, , , x1, y1] = m.slice(1).map(Number);
+    assert.ok(Math.abs(y0 - (y + h)) <= 4, 'začíná na spodku dutiny');
+    assert.ok(x1 - x0 >= 20 && y1 > y0, 'šikmo dolů dopředu');
+});

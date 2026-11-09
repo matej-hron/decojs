@@ -451,34 +451,55 @@ function pathBox(d) {
     return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
 }
 
-test('T11: slide 21 má hlavu z profilu, dutiny nejsou na místě očí a ucho je vidět', () => {
+/** Poslední bod každé podcesty (M…) atributu d. */
+const subpathEnds = (d) => d.split('M').filter(Boolean).map(p => p.match(/-?\d+(\.\d+)?/g).map(Number).slice(-2));
+
+test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, střední ucho s Eustachovou trubicí', () => {
     const svg = slide(21).querySelector('figure svg');
     const eye = svg.querySelector('.fig-eye');
-    assert.ok(eye, 'oko z profilu, aby se dutiny nečetly jako oči');
+    assert.ok(eye, 'oko jen obrysem, aby se dutiny nečetly jako oči');
     const ey = +eye.getAttribute('cy');
     const sinus = [...svg.querySelectorAll('.fig-sinus')].map(e => +e.getAttribute('cy')).sort((a, b) => a - b);
     assert.equal(sinus.length, 2, 'čelní a čelistní dutina');
     assert.ok(sinus[0] < ey && ey < sinus[1], `čelní nad okem, čelistní pod ním (${sinus}, oko ${ey})`);
     assert.ok(svg.querySelector('.fig-middle-ear'), 'střední ucho');
-    assert.ok(svg.querySelector('.fig-auricle'), 'boltec, ať je jasné, kde je ucho');
     assert.equal(svg.querySelectorAll('.fig-eustachian').length, 1, 'Eustachova trubice');
+    assert.equal(svg.querySelectorAll('.fig-body').length, 1, 'jedna silueta, hlava i trup bokem');
+    assert.ok(svg.querySelector('.fig-spine'), 'páteř, před ní průdušnice');
 });
 
-test('T11: dýchací cesty jsou jedna souvislá cesta od nosu a úst do obou plic, trávicí systém je menší než plíce', () => {
+test('T16: cesta vzduchu je jedna plynulá linie do plíce, bránice odděluje plíci od trávicího systému', () => {
     const svg = slide(21).querySelector('figure svg');
+    assert.ok(svg.querySelector('.fig-upper-airway'), 'nosní dutina, nosohltan a hltan jako jedna plocha');
+    assert.ok(svg.querySelector('.fig-mouth'), 'ústní dutina');
     const airways = svg.querySelectorAll('path.fig-airway');
     assert.equal(airways.length, 1, 'jedna cesta, ne kusy');
     const d = airways[0].getAttribute('d');
-    const lungs = [...svg.querySelectorAll('.fig-lung')].map(l => pathBox(l.getAttribute('d')));
-    assert.equal(lungs.length, 2);
-    // každá větev (podcesta M…) začíná na cestě, která už vede, kromě první (nos) a druhé (ústa)
-    const ends = [...d.matchAll(/L(\d+) (\d+)(?=M|$)/g)].map(m => [+m[1], +m[2]]);
-    for (const lung of lungs) {
-        assert.ok(ends.some(([x, y]) => x > lung.x0 && x < lung.x1 && y > lung.y0 && y < lung.y1), 'průdušky končí v plíci');
-    }
+    assert.doesNotMatch(d.split('M')[1], /[LHV]/, 'průdušnice bez pravých úhlů, jen křivky');
+    const lungs = [...svg.querySelectorAll('.fig-lung-gas')].map(l => pathBox(l.getAttribute('d')));
+    assert.equal(lungs.length, 1, 'z profilu je vidět jedna plíce');
+    const [lung] = lungs;
+    const ends = subpathEnds(d).slice(1);
+    assert.ok(ends.length >= 3 && ends.every(([x, y]) => x > lung.x0 && x < lung.x1 && y > lung.y0 && y < lung.y1), 'průdušky končí v plíci');
+    const diaphragm = pathBox(svg.querySelector('.fig-diaphragm').getAttribute('d'));
     const stomach = pathBox(svg.querySelector('.fig-stomach').getAttribute('d'));
-    assert.ok(svg.querySelector('.fig-gut'), 'náznak střev');
-    assert.ok(stomach.w * stomach.h < lungs[0].w * lungs[0].h, 'žaludek menší než plíce');
+    const gut = pathBox(svg.querySelector('.fig-gut').getAttribute('d'));
+    assert.ok(lung.y1 <= diaphragm.y1 && diaphragm.y1 < stomach.y0, 'plíce nad bránicí, žaludek pod ní');
+    assert.ok(stomach.y1 < gut.y0, 'střeva pod žaludkem');
+    assert.ok(stomach.w * stomach.h < lung.w * lung.h && gut.w * gut.h < lung.w * lung.h, 'trávicí systém menší než plíce');
+});
+
+test('T16: popisky slidu 21 jsou o stupeň lehčí a obrázek má víc místa', () => {
+    const svg = slide(21).querySelector('figure svg');
+    const labels = [...svg.querySelectorAll('text')];
+    assert.equal(labels.length, 5);
+    for (const t of labels) assert.ok(t.classList.contains('fig-label-medium'), text(t));
+    assert.equal(svg.querySelectorAll('.fig-leader-dot').length, svg.querySelectorAll('path.fig-leader').length, 'každá odkazová čára končí tečkou');
+    const core = slide(21).querySelector('.course-core');
+    assert.ok(core.classList.contains('course-core-figure-wide') && core.classList.contains('course-core-figure-tall'));
+    const css = read('css/course.css');
+    assert.match(css, /\.fig-label-xl\.fig-label-medium \{ font-weight: 500; \}/);
+    assert.match(css, /\.course-core-figure-tall \.course-illustration > svg \{ max-height: calc\(var\(--course-slide-height\) \* 0\.62\); \}/);
 });
 
 // ---------------------------------------------------------------- T13: odkrytá buňka nemění výšku řádku
