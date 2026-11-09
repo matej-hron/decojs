@@ -68,7 +68,7 @@
                 <div class="course-more-body">
                     <div class="course-chapter-intro">
                         <p>Potápěč dýchá v hloubce stejný vzduch jako na hladině, jen pod vyšším tlakem. Každý plyn ve vzduchu přitom
-                            působí na tělo jinak: kyslík potřebujeme k životu, ale ve velkém množství škodí, dusík v hloubce omamuje
+                            působí na tělo jinak: kyslík potřebujeme k životu, ale při vysokém tlaku škodí, dusík v hloubce omamuje
                             a rozpouští se v těle. Tahle kapitola ukáže, jak spočítat, kolik kterého plynu v hloubce dýcháme,
                             a z toho, jak hluboko se vzduchem smíme.</p>
                         <div class="course-hooks">
@@ -121,8 +121,7 @@
                     <div class="course-concept" data-concept="partial-pressure"></div>
                     <p><var>p</var> je celkový tlak v hloubce, stejný jako v kapitole Tlak (<a href="tlak.html#celkovy">slide 19</a>).
                         Na slidu přednášky se značí <var>p</var><sub>c</sub>.</p>
-                    <p>Příklad pro 30&nbsp;m: celkový tlak je 4&nbsp;bar, parciální tlak kyslíku 4 · 0,21 = 0,84&nbsp;bar, dusíku
-                        4 · 0,79 = 3,16&nbsp;bar. Dohromady 4&nbsp;bar.</p>
+                    <p>Dusíku je ve 30&nbsp;m 4 · 0,79 = 3,16&nbsp;bar, s kyslíkem 0,84&nbsp;bar dohromady 4&nbsp;bar.</p>
                     <p>V Deco Theory: <a href="../pressure.html#daltons-law">Daltonův zákon s tabulkou parciálních tlaků</a>.</p>
                 </div>
             </details>
@@ -163,10 +162,10 @@
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
                     <p>Slide je v přednášce stejný jako <a href="tlak.html#plyn">slide 22 v kapitole Tlak</a>. Tady se na částice díváme
-                        jinak: ve vzduchu je asi pětina částic kyslík. Částice kyslíku a dusíku narážejí do stěn stejně, takže kyslík
-                        obstará asi pětinu všech nárazů, a tedy asi pětinu tlaku. To je jeho parciální tlak. Zbylé čtyři pětiny
+                        jinak: ve vzduchu je asi pětina částic kyslík. Každá částice, kyslíku i dusíku, přispívá k tlaku v průměru
+                        stejně, takže kyslík obstará asi pětinu tlaku. To je jeho parciální tlak. Zbylé čtyři pětiny
                         tlaku dělá dusík.</p>
-                    <p>Když plyn stlačíme na poloviční objem, narážejí do stěn všechny částice dvakrát častěji: celkový tlak
+                    <p>Když plyn při stejné teplotě stlačíme na poloviční objem, narážejí do stěn všechny částice dvakrát častěji: celkový tlak
                         se zdvojnásobí, a s ním i tlak kyslíku a dusíku. Podíl kyslíku zůstává pětina.</p>
                     <p>„Pětina“ je jen představa. Ve vzduchu je kyslíku 21&nbsp;% a pro výpočty bereme 0,21 (slide 41).
                         Animace je zjednodušená: skutečné částice jsou o mnoho řádů menší a rychlejší.</p>
@@ -187,8 +186,10 @@
                     <details class="course-answer">
                         <summary>Ukázat postup</summary>
                         <ol class="course-calc-steps">
-                            <li>a) <var>p</var> = 1,4 / 0,21 = 6,67&nbsp;bar, <var>h</var> = (6,67 − 1) · 10&nbsp;m = 56,7&nbsp;m</li>
-                            <li>b) <var>p</var> = 4 / 0,79 = 5,06&nbsp;bar, <var>h</var> = (5,06 − 1) · 10&nbsp;m = 40,6&nbsp;m</li>
+                            <li>a) <span class="course-eq"><var>p</var> = <var>p</var><sub>O₂</sub> / <var>f</var><sub>O₂</sub></span> <span class="course-eq">= 1,4 / 0,21 = 6,67&nbsp;bar</span>,
+                                <span class="course-eq"><var>h</var> = (6,67 − 1) · 10&nbsp;m = 56,7&nbsp;m</span></li>
+                            <li>b) <span class="course-eq"><var>p</var> = <var>p</var><sub>N₂</sub> / <var>f</var><sub>N₂</sub></span> <span class="course-eq">= 4 / 0,79 = 5,06&nbsp;bar</span>,
+                                <span class="course-eq"><var>h</var> = (5,06 − 1) · 10&nbsp;m = 40,6&nbsp;m</span></li>
                         </ol>
                         <p class="course-calc-result"><span>a) 56&nbsp;m, b) 40&nbsp;m</span> zaokrouhleno dolů</p>
                     </details>
@@ -211,7 +212,7 @@
                         S „pětinou“ kyslíku (0,2) by mez vyšla 60&nbsp;m, tedy hlouběji, než je bezpečné. Hloubku vždy zaokrouhlujeme
                         dolů, na mělčí: 56,7&nbsp;m je mez, 56&nbsp;m je bezpečná strana.</p>
                     <p>Hlouběji než 20&nbsp;m smíš až po dalším výcviku (P★★ a výš), a i pak jen do hloubky, kterou ti tvoje kvalifikace
-                        dovoluje. Pro velké hloubky se místo části dusíku dýchá helium (slide 47: rozpouští se méně a nenarkotizuje),
+                        dovoluje. Pro velké hloubky se místo části dusíku dýchá helium (<a href="henry.html#rozpustnost">slide 47</a>: rozpouští se méně a nenarkotizuje),
                         to už je technické potápění.</p>
                     <p>Tyhle meze jsou v <a href="tlak.html#tabulka">tabulce hloubek na slidu 20</a> v kapitole Tlak. V Deco Theory:
                         <a href="../pressure.html#partial-pressure-limits">meze parciálních tlaků</a>.</p>

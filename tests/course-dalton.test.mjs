@@ -165,3 +165,28 @@ test('Dalton: pojmy, portrét, procvičování a zdroje', () => {
     assert.match(tlak, /<section id="plyn"/);
     assert.match(tlak, /<section id="tabulka"/);
 });
+
+test('Dalton: opravy z review R9', () => {
+    // R9-01: vysvětlení otázky 81 bez „kyslík je v hloubce toxický“, notace jako slide 39
+    const q81 = JSON.parse(read('data/quiz-physics.json')).questions.find(q => q.id === 81);
+    assert.doesNotMatch(q81.explanation, /toxick/);
+    assert.match(q81.explanation, /<var>p<\/var><sub>O₂<\/sub> = <var>p<\/var> · <var>f<\/var><sub>O₂<\/sub>/);
+    assert.match(q81.explanation, /Ve 30 m je parciální tlak kyslíku ve vzduchu 0,84 bar\./);
+    // R9-02: příspěvek částice, stlačení při stejné teplotě
+    assert.doesNotMatch(more(40), /narážejí do stěn stejně/);
+    assert.match(more(40), /Každá částice, kyslíku i dusíku, přispívá k tlaku v průměru stejně/);
+    assert.match(more(40), /Když plyn při stejné teplotě stlačíme na poloviční objem/);
+    // R9-03 a R9-04: obecný tvar v postupu, rovnosti se nelámou
+    assert.match(answer(41), /p = pO₂ \/ fO₂ = 1,4 \/ 0,21/);
+    assert.match(answer(41), /p = pN₂ \/ fN₂ = 4 \/ 0,79/);
+    assert.equal(slide(41).querySelectorAll('.course-calc-steps .course-eq').length, 6);
+    assert.match(read('css/course.css'), /\.course-calc-steps \.course-eq \{ white-space: nowrap; \}/);
+    // R9-05: pojem sám nese výhradu
+    assert.match(concept('breathing-gas-limits'), /Vypočtená hloubka je mez směsi, ne hloubka, kam se se vzduchem chodí/);
+    // R9-06, R9-07
+    assert.doesNotMatch(more(39), /Příklad pro 30/, 'příklad 30 m má pojem, pod ním jen doplněk');
+    assert.match(more(39), /Dusíku je ve 30 m 4 · 0,79 = 3,16 bar, s kyslíkem 0,84 bar dohromady 4 bar\./);
+    assert.match(more(38), /ale při vysokém tlaku škodí/);
+    // odkaz na helium ve slidu 47
+    assert.ok(slide(41).closest('section').querySelector('a[href="henry.html#rozpustnost"]'));
+});

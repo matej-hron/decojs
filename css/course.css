@@ -442,6 +442,8 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-hit { fill: none; stroke-width: 5; } /* náraz do stěny blikne v barvě částice */
 .course-figure svg .fig-hit-o2 { stroke: var(--slide-wind-warm); }
 .course-figure svg .fig-hit-n2 { stroke: var(--slide-water); }
+/* Postup příkladu: rovnost (nebo její dlouhý kus) se nezalomí uprostřed, telefon láme jen mezi nimi (R9-04). */
+.course-calc-steps .course-eq { white-space: nowrap; }
 /* Henry (DH4): lahev s bublinami (slidy 43, 44) a koloběh dusíku (slide 45). */
 .course-figure svg .fig-bubble { fill: var(--slide-card-bg); fill-opacity: 0.7; stroke: var(--slide-on-accent); stroke-width: 2.5; }
 .course-figure svg .fig-plus { fill: var(--slide-wind-warm); stroke: var(--slide-on-accent); stroke-width: 2; }

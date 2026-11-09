@@ -2024,7 +2024,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Parciální tlak závisí na celkovém tlaku! <var>p</var><sub>O₂</sub> = <var>f</var><sub>O₂</sub> × <var>p</var><sub>celkový</sub>. S rostoucí hloubkou (tlakem) rostou i parciální tlaky všech plynů. Proto je kyslík v hloubce toxický.",
+      "explanation": "Parciální tlak závisí na celkovém tlaku: <var>p</var><sub>O₂</sub> = <var>p</var> · <var>f</var><sub>O₂</sub>. S hloubkou roste celkový tlak, a s ním parciální tlaky všech plynů. Ve 30 m je parciální tlak kyslíku ve vzduchu 0,84 bar.",
       "category": "dekomprese-syceni"
     },
     {
