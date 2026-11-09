@@ -176,14 +176,16 @@ Varianty těla:
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
-- **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` s autorem, licencí a odkazem na zdroj,
-  záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
+- **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` jen s drobným odkazem
+  `<a class="course-source" href="zdroje.html#kotva">zdroj</a>` (T18). Plná atribuce (autor, licence s odkazem na text,
+  stránka souboru, úpravy) je v `p1/zdroje.html` pod vlastní kotvou, záznam v `images/course/p1/SOURCES.md`
+  (licence ověřená na stránce souboru). Test `tests/course-zdroje.test.mjs` hlídá, že každý převzatý obrázek odkaz má.
 - **Obrázek nese víc než text** (slide 18: nádoby a Pascalův sud v jedné ilustraci): `course-core course-core-figure-wide`
   prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` jako slide 13.
 - **Vysoký obrázek** (slide 21: celá postava z profilu): navíc `course-core-figure-tall`, obrázek smí mít 62 % výšky
   slidu místo poloviny.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
-  na telefonu 120 px) a popiskem vedle: jméno a roky, pod tím `course-figure-note` s autorem díla, licencí a odkazem.
+  na telefonu 120 px) a popiskem vedle: jméno a roky, za nimi odkaz `course-source` „zdroj“.
   Jen když se vejde a je k němu volný zdroj.
 
 ```html
@@ -218,7 +220,7 @@ Stlačování a Hustota se projdou zvlášť.
 - **Síla je výrazná.** `fig-force`: plná bloková šipka v barvě zvýraznění s tmavým obrysem, popisek
   `<tspan font-style="italic">F</tspan>`. Stejná síla = stejný tvar šipky.
 - **Fotky:** kde je skutečná věc názornější než kresba (manometr, výstroj), fotka z volného zdroje (public domain, CC0,
-  CC BY, CC BY-SA) s autorem a licencí pod obrázkem a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
+  CC BY, CC BY-SA) s odkazem „zdroj“ pod obrázkem, položkou v `p1/zdroje.html` a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
   výrobců, ani vyražené na výrobku. Když volná fotka bez značky není, plná kresba v tomhle stylu.
 - **Čitelnost:** popisky v ilustraci mají `fig-label-xl` (36 px ve viewBoxu výšky 270). Na projektoru 1920×1080
   to je aspoň 31 px (ilustrace 25 % slidu), na telefonu aspoň 16 px (obrázek na šířku displeje). Kontrast podle pravidel
@@ -234,15 +236,18 @@ Stlačování a Hustota se projdou zvlášť.
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
-- **Tělo potápěče (T16, slide 21, Matej vybral variantu C):** celá postava z profilu, obličej doprava, jedna silueta
-  `fig-body` na `fig-sky`, páteř `fig-spine`. Všechno, co obsahuje plyn, je žlutě: dutiny `fig-air-space` (čelní a čelistní
-  dutina navíc `fig-sinus`, střední ucho `fig-middle-ear`, nosní dutina s nosohltanem a hltanem jako jedna plocha
-  `fig-upper-airway`, ústní dutina `fig-mouth`, žaludek `fig-stomach`), plíce `fig-lung-gas` (z profilu jedna),
-  průdušnice a průdušky jednou plynulou čarou `fig-airway` s obrysem `fig-airway-edge`, Eustachova trubice
-  `fig-eustachian` šikmo dolů do hltanu, střeva jako volně stočený pás `fig-gut` (s `fig-gut-edge`). Oko jen obrysem
-  `fig-eye`, bránice `fig-diaphragm`. Popisky o stupeň lehčí (`fig-label-xl fig-label-medium`), odkazové čáry končí
-  tečkou `fig-leader-dot` a do obličeje vedou jen přes čelo. Tvar středního ucha a trubice má i řez uchem na slidu 27
-  ve Stlačování (dutina širší než vysoká, trubice z jejího spodku šikmo dolů).
+- **Tělo potápěče (T16, T17; slidy 21 a 27):** kresba je jediná definice, symbol `#telo` v `images/course/p1/telo-profil.svg`
+  (viewBox 600 × 640). Slide ji vkládá `<use href="../images/course/p1/telo-profil.svg#telo" width="600" height="640"/>`,
+  slide 27 zmenšenou v `<g transform>` spolu s maskou (`fig-glass`, pásek `fig-mask-strap`). Popisky a odkazové čáry
+  (`fig-halo`, `fig-leader`, tečka `fig-leader-dot`) má každý slide ve svém SVG. Barvy kresby jsou v souboru v atributu
+  `style` z proměnných scény (`var(--slide-…)`), protože třídy z `css/course.css` do obsahu `<use>` nepronikají,
+  proměnné ano. V komentáři souboru nesmí být dvojitá pomlčka, jinak to není XML a prohlížeč kresbu nevykreslí.
+  Obsah: celá postava z profilu (obličej doprava), všechno s plynem žlutě: obličejové dutiny `fig-sinus` mimo oko
+  (`fig-eye` jen obrysem), střední ucho `fig-middle-ear` s Eustachovou trubicí `fig-eustachian` šikmo dolů do hltanu,
+  nosní a ústní dutina s hltanem `fig-upper-airway`, `fig-mouth`, průdušnice a průdušky jednou plynulou čarou `fig-airway`,
+  plíce `fig-lung-gas`, bránice `fig-diaphragm`, žaludek `fig-stomach`, střeva jako volně stočený pás `fig-gut`, páteř
+  `fig-spine`. Popisky na slidu 21 o stupeň lehčí (`fig-label-xl fig-label-medium`). Řez uchem na slidu 27 má stejný tvar
+  středního ucha a trubice (dutina širší než vysoká, trubice z jejího spodku šikmo dolů).
 - **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
   neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
 - **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý

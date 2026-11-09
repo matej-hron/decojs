@@ -361,12 +361,14 @@ export function fmtDepth(depth, step = 1) {
 
 /**
  * Join readout parts of the core and the layers with a middle dot.
- * Null / empty parts are skipped.
+ * Null / empty parts are skipped. A part starting with `<br>` starts a new line instead (no dot).
  * @param {Array<string|null|undefined>} parts
  * @returns {string}
  */
 export function joinReadout(parts) {
-    return parts.filter((p) => typeof p === 'string' && p.trim() !== '').join(' · ');
+    return parts
+        .filter((p) => typeof p === 'string' && p.trim() !== '')
+        .reduce((out, p, i) => (i === 0 ? p : `${out}${p.startsWith('<br>') ? '' : ' · '}${p}`), '');
 }
 
 /**
