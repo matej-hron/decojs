@@ -366,7 +366,7 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
     const forces = (n) => slide(n).querySelectorAll('figure svg .fig-force').length;
     assert.equal(forces(11), 1, 'tlaková síla');
     assert.equal(forces(13), 9, 'síla na píst a tlak do všech směrů (8 šipek)');
-    assert.equal(forces(18), 3, 'stejná síla na tři dna');
+    assert.equal(forces(18), 3, 'šipka síly na každé ze tří den');
     assert.equal(forces(14) + forces(16) + forces(17) + forces(21), 0, 'bez nových sil');
     assert.equal(slide(14).querySelectorAll('.fig-air').length, 20, 'stejné množství plynu v obou válcích');
     const fig13 = text(slide(13).querySelector('figure figcaption'));
@@ -527,12 +527,14 @@ test('T13: odkrytá buňka má stejný rámeček jako otazník, tabulka se nezkr
 
 // ---------------------------------------------------------------- T14: popisek pod nádobami a paradox ve „Více“
 
-test('T14: pod nádobami „stejný tlak na dno“, ve „Více“ věta o síle na dno a tíze vody', () => {
+test('T14, T19: pod nádobami „stejný tlak na dno“, obrázek ani „Více“ netvrdí stejnou sílu na dno', () => {
     const cap = slide(18).querySelector('figcaption.course-figure-pair > span');
     assert.match(cap.innerHTML, /^stejná výška <var>h<\/var>, stejný&nbsp;tlak&nbsp;na&nbsp;dno$/, '„stejný tlak na dno“ se neláme, dno nezůstane samo');
+    const label = slide(18).querySelector('figure svg').getAttribute('aria-label');
+    assert.match(label, /stejný tlak na dno/);
+    assert.doesNotMatch(label, /stejná síla/);
+    // T19: paradox vysvětluje vložený pojem hydrostatic-pressure, vlastní odstavce o síle na dno a o slově „pouze“ pryč.
     const more = slide(18).closest('section').querySelector('details.course-more');
-    const p = [...more.querySelectorAll('p')].find(el => /paradox/.test(text(el)));
-    assert.ok(p, 'věta o paradoxu');
-    assert.equal(text(p), 'Síla na dno F = p · S je ve všech třech nádobách stejná, i když tíha vody je v každé jiná: to je hydrostatický paradox.');
-    assert.match(p.innerHTML, /<var>F<\/var> = <var>p<\/var> · <var>S<\/var>/);
+    assert.ok(more.querySelector('[data-concept="hydrostatic-pressure"]'));
+    assert.doesNotMatch(text(more), /Síla na dno|Slovo „pouze“/);
 });
