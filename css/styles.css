@@ -2443,7 +2443,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.279";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.280";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5880,6 +5880,10 @@ textarea.form-input {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Popisek je velkými písmeny, ale značka veličiny a index ne: tlak je malé p, ne P (ČSN EN ISO 80000). */
+.tsim-tile-label var,
+.tsim-tile-label sub { text-transform: none; }
 
 .tsim-tile-value {
     font-size: 1rem;

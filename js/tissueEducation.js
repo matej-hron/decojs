@@ -1,16 +1,16 @@
 /**
  * tissueEducation.js - Interactive educational components for tissue loading page
- * Handles gas pathway visualization and half-time concept charts
+ * Handles gas pathway visualization (js/components/GasPathway.js) and half-time concept charts
  */
 
 import { fmtNum } from './format.js';
 import { translate } from './i18n.js';
+import { GasPathway, renderGasPathway } from './components/GasPathway.js';
 // Constants
 const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
 const SURFACE_PRESSURE = 1.01325; // 1 atm exactly
 const N2_FRACTION = 0.7902; // N2-equivalent fraction (accounts for argon)
 const SURFACE_ALVEOLAR_N2 = (SURFACE_PRESSURE - WATER_VAPOR_PRESSURE) * N2_FRACTION; // ~0.75 bar
-const PRESSURE_STEP_COLORS = ['#78a8ce', '#91b5d2', '#aec9de', '#d0e1ed'];
 
 function tr(key, fallback, values = {}) {
     return Object.entries(values).reduce(
@@ -29,196 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
    Gas Pathway Visualization - Manual Toggle Control
    ========================================================================== */
 
-let pathwaySvg = null;
-let currentPathwayPhase = 'descent';
+let pathway = null;
 
 function initGasPathway() {
-    const svg = document.querySelector('.gas-pathway-svg');
-    const descentBtn = document.getElementById('pathway-descent-btn');
-    const ascentBtn = document.getElementById('pathway-ascent-btn');
-    
-    if (!svg || !descentBtn || !ascentBtn) return;
-    
-    pathwaySvg = svg;
-    
-    descentBtn.addEventListener('click', () => {
-        if (currentPathwayPhase === 'descent') return;
-        currentPathwayPhase = 'descent';
-        descentBtn.classList.add('btn-active');
-        ascentBtn.classList.remove('btn-active');
-        updatePhase('descent', svg);
-    });
-    
-    ascentBtn.addEventListener('click', () => {
-        if (currentPathwayPhase === 'ascent') return;
-        currentPathwayPhase = 'ascent';
-        ascentBtn.classList.add('btn-active');
-        descentBtn.classList.remove('btn-active');
-        updatePhase('ascent', svg);
-    });
-    
-    // Initialize in descent mode
-    updatePhase('descent', svg);
-}
-
-function updatePhase(phase, svg) {
-    const arrowLines = svg.querySelectorAll('.arrow-line');
-    const arrowHeadsRight = svg.querySelectorAll('.arrow-head-right');
-    const arrowHeadsLeft = svg.querySelectorAll('.arrow-head-left');
-    const particlesDescent = svg.querySelectorAll('.particle-descent');
-    const particlesAscent = svg.querySelectorAll('.particle-ascent');
-    const legendStart = svg.querySelector('.legend-pressure-start');
-    const legendEnd = svg.querySelector('.legend-pressure-end');
-    const flowDirection = document.getElementById('flow-direction');
-    
-    const regPressure = document.getElementById('reg-pressure');
-    const alvPressure = document.getElementById('alv-pressure');
-    const bloodPressure = document.getElementById('blood-pressure');
-    
-    const tissueFast = svg.querySelector('.tissue-fast');
-    const tissueMedium = svg.querySelector('.tissue-medium');
-    const tissueSlow = svg.querySelector('.tissue-slow');
-    
-    if (phase === 'descent') {
-        // Descent: on-gassing, flow left → right
-
-        applyPressureSteps(svg, PRESSURE_STEP_COLORS);
-        if (legendStart) {
-            legendStart.textContent = tr('tissueLoading.gasExchange.svg.high', 'HIGH');
-        }
-        if (legendEnd) {
-            legendEnd.textContent = tr('tissueLoading.gasExchange.svg.low', 'LOW');
-        }
-        
-        // Show right arrows, hide left
-        arrowLines.forEach(line => line.style.stroke = '#2980b9');
-        arrowHeadsRight.forEach(h => { h.style.display = ''; h.style.fill = '#2980b9'; });
-        arrowHeadsLeft.forEach(h => h.style.display = 'none');
-        
-        // Show descent particles, hide ascent
-        particlesDescent.forEach(p => p.style.display = '');
-        particlesAscent.forEach(p => p.style.display = 'none');
-        
-        // Update pressure values
-        if (regPressure) regPressure.textContent = fmtNum(3.16, 2);
-        if (alvPressure) alvPressure.textContent = fmtNum(3.10, 2);
-        if (bloodPressure) bloodPressure.textContent = fmtNum(2.5, 1);
-        
-        // Update legend
-        if (flowDirection) {
-            flowDirection.textContent = tr(
-                'tissueLoading.gasExchange.svg.flowDirection',
-                '→ Gas flows from HIGH to LOW pressure'
-            );
-        }
-        
-        // Tissues filling
-        animateTissueBars('descent', tissueFast, tissueMedium, tissueSlow);
-        
-    } else {
-        // Ascent: off-gassing, flow right → left (tissues are now HIGH)
-
-        applyPressureSteps(svg, [...PRESSURE_STEP_COLORS].reverse());
-        if (legendStart) {
-            legendStart.textContent = tr('tissueLoading.gasExchange.svg.low', 'LOW');
-        }
-        if (legendEnd) {
-            legendEnd.textContent = tr('tissueLoading.gasExchange.svg.high', 'HIGH');
-        }
-        
-        // Show left arrows, hide right
-        arrowLines.forEach(line => line.style.stroke = '#2980b9');
-        arrowHeadsRight.forEach(h => h.style.display = 'none');
-        arrowHeadsLeft.forEach(h => { h.style.display = ''; h.style.fill = '#2980b9'; });
-        
-        // Show ascent particles, hide descent
-        particlesDescent.forEach(p => p.style.display = 'none');
-        particlesAscent.forEach(p => p.style.display = '');
-        
-        // Update pressure values (tissues now higher than ambient)
-        if (regPressure) regPressure.textContent = fmtNum(0.79, 2);
-        if (alvPressure) alvPressure.textContent = fmtNum(0.74, 2);
-        if (bloodPressure) bloodPressure.textContent = fmtNum(1.2, 1);
-        
-        // Update legend - reversed: now tissues are HIGH
-        if (flowDirection) {
-            flowDirection.textContent = tr(
-                'tissueLoading.gasExchange.svg.flowDirectionAscent',
-                '← Gas flows from HIGH to LOW pressure (tissues supersaturated)'
-            );
-        }
-        
-        // Tissues emptying
-        animateTissueBars('ascent', tissueFast, tissueMedium, tissueSlow);
-    }
-}
-
-function applyPressureSteps(svg, colors) {
-    const stages = [
-        svg.querySelector('.stage-regulator'),
-        svg.querySelector('.stage-lungs'),
-        svg.querySelector('.stage-blood'),
-        svg.querySelector('.stage-tissues'),
-    ];
-    stages.forEach((stage, index) => {
-        if (stage) stage.style.fill = colors[index];
-    });
-    svg.querySelectorAll('.pressure-step').forEach((step, index) => {
-        step.style.fill = colors[index];
-    });
-}
-
-function animateTissueBars(phase, fast, medium, slow) {
-    if (!fast || !medium || !slow) return;
-    
-    // Colors
-    fast.style.fill = '#3498db';
-    medium.style.fill = '#9b59b6';
-    slow.style.fill = '#e67e22';
-    
-    if (phase === 'descent') {
-        // Reset to starting position (all same low level - surface saturation)
-        fast.style.transition = 'none';
-        medium.style.transition = 'none';
-        slow.style.transition = 'none';
-        fast.setAttribute('width', '14');
-        medium.setAttribute('width', '14');
-        slow.setAttribute('width', '14');
-        
-        // Force reflow
-        fast.getBoundingClientRect();
-        
-        // Animate at different speeds - fast fills quickly, slow fills slowly
-        setTimeout(() => {
-            fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
-            medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
-            slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
-            fast.setAttribute('width', '96');
-            medium.setAttribute('width', '69');
-            slow.setAttribute('width', '41');
-        }, 50);
-    } else {
-        // Ascent - reset to full (saturated at depth)
-        fast.style.transition = 'none';
-        medium.style.transition = 'none';
-        slow.style.transition = 'none';
-        fast.setAttribute('width', '96');
-        medium.setAttribute('width', '96');
-        slow.setAttribute('width', '96');
-        
-        // Force reflow
-        fast.getBoundingClientRect();
-        
-        // Animate at different speeds - fast empties quickly, slow empties slowly
-        setTimeout(() => {
-            fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
-            medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
-            slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
-            fast.setAttribute('width', '14');
-            medium.setAttribute('width', '55');
-            slow.setAttribute('width', '83');
-        }, 50);
-    }
+    const host = document.querySelector('.gas-pathway-container');
+    if (!host) return;
+    renderGasPathway(host);
+    pathway = new GasPathway(host);
 }
 
 /* ==========================================================================
@@ -566,7 +383,7 @@ function updateOffgassingChart() {
 }
 
 export function refreshTissueEducationLanguage() {
-    if (pathwaySvg) updatePhase(currentPathwayPhase, pathwaySvg);
+    pathway?.refresh();
 
     if (ongassingChart) {
         ongassingChart.data.datasets[0].label = tr('tissueLoading.halfTimeCharts.chart.tissuePressure', 'Tissue pN₂');
