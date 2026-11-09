@@ -244,6 +244,19 @@
                         <p><span class="course-highlight">Sycení</span> (on-gassing): dusík jde z&nbsp;plic tepennou krví do tkání.</p>
                         <p><span class="course-highlight">Vysycování</span> (off-gassing): dusík jde z&nbsp;tkání žilní krví do plic
                             a&nbsp;vydýchá se.</p>
+                        <button type="button" class="course-thumb" data-open-model="model-vymena"
+                                aria-label="Otevřít animaci: výměna plynů při sestupu a výstupu">
+                            <span class="course-thumb-plot">
+                                <svg viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+                                    <rect class="gp-thumb-1" x="10" y="30" width="50" height="44" rx="6"/>
+                                    <rect class="gp-thumb-2" x="84" y="30" width="50" height="44" rx="6"/>
+                                    <rect class="gp-thumb-3" x="158" y="30" width="50" height="44" rx="6"/>
+                                    <rect class="gp-thumb-4" x="232" y="20" width="58" height="64" rx="6"/>
+                                    <path class="gp-thumb-arrow" d="M62 52H80M136 52H154M210 52H228"/>
+                                </svg>
+                            </span>
+                            <span class="course-thumb-hint">Otevřít animaci</span>
+                        </button>
                     </div>
                     <figure class="course-figure course-illustration">
                         <svg viewBox="0 0 600 420" role="img" aria-label="Koloběh dusíku: z plic tepennou krví do tkání (sycení) a z tkání žilní krví zpět do plic (vysycování)">
@@ -279,9 +292,29 @@
                 <div class="course-more-body">
                     <div class="course-concept" data-concept="tissue-saturation"></div>
                     <p>Na slidu přednášky je „Vysycení (off gasing)“, slovníček kurzu používá „vysycování“ jako protějšek „sycení“.</p>
-                    <p>V&nbsp;Deco Theory: <a href="../tissue-loading.html#gas-exchange">animace cesty plynu při sestupu a&nbsp;výstupu</a>.</p>
+                    <p>Animace na slidu ukazuje cestu dusíku při sestupu a&nbsp;výstupu: tlačítky přepneš sycení a&nbsp;vysycování.
+                        <a href="#model-vymena" data-preset-link>Otevřít animaci →</a> Stejná animace je v&nbsp;Deco Theory
+                        na <a href="../tissue-loading.html#gas-exchange">stránce o&nbsp;sycení tkání</a>.</p>
                 </div>
             </details>
+            <dialog class="course-sim" aria-labelledby="titulek-vymena">
+                <div class="course-model course-slide chart-container" id="model-vymena">
+                    <div class="chart-header">
+                        <h3 id="titulek-vymena">Animace: výměna plynů</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-vymena" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít animaci" aria-label="Zavřít animaci" autofocus>✕</button>
+                        </div>
+                    </div>
+                    <div class="course-pathway" id="vymena-host"></div>
+                    <p class="course-simplification">Animace z&nbsp;Deco Theory (stránka o&nbsp;sycení tkání): cesta dusíku z&nbsp;lahve přes plíce
+                        a&nbsp;krev do tkání ve 30&nbsp;m a&nbsp;zpět po výstupu. Čísla jsou ukázková, tkáně se sytí a&nbsp;vysycují různě rychle.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
         </section>
 
         <!-- Slide 46: nasycení v čase, poločas jen jako představa -->

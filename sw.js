@@ -132,6 +132,7 @@ const STATIC_ASSETS = [
   './js/components/HeroMotion.js',
   './js/components/StickyTOC.js',
   './js/components/TissueSaturationSim.js',
+  './js/components/GasPathway.js',
   './js/components/tooltipShortcut.js',
   './js/components/VideoWalkthrough.js',
   './js/tripState.js',

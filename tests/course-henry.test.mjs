@@ -160,3 +160,39 @@ test('Henry: simulátor sycení tkání v překryvu slidu 46, jedna definice s P
     // malé p v dlaždicích: popisek je velkými písmeny, značka a index ne
     assert.match(read('css/styles.css'), /\.tsim-tile-label var,\s*\.tsim-tile-label sub \{ text-transform: none; \}/);
 });
+
+test('Henry: animace výměny plynů v překryvu slidu 45, jedna definice s tissue-loading (DH11)', async () => {
+    const thumb = slide(45).querySelector('button.course-thumb[data-open-model="model-vymena"]');
+    assert.ok(thumb);
+    const dialog = doc.querySelector('dialog.course-sim #model-vymena');
+    assert.ok(dialog?.querySelector('#vymena-host'));
+    assert.ok(doc.querySelector('a[href="#model-vymena"][data-preset-link]'));
+    assert.ok(slide(45).closest('section').querySelector('a[href="../tissue-loading.html#gas-exchange"]'));
+
+    // jedna definice: stránka Deco Theory i kurz kreslí schéma stejnou komponentou
+    const tissue = read('tissue-loading.html');
+    assert.match(tissue, /<div class="gas-pathway-container"><\/div>/);
+    assert.doesNotMatch(tissue, /pathway-descent-btn|gas-pathway-svg/, 'schéma už není natvrdo ve stránce');
+    const edu = read('js/tissueEducation.js');
+    assert.match(edu, /import \{ GasPathway, renderGasPathway \} from '\.\/components\/GasPathway\.js';/);
+    assert.match(edu, /pathway\?\.refresh\(\);/);
+    assert.doesNotMatch(edu, /function updatePhase|function animateTissueBars/);
+    const page = read('js/course/henryPage.js');
+    assert.match(page, /renderGasPathway\(host, \{ t, i18n: false \}\)/);
+    assert.match(page, /new GasPathway\(host, \{ t, lang: 'cs' \}\)/);
+    assert.match(read('sw.js'), /'\.\/js\/components\/GasPathway\.js'/);
+
+    const { renderGasPathway } = await import('../js/components/GasPathway.js');
+    const make = () => new JSDOM('<div></div>').window.document.querySelector('div');
+    const site = make();
+    renderGasPathway(site, { t: (k, f) => f });
+    assert.ok(site.classList.contains('gas-pathway-container'));
+    assert.equal(site.querySelectorAll('.pressure-step').length, 4);
+    assert.ok(site.querySelector('#pathway-descent-btn span[data-i18n="tissueLoading.gasExchange.descentBtn"]'));
+    assert.equal(site.querySelectorAll('[data-i18n]').length, 14, 'stejně jako dřív ve stránce');
+    const course = make();
+    const cs = JSON.parse(read('locales/cs.json'));
+    renderGasPathway(course, { t: (k, f) => k.split('.').reduce((o, p) => o?.[p], cs) ?? f, i18n: false });
+    assert.equal(course.querySelectorAll('[data-i18n]').length, 0);
+    assert.equal(course.querySelector('#pathway-ascent-btn').textContent.trim(), '⬆️ Výstup (vysycování)');
+});

@@ -446,8 +446,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-calc-steps .course-eq { white-space: nowrap; }
 /* Simulátor sycení tkání z Deco Theory v překryvu (Henry, slide 46): vlastní karty a barvy webu,
    v překryvu jen rozměry. Náhled na slidu kreslí tři tkáně v barvách dlaždic simulátoru. */
-.course-model .course-tsim {
-    /* Slide přepisuje barvy webu na tmavé; karty simulátoru mají barvy světlého webu jako v Pískovišti. */
+.course-model .course-tsim,
+.course-model .course-pathway {
+    /* Slide přepisuje barvy webu na tmavé; komponenty Deco Theory mají barvy světlého webu jako na jeho stránkách. */
     color-scheme: light;
     --text: var(--gray-800);
     --text-color: var(--gray-800);
@@ -480,6 +481,14 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-thumb svg .tsim-thumb-fast { stroke: #e74c3c; }
 .course-thumb svg .tsim-thumb-med { stroke: #27ae60; }
 .course-thumb svg .tsim-thumb-slow { stroke: #6cc2f7; }
+/* Animace výměny plynů v překryvu (Henry, slide 45): schéma na světlé kartě přes šířku, náhled jako čtyři stupně tlaku. */
+.course-model .course-pathway { background: var(--card-background); border-radius: var(--radius-md); padding: var(--space-4); }
+.course-model .course-pathway .gas-pathway-svg { width: 100%; max-width: none; height: auto; max-height: calc(var(--course-slide-height) * 0.62); }
+.course-thumb svg .gp-thumb-1 { fill: #78a8ce; }
+.course-thumb svg .gp-thumb-2 { fill: #91b5d2; }
+.course-thumb svg .gp-thumb-3 { fill: #aec9de; }
+.course-thumb svg .gp-thumb-4 { fill: #d0e1ed; }
+.course-thumb svg .gp-thumb-arrow { fill: none; stroke: var(--slide-accent); stroke-width: 4; vector-effect: non-scaling-stroke; }
 /* Henry (DH4): lahev s bublinami (slidy 43, 44) a koloběh dusíku (slide 45). */
 .course-figure svg .fig-bubble { fill: var(--slide-card-bg); fill-opacity: 0.7; stroke: var(--slide-on-accent); stroke-width: 2.5; }
 .course-figure svg .fig-plus { fill: var(--slide-wind-warm); stroke: var(--slide-on-accent); stroke-width: 2; }

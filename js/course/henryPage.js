@@ -1,8 +1,10 @@
 /**
- * Kapitola P1 Rozpouštění plynů v kapalinách (Henry, slidy 42–47). Bez vlastního modelu (rozhodnutí 2): simulátor
- * sycení tkání (slide 46) je komponenta Deco Theory z Pískoviště (`js/components/TissueSaturationSim.js`), jedna
- * definice. V kurzu běží v překryvu na slidu, vždy česky (pevný překladač, nezávisle na jazyku webu), s předvolbou
- * hloubky z náhledu (`data-model-params="hloubka=30"`) a s klávesami jen v otevřeném překryvu.
+ * Kapitola P1 Rozpouštění plynů v kapalinách (Henry, slidy 42–47). Bez vlastního modelu (rozhodnutí 2): v překryvech
+ * běží komponenty Deco Theory, jedna definice se stránkami webu:
+ *  - slide 45: animace výměny plynů (`js/components/GasPathway.js`, jako `tissue-loading.html#gas-exchange`),
+ *  - slide 46: simulátor sycení tkání (`js/components/TissueSaturationSim.js`, jako v Pískovišti), s předvolbou
+ *    hloubky z náhledu (`data-model-params="hloubka=30"`) a s klávesami jen v otevřeném překryvu.
+ * Obě jsou vždy česky (pevný překladač), nezávisle na jazyku webu.
  */
 
 import { initChapter } from './chapter.js';
@@ -10,6 +12,7 @@ import { initModelOverlays, initPresetLinks } from './modelOverlay.js';
 import { readParams, syncUrl } from './modelParams.js';
 import { createTranslator } from '../i18n.js';
 import { TissueSaturationSim, renderTissueSimMarkup } from '../components/TissueSaturationSim.js';
+import { GasPathway, renderGasPathway } from '../components/GasPathway.js';
 import { registerServiceWorker } from '../swRegister.js';
 
 /** Předvolba simulátoru v adrese: `?hloubka=30` (m, jako posuvník simulátoru 0–40 m). */
@@ -51,12 +54,31 @@ export function initSaturationOverlay({ host, dialog, translator }) {
     };
 }
 
+/**
+ * Animace výměny plynů v překryvu. Postaví se při prvním otevření; každé otevření přehraje sloupce tkání znovu.
+ * @param {{host: HTMLElement, translator: Promise<Function>}} deps
+ * @returns {{onOpen: () => void}}
+ */
+export function initPathwayOverlay({ host, translator }) {
+    let pathway = null;
+    return {
+        onOpen() {
+            if (pathway) { pathway.refresh(); return; }
+            translator.then((t) => {
+                renderGasPathway(host, { t, i18n: false });
+                pathway = new GasPathway(host, { t, lang: 'cs' });
+            });
+        },
+    };
+}
+
 if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
     const translator = createTranslator('cs');
     const host = document.getElementById('syceni-sim');
     const overlays = initModelOverlays({
         'model-syceni': () => initSaturationOverlay({ host, dialog: host.closest('dialog'), translator }),
+        'model-vymena': () => initPathwayOverlay({ host: document.getElementById('vymena-host'), translator }),
     });
     initPresetLinks(overlays);
     initChapter().then(() => overlays.openFromHash());
