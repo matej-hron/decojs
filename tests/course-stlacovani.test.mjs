@@ -168,7 +168,7 @@ test('Stlačování plynů: slidy 28–30 mají zadání vidět a postup v jedno
     assert.match(text(slide(30)), /z 10litrového přístroje/);
 });
 
-test('Stlačování plynů: slide 23 má české SVG válců s písty a grafu p–V (4 bar 1 l, 2 bar 2 l, 1 bar 4 l)', () => {
+test('Stlačování plynů: slide 23 má české SVG válců s písty a grafu p–V (1 bar 4 l, 2 bar 2 l, 4 bar 1 l)', () => {
     // S7: dvě ilustrace ve stylu slidu 12 Tlaku (viewBox 600 × 270, popisky fig-label-xl, barvy jen ze tříd)
     const svgs = [...slide(23).querySelectorAll('figure.course-illustration svg')];
     assert.equal(svgs.length, 2);
@@ -185,8 +185,28 @@ test('Stlačování plynů: slide 23 má české SVG válců s písty a grafu p�
     }
     assert.doesNotMatch(t, /Druck|Volumen|Liter/);
     assert.equal(cylinders.querySelectorAll('.fig-weight').length, 4 + 2 + 1, 'závaží 4, 2 a 1');
-    // objem plynu pod pístem 1 : 2 : 4
-    assert.deepEqual([...cylinders.querySelectorAll('.fig-gas')].map(r => Number(r.getAttribute('height'))), [32, 64, 128]);
+    // T20: tlak roste zleva doprava jako věta pod obrázkem („Kolikrát se zvětší tlak…“): 1 bar 4 l, 2 bar 2 l, 4 bar 1 l
+    const byX = (sel) => [...cylinders.querySelectorAll(sel)].sort((a, b) => Number(a.getAttribute('x')) - Number(b.getAttribute('x')));
+    assert.deepEqual(byX('.fig-gas').map(r => Number(r.getAttribute('height'))), [128, 64, 32], 'objem plynu zleva 4 : 2 : 1');
+    assert.deepEqual([...cylinders.querySelectorAll('.fig-gas')].map(r => Number(r.getAttribute('height'))), [128, 64, 32], 'i v pořadí dokumentu');
+    const labels = [...cylinders.querySelectorAll('text')].map(el => [Number(el.getAttribute('x')), Number(el.getAttribute('y')), el.textContent.replace(/\s+/g, ' ')]);
+    const row = (y) => labels.filter(l => l[1] === y).sort((a, b) => a[0] - b[0]).map(l => l[2]);
+    assert.deepEqual(row(226), ['1 bar', '2 bar', '4 bar']);
+    assert.deepEqual(row(262), ['4 l', '2 l', '1 l']);
+    // závaží leží na pístu svého válce: zleva 1, 2, 4
+    const pistons = byX('.fig-plastic');
+    assert.deepEqual(pistons.map(pi => [...cylinders.querySelectorAll('.fig-weight')].filter(w => {
+        const x = Number(w.getAttribute('x'));
+        return x >= Number(pi.getAttribute('x')) && x < Number(pi.getAttribute('x')) + Number(pi.getAttribute('width'))
+            && Number(w.getAttribute('y')) + Number(w.getAttribute('height')) === Number(pi.getAttribute('y'));
+    }).length), [1, 2, 4]);
+    // molekuly v plynu svého válce
+    for (const m of cylinders.querySelectorAll('.fig-molecule')) {
+        const cx = Number(m.getAttribute('cx')), cy = Number(m.getAttribute('cy'));
+        assert.ok(byX('.fig-gas').some(g => cx > Number(g.getAttribute('x')) && cx < Number(g.getAttribute('x')) + 112
+            && cy > Number(g.getAttribute('y')) && cy < Number(g.getAttribute('y')) + Number(g.getAttribute('height'))), `${cx},${cy}`);
+    }
+    assert.match(cylinders.getAttribute('aria-label'), /zleva doprava roste tlak: s jedním závažím je tlak 1\sbar a objem 4\sl, se dvěma 2\sbar a 2\sl, se čtyřmi 4\sbar a 1\sl/);
     assert.equal(cylinders.querySelectorAll('.fig-molecule').length, 3 * 8, 've všech válcích stejně částic');
     assert.equal(graph.querySelectorAll('.fig-dot').length, 3);
     // body grafu leží na p · V = 4 bar · l (x = 120 + 100 · V, y = 190 − 38 · p)
