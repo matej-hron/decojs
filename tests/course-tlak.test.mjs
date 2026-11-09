@@ -117,14 +117,11 @@ test('Tlak: slide 20, meze 30, 40 a 56 m jsou zvýrazněné (T10), 28 m je cvič
     assert.equal(text(last.querySelector('details')).replace(/^\?/, ''), '6,6', '56 m: 6,6 bar');
 });
 
-test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
+test('Tlak: slide 22 má GIF částic s odkazem na zdroj (T18)', () => {
     const img = slide(22).querySelector('figure img');
     assert.match(img.getAttribute('src'), /\.\.\/images\/gas-particles\.gif$/);
     assert.ok(img.getAttribute('alt').length > 10);
-    const cap = text(slide(22).querySelector('figure figcaption'));
-    assert.match(cap, /A\. Greg/);
-    assert.match(cap, /Wikimedia Commons/);
-    assert.match(cap, /volné dílo|public domain/i);
+    assert.equal(slide(22).querySelector('figure figcaption a.course-source').getAttribute('href'), 'zdroje.html#castice');
     assert.match(slide(22).innerHTML, /<var>p<\/var><var>V<\/var> = <var>n<\/var><var>R<\/var><var>T<\/var>/);
     assert.match(text(slide(22)), /Víc částic plynu \(větší látkové množství n\) → větší tlak\./);
     assert.match(text(slide(22)), /Vyšší teplota T \(částice mají větší energii\) → větší tlak\./);
@@ -181,13 +178,10 @@ test('Tlak: kde originál nese myšlenku obrázkem, nese ji i náš slide (12, 1
     assert.doesNotMatch(text(slide(16).querySelector('svg')), /hranice atmosféry/);
 });
 
-test('Tlak: fotka manometru má autora, licenci a záznam v SOURCES.md', () => {
+test('Tlak: fotka manometru má odkaz na zdroj (autor a licence v zdroje.html, T18) a záznam v SOURCES.md', () => {
     const img = slide(12).querySelector('img');
     assert.match(img.getAttribute('src'), /\.\.\/images\/course\/p1\/manometr\.jpg$/);
-    const cap = text(img.closest('figure').querySelector('figcaption'));
-    assert.match(cap, /Peter Southwood/);
-    assert.match(cap, /CC BY-SA 4\.0/);
-    assert.equal(img.closest('figure').querySelector('figcaption a[href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs"]')?.textContent.replace(/\s+/g, ' '), 'CC BY-SA 4.0');
+    assert.equal(img.closest('figure').querySelector('figcaption a.course-source').getAttribute('href'), 'zdroje.html#manometr');
     const sources = read('images/course/p1/SOURCES.md');
     for (const f of ['images/course/p1/manometr.jpg', 'images/gas-particles.gif']) assert.ok(sources.includes(f), f);
     assert.match(sources, /\[CC BY-SA 4\.0\]\(https:\/\/creativecommons\.org\/licenses\/by-sa\/4\.0\/deed\.cs\)/);
@@ -427,7 +421,7 @@ test('T9: „Více“ u slidu 18 poctivě říká, že pokus se sudem je spíš 
     assert.ok([...p.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://en.wikipedia.org/wiki/Pascal%27s_barrel'), 'zdroj');
 });
 
-test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem i v SOURCES.md', () => {
+test('T9: portrét Pascala na slidu 18 má jméno a odkaz na zdroj (T18), záznam v SOURCES.md', () => {
     const fig = slide(18).querySelector('figure.course-portrait');
     assert.ok(fig, 'portrét');
     const img = fig.querySelector('img');
@@ -436,8 +430,7 @@ test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem 
     assert.match(img.getAttribute('alt'), /Blaise Pascal/);
     const cap = text(fig.querySelector('figcaption'));
     assert.match(cap, /Blaise Pascal \(1623–1662\)/);
-    assert.match(cap, /volné dílo/);
-    assert.ok([...fig.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG'));
+    assert.equal(fig.querySelector('a.course-source').getAttribute('href'), 'zdroje.html#pascal');
     assert.match(read('images/course/p1/SOURCES.md'), /`images\/course\/p1\/pascal\.jpg` \| Tlak, slide 18 \|.*PD-art-old-100-expired.*File:Blaise Pascal Versailles\.JPG/);
     assert.match(read('sw.js'), /'\.\/images\/course\/p1\/pascal\.jpg'/);
 });

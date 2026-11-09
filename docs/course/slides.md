@@ -176,14 +176,16 @@ Varianty těla:
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
-- **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` s autorem, licencí a odkazem na zdroj,
-  záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
+- **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` jen s drobným odkazem
+  `<a class="course-source" href="zdroje.html#kotva">zdroj</a>` (T18). Plná atribuce (autor, licence s odkazem na text,
+  stránka souboru, úpravy) je v `p1/zdroje.html` pod vlastní kotvou, záznam v `images/course/p1/SOURCES.md`
+  (licence ověřená na stránce souboru). Test `tests/course-zdroje.test.mjs` hlídá, že každý převzatý obrázek odkaz má.
 - **Obrázek nese víc než text** (slide 18: nádoby a Pascalův sud v jedné ilustraci): `course-core course-core-figure-wide`
   prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` jako slide 13.
 - **Vysoký obrázek** (slide 21: celá postava z profilu): navíc `course-core-figure-tall`, obrázek smí mít 62 % výšky
   slidu místo poloviny.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
-  na telefonu 120 px) a popiskem vedle: jméno a roky, pod tím `course-figure-note` s autorem díla, licencí a odkazem.
+  na telefonu 120 px) a popiskem vedle: jméno a roky, za nimi odkaz `course-source` „zdroj“.
   Jen když se vejde a je k němu volný zdroj.
 
 ```html
@@ -218,7 +220,7 @@ Stlačování a Hustota se projdou zvlášť.
 - **Síla je výrazná.** `fig-force`: plná bloková šipka v barvě zvýraznění s tmavým obrysem, popisek
   `<tspan font-style="italic">F</tspan>`. Stejná síla = stejný tvar šipky.
 - **Fotky:** kde je skutečná věc názornější než kresba (manometr, výstroj), fotka z volného zdroje (public domain, CC0,
-  CC BY, CC BY-SA) s autorem a licencí pod obrázkem a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
+  CC BY, CC BY-SA) s odkazem „zdroj“ pod obrázkem, položkou v `p1/zdroje.html` a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
   výrobců, ani vyražené na výrobku. Když volná fotka bez značky není, plná kresba v tomhle stylu.
 - **Čitelnost:** popisky v ilustraci mají `fig-label-xl` (36 px ve viewBoxu výšky 270). Na projektoru 1920×1080
   to je aspoň 31 px (ilustrace 25 % slidu), na telefonu aspoň 16 px (obrázek na šířku displeje). Kontrast podle pravidel

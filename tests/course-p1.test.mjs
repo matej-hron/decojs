@@ -114,7 +114,7 @@ test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
 
 const ROOT = new URL('../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, ROOT), 'utf8');
-const coursePages = ['p1/index.html', 'p1/hustota.html', 'p1/tlak.html', 'p1/stlacovani-plynu.html', 'p1/archimeduv-zakon.html', 'p1/dalton.html', 'p1/henry.html'];
+const coursePages = ['p1/index.html', 'p1/hustota.html', 'p1/tlak.html', 'p1/stlacovani-plynu.html', 'p1/archimeduv-zakon.html', 'p1/dalton.html', 'p1/henry.html', 'p1/zdroje.html'];
 
 test('stránky kurzu: vložené bloky pojmů existují a jsou v sw.js', () => {
     const sw = read('sw.js');
