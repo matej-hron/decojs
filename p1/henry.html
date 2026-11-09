@@ -18,6 +18,9 @@
     <link rel="preload" href="../fonts/inter-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/course.css">
+
+    <!-- Chart.js pro simulátor sycení tkání (slide 46), stejně jako v Pískovišti -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
 <body data-course-chapter="henry">
     <nav class="main-nav">
@@ -289,6 +292,18 @@
                     <div>
                         <p><var>t</var><sub>1/2</sub> = 4&nbsp;min – 600&nbsp;min</p>
                         <p>Po 6 poločasech je tkáň nasycená z&nbsp;98,4&nbsp;%.</p>
+                        <button type="button" class="course-thumb" data-open-model="model-syceni" data-model-params="hloubka=30"
+                                aria-label="Otevřít simulátor: sycení tkání ve 30 m">
+                            <span class="course-thumb-plot">
+                                <svg viewBox="0 0 300 160" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="tsim-thumb-amb" d="M12 138H22V40H290"/>
+                                    <path class="tsim-thumb-slow" d="M12 138L22 134L42 127L62 120L82 114L101 108L121 103L141 98L161 94L181 90L201 86L220 82L240 79L260 76L290 72"/>
+                                    <path class="tsim-thumb-med" d="M12 138L22 109L32 89L42 74L52 64L62 57L72 52L82 48L101 44L121 42L141 41L171 40L290 40"/>
+                                    <path class="tsim-thumb-fast" d="M12 138L22 57L32 43L42 41L52 40L290 40"/>
+                                </svg>
+                            </span>
+                            <span class="course-thumb-hint">Otevřít simulátor</span>
+                        </button>
                     </div>
                     <figure class="course-figure course-illustration">
                         <svg viewBox="0 0 600 420" role="img" aria-label="Graf nasycení tkáně v čase po zvýšení tlaku. Po jednom poločase je tkáň nasycená z 50 %, po dvou ze 75 %, po šesti z 98,4 %">
@@ -329,11 +344,32 @@
                         v&nbsp;pomalých tkáních dusík ještě dlouho (zbytkový dusík).</p>
                     <p><strong>Kolik smíš, neurčuješ odhadem ani výpočtem z&nbsp;poločasů, ale tabulkami nebo počítačem.</strong> Výpočty
                         sycení (otázky testu SPČR č. 95–99) jsou látka P★★.</p>
-                    <p>Na slidu přednášky je graf anglicky a&nbsp;poločas se tam značí T. V&nbsp;Deco Theory:
-                        <a href="../sandbox/tissue-saturation.html">Simulátor sycení tkání</a> (hloubka, čas, rychlá, střední a&nbsp;pomalá
-                        tkáň) a&nbsp;<a href="../tissue-loading.html#half-time-concept">poločas podrobně</a>.</p>
+                    <p>Na slidu přednášky je graf anglicky a&nbsp;poločas se tam značí T.</p>
+                    <p>Simulátor sycení tkání na slidu ukazuje rychlou, střední a&nbsp;pomalou tkáň: nastav hloubku, pusť čas (▶)
+                        a&nbsp;sleduj, jak se tkáně sytí, a&nbsp;po návratu na 0&nbsp;m zase vysycují.
+                        <a href="?hloubka=30#model-syceni" data-preset-link>Otevřít simulátor ve 30&nbsp;m →</a>
+                        Stejný simulátor je v&nbsp;<a href="../sandbox/tissue-saturation.html">Pískovišti Deco Theory</a>,
+                        <a href="../tissue-loading.html#half-time-concept">poločas podrobně</a> na stránce o&nbsp;sycení tkání.</p>
                 </div>
             </details>
+            <dialog class="course-sim" aria-labelledby="titulek-syceni">
+                <div class="course-model course-slide chart-container" id="model-syceni">
+                    <div class="chart-header">
+                        <h3 id="titulek-syceni">Simulátor: sycení tkání</h3>
+                        <div class="course-sim-actions">
+                            <button type="button" class="btn btn-small btn-icon" data-fullscreen-for="model-syceni" title="Celá obrazovka">
+                                <span class="fullscreen-icon">⛶</span>
+                                <span class="fullscreen-text">Celá obrazovka</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-icon course-sim-close" title="Zavřít simulátor" aria-label="Zavřít simulátor" autofocus>✕</button>
+                        </div>
+                    </div>
+                    <div class="course-tsim" id="syceni-sim"></div>
+                    <p class="course-simplification">Simulátor sycení tkání z&nbsp;Deco Theory (Pískoviště): jeden plyn (dusík) a&nbsp;tři vybrané
+                        tkáně. Ukazuje princip, neplánuje ponor: kolik smíš, určují tabulky nebo počítač.</p>
+                    <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
+                </div>
+            </dialog>
         </section>
 
         <!-- Slide 47: rozpustnost (rozhodnutí 7: desetinné čárky, záhlaví) -->
