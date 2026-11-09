@@ -221,6 +221,8 @@ const STATIC_ASSETS = [
   './images/course/p1/manometr.jpg',
   './images/course/p1/telo-profil.svg',
   './images/course/p1/pascal.jpg',
+  './images/course/p1/bcd.jpg',
+  './images/course/p1/zatez.jpg',
   './images/course/p1/dalton.jpg',
   './images/course/p1/henry.jpg',
   './images/cmas-table-2018.png',

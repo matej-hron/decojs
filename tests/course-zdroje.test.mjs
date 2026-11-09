@@ -20,9 +20,9 @@ const borrowed = chapters.flatMap(page => [...doc(page).querySelectorAll('img')]
     .filter(img => isBorrowed(img.getAttribute('src')))
     .map(img => ({ page, img })));
 
-test('v kurzu je pět převzatých obrázků (manometr, Pascal, částice, Dalton, Henry)', () => {
+test('v kurzu je sedm převzatých obrázků (manometr, Pascal, částice, BCD, zátěž, Dalton, Henry)', () => {
     assert.deepEqual(borrowed.map(b => b.img.getAttribute('src').split('/').pop()).sort(),
-        ['dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg']);
+        ['bcd.jpg', 'dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg', 'zatez.jpg']);
 });
 
 for (const { page, img } of borrowed) {
@@ -47,7 +47,8 @@ for (const { page, img } of borrowed) {
 
 test('zdroje.html: každá položka má použití s odkazem zpět, autora, licenci, zdroj a úpravy', () => {
     const d = doc(SOURCES_PAGE);
-    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon' };
+    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn',
+        bcd: 'archimeduv-zakon.html#kontrola-vztlaku', zatez: 'archimeduv-zakon.html#kontrola-vztlaku', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon' };
     for (const [id, href] of Object.entries(back)) {
         const entry = d.getElementById(id);
         assert.ok(entry, id);

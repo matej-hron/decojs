@@ -134,8 +134,8 @@ test('Archimédův zákon: varování na slidu 34 se značkou', () => {
     assert.equal(text(w.querySelector('p.course-alert')), 'Nikdy nic nevynášíme vlastní silou ani na vlastním kompenzátoru vztlaku (BCD)!');
 });
 
-test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrací', () => {
-    for (const n of [31, 32, 35]) {
+test('Archimédův zákon: slidy 31 a 32 mají české SVG ve stylu ilustrací', () => {
+    for (const n of [31, 32]) {
         const svgs = [...slide(n).querySelectorAll('figure.course-illustration svg')];
         assert.equal(svgs.length, 1, `slide ${n}`);
         const svg = svgs[0];
@@ -166,11 +166,21 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     });
     assert.equal(widths.length, 2);
     assert.equal(widths[0], widths[1], 'R8-04: boční síly F0 stejně velké');
-    // 35: kompenzátor a opasek, bez značek výrobce
-    const t35 = slide(35).querySelector('svg').textContent;
-    assert.ok(t35.includes('kompenzátor') && t35.includes('(BCD)') && t35.includes('zátěžový opasek'));
-    assert.equal(slide(35).querySelectorAll('svg .fig-weight').length, 3);
-    assert.equal(doc.querySelectorAll('main img').length, 0, 'žádné převzaté fotky');
+});
+
+test('Archimédův zákon: slide 35 má fotky BCD a zátěžového opasku s popisky (A6)', () => {
+    const fig = slide(35).querySelector('figure.course-illustration');
+    assert.equal(fig.querySelectorAll('svg').length, 0, 'kresba nahrazená fotkami');
+    const photos = [...fig.querySelectorAll('.course-photo-pair > figure')];
+    assert.deepEqual(photos.map(f => f.querySelector('img').getAttribute('src')), ['../images/course/p1/bcd.jpg', '../images/course/p1/zatez.jpg']);
+    assert.deepEqual(photos.map(f => text(f.querySelector('figcaption')).replace(/\s*zdroj$/, '')), ['kompenzátor vztlaku (BCD)', 'zátěžový opasek']);
+    for (const f of photos) {
+        const img = f.querySelector('img');
+        assert.ok(img.getAttribute('alt').length > 20 && img.getAttribute('width') && img.getAttribute('height'), img.getAttribute('src'));
+    }
+    assert.equal(text(fig.querySelector(':scope > figcaption')), 'BCD mění objem, zátěž tíhu.');
+    // Jen tyto dvě fotky jsou v kapitole převzaté.
+    assert.deepEqual([...doc.querySelectorAll('main img')].map(i => i.getAttribute('src').split('/').pop()), ['bcd.jpg', 'zatez.jpg']);
 });
 
 test('Archimédův zákon: A1 z náhledu slidu 36 (krok 2), odkazy na kroky, věty pod modelem', () => {
