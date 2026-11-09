@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    formatLitres, formatSignedLitres, formatRatio, depthLabel, nextRow, previousRow, rowChange, changeReadout,
+    formatLitres, depthLabel, nextRow, previousRow,
     gasReadout, balloonRadius, bellWaterFraction, volumeScaleMax,
 } from '../js/components/waterColumn/gasVolumeLayer.js';
 import {
@@ -66,51 +66,29 @@ test('formatLitres: do 100 l na desetiny bez ,0; od 100 l celé s mezerou v tis�
     assert.equal(formatLitres(1000), `1${NBSP}000`);
 });
 
-test('formatSignedLitres: znaménko plus, nebo minus U+2212', () => {
-    assert.equal(formatSignedLitres(1.5), '+1,5');
-    assert.equal(formatSignedLitres(15), '+15');
-    assert.equal(formatSignedLitres(-500), '−500');
-    assert.equal(formatSignedLitres(1000 / 3 - 500), '−167');
-});
-
-test('formatRatio: zvětšení ×, zmenšení ÷ (kolikrát se zmenší tlak, tolikrát se zvětší objem)', () => {
-    assert.equal(formatRatio(2), '×2');
-    assert.equal(formatRatio(1.25), '×1,25');
-    assert.equal(formatRatio(4 / 3), '×1,33');
-    assert.equal(formatRatio(0.5), '÷2');
-    assert.equal(formatRatio(2 / 3), '÷1,5');
-});
-
 test('depthLabel: 0 m je „hladina“', () => {
     assert.equal(depthLabel(0), 'hladina');
     assert.equal(depthLabel(10), `10${NBSP}m`);
     assert.equal(depthLabel(12.5), `12,5${NBSP}m`);
 });
 
-// ---------------------------------------------------------------- odečet změny (slide 26)
+// ---------------------------------------------------------------- odečet objemu (T21: p · V = konst. jako postup ve „Více“)
 
-test('rowChange: změna proti předchozímu řádku ve směru slidu', () => {
-    const c = rowChange(30, BALLOON);
-    assert.equal(c.fromDepth, 40);
-    assert.equal(c.toDepth, 30);
-    assert.equal(c.delta, 1.5);
-    assert.equal(c.ratio, 1.25);
-    assert.equal(rowChange(40, BALLOON), null, 've výchozí hloubce balónku změna není');
-    assert.equal(rowChange(0, BELL), null, 'zvon na hladině');
+test('gasReadout: druhý řádek odečtu, p · V z výchozího stavu a objem jako podíl', () => {
+    const line = (rest) => `<br><var>p</var> · <var>V</var> = ${rest}`;
+    assert.equal(gasReadout(0, BELL), line('1 · 1&nbsp;000 = 1&nbsp;000 → <var>V</var> = 1&nbsp;000 / 1 = 1&nbsp;000&nbsp;l'));
+    assert.equal(gasReadout(10, BELL), line('1 · 1&nbsp;000 = 1&nbsp;000 → <var>V</var> = 1&nbsp;000 / 2 = 500&nbsp;l'));
+    assert.equal(gasReadout(20, BELL), line('1 · 1&nbsp;000 = 1&nbsp;000 → <var>V</var> = 1&nbsp;000 / 3 ≈ 333&nbsp;l'), '≈ u zaokrouhlení');
+    assert.equal(gasReadout(40, BALLOON), line('5 · 6 = 30 → <var>V</var> = 30 / 5 = 6&nbsp;l'));
+    assert.equal(gasReadout(30, BALLOON), line('5 · 6 = 30 → <var>V</var> = 30 / 4 = 7,5&nbsp;l'));
+    assert.equal(gasReadout(10, BALLOON), line('5 · 6 = 30 → <var>V</var> = 30 / 2 = 15&nbsp;l'));
+    assert.equal(gasReadout(12, BALLOON), line('5 · 6 = 30 → <var>V</var> = 30 / 2,2 ≈ 13,6&nbsp;l'), 'mezi řádky tabulky');
 });
 
-test('changeReadout: slide 26 „10 m → hladina: +15 l, ×2“ a „40 → 30 m: +1,5 l, ×1,25“', () => {
-    assert.equal(changeReadout(rowChange(0, BALLOON)), `10${NBSP}m → hladina: +15${NBSP}l, ×2`);
-    assert.equal(changeReadout(rowChange(30, BALLOON)), `40 → 30${NBSP}m: +1,5${NBSP}l, ×1,25`);
-    assert.equal(changeReadout(rowChange(10, BELL)), `hladina → 10${NBSP}m: −500${NBSP}l, ÷2`);
-    assert.equal(changeReadout(rowChange(20, BELL)), `10 → 20${NBSP}m: −167${NBSP}l, ÷1,5`);
-    assert.equal(changeReadout(null), '');
-});
-
-test('gasReadout: objem kurzívou V a změna; ve výchozí hloubce jen objem', () => {
-    assert.equal(gasReadout(40, BALLOON), '<var>V</var> = 6&nbsp;l');
-    assert.equal(gasReadout(0, BALLOON), '<var>V</var> = 30&nbsp;l (10&nbsp;m → hladina: +15&nbsp;l, ×2)');
-    assert.equal(gasReadout(20, BELL), '<var>V</var> = 333&nbsp;l (10 → 20&nbsp;m: −167&nbsp;l, ÷1,5)');
+test('gasReadout: bez staré závorky se změnou proti předchozímu řádku (×2, ÷2)', () => {
+    for (const [depth, obj] of [[0, BALLOON], [30, BALLOON], [10, BELL], [20, BELL]]) {
+        assert.doesNotMatch(gasReadout(depth, obj), /[×÷()]|hladina/);
+    }
 });
 
 // ---------------------------------------------------------------- kreslení

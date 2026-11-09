@@ -117,14 +117,11 @@ test('Tlak: slide 20, meze 30, 40 a 56 m jsou zvýrazněné (T10), 28 m je cvič
     assert.equal(text(last.querySelector('details')).replace(/^\?/, ''), '6,6', '56 m: 6,6 bar');
 });
 
-test('Tlak: slide 22 má GIF částic se zdrojem a licencí', () => {
+test('Tlak: slide 22 má GIF částic s odkazem na zdroj (T18)', () => {
     const img = slide(22).querySelector('figure img');
     assert.match(img.getAttribute('src'), /\.\.\/images\/gas-particles\.gif$/);
     assert.ok(img.getAttribute('alt').length > 10);
-    const cap = text(slide(22).querySelector('figure figcaption'));
-    assert.match(cap, /A\. Greg/);
-    assert.match(cap, /Wikimedia Commons/);
-    assert.match(cap, /volné dílo|public domain/i);
+    assert.equal(slide(22).querySelector('figure figcaption a.course-source').getAttribute('href'), 'zdroje.html#castice');
     assert.match(slide(22).innerHTML, /<var>p<\/var><var>V<\/var> = <var>n<\/var><var>R<\/var><var>T<\/var>/);
     assert.match(text(slide(22)), /Víc částic plynu \(větší látkové množství n\) → větší tlak\./);
     assert.match(text(slide(22)), /Vyšší teplota T \(částice mají větší energii\) → větší tlak\./);
@@ -181,13 +178,10 @@ test('Tlak: kde originál nese myšlenku obrázkem, nese ji i náš slide (12, 1
     assert.doesNotMatch(text(slide(16).querySelector('svg')), /hranice atmosféry/);
 });
 
-test('Tlak: fotka manometru má autora, licenci a záznam v SOURCES.md', () => {
+test('Tlak: fotka manometru má odkaz na zdroj (autor a licence v zdroje.html, T18) a záznam v SOURCES.md', () => {
     const img = slide(12).querySelector('img');
     assert.match(img.getAttribute('src'), /\.\.\/images\/course\/p1\/manometr\.jpg$/);
-    const cap = text(img.closest('figure').querySelector('figcaption'));
-    assert.match(cap, /Peter Southwood/);
-    assert.match(cap, /CC BY-SA 4\.0/);
-    assert.equal(img.closest('figure').querySelector('figcaption a[href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs"]')?.textContent.replace(/\s+/g, ' '), 'CC BY-SA 4.0');
+    assert.equal(img.closest('figure').querySelector('figcaption a.course-source').getAttribute('href'), 'zdroje.html#manometr');
     const sources = read('images/course/p1/SOURCES.md');
     for (const f of ['images/course/p1/manometr.jpg', 'images/gas-particles.gif']) assert.ok(sources.includes(f), f);
     assert.match(sources, /\[CC BY-SA 4\.0\]\(https:\/\/creativecommons\.org\/licenses\/by-sa\/4\.0\/deed\.cs\)/);
@@ -372,7 +366,7 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
     const forces = (n) => slide(n).querySelectorAll('figure svg .fig-force').length;
     assert.equal(forces(11), 1, 'tlaková síla');
     assert.equal(forces(13), 9, 'síla na píst a tlak do všech směrů (8 šipek)');
-    assert.equal(forces(18), 3, 'stejná síla na tři dna');
+    assert.equal(forces(18), 3, 'šipka síly na každé ze tří den');
     assert.equal(forces(14) + forces(16) + forces(17) + forces(21), 0, 'bez nových sil');
     assert.equal(slide(14).querySelectorAll('.fig-air').length, 20, 'stejné množství plynu v obou válcích');
     const fig13 = text(slide(13).querySelector('figure figcaption'));
@@ -427,7 +421,7 @@ test('T9: „Více“ u slidu 18 poctivě říká, že pokus se sudem je spíš 
     assert.ok([...p.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://en.wikipedia.org/wiki/Pascal%27s_barrel'), 'zdroj');
 });
 
-test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem i v SOURCES.md', () => {
+test('T9: portrét Pascala na slidu 18 má jméno a odkaz na zdroj (T18), záznam v SOURCES.md', () => {
     const fig = slide(18).querySelector('figure.course-portrait');
     assert.ok(fig, 'portrét');
     const img = fig.querySelector('img');
@@ -436,8 +430,7 @@ test('T9: portrét Pascala na slidu 18 je volné dílo se zdrojem pod obrázkem 
     assert.match(img.getAttribute('alt'), /Blaise Pascal/);
     const cap = text(fig.querySelector('figcaption'));
     assert.match(cap, /Blaise Pascal \(1623–1662\)/);
-    assert.match(cap, /volné dílo/);
-    assert.ok([...fig.querySelectorAll('a')].some(a => a.getAttribute('href') === 'https://commons.wikimedia.org/wiki/File:Blaise_Pascal_Versailles.JPG'));
+    assert.equal(fig.querySelector('a.course-source').getAttribute('href'), 'zdroje.html#pascal');
     assert.match(read('images/course/p1/SOURCES.md'), /`images\/course\/p1\/pascal\.jpg` \| Tlak, slide 18 \|.*PD-art-old-100-expired.*File:Blaise Pascal Versailles\.JPG/);
     assert.match(read('sw.js'), /'\.\/images\/course\/p1\/pascal\.jpg'/);
 });
@@ -454,8 +447,26 @@ function pathBox(d) {
 /** Poslední bod každé podcesty (M…) atributu d. */
 const subpathEnds = (d) => d.split('M').filter(Boolean).map(p => p.match(/-?\d+(\.\d+)?/g).map(Number).slice(-2));
 
-test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, střední ucho s Eustachovou trubicí', () => {
+// T17: kresba těla je jediná definice v images/course/p1/telo-profil.svg (symbol #telo), slidy 21 a 27 ji vkládají přes <use>.
+const TELO = 'images/course/p1/telo-profil.svg';
+const telo = new JSDOM(read(TELO), { contentType: 'image/svg+xml' }).window.document.querySelector('symbol#telo');
+
+test('T17: slide 21 vkládá kresbu těla ze sdíleného souboru, ne kopii', () => {
     const svg = slide(21).querySelector('figure svg');
+    const use = svg.querySelector('use');
+    assert.equal(use?.getAttribute('href'), `../${TELO}#telo`);
+    assert.equal(svg.querySelectorAll('.fig-body, .fig-air-space, .fig-airway').length, 0, 'kresba jen v souboru');
+    assert.equal(telo.getAttribute('viewBox'), '0 0 600 640');
+    for (const el of telo.querySelectorAll('[style]')) {
+        assert.doesNotMatch(el.getAttribute('style'), /#[0-9a-f]{3,6}\b|rgb\(/i, 'barvy jen z proměnných scény');
+        if (/fill: (?!none)|stroke: /.test(el.getAttribute('style'))) assert.match(el.getAttribute('style'), /var\(--slide-/);
+    }
+    assert.ok(!read(TELO).match(/<!--[\s\S]*?--[\s\S]*?-->/)?.[0].slice(4, -3).includes('--'), 'komentář bez dvojité pomlčky (jinak to není XML)');
+    assert.match(read('sw.js'), new RegExp(`'\\./${TELO.replaceAll('/', '\\/').replaceAll('.', '\\.')}'`));
+});
+
+test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, střední ucho s Eustachovou trubicí', () => {
+    const svg = telo;
     const eye = svg.querySelector('.fig-eye');
     assert.ok(eye, 'oko jen obrysem, aby se dutiny nečetly jako oči');
     const ey = +eye.getAttribute('cy');
@@ -469,7 +480,7 @@ test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, 
 });
 
 test('T16: cesta vzduchu je jedna plynulá linie do plíce, bránice odděluje plíci od trávicího systému', () => {
-    const svg = slide(21).querySelector('figure svg');
+    const svg = telo;
     assert.ok(svg.querySelector('.fig-upper-airway'), 'nosní dutina, nosohltan a hltan jako jedna plocha');
     assert.ok(svg.querySelector('.fig-mouth'), 'ústní dutina');
     const airways = svg.querySelectorAll('path.fig-airway');
@@ -516,12 +527,14 @@ test('T13: odkrytá buňka má stejný rámeček jako otazník, tabulka se nezkr
 
 // ---------------------------------------------------------------- T14: popisek pod nádobami a paradox ve „Více“
 
-test('T14: pod nádobami „stejný tlak na dno“, ve „Více“ věta o síle na dno a tíze vody', () => {
+test('T14, T19: pod nádobami „stejný tlak na dno“, obrázek ani „Více“ netvrdí stejnou sílu na dno', () => {
     const cap = slide(18).querySelector('figcaption.course-figure-pair > span');
     assert.match(cap.innerHTML, /^stejná výška <var>h<\/var>, stejný&nbsp;tlak&nbsp;na&nbsp;dno$/, '„stejný tlak na dno“ se neláme, dno nezůstane samo');
+    const label = slide(18).querySelector('figure svg').getAttribute('aria-label');
+    assert.match(label, /stejný tlak na dno/);
+    assert.doesNotMatch(label, /stejná síla/);
+    // T19: paradox vysvětluje vložený pojem hydrostatic-pressure, vlastní odstavce o síle na dno a o slově „pouze“ pryč.
     const more = slide(18).closest('section').querySelector('details.course-more');
-    const p = [...more.querySelectorAll('p')].find(el => /paradox/.test(text(el)));
-    assert.ok(p, 'věta o paradoxu');
-    assert.equal(text(p), 'Síla na dno F = p · S je ve všech třech nádobách stejná, i když tíha vody je v každé jiná: to je hydrostatický paradox.');
-    assert.match(p.innerHTML, /<var>F<\/var> = <var>p<\/var> · <var>S<\/var>/);
+    assert.ok(more.querySelector('[data-concept="hydrostatic-pressure"]'));
+    assert.doesNotMatch(text(more), /Síla na dno|Slovo „pouze“/);
 });
