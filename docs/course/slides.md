@@ -180,6 +180,8 @@ Varianty těla:
   záznam v `images/course/p1/SOURCES.md` (licence ověřená na stránce souboru).
 - **Obrázek nese víc než text** (slide 18: nádoby a Pascalův sud v jedné ilustraci): `course-core course-core-figure-wide`
   prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` jako slide 13.
+- **Vysoký obrázek** (slide 21: celá postava z profilu): navíc `course-core-figure-tall`, obrázek smí mít 62 % výšky
+  slidu místo poloviny.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
   na telefonu 120 px) a popiskem vedle: jméno a roky, pod tím `course-figure-note` s autorem díla, licencí a odkazem.
   Jen když se vejde a je k němu volný zdroj.
@@ -232,11 +234,15 @@ Stlačování a Hustota se projdou zvlášť.
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
-- **Tělo potápěče (T11, slide 21):** hlava z profilu a trup zepředu (`fig-body`). Dutiny s plynem `fig-cavity`
-  (čelní a čelistní dutina mají navíc `fig-sinus`, střední ucho `fig-middle-ear`), oko a boltec jen obrysem
-  (`fig-eye`, `fig-auricle`), aby se dutiny nečetly jako oči. Cesta vzduchu je jedna souvislá čára `fig-airway`
-  s obrysem `fig-airway-edge` od nosu a úst do průdušek v obou plicích (`fig-lung`), Eustachova trubice
-  `fig-eustachian` (s `fig-eustachian-edge`), žaludek `fig-stomach` a střeva `fig-gut`.
+- **Tělo potápěče (T16, slide 21, Matej vybral variantu C):** celá postava z profilu, obličej doprava, jedna silueta
+  `fig-body` na `fig-sky`, páteř `fig-spine`. Všechno, co obsahuje plyn, je žlutě: dutiny `fig-air-space` (čelní a čelistní
+  dutina navíc `fig-sinus`, střední ucho `fig-middle-ear`, nosní dutina s nosohltanem a hltanem jako jedna plocha
+  `fig-upper-airway`, ústní dutina `fig-mouth`, žaludek `fig-stomach`), plíce `fig-lung-gas` (z profilu jedna),
+  průdušnice a průdušky jednou plynulou čarou `fig-airway` s obrysem `fig-airway-edge`, Eustachova trubice
+  `fig-eustachian` šikmo dolů do hltanu, střeva jako volně stočený pás `fig-gut` (s `fig-gut-edge`). Oko jen obrysem
+  `fig-eye`, bránice `fig-diaphragm`. Popisky o stupeň lehčí (`fig-label-xl fig-label-medium`), odkazové čáry končí
+  tečkou `fig-leader-dot` a do obličeje vedou jen přes čelo. Tvar středního ucha a trubice má i řez uchem na slidu 27
+  ve Stlačování (dutina širší než vysoká, trubice z jejího spodku šikmo dolů).
 - **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
   neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
 - **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý
