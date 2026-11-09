@@ -454,8 +454,26 @@ function pathBox(d) {
 /** Poslední bod každé podcesty (M…) atributu d. */
 const subpathEnds = (d) => d.split('M').filter(Boolean).map(p => p.match(/-?\d+(\.\d+)?/g).map(Number).slice(-2));
 
-test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, střední ucho s Eustachovou trubicí', () => {
+// T17: kresba těla je jediná definice v images/course/p1/telo-profil.svg (symbol #telo), slidy 21 a 27 ji vkládají přes <use>.
+const TELO = 'images/course/p1/telo-profil.svg';
+const telo = new JSDOM(read(TELO), { contentType: 'image/svg+xml' }).window.document.querySelector('symbol#telo');
+
+test('T17: slide 21 vkládá kresbu těla ze sdíleného souboru, ne kopii', () => {
     const svg = slide(21).querySelector('figure svg');
+    const use = svg.querySelector('use');
+    assert.equal(use?.getAttribute('href'), `../${TELO}#telo`);
+    assert.equal(svg.querySelectorAll('.fig-body, .fig-air-space, .fig-airway').length, 0, 'kresba jen v souboru');
+    assert.equal(telo.getAttribute('viewBox'), '0 0 600 640');
+    for (const el of telo.querySelectorAll('[style]')) {
+        assert.doesNotMatch(el.getAttribute('style'), /#[0-9a-f]{3,6}\b|rgb\(/i, 'barvy jen z proměnných scény');
+        if (/fill: (?!none)|stroke: /.test(el.getAttribute('style'))) assert.match(el.getAttribute('style'), /var\(--slide-/);
+    }
+    assert.ok(!read(TELO).match(/<!--[\s\S]*?--[\s\S]*?-->/)?.[0].slice(4, -3).includes('--'), 'komentář bez dvojité pomlčky (jinak to není XML)');
+    assert.match(read('sw.js'), new RegExp(`'\\./${TELO.replaceAll('/', '\\/').replaceAll('.', '\\.')}'`));
+});
+
+test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, střední ucho s Eustachovou trubicí', () => {
+    const svg = telo;
     const eye = svg.querySelector('.fig-eye');
     assert.ok(eye, 'oko jen obrysem, aby se dutiny nečetly jako oči');
     const ey = +eye.getAttribute('cy');
@@ -469,7 +487,7 @@ test('T16: slide 21 je celá postava z profilu, dutiny nejsou na místě očí, 
 });
 
 test('T16: cesta vzduchu je jedna plynulá linie do plíce, bránice odděluje plíci od trávicího systému', () => {
-    const svg = slide(21).querySelector('figure svg');
+    const svg = telo;
     assert.ok(svg.querySelector('.fig-upper-airway'), 'nosní dutina, nosohltan a hltan jako jedna plocha');
     assert.ok(svg.querySelector('.fig-mouth'), 'ústní dutina');
     const airways = svg.querySelectorAll('path.fig-airway');

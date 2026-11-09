@@ -234,15 +234,18 @@ Stlačování a Hustota se projdou zvlášť.
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
-- **Tělo potápěče (T16, slide 21, Matej vybral variantu C):** celá postava z profilu, obličej doprava, jedna silueta
-  `fig-body` na `fig-sky`, páteř `fig-spine`. Všechno, co obsahuje plyn, je žlutě: dutiny `fig-air-space` (čelní a čelistní
-  dutina navíc `fig-sinus`, střední ucho `fig-middle-ear`, nosní dutina s nosohltanem a hltanem jako jedna plocha
-  `fig-upper-airway`, ústní dutina `fig-mouth`, žaludek `fig-stomach`), plíce `fig-lung-gas` (z profilu jedna),
-  průdušnice a průdušky jednou plynulou čarou `fig-airway` s obrysem `fig-airway-edge`, Eustachova trubice
-  `fig-eustachian` šikmo dolů do hltanu, střeva jako volně stočený pás `fig-gut` (s `fig-gut-edge`). Oko jen obrysem
-  `fig-eye`, bránice `fig-diaphragm`. Popisky o stupeň lehčí (`fig-label-xl fig-label-medium`), odkazové čáry končí
-  tečkou `fig-leader-dot` a do obličeje vedou jen přes čelo. Tvar středního ucha a trubice má i řez uchem na slidu 27
-  ve Stlačování (dutina širší než vysoká, trubice z jejího spodku šikmo dolů).
+- **Tělo potápěče (T16, T17; slidy 21 a 27):** kresba je jediná definice, symbol `#telo` v `images/course/p1/telo-profil.svg`
+  (viewBox 600 × 640). Slide ji vkládá `<use href="../images/course/p1/telo-profil.svg#telo" width="600" height="640"/>`,
+  slide 27 zmenšenou v `<g transform>` spolu s maskou (`fig-glass`, pásek `fig-mask-strap`). Popisky a odkazové čáry
+  (`fig-halo`, `fig-leader`, tečka `fig-leader-dot`) má každý slide ve svém SVG. Barvy kresby jsou v souboru v atributu
+  `style` z proměnných scény (`var(--slide-…)`), protože třídy z `css/course.css` do obsahu `<use>` nepronikají,
+  proměnné ano. V komentáři souboru nesmí být dvojitá pomlčka, jinak to není XML a prohlížeč kresbu nevykreslí.
+  Obsah: celá postava z profilu (obličej doprava), všechno s plynem žlutě: obličejové dutiny `fig-sinus` mimo oko
+  (`fig-eye` jen obrysem), střední ucho `fig-middle-ear` s Eustachovou trubicí `fig-eustachian` šikmo dolů do hltanu,
+  nosní a ústní dutina s hltanem `fig-upper-airway`, `fig-mouth`, průdušnice a průdušky jednou plynulou čarou `fig-airway`,
+  plíce `fig-lung-gas`, bránice `fig-diaphragm`, žaludek `fig-stomach`, střeva jako volně stočený pás `fig-gut`, páteř
+  `fig-spine`. Popisky na slidu 21 o stupeň lehčí (`fig-label-xl fig-label-medium`). Řez uchem na slidu 27 má stejný tvar
+  středního ucha a trubice (dutina širší než vysoká, trubice z jejího spodku šikmo dolů).
 - **Štítky:** zvýrazněná hodnota je tmavý štítek se žlutým písmem (`fig-tag` + popisek `fig-label-xl fig-label-tag`),
   neutrální popisek přes kresbu světlý štítek (`fig-tag-light`). Bílé písmo na moři: `fig-label-light`.
 - **Dvouřádkový popisek:** dva `<tspan>` s `x` a mezi nimi `<tspan font-size="0"> </tspan>`, aby text zněl celý

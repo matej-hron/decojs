@@ -419,21 +419,9 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-leader { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; stroke-linecap: round; }
 /* Plíce v ilustraci (Henry). */
 .course-figure svg .fig-lung { fill: var(--slide-accent); fill-opacity: 0.5; stroke: var(--slide-card-bg); stroke-width: 2.5; }
-/* Tělo potápěče (slide 21, T16): celá postava z profilu, všechno s plynem žlutě (barva zvýraznění). Tmavá silueta fig-body,
-   páteř čárkovaně, bránice tenkou čarou. Dutiny s plynem (obličejové dutiny, střední ucho, nosní a ústní dutina s hltanem,
-   žaludek) fig-air-space, cesta vzduchu a Eustachova trubice čarou s tmavým obrysem, střeva jako volně stočený pás.
-   Sémantické třídy fig-sinus, fig-middle-ear, fig-upper-airway, fig-mouth a fig-stomach vlastní barvu nemají. */
-.course-figure svg .fig-spine { fill: none; stroke: var(--slide-line-strong); stroke-width: 9; stroke-dasharray: 11 5; opacity: 0.45; }
-.course-figure svg .fig-lung-gas { fill: var(--slide-highlight); fill-opacity: 0.55; stroke: var(--slide-highlight); stroke-width: 2.5; }
-.course-figure svg .fig-diaphragm { fill: none; stroke: var(--slide-card-bg); stroke-width: 3.5; stroke-linecap: round; }
-.course-figure svg .fig-air-space { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2.5; }
-.course-figure svg .fig-airway-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; }
-.course-figure svg .fig-airway { fill: none; stroke: var(--slide-highlight); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
-.course-figure svg .fig-eustachian-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 9; stroke-linecap: round; }
-.course-figure svg .fig-eustachian { fill: none; stroke: var(--slide-highlight); stroke-width: 5; stroke-linecap: round; }
-.course-figure svg .fig-eye { fill: none; stroke: var(--slide-card-bg); stroke-width: 3; }
-.course-figure svg .fig-gut-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
-.course-figure svg .fig-gut { fill: none; stroke: var(--slide-highlight); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+/* Tělo potápěče (slides 21 a 27, T16, T17): kresba je jediná definice v images/course/p1/telo-profil.svg (symbol #telo),
+   slidy ji vkládají přes <use>. Barvy kresby jsou v souboru z proměnných scény, tady jen odkazové čáry, popisky a maska. */
+.course-figure svg .fig-mask-strap { fill: none; stroke: var(--slide-line-strong); stroke-width: 4; stroke-linecap: round; }
 .course-figure svg .fig-leader-dot { fill: var(--slide-on-accent); stroke: var(--slide-card-bg); stroke-width: 2; }
 .course-figure svg .fig-label-xl.fig-label-medium { font-weight: 500; } /* popisky o stupeň lehčí (slide 21) */
 /* Pascalův sud (slide 18, T9): dřevo, obruče, spáry, tryskající voda, konvička. */

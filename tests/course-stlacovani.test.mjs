@@ -302,3 +302,11 @@ test('T16: střední ucho a Eustachova trubice na slidu 27 mají tvar jako na sl
     assert.ok(Math.abs(y0 - (y + h)) <= 4, 'začíná na spodku dutiny');
     assert.ok(x1 - x0 >= 20 && y1 > y0, 'šikmo dolů dopředu');
 });
+
+test('T17: slide 27 vlevo má stejnou postavu jako slide 21 (sdílený symbol), ne starou postavu zepředu', () => {
+    const body = slide(27).querySelector('figure.course-illustration svg');
+    assert.equal(body.querySelector('use')?.getAttribute('href'), '../images/course/p1/telo-profil.svg#telo');
+    assert.equal(body.querySelectorAll('.fig-silhouette, .fig-cavity').length, 0, 'žádné dutiny jako oči');
+    assert.ok(body.querySelector('.fig-glass'), 'maska');
+    assert.equal(body.querySelectorAll('.fig-leader-dot').length, body.querySelectorAll('path.fig-leader').length);
+});
