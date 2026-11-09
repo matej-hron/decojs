@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.271';
+const CACHE_NAME = 'deco-theory-0.6.275';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -36,6 +36,8 @@ const STATIC_ASSETS = [
   './p1/tlak.html',
   './p1/stlacovani-plynu.html',
   './p1/archimeduv-zakon.html',
+  './p1/dalton.html',
+  './p1/henry.html',
   './css/course.css',
   './concepts/cs/density.html',
   './concepts/cs/water-anomaly.html',
@@ -50,6 +52,10 @@ const STATIC_ASSETS = [
   './concepts/cs/gas-consumption.html',
   './concepts/cs/buoyancy.html',
   './concepts/cs/buoyancy-control.html',
+  './concepts/cs/partial-pressure.html',
+  './concepts/cs/breathing-gas-limits.html',
+  './concepts/cs/gas-dissolution.html',
+  './concepts/cs/tissue-saturation.html',
   './concepts/cs/lake-stratification.html',
   './js/course/p1Course.js',
   './js/course/chapter.js',
@@ -64,6 +70,9 @@ const STATIC_ASSETS = [
   './js/course/tlakPage.js',
   './js/course/stlacovaniPage.js',
   './js/course/archimedesPage.js',
+  './js/course/daltonPage.js',
+  './js/course/gasParticles.js',
+  './js/course/henryPage.js',
   './js/course/pressureModel.js',
   './js/course/boyleModel.js',
   './js/course/buoyancyModel.js',
@@ -208,6 +217,8 @@ const STATIC_ASSETS = [
   './images/gas-particles.gif',
   './images/course/p1/manometr.jpg',
   './images/course/p1/pascal.jpg',
+  './images/course/p1/dalton.jpg',
+  './images/course/p1/henry.jpg',
   './images/cmas-table-2018.png',
   './js/urlParams.js',
   './js/utils/escHtml.js',

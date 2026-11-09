@@ -262,7 +262,7 @@ Stlačování a Hustota se projdou zvlášť.
 Zadání je vidět, výsledek se odkrývá (slidy 19 a 20). Dvě podoby, které jdou kombinovat:
 
 - **Výpočet:** postup v jednom `<details class="course-answer">` „Ukázat postup“, řádky v `<ol class="course-calc-steps">`,
-  výsledné pravidlo v `.course-calc-result` (první `<span>` je rámeček, vedle smí být odkaz na model). Odkaz `data-preset-link` může otevřít model s předvolbou na tomtéž slidu.
+  každou rovnost v řádku postupu obal do `<span class="course-eq">` (nezalomí se uprostřed, telefon láme jen mezi rovnostmi), výsledné pravidlo v `.course-calc-result` (první `<span>` je rámeček, vedle smí být odkaz na model). Odkaz `data-preset-link` může otevřít model s předvolbou na tomtéž slidu.
 - **Tabulka k doplnění:** `.course-table`, kde buňka s výsledkem je `<details class="course-cell"><summary>?</summary>2</details>`.
   Klik na otazník odkryje hodnotu (nativní `<details>`, funguje i bez JS). Víc tabulek a náhled modelu vedle sebe dává
   `.course-calc-cols` (každý sloupec je jeden `<div>` nebo náhled). Řádek `class="course-alert"` je zvýraznění „pozor“

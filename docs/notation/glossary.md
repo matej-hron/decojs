@@ -179,10 +179,10 @@ uvádí při prvním výskytu.
 
 | Zkratka | Český termín | English | V kódu (kanonicky) | Legacy alias, ponechat | Doloženo |
 |---|---|---|---|---|---|
-| NDL | bezdekompresní limit | no-decompression limit | — | — | — |
+| NDL | nulový čas (termín testů SPČR a kurzu P1), též bezdekompresní limit | no-decompression limit | — | — | — |
 | MOD | maximální operační (provozní) hloubka | maximum operating depth | — | — | — |
 | EAD | ekvivalentní vzduchová hloubka | equivalent air depth | — | — | — |
-| DCS | dekompresní nemoc (též kesonová nemoc) | decompression sickness | — | — | — |
+| DCS | dekompresní nemoc (dříve kesonová nemoc) | decompression sickness | — | — | — |
 | CNS | toxicita centrálního nervového systému | CNS oxygen toxicity | — | — | — |
 | OTU | jednotky kyslíkové toxicity | oxygen tolerance units | — | — | — |
 | GF | gradientový faktor | gradient factor | — | — | — |

@@ -56,14 +56,18 @@ describe('nextTarget: přes hranice stránek', () => {
 
     it('výchozí pořadí bere ze skutečného kurzu', () => {
         assert.deepEqual(nextTarget({ slug: null, index: 2, count: 3, dir: 1 }), { href: 'hustota.html' });
-        // Hustota → Tlak → Stlačování plynů → Archimédův zákon a zpět; za Archimédovým zákonem zatím rozcestník.
+        // Hustota → Tlak → Stlačování plynů → Archimédův zákon → Dalton → Henry a zpět; za Henrym zatím rozcestník.
         assert.deepEqual(nextTarget({ slug: 'hustota', index: 5, count: 6, dir: 1 }), { href: 'tlak.html' });
         assert.deepEqual(nextTarget({ slug: 'tlak', index: 0, count: 14, dir: -1 }), { href: 'hustota.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'tlak', index: 13, count: 14, dir: 1 }), { href: 'stlacovani-plynu.html' });
         assert.deepEqual(nextTarget({ slug: 'stlacovani-plynu', index: 0, count: 10, dir: -1 }), { href: 'tlak.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'stlacovani-plynu', index: 9, count: 10, dir: 1 }), { href: 'archimeduv-zakon.html' });
         assert.deepEqual(nextTarget({ slug: 'archimeduv-zakon', index: 0, count: 9, dir: -1 }), { href: 'stlacovani-plynu.html#procvic' });
-        assert.deepEqual(nextTarget({ slug: 'archimeduv-zakon', index: 8, count: 9, dir: 1 }), { href: 'index.html#kapitoly' });
+        assert.deepEqual(nextTarget({ slug: 'archimeduv-zakon', index: 8, count: 9, dir: 1 }), { href: 'dalton.html' });
+        assert.deepEqual(nextTarget({ slug: 'dalton', index: 0, count: 6, dir: -1 }), { href: 'archimeduv-zakon.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'dalton', index: 5, count: 6, dir: 1 }), { href: 'henry.html' });
+        assert.deepEqual(nextTarget({ slug: 'henry', index: 0, count: 8, dir: -1 }), { href: 'dalton.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'henry', index: 7, count: 8, dir: 1 }), { href: 'index.html#kapitoly' });
     });
 });
 
