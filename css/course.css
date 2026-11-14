@@ -518,9 +518,10 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-page a.course-source:focus-visible { outline: 2px solid var(--slide-highlight); outline-offset: 1px; border-radius: 3px; }
 /* Dvě části jedné ilustrace s popisky pod každou z nich (slide 13). */
 .course-figure-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
-/* Stlačování plynů (S7): válce s písty a graf p–V (slide 23), tělo a ucho (slide 27). */
+/* Stlačování plynů (S7): válce s písty a graf p–V (slide 23), tělo a anatomický řez uchem z Commons (slide 27, U1). */
 /* fig-gas, fig-guide a fig-cavity (dutiny v těle jako na slidu 21) jsou společné s Tlakem (T7). */
-.course-figure svg .fig-cavity-light { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; } /* vzduch ve středním uchu na světlé tkáni */
+.course-figure svg .fig-water-push { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; } /* tlak vody ve zvukovodu (U1), žlutá patří plynu */
+.course-figure svg .fig-air-arrow { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2.5; stroke-linejoin: round; } /* vzduch Eustachovou trubicí (U1) */
 .course-figure svg .fig-molecule { fill: var(--slide-water); stroke: var(--slide-on-accent); stroke-width: 2; } /* částice plynu */
 .course-figure svg .fig-weight { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2.5; } /* závaží na pístu */
 .course-figure svg .fig-axis { fill: none; stroke: var(--slide-on-accent); stroke-width: 3; }

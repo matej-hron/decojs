@@ -128,7 +128,7 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
     assert.equal(text(auto.querySelector('.course-figure-title')), 'Automatické vyrovnání tlaku');
     assert.equal(text(auto.querySelector('figcaption')), 'plíce, trávicí systém, obličejové dutiny, dýchací cesty');
     assert.equal(text(active.querySelector('.course-figure-title')), 'Aktivní vyrovnání tlaku');
-    assert.equal(text(active.querySelector('figcaption')), 'střední ucho (Eustachova trubice), prostor uvnitř masky');
+    assert.equal(text(active.querySelector('figcaption')), 'střední ucho (Eustachova trubice), prostor uvnitř masky zdroj', 'popisek a odkaz zdroj (U1)');
     assert.doesNotMatch(text(s), /násiln/i);
     const [body, ear] = [auto, active].map(div => div.querySelector('figure.course-illustration svg'));
     for (const svg of [body, ear]) {
@@ -138,8 +138,8 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
         assert.ok(![...svg.querySelectorAll('*')].some(el => el.hasAttribute('fill') || el.hasAttribute('stroke') || el.hasAttribute('style')), 'barvy jen ze tříd');
     }
     for (const label of ['maska', '(aktivně)', `dutiny s${N}plynem`, '(slide 21)']) assert.ok(body.textContent.includes(label), label);
-    for (const label of ['zvukovod', 'bubínek', 'střední ucho', 'Eustachova', 'trubice']) assert.ok(ear.textContent.includes(label), label);
-    assert.ok(ear.querySelector('.fig-force'), 'voda tlačí zvukovodem na bubínek');
+    for (const label of ['tlak vody', 'bubínek', 'střední ucho', 'Eustachova trubice']) assert.ok(ear.textContent.includes(label), label);
+    assert.ok(ear.querySelector('.fig-water-push'), 'voda tlačí zvukovodem na bubínek');
     const row = s.querySelector('.course-core-row');
     assert.match(text(row), /Sestup: tlak roste\./);
     assert.ok(row.querySelector('svg[role="img"][aria-label] .fig-force'), 'šipka sestupu');
@@ -306,21 +306,22 @@ test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spod
     assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
 });
 
-test('T16: střední ucho a Eustachova trubice na slidu 27 mají tvar jako na slidu 21 (Tlak)', () => {
-    const ear = [...slide(27).querySelectorAll('figure.course-illustration svg')][1];
-    const cavity = ear.querySelector('rect.fig-cavity-light');
-    const [w, h, rx, y] = ['width', 'height', 'rx', 'y'].map(a => +cavity.getAttribute(a));
-    assert.ok(w > h, 'dutina středního ucha je širší než vysoká, jako na slidu 21');
-    assert.ok(rx / h > 0.3 && rx / h < 0.45, 'stejně zaoblené rohy');
-    // trubice vychází ze spodku dutiny a vede šikmo dolů dopředu v mírném oblouku (Q), stěna i průsvit stejnou cestou
-    const tubes = [...ear.querySelectorAll('path.fig-tube-wall, path.fig-tube')].map(p => p.getAttribute('d'));
-    assert.equal(tubes.length, 2);
-    assert.equal(tubes[0], tubes[1]);
-    const m = tubes[0].match(/^M(\d+) (\d+)Q(\d+) (\d+) (\d+) (\d+)$/);
-    assert.ok(m, tubes[0]);
-    const [x0, y0, , , x1, y1] = m.slice(1).map(Number);
-    assert.ok(Math.abs(y0 - (y + h)) <= 4, 'začíná na spodku dutiny');
-    assert.ok(x1 - x0 >= 20 && y1 > y0, 'šikmo dolů dopředu');
+test('U1: slide 27 vpravo je anatomický řez uchem z Commons (varianta D) se šipkou tlaku vody a vzduchu v trubici', () => {
+    const fig = [...slide(27).querySelectorAll('figure.course-illustration')][1];
+    const ear = fig.querySelector('svg');
+    assert.equal(ear.querySelector('image')?.getAttribute('href'), '../images/course/p1/ucho-anatomie.svg');
+    assert.match(ear.getAttribute('aria-label'), /^Anatomický řez uchem/);
+    assert.match(ear.getAttribute('aria-label'), /Eustachovou trubicí/);
+    assert.ok(ear.querySelector('polygon.fig-water-push'), 'modrá šipka tlaku vody ve zvukovodu');
+    assert.ok(ear.querySelector('.fig-air-arrow'), 'žlutá šipka vzduchu v trubici');
+    assert.equal(ear.querySelectorAll('.fig-leader-dot').length, ear.querySelectorAll('path.fig-leader').length);
+    assert.equal(fig.querySelector('a.course-source')?.getAttribute('href'), 'zdroje.html#ucho');
+    // ořez souboru je těsný (jen zvukovod, bubínek, střední ucho a trubice), obrázek drží poměr stran
+    const svgFile = read('images/course/p1/ucho-anatomie.svg');
+    const [, , vw, vh] = svgFile.match(/viewBox="([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)"/).slice(1).map(Number);
+    const img = ear.querySelector('image');
+    assert.ok(Math.abs(vw / vh - img.getAttribute('width') / img.getAttribute('height')) < 0.01, 'poměr stran');
+    assert.ok(vw <= 340 && vh <= 270, 'těsný ořez');
 });
 
 test('T17: slide 27 vlevo má stejnou postavu jako slide 21 (sdílený symbol), ne starou postavu zepředu', () => {

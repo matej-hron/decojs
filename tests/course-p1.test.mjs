@@ -70,7 +70,7 @@ test('předvolby: zápis zachová cizí parametry', () => {
 
 // --- sdílené bloky pojmů ----------------------------------------------------
 
-import { conceptPath, isValidConceptId, loadConcepts } from '../js/course/concepts.js';
+import { conceptPath, isValidConceptId, loadConcepts, resolveConceptLinks } from '../js/course/concepts.js';
 
 test('bloky pojmů: bezpečná id a cesta', () => {
     assert.equal(conceptPath('water-anomaly'), 'concepts/cs/water-anomaly.html');
@@ -96,6 +96,52 @@ test('bloky pojmů: vloží obsah, stejný blok stáhne jen jednou, chybu ukáž
     assert.equal(calls.length, 2);
     assert.equal(root.slots[0].innerHTML, '<p>density.html</p>');
     assert.equal(root.slots[2].dataset.conceptState, 'error');
+});
+
+test('bloky pojmů: relativní odkaz platí vůči souboru bloku, ne vůči vkládající stránce (U3)', async () => {
+    const block = 'https://example.test/concepts/cs/density.html';
+    assert.equal(resolveConceptLinks('<a href="../../p1/archimeduv-zakon.html">x</a>', block),
+        '<a href="https://example.test/p1/archimeduv-zakon.html">x</a>');
+    const keep = '<a href="https://www.example.org/a">x</a> <a href="#kotva">y</a> <a href="mailto:a@b.c">z</a>';
+    assert.equal(resolveConceptLinks(keep, block), keep);
+    const fetchImpl = async () => ({ ok: true, text: async () => '<a href="../../p1/x.html">x</a>' });
+    const root = fakeRoot(['density']);
+    await loadConcepts(root, { fetchImpl, base: 'https://example.test/' });
+    assert.equal(root.slots[0].innerHTML, '<a href="https://example.test/p1/x.html">x</a>');
+});
+
+test('blok hustota: mořská voda víc nadnáší, odkaz na Archimédův zákon vede na existující kapitolu (U3)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /podle moře\. Mořská voda proto potápěče víc nadnáší a&nbsp;v&nbsp;moři potřebuje víc zátěže než ve sladké vodě \(<a href="\.\.\/\.\.\/p1\/archimeduv-zakon\.html">kapitola Archimédův zákon<\/a>\)\. Led má menší hustotu/);
+    const href = html.match(/href="([^"]+archimeduv[^"]+)"/)[1];
+    assert.ok(existsSync(new URL(href, new URL('concepts/cs/density.html', ROOT))), href);
+});
+
+test('blok hustota: prázdná lahev je lehčí, čísla jako na slidu 37 (12 l · 150 bar · 1,25 kg/m³ ≈ 2,3 kg), odkaz na kotvu slidu (U4)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /10&nbsp;°C\. Proto je prázdná lahev lehčí než plná: 12l lahev vydýchaná z&nbsp;200 na 50&nbsp;bar zlehčí asi o&nbsp;2,3&nbsp;kg\. Zátěž, která stačí na začátku ponoru, tak na konci nemusí stačit \(<a href="\.\.\/\.\.\/p1\/archimeduv-zakon\.html#ubytek-vzduchu">kapitola Archimédův zákon, slide&nbsp;37<\/a>\)\.<\/p>/);
+    assert.equal(Math.round(12 * (200 - 50) / 1000 * 1.25 * 10) / 10, 2.3);
+    const chapter = read('p1/archimeduv-zakon.html');
+    assert.match(chapter, /<section id="ubytek-vzduchu" class="course-section">\s*<div class="course-slide" data-slide-number="37"/);
+    assert.match(chapter, /2,25&nbsp;kg, asi 2,3&nbsp;kg/);
+});
+
+test('blok hustota: olovo na zátěž, lahve z oceli, hliníku nebo kompozitu, hustoty jako v tabulce slidu Hustota (U5)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /proto ve vodě klesají\. Olovo má z&nbsp;běžné výstroje hustotu největší \(11&nbsp;340&nbsp;kg\/m³\), proto z&nbsp;něj děláme zátěž: velká hmotnost v&nbsp;malém objemu\. Lahve jsou z&nbsp;oceli \(7&nbsp;850&nbsp;kg\/m³\) nebo z&nbsp;hliníkové slitiny \(asi 2&nbsp;700&nbsp;kg\/m³\)\. Kompozitní lahve mají tenkou vnitřní nádobu z&nbsp;hliníku nebo plastu ovinutou vlákny v&nbsp;epoxidu: uhlíkovými \(1&nbsp;760&nbsp;kg\/m³\), nebo kevlarovými \(1&nbsp;440&nbsp;kg\/m³\)\.<\/p>/);
+    assert.doesNotMatch(html, /[Ll]ahv[^.]*(klesá|nadnáší)/, 'nic o tom, která lahev klesá nebo nadnáší');
+    const table = read('p1/hustota.html');
+    assert.match(table, /<td>Olovo<\/td><td class="num">11&nbsp;340<\/td>/);
+    assert.match(table, /<td>Ocel<\/td><td class="num">7&nbsp;850<\/td>/);
+});
+
+test('slide Hustota: tabulka příkladů látek, zlato za olovem, hliník zatím ne (U6)', () => {
+    const doc = new JSDOM(read('p1/hustota.html')).window.document;
+    const table = doc.querySelector('.course-slide[data-slide-number="8"] table.course-table');
+    const rows = [...table.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(td => td.firstChild.textContent.trim()));
+    assert.deepEqual(rows.map(r => r[0]), ['Voda sladká', 'Voda slaná', 'Led', 'Vzduch', 'Olovo', 'Zlato', 'Ocel']);
+    assert.deepEqual(rows.find(r => r[0] === 'Zlato'), ['Zlato', '19\u00a0300']);
+    assert.match(read('p1/hustota.html'), /<td>Zlato<\/td><td class="num">19&nbsp;300<\/td>/);
 });
 
 // --- „Procvič si“ -------------------------------------------------------------

@@ -10,6 +10,9 @@
  * znovu; hlubší verze pro pokročilý kurz = další blok s vlastním id.
  *
  * Offline: každý blok musí být v `sw.js` STATIC_ASSETS (hlídá test).
+ * Relativní odkazy v bloku se píšou vůči souboru bloku (`../../p1/archimeduv-zakon.html`),
+ * jako v každém jiném HTML souboru; při vložení je `resolveConceptLinks` převede na plné adresy,
+ * takže platí na jakékoli stránce, která blok vloží (kontrola odkazů v build-pages je bere stejně).
  * Cesta se odvozuje od umístění tohoto modulu, takže funguje z libovolné podsložky.
  */
 
@@ -34,6 +37,19 @@ export function conceptPath(id, lang = 'cs') {
     return `concepts/${lang}/${id}.html`;
 }
 
+const EXTERNAL_RE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+
+/**
+ * Relativní href/src v bloku vztáhne k adrese bloku (ne ke stránce, která ho vkládá).
+ * @param {string} html
+ * @param {string|URL} blockUrl
+ * @returns {string}
+ */
+export function resolveConceptLinks(html, blockUrl) {
+    return html.replace(/\b(href|src)="([^"]+)"/g, (m, attr, value) =>
+        EXTERNAL_RE.test(value) ? m : `${attr}="${new URL(value, blockUrl).href}"`);
+}
+
 const FAILED_HTML = '<p class="course-concept-error">Výklad se nepodařilo načíst. '
     + 'Jsi offline a stránka se ještě neuložila? Zkus ji načíst znovu s připojením.</p>';
 
@@ -56,7 +72,7 @@ export async function loadConcepts(root = document, options = {}) {
                 cache.set(url, fetchImpl(url).then(r => {
                     if (!r.ok) throw new Error(`${url} → ${r.status}`);
                     return r.text();
-                }));
+                }).then(html => resolveConceptLinks(html, url)));
             }
             slot.innerHTML = await cache.get(url);
             slot.dataset.conceptState = 'loaded';
