@@ -159,3 +159,13 @@ test('Vidění: index lomu a úhly α, β jsou ve slovníčku s poznámkou ke ko
     assert.match(g, /\| \*n\* \| index lomu \| refractive index \|.*stejná značka jako látkové množství/);
     assert.match(g, /\| \*α\*, \*β\* \| úhel dopadu, úhel lomu/);
 });
+
+test('Vidění: texty neodkazují na čísla slidů, ale na název s proklikem (D16)', () => {
+    const visible = [...doc.querySelectorAll('main details.course-more, main figcaption, main .course-core')].map(text).join(' ')
+        + ' ' + concept('underwater-vision');
+    assert.doesNotMatch(visible, /\bslid(e|u|em)\s+\d/i);
+    for (const href of ['#barvy', '#bez-masky', 'index.html#osnova-p2', 'stlacovani-plynu.html#dutiny']) {
+        assert.ok(doc.querySelector(`.course-more a[href="${href}"]`), href);
+    }
+    assert.match(read('p1/index.html'), /<section id="osnova-p2"/);
+});
