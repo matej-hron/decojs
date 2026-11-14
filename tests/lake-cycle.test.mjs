@@ -328,12 +328,55 @@ test('stránka a výklad: ovládání po krocích, poznámka a srpen podle nové
     assert.match(html, /další krok/);
     assert.match(html, new RegExp(`id="krok-slider" min="1" max="${N}"`));
     assert.match(html, /id="lom-mesice"/);
-    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z&nbsp;lomů Srní, Horní Cerekev a&nbsp;Šífr\. Zbytek roku dopočítaný z&nbsp;pravidel modelu\. Vzduch: průměr měsíce v&nbsp;ČR \(ČHMÚ\)\./);
+    // U7: pod modelem jen krátká poznámka, podrobnosti drobně na konci výkladu „Více“
+    assert.match(html, /<p class="course-simplification">Modelový lom, ne měření\. Takhle to v&nbsp;lomu vypadat může\.<\/p>/);
+    assert.doesNotMatch(html, /Srní|Horní Cerekev|Šífr/, 'pod modelem bez výčtu lomů');
     assert.match(html, /<a href="\?mesic=8#model-lom" data-preset-link>/, 'řešený příklad vede na srpen');
     assert.doesNotMatch(html, /jezero během roku/, 'model se jmenuje lom během roku');
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8');
     assert.match(concept, /Proč hladina nevychladne na teplotu vzduchu\?/);
+    assert.match(concept, /<p>Čísla níže jsou z&nbsp;modelového lomu hlubokého 30&nbsp;m\. Nejsou to měření, ale takhle to v&nbsp;našich lomech vypadat může\.<\/p>/);
+    const footnote = new JSDOM(concept).window.document.querySelector('p:last-of-type');
+    assert.equal(footnote.className, 'course-simplification', 'podrobnosti modelu drobně na konci bloku');
+    assert.match(footnote.innerHTML.replace(/\s+/g, ' '), /5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z&nbsp;lomů Srní, Horní Cerekev a&nbsp;Šífr\. Zbytek roku dopočítaný z&nbsp;pravidel modelu\. Vzduch: průměr měsíce v&nbsp;ČR \(ČHMÚ\)\./);
     assert.match(concept, /horní vrstva kolem 23&nbsp;°C, vrstva v&nbsp;hloubce 6 až 12&nbsp;m kolem 10&nbsp;°C a&nbsp;u&nbsp;dna jsou 4&nbsp;°C/);
+});
+
+test('U8: řešené příklady u lomu jsou tři otázky na fakta, odkazy do modelu ukazují správný měsíc', () => {
+    const doc = new JSDOM(readFileSync(new URL('../p1/hustota.html', import.meta.url), 'utf8')).window.document;
+    const ex = doc.getElementById('priklad-lom');
+    const answers = [...ex.querySelectorAll(':scope > details.course-answer')];
+    assert.equal(answers.length, 3, 'každá otázka má vlastní „Ukázat odpověď“');
+    const text = (el) => el.textContent.replace(/[ \t\n]+/g, ' ').trim();
+    const questions = answers.map(d => text(d.previousElementSibling));
+    const N = '\u00a0';
+    assert.deepEqual(questions, [
+        `Jak teplá je voda u${N}dna hlubokého lomu v${N}srpnu a${N}jak v${N}lednu?`,
+        `Proč při sestupu v${N}létě najednou ucítíš chlad?`,
+        `V${N}zimě je lom zamrzlý. Kde je tepleji, těsně pod ledem, nebo ve 20${N}m?`,
+    ]);
+    const plain = (el) => text(el).replace(/\u00a0/g, ' ');
+    assert.match(plain(answers[0]), /V obou případech kolem 4 °C\. Voda má největší hustotu kolem 4 °C, proto klesá ke dnu a drží se tam po celý rok\./);
+    assert.match(plain(answers[1]), /Teplota s hloubkou neklesá plynule, ale skokem\..*Říká se jí termoklina \(skočná vrstva\)\./);
+    assert.match(plain(answers[2]), /Ve 20 m\. Pod ledem má voda kolem 0 °C, hlouběji kolem 4 °C\. Studenější voda je lehčí a zůstává nahoře\./);
+    // bez čísel z modelu kromě 0 a 4 °C
+    for (const d of answers) assert.deepEqual([...plain(d).matchAll(/(\d+) °C/g)].map(m => m[1]).filter(t => t !== '0' && t !== '4'), []);
+    // U9: proč je hladina v létě teplejší než průměrný vzduch (vysvětlení teploty vzduchu v modelu)
+    assert.match(readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8').replace(/\s+/g, ' '),
+        /Hladina je v&nbsp;létě teplejší než průměrný vzduch: ohřívá ji hlavně slunce a&nbsp;voda teplo drží i&nbsp;přes noc\.<\/p>/);
+    // termoklina je i ve výkladu u léta
+    const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8').replace(/\s+/g, ' ');
+    assert.match(concept, /<strong>Léto:<\/strong>[^<]*(<[^/][^>]*>[^<]*)*termoklina \(skočná vrstva\)\.<\/p>/);
+    // presety: srpen + leden, srpen, leden; model v nich má u dna 4 °C, v lednu led a 0 °C pod ním, 4 °C ve 20 m
+    const months = answers.map(d => [...d.querySelectorAll('a[data-preset-link]')].map(a => +a.getAttribute('href').match(/^\?mesic=(\d+)#model-lom$/)[1]));
+    assert.deepEqual(months, [[8, 1], [8], [1]]);
+    const at = (m) => LAKE_STEPS[firstStepOfMonth(m)];
+    assert.equal(at(8).temps.at(-1), 4);
+    assert.equal(at(1).temps.at(-1), 4);
+    assert.ok(at(8).temps[0] - at(8).temps[1] > at(8).temps[1] - at(8).temps.at(-1), 'v srpnu skok pod horní vrstvou');
+    assert.ok(at(1).ice);
+    assert.equal(at(1).temps[0], 0);
+    assert.equal(at(1).temps[LAKE_BANDS.findIndex(([top, bottom]) => top <= 20 && 20 < bottom)], 4, 've 20 m 4 °C');
 });
 
 test('barvy: teplé červené, 4 °C světlá, pod 4 °C modré', () => {
