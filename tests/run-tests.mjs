@@ -8706,13 +8706,17 @@ describe('tissue loading - notation and sticky layout', () => {
     });
 
     test('gas pathway pressure changes between stages, not within each box', () => {
-        expect(tissueHtml.includes('<linearGradient id="pressureGradient')).toBe(false);
-        expect((tissueHtml.match(/class="pressure-step pressure-step-\d"/g) || []).length).toBe(4);
-        expect(tissueEducation).toContain('PRESSURE_STEP_COLORS');
+        // Schéma i jeho logika jsou od DH11 v komponentě (jedna definice pro tissue-loading.html a kurz P1).
+        const gasPathway = readFileSync(new URL('../js/components/GasPathway.js', import.meta.url), 'utf8');
+        expect(tissueHtml).toContain('<div class="gas-pathway-container"></div>');
+        expect(tissueEducation).toContain('renderGasPathway(host)');
+        expect(gasPathway.includes('<linearGradient id="pressureGradient')).toBe(false);
+        expect((gasPathway.match(/class="pressure-step pressure-step-\d"/g) || []).length).toBe(4);
+        expect(gasPathway).toContain('PRESSURE_STEP_COLORS');
         for (const stage of ['stage-regulator', 'stage-lungs', 'stage-blood', 'stage-tissues']) {
-            expect(tissueEducation).toContain(`querySelector('.${stage}')`);
+            expect(gasPathway).toContain(`querySelector('.${stage}')`);
         }
-        expect(tissueEducation).toContain('[...PRESSURE_STEP_COLORS].reverse()');
+        expect(gasPathway).toContain('[...PRESSURE_STEP_COLORS].reverse()');
     });
 });
 

@@ -172,6 +172,13 @@ test('Dalton: opravy z review R9', () => {
     assert.doesNotMatch(q81.explanation, /toxick/);
     assert.match(q81.explanation, /<var>p<\/var><sub>O₂<\/sub> = <var>p<\/var> · <var>f<\/var><sub>O₂<\/sub>/);
     assert.match(q81.explanation, /Ve 30 m je parciální tlak kyslíku ve vzduchu 0,84 bar\./);
+    for (const [lang, toxic, at30] of [['en', /toxic/, /At 30\u00a0m the partial pressure of oxygen in air is 0\.84\u00a0bar\./],
+        ['es', /tóxico/, /A 30\u00a0m la presión parcial del oxígeno en el aire es de 0,84\u00a0bar\./]]) {
+        const q = JSON.parse(read(`data/quiz-physics-${lang}.json`)).questions.find(x => x.id === 81);
+        assert.doesNotMatch(q.explanation, toxic, lang);
+        assert.match(q.explanation, /<var>p<\/var><sub>O₂<\/sub> = <var>p<\/var> · <var>f<\/var><sub>O₂<\/sub>/, lang);
+        assert.match(q.explanation, at30, lang);
+    }
     // R9-02: příspěvek částice, stlačení při stejné teplotě
     assert.doesNotMatch(more(40), /narážejí do stěn stejně/);
     assert.match(more(40), /Každá částice, kyslíku i dusíku, přispívá k tlaku v průměru stejně/);

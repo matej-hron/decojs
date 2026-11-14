@@ -359,4 +359,17 @@ function createLanguageSwitcher() {
     }
 }
 
-export { initI18n, setLanguage, getCurrentLanguage, createLanguageSwitcher, translate, SUPPORTED_LANGS };
+/**
+ * Translator for one fixed language, independent of the site language.
+ * The Czech P1 course embeds Deco Theory components (tissue saturation simulator) and must show them
+ * in Czech even when the rest of the site runs in English. Elements it renders carry no `data-i18n`,
+ * so a later language switch leaves them alone.
+ * @param {string} lang - one of SUPPORTED_LANGS
+ * @returns {Promise<(key: string, fallback?: string) => string>}
+ */
+async function createTranslator(lang) {
+    const translations = await loadTranslations(lang);
+    return (key, fallback = '') => (translations && resolveKey(translations, key)) ?? fallback;
+}
+
+export { initI18n, setLanguage, getCurrentLanguage, createLanguageSwitcher, translate, createTranslator, SUPPORTED_LANGS };

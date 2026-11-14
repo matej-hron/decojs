@@ -440,6 +440,51 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-hit-n2 { stroke: var(--slide-water); }
 /* Postup příkladu: rovnost (nebo její dlouhý kus) se nezalomí uprostřed, telefon láme jen mezi nimi (R9-04). */
 .course-calc-steps .course-eq { white-space: nowrap; }
+/* Simulátor sycení tkání z Deco Theory v překryvu (Henry, slide 46): vlastní karty a barvy webu,
+   v překryvu jen rozměry. Náhled na slidu kreslí tři tkáně v barvách dlaždic simulátoru. */
+.course-model .course-tsim,
+.course-model .course-pathway {
+    /* Slide přepisuje barvy webu na tmavé; komponenty Deco Theory mají barvy světlého webu jako na jeho stránkách. */
+    color-scheme: light;
+    --text: var(--gray-800);
+    --text-color: var(--gray-800);
+    --text-subtle: var(--gray-500);
+    --text-secondary: var(--gray-500);
+    --text-muted: var(--gray-500);
+    --border: var(--gray-200);
+    --border-color: var(--gray-200);
+    --border-strong: var(--gray-300);
+    --surface: #ffffff;
+    --surface-elevated: #ffffff;
+    --surface-sunken: var(--gray-50);
+    --background-color: var(--gray-50);
+    --card-background: #ffffff;
+    --brand: var(--blue-500);
+    flex: 1 1 auto;
+    min-height: 0;
+    color: var(--text-color);
+}
+.course-model .course-tsim.tsim-layout { min-height: 0; max-width: none; margin: 0; padding: 0; }
+.course-model .course-tsim .tsim-readouts { min-height: 0; }
+.course-model .course-tsim .tsim-chart { flex: 1 1 0; min-height: 200px; }
+/* Na projektoru větší písmo dlaždic a popisků než v Pískovišti. */
+.course-model .course-tsim .tsim-tile-label { font-size: 0.8rem; }
+.course-model .course-tsim .tsim-tile-value { font-size: 1.2rem; }
+.course-model .course-tsim .tsim-label { font-size: 0.85rem; }
+.course-thumb-plot svg[preserveAspectRatio="none"] { width: 100%; height: 100%; } /* statický náhled se roztáhne do tlačítka */
+.course-thumb svg [class^="tsim-thumb-"] { fill: none; stroke-width: 4; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.course-thumb svg .tsim-thumb-amb { stroke: var(--slide-line-strong); stroke-dasharray: 8 6; stroke-width: 2; }
+.course-thumb svg .tsim-thumb-fast { stroke: #e74c3c; }
+.course-thumb svg .tsim-thumb-med { stroke: #27ae60; }
+.course-thumb svg .tsim-thumb-slow { stroke: #6cc2f7; }
+/* Animace výměny plynů v překryvu (Henry, slide 45): schéma na světlé kartě přes šířku, náhled jako čtyři stupně tlaku. */
+.course-model .course-pathway { background: var(--card-background); border-radius: var(--radius-md); padding: var(--space-4); }
+.course-model .course-pathway .gas-pathway-svg { width: 100%; max-width: none; height: auto; max-height: calc(var(--course-slide-height) * 0.62); }
+.course-thumb svg .gp-thumb-1 { fill: #78a8ce; }
+.course-thumb svg .gp-thumb-2 { fill: #91b5d2; }
+.course-thumb svg .gp-thumb-3 { fill: #aec9de; }
+.course-thumb svg .gp-thumb-4 { fill: #d0e1ed; }
+.course-thumb svg .gp-thumb-arrow { fill: none; stroke: var(--slide-accent); stroke-width: 4; vector-effect: non-scaling-stroke; }
 /* Henry (DH4): lahev s bublinami (slidy 43, 44) a koloběh dusíku (slide 45). */
 .course-figure svg .fig-bubble { fill: var(--slide-card-bg); fill-opacity: 0.7; stroke: var(--slide-on-accent); stroke-width: 2.5; }
 .course-figure svg .fig-plus { fill: var(--slide-wind-warm); stroke: var(--slide-on-accent); stroke-width: 2; }

@@ -1053,7 +1053,7 @@
         { "key": "d", "text": "Las presiones parciales de los gases en el aire no dependen de la presión total del aire." }
       ],
       "correct": "d",
-      "explanation": "La presión parcial sí depende de la presión total. <var>p</var><sub>O₂</sub> = <var>f</var><sub>O₂</sub> × <var>p</var><sub>total</sub>. Al aumentar la profundidad (y la presión) crecen también todas las presiones parciales. Por eso el oxígeno es tóxico en profundidad."
+      "explanation": "La presión parcial depende de la presión total: <var>p</var><sub>O₂</sub> = <var>p</var> · <var>f</var><sub>O₂</sub>. Al aumentar la profundidad crece la presión total y, con ella, las presiones parciales de todos los gases. A 30 m la presión parcial del oxígeno en el aire es de 0,84 bar."
     },
     {
       "id": 82,

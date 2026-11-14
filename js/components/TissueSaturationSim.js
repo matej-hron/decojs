@@ -51,9 +51,116 @@ const PPO2_REC_LIMIT = 1.4;
 const PPO2_HYPOXIA = 0.18;
 const PPN2_NARCOSIS = 4.0;
 
+/** Dlaždice simulátoru: klíč popisku, výchozí popisek, údaj, výchozí hodnota, třída navíc. */
+const TILES = [
+    ['sandbox.tissue.readout.depth', 'Depth', 'depth', '0.0\u00a0m'],
+    ['sandbox.tissue.readout.pAmb', '<var>p</var><sub>amb</sub>', 'pAmb', '1.00\u00a0bar'],
+    ['sandbox.tissue.readout.gas', 'Gas', 'gas', 'Air'],
+    ['sandbox.tissue.readout.pO2', '<var>p</var><sub>O₂</sub>', 'pO2', '0.21\u00a0bar'],
+    ['sandbox.tissue.readout.pN2Inspired', '<var>p</var><sub>N₂</sub> inspired', 'pN2Insp', '0.79\u00a0bar'],
+    ['sandbox.tissue.readout.pN2Alveolar', '<var>p</var><sub>N₂</sub> alveolar', 'pN2Alv', '0.74\u00a0bar'],
+    ['sandbox.tissue.readout.tcFast', 'TC1 • fast • <var>t</var><sub>1/2</sub> = 5\u00a0min', 'pFast', '0.74\u00a0bar', ' tsim-tile-fast'],
+    ['sandbox.tissue.readout.tcMed', 'TC5 • medium • <var>t</var><sub>1/2</sub> = 27\u00a0min', 'pMed', '0.74\u00a0bar', ' tsim-tile-med'],
+    ['sandbox.tissue.readout.tcSlow', 'TC12 • slow • <var>t</var><sub>1/2</sub> = 239\u00a0min', 'pSlow', '0.74\u00a0bar', ' tsim-tile-slow'],
+    ['sandbox.tissue.readout.time', 'Sim time', 'time', '0:00'],
+];
+
+/**
+ * Ovládání, čísla, hlášky a plátno grafu simulátoru. Jedna definice pro Pískoviště
+ * (`sandbox/tissue-saturation.html`) i pro překryv v kurzu P1 (Henry, slide 46).
+ *
+ * Pískoviště: výchozí `t` je jazyk webu a prvky nesou `data-i18n`, takže je přepnutí jazyka přeloží znovu.
+ * Kurz: `t` je pevný překladač (`createTranslator('cs')`) a `i18n: false`, takže zůstanou česky.
+ * @param {HTMLElement} root prázdný prvek; dostane třídy `tsim-root tsim-layout`
+ * @param {{t?: (key: string, fallback?: string) => string, i18n?: boolean}} [options]
+ */
+export function renderTissueSimMarkup(root, { t = translate, i18n = true } = {}) {
+    // Text prvku z překladu; atribut data-i18n jen tam, kde se má překládat s webem.
+    const tx = (key, fallback) => `${i18n ? ` data-i18n="${key}"` : ''}>${t(key, fallback)}`;
+    const tile = (key, fallback, readout, value, extra = '') => `
+                    <div class="tsim-tile${extra}">
+                        <span class="tsim-tile-label"${tx(key, fallback)}</span>
+                        <span class="tsim-tile-value" data-tsim-readout="${readout}">${value}</span>
+                    </div>`;
+    root.classList.add('tsim-root', 'tsim-layout');
+    root.innerHTML = `
+            <aside class="tsim-controls">
+                <div class="tsim-control-block">
+                    <label class="tsim-label"${tx('sandbox.tissue.depth', 'Depth')}</label>
+                    <div class="tsim-depth-row">
+                        <input type="range" class="tsim-depth-slider" min="0" max="40" step="1" value="0" aria-label="Depth in meters">
+                        <input type="number" class="tsim-depth-input" min="0" max="40" step="1" value="0" aria-label="Depth in meters">
+                        <span class="tsim-unit">m</span>
+                    </div>
+                    <div class="tsim-depth-hint"${tx('sandbox.tissue.depthHint', '0–40\u00a0m. Typed values apply after a brief pause; the slider is immediate.')}</div>
+                </div>
+
+                <div class="tsim-control-block">
+                    <label class="tsim-label"${tx('sandbox.tissue.gas', 'Breathing gas')}</label>
+                    <select class="tsim-gas-select">
+                        <option value="air"${tx('sandbox.tissue.gases.air', 'Air (21/79)')}</option>
+                        <option value="ean32"${tx('sandbox.tissue.gases.ean32', 'EAN32')}</option>
+                        <option value="ean36"${tx('sandbox.tissue.gases.ean36', 'EAN36')}</option>
+                        <option value="ean50"${tx('sandbox.tissue.gases.ean50', 'EAN50')}</option>
+                        <option value="ean80"${tx('sandbox.tissue.gases.ean80', 'EAN80')}</option>
+                        <option value="o2"${tx('sandbox.tissue.gases.o2', 'O₂ 100%')}</option>
+                    </select>
+                </div>
+
+                <div class="tsim-control-block">
+                    <label class="tsim-label"${tx('sandbox.tissue.speed', 'Speed')}</label>
+                    <div class="tsim-speed-row">
+                        <button class="btn btn-small tsim-speed-btn active" data-speed="1">1×</button>
+                        <button class="btn btn-small tsim-speed-btn" data-speed="5">5×</button>
+                        <button class="btn btn-small tsim-speed-btn" data-speed="10">10×</button>
+                        <button class="btn btn-small tsim-speed-btn" data-speed="60">60×</button>
+                    </div>
+                    <div class="tsim-speed-hint"${tx('sandbox.tissue.speedHint', '1× = 1 sim-minute per real second.')}</div>
+                </div>
+
+                <div class="tsim-control-block">
+                    <label class="tsim-label"${tx('sandbox.tissue.time', 'Time')}</label>
+                    <div class="tsim-time-row">
+                        <button class="btn btn-small tsim-step-back-btn" title="Step back 1\u00a0min (←)"${tx('sandbox.tissue.timeButtons.back', '◀ 1\u00a0min')}</button>
+                        <button class="btn btn-small tsim-play-btn" title="Play / Pause (Space)">▶</button>
+                        <button class="btn btn-small tsim-step-fwd-btn" title="Step forward 1\u00a0min (→)"${tx('sandbox.tissue.timeButtons.forward', '1\u00a0min ▶')}</button>
+                    </div>
+                    <div class="tsim-speed-hint"${tx('sandbox.tissue.keyboardHint', 'Keyboard: ← / → to step, Space to play/pause.')}</div>
+                    <button class="btn btn-small btn-secondary tsim-reset-btn" style="margin-top:0.5rem;"${tx('sandbox.tissue.timeButtons.reset', 'Reset')}</button>
+                </div>
+            </aside>
+
+            <section class="tsim-readouts">
+                <div class="tsim-numbers">${TILES.map(args => tile(...args)).join('')}
+                </div>
+
+                <div class="tsim-alerts">
+                    <div class="tsim-alert tsim-alert-ok"${tx('sandbox.tissue.alertOk', 'No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4\u00a0bar and <var>p</var><sub>N₂</sub> does not exceed 4.0\u00a0bar.')}</div>
+                </div>
+
+                <div class="tsim-chart">
+                    <canvas></canvas>
+                </div>
+            </section>`;
+}
+
 export class TissueSaturationSim {
-    constructor(root) {
+    /**
+     * @param {HTMLElement} root prvek s ovládáním a čísly (viz `renderTissueSimMarkup`)
+     * @param {Object} [options] výchozí hodnoty chovají simulátor jako v Pískovišti
+     * @param {(key: string, fallback?: string) => string} [options.t] překladač pro pevný jazyk
+     *        (kurz P1: čeština i na anglickém webu); bez něj jazyk webu a přepnutí jazyka
+     * @param {string} [options.lang] jazyk čísel (desetinná čárka), bez něj jazyk webu
+     * @param {number} [options.depth=0] počáteční hloubka v m (předvolba z kurzu)
+     * @param {() => boolean} [options.keyboardActive] klávesy ← → a mezerník jen když vrátí true
+     *        (kurz: jen v otevřeném překryvu, jinak šipky přepínají slidy)
+     */
+    constructor(root, options = {}) {
         this.root = root;
+        this.tr = options.t ?? translate;
+        this.lang = options.lang;
+        this.initialDepth = Math.max(0, Math.min(40, Number(options.depth) || 0));
+        this.keyboardActive = options.keyboardActive ?? (() => true);
         this._collectDom();
         this._initChart();
         this._initState();
@@ -62,26 +169,33 @@ export class TissueSaturationSim {
         this._startLoop();
 
         // Re-render alerts and retranslate chart labels on language change.
+        const tr = this.tr;
         this._onLanguageChange = () => {
             const ds = this.chart && this.chart.data && this.chart.data.datasets;
             if (ds) {
-                ds[0].label = translate('tissueSim.chartLabels.pAmb', 'Ambient pressure');
-                ds[1].label = translate('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂');
-                ds[2].label = translate('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)');
-                ds[3].label = translate('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)');
-                ds[4].label = translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)');
+                ds[0].label = tr('tissueSim.chartLabels.pAmb', 'Ambient pressure');
+                ds[1].label = tr('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂');
+                ds[2].label = tr('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)');
+                ds[3].label = tr('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)');
+                ds[4].label = tr('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)');
             }
             if (this.chart && this.chart.options && this.chart.options.scales) {
                 const s = this.chart.options.scales;
-                if (s.x && s.x.title) s.x.title.text = translate('chart.axes.timeMin', 'Time (min)');
-                if (s.y && s.y.title) s.y.title.text = translate('chart.axes.pressureBar', 'Pressure (bar)');
-                if (s.yDepth && s.yDepth.title) s.yDepth.title.text = translate('chart.axes.depthEquivalent', 'Depth equivalent (m)');
+                if (s.x && s.x.title) s.x.title.text = tr('chart.axes.timeMin', 'Time (min)');
+                if (s.y && s.y.title) s.y.title.text = tr('chart.axes.pressureBar', 'Pressure (bar)');
+                if (s.yDepth && s.yDepth.title) s.yDepth.title.text = tr('chart.axes.depthEquivalent', 'Depth equivalent (m)');
             }
             this._renderAlerts();
             this._renderNumbers();
             if (this.chart) this.chart.update('none');
         };
-        document.addEventListener('languagechange', this._onLanguageChange);
+        // Pevný jazyk (options.t) se přepnutím jazyka webu nemění.
+        if (!options.t) document.addEventListener('languagechange', this._onLanguageChange);
+    }
+
+    /** Číslo v jazyce simulátoru. */
+    _num(value, decimals) {
+        return fmtNum(value, decimals, this.lang);
     }
 
     _collectDom() {
@@ -115,8 +229,10 @@ export class TissueSaturationSim {
         const gas = this._lookupGas(initialGasId);
         const initialN2 = getInitialTissueN2(gas.n2);
 
+        this.depthSlider.value = this.initialDepth;
+        this.depthInput.value = this.initialDepth;
         this.state = {
-            depth: 0,
+            depth: this.initialDepth,
             gas,
             speed: 1,
             // Start paused so the learner can arrange depth/gas first,
@@ -162,6 +278,7 @@ export class TissueSaturationSim {
             if (!this.depthInputDebounceHandle) return;
             applyDepthChange(this.depthInput.value);
         };
+        this._applyDepthChange = applyDepthChange;
         this.depthSlider.addEventListener('input', (e) => applyDepthChange(e.target.value));
         this.depthInput.addEventListener('input', (e) => scheduleDepthChange(e.target.value));
         this.depthInput.addEventListener('change', flushDepthInput);
@@ -192,6 +309,7 @@ export class TissueSaturationSim {
         // Keyboard shortcuts — skip when the user is typing in the number
         // input or interacting with the slider / select.
         this._onKey = (e) => {
+            if (!this.keyboardActive()) return;
             const tag = e.target && e.target.tagName;
             if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
             if (e.key === 'ArrowLeft')  { this._stepBackward(STEP_BUTTON_MINUTES); e.preventDefault(); }
@@ -320,16 +438,16 @@ export class TissueSaturationSim {
         const pN2Alv = getAlveolarN2Pressure(ambient, gas.n2);
         const pO2 = ambient * gas.o2;
 
-        this.readouts.depth.textContent = `${fmtNum(depth, 1)}\u00a0m`;
-        this.readouts.pAmb.textContent  = `${fmtNum(ambient, 2)}\u00a0bar`;
+        this.readouts.depth.textContent = `${this._num(depth, 1)}\u00a0m`;
+        this.readouts.pAmb.textContent  = `${this._num(ambient, 2)}\u00a0bar`;
         const selectedGas = this.gasSelect.options[this.gasSelect.selectedIndex];
         this.readouts.gas.textContent = selectedGas ? selectedGas.textContent : gas.name;
-        this.readouts.pO2.textContent   = `${fmtNum(pO2, 2)}\u00a0bar`;
-        this.readouts.pN2Insp.textContent = `${fmtNum(pN2Insp, 2)}\u00a0bar`;
-        this.readouts.pN2Alv.textContent  = `${fmtNum(pN2Alv, 2)}\u00a0bar`;
-        this.readouts.pFast.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[0]], 2)}\u00a0bar`;
-        this.readouts.pMed.textContent  = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[1]], 2)}\u00a0bar`;
-        this.readouts.pSlow.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[2]], 2)}\u00a0bar`;
+        this.readouts.pO2.textContent   = `${this._num(pO2, 2)}\u00a0bar`;
+        this.readouts.pN2Insp.textContent = `${this._num(pN2Insp, 2)}\u00a0bar`;
+        this.readouts.pN2Alv.textContent  = `${this._num(pN2Alv, 2)}\u00a0bar`;
+        this.readouts.pFast.textContent = `${this._num(tissues[TRACKED_COMPARTMENT_IDS[0]], 2)}\u00a0bar`;
+        this.readouts.pMed.textContent  = `${this._num(tissues[TRACKED_COMPARTMENT_IDS[1]], 2)}\u00a0bar`;
+        this.readouts.pSlow.textContent = `${this._num(tissues[TRACKED_COMPARTMENT_IDS[2]], 2)}\u00a0bar`;
 
         this._colourPpO2(pO2);
     }
@@ -343,6 +461,7 @@ export class TissueSaturationSim {
     }
 
     _renderAlerts() {
+        const tr = this.tr;
         const { depth, gas } = this.state;
         const ambient = getAmbientPressure(depth);
         const pO2 = ambient * gas.o2;
@@ -350,28 +469,28 @@ export class TissueSaturationSim {
         const alerts = [];
         if (pO2 > PPO2_DECO_LIMIT) {
             alerts.push({ level: 'critical',
-                html: fmt(translate('tissueSim.ppO2OxygenToxicity',
+                html: fmt(tr('tissueSim.ppO2OxygenToxicity',
                     '<var>p</var><sub>O₂</sub> {0}\u00a0bar — oxygen toxicity (deco limit {1}\u00a0bar)'),
-                    fmtNum(pO2, 2), fmtNum(PPO2_DECO_LIMIT, 1)) });
+                    this._num(pO2, 2), this._num(PPO2_DECO_LIMIT, 1)) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
-                html: fmt(translate('tissueSim.ppO2AboveRec',
+                html: fmt(tr('tissueSim.ppO2AboveRec',
                     '<var>p</var><sub>O₂</sub> {0}\u00a0bar — above recreational limit {1}\u00a0bar'),
-                    fmtNum(pO2, 2), fmtNum(PPO2_REC_LIMIT, 1)) });
+                    this._num(pO2, 2), this._num(PPO2_REC_LIMIT, 1)) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
-                html: fmt(translate('tissueSim.ppO2Hypoxic',
+                html: fmt(tr('tissueSim.ppO2Hypoxic',
                     '<var>p</var><sub>O₂</sub> {0}\u00a0bar — hypoxic (< {1}\u00a0bar)'),
-                    fmtNum(pO2, 2), fmtNum(PPO2_HYPOXIA, 2)) });
+                    this._num(pO2, 2), this._num(PPO2_HYPOXIA, 2)) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
-                html: fmt(translate('tissueSim.ppN2Narcosis',
+                html: fmt(tr('tissueSim.ppN2Narcosis',
                     '<var>p</var><sub>N₂</sub> {0}\u00a0bar — nitrogen narcosis likely (> {1}\u00a0bar)'),
-                    fmtNum(pN2Insp, 2), fmtNum(PPN2_NARCOSIS, 1)) });
+                    this._num(pN2Insp, 2), this._num(PPN2_NARCOSIS, 1)) });
         }
-        const okText = translate(
+        const okText = tr(
             'tissueSim.alertOk',
             'No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4\u00a0bar and <var>p</var><sub>N₂</sub> does not exceed 4.0\u00a0bar.'
         );
@@ -383,6 +502,7 @@ export class TissueSaturationSim {
     _initChart() {
         // Chart.js is loaded via <script> in the HTML; use the global.
         // Two Y axes: left = partial pressure (bar), right = depth (m, inverted).
+        const tr = this.tr;
         const ctx = this.canvas.getContext('2d');
         const tsEl = this.root.closest('section') || this.root;
         const colFast = COMPARTMENTS.find(c => c.id === TRACKED_COMPARTMENT_IDS[0]).color;
@@ -399,14 +519,14 @@ export class TissueSaturationSim {
             data: {
                 datasets: [
                     // pAmb drawn first so fill sits under the other curves.
-                    { label: translate('tissueSim.chartLabels.pAmb', 'Ambient pressure'), data: [], borderColor: 'rgba(127,140,141,0.8)',
+                    { label: tr('tissueSim.chartLabels.pAmb', 'Ambient pressure'), data: [], borderColor: 'rgba(127,140,141,0.8)',
                       backgroundColor: 'rgba(127,140,141,0.15)',
                       borderWidth: 2, pointRadius: 0, yAxisID: 'y', fill: true, tension: 0 },
-                    { label: translate('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂'),  data: [], borderColor: '#2c3e50',
+                    { label: tr('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂'),  data: [], borderColor: '#2c3e50',
                       borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)'),     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)'),  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)'),  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
+                    { label: tr('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)'),     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: tr('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)'),  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: tr('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)'),  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
                 ]
             },
             options: {
@@ -416,7 +536,7 @@ export class TissueSaturationSim {
                 animation: false,
                 scales: {
                     x: { type: 'linear',
-                         title: { display: true, text: translate('chart.axes.timeMin', 'Time (min)') },
+                         title: { display: true, text: tr('chart.axes.timeMin', 'Time (min)') },
                          ticks: { maxTicksLimit: 10 } },
                     y: { type: 'linear', position: 'left',
                          // Fixed range so tissue movement is always in context
@@ -425,14 +545,14 @@ export class TissueSaturationSim {
                          // slider range and covers typical recreational /
                          // early-tech profiles comfortably.
                          min: 0, max: 5,
-                         title: { display: true, text: translate('chart.axes.pressureBar', 'Pressure (bar)') } },
+                         title: { display: true, text: tr('chart.axes.pressureBar', 'Pressure (bar)') } },
                     // Companion right-side axis: reads the SAME pressure
                     // values, but tick labels are rewritten as equivalent
                     // depth (m). Because it's the same scale, "surface"
                     // (pAmb = 1, depth = 0) aligns on both sides.
                     yDepth: { type: 'linear', position: 'right',
                               min: 0, max: 5,
-                              title: { display: true, text: translate('chart.axes.depthEquivalent', 'Depth equivalent (m)') },
+                              title: { display: true, text: tr('chart.axes.depthEquivalent', 'Depth equivalent (m)') },
                               grid: { drawOnChartArea: false },
                               ticks: {
                                   stepSize: 1,
@@ -454,8 +574,8 @@ export class TissueSaturationSim {
                         enabled: true,
                         callbacks: {
                             label: (ctx) => fmt(
-                                translate('tissueSim.tooltipLabel', '{0}: {1}\u00a0bar'),
-                                ctx.dataset.label, fmtNum(ctx.parsed.y, 2)
+                                tr('tissueSim.tooltipLabel', '{0}: {1}\u00a0bar'),
+                                ctx.dataset.label, this._num(ctx.parsed.y, 2)
                             )
                         }
                     }
@@ -477,6 +597,25 @@ export class TissueSaturationSim {
         this.chart.options.scales.x.min = minT;
         this.chart.options.scales.x.max = Math.max(minT + HISTORY_WINDOW_MIN, maxT);
         this.chart.update('none');
+    }
+
+    /**
+     * Nastaví hloubku zvenku (předvolba z kurzu), stejně jako posuvník.
+     * @param {number} depth m
+     */
+    setDepth(depth) {
+        this._applyDepthChange(depth);
+    }
+
+    /** Zastaví běh času (překryv v kurzu se zavřel). Stav simulace zůstává. */
+    stop() {
+        if (this.tickHandle) clearInterval(this.tickHandle);
+        this.tickHandle = null;
+    }
+
+    /** Znovu spustí hodiny po `stop()`. Přehrávání (▶/⏸) zůstává, jak ho uživatel nechal. */
+    start() {
+        this._startLoop();
     }
 
     destroy() {
