@@ -1,7 +1,7 @@
 // Kurz P1 – Hustota: fyzika modelů, předvolby v URL, sdílené bloky, „Procvič si“.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 
 import {
@@ -371,4 +371,27 @@ test('typy slidů jsou zdokumentované a vzorník ukazuje každý z nich', () =>
         assert.ok(typesIn(sample).has(type), `${type} ve vzorníku`);
     }
     assert.deepEqual([...typesIn(sample)].filter(t => !used.has(t)), [], 'vzorník nemá typ, který stránky nepoužívají');
+});
+
+// --- T22: sousední slidy se stejným nadpisem mají stejnou velikost písma -------------
+
+test('T22: sousední slidy se stejným nadpisem (pokračování) mají stejné data-slide-fit', () => {
+    const pages = readdirSync(new URL('p1/', ROOT)).filter(f => f.endsWith('.html')).map(f => `p1/${f}`);
+    const mismatched = [];
+    for (const page of pages) {
+        const doc = new JSDOM(read(page)).window.document;
+        const slides = [...doc.querySelectorAll('main > section.course-section > .course-slide')].map(el => ({
+            n: el.dataset.slideNumber,
+            title: el.querySelector('h1, h2')?.textContent.replace(/\s+/g, ' ').trim(),
+            fit: el.dataset.slideFit ?? '',
+            type: el.dataset.slideType,
+        }));
+        for (let i = 1; i < slides.length; i++) {
+            const [a, b] = [slides[i - 1], slides[i]];
+            // Titulní slide má vlastní velikosti písma (compact na něj nepůsobí), s kapitolou může sdílet nadpis.
+            if (a.type === 'title' || b.type === 'title') continue;
+            if (a.title === b.title && a.fit !== b.fit) mismatched.push(`${page}: ${a.n} (${a.fit || '-'}) a ${b.n} (${b.fit || '-'}) „${a.title}“`);
+        }
+    }
+    assert.deepEqual(mismatched, []);
 });
