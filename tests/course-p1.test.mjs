@@ -126,6 +126,14 @@ test('blok hustota: prázdná lahev je lehčí, čísla jako na slidu 37 (12 l �
     assert.match(chapter, /2,25&nbsp;kg, asi 2,3&nbsp;kg/);
 });
 
+test('blok hustota: olovo na zátěž, ocel na lahve, hustoty stejné jako v tabulce slidu Hustota (U5)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /proto ve vodě klesají\. Olovo má z&nbsp;běžné výstroje hustotu největší \(11&nbsp;340&nbsp;kg\/m³\), proto z&nbsp;něj děláme zátěž: velká hmotnost v&nbsp;malém objemu\. Z&nbsp;oceli \(7&nbsp;850&nbsp;kg\/m³\) jsou lahve\.<\/p>/);
+    const table = read('p1/hustota.html');
+    assert.match(table, /<td>Olovo<\/td><td class="num">11&nbsp;340<\/td>/);
+    assert.match(table, /<td>Ocel<\/td><td class="num">7&nbsp;850<\/td>/);
+});
+
 // --- „Procvič si“ -------------------------------------------------------------
 
 import { parseQuestionIds, pickQuestions } from '../js/course/practice.js';
