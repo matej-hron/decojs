@@ -2443,7 +2443,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.292";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.293";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
