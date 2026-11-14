@@ -70,7 +70,7 @@ test('předvolby: zápis zachová cizí parametry', () => {
 
 // --- sdílené bloky pojmů ----------------------------------------------------
 
-import { conceptPath, isValidConceptId, loadConcepts } from '../js/course/concepts.js';
+import { conceptPath, isValidConceptId, loadConcepts, resolveConceptLinks } from '../js/course/concepts.js';
 
 test('bloky pojmů: bezpečná id a cesta', () => {
     assert.equal(conceptPath('water-anomaly'), 'concepts/cs/water-anomaly.html');
@@ -96,6 +96,25 @@ test('bloky pojmů: vloží obsah, stejný blok stáhne jen jednou, chybu ukáž
     assert.equal(calls.length, 2);
     assert.equal(root.slots[0].innerHTML, '<p>density.html</p>');
     assert.equal(root.slots[2].dataset.conceptState, 'error');
+});
+
+test('bloky pojmů: relativní odkaz platí vůči souboru bloku, ne vůči vkládající stránce (U3)', async () => {
+    const block = 'https://example.test/concepts/cs/density.html';
+    assert.equal(resolveConceptLinks('<a href="../../p1/archimeduv-zakon.html">x</a>', block),
+        '<a href="https://example.test/p1/archimeduv-zakon.html">x</a>');
+    const keep = '<a href="https://www.example.org/a">x</a> <a href="#kotva">y</a> <a href="mailto:a@b.c">z</a>';
+    assert.equal(resolveConceptLinks(keep, block), keep);
+    const fetchImpl = async () => ({ ok: true, text: async () => '<a href="../../p1/x.html">x</a>' });
+    const root = fakeRoot(['density']);
+    await loadConcepts(root, { fetchImpl, base: 'https://example.test/' });
+    assert.equal(root.slots[0].innerHTML, '<a href="https://example.test/p1/x.html">x</a>');
+});
+
+test('blok hustota: mořská voda víc nadnáší, odkaz na Archimédův zákon vede na existující kapitolu (U3)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /podle moře\. Mořská voda proto potápěče víc nadnáší a&nbsp;v&nbsp;moři potřebuje víc zátěže než ve sladké vodě \(<a href="\.\.\/\.\.\/p1\/archimeduv-zakon\.html">kapitola Archimédův zákon<\/a>\)\. Led má menší hustotu/);
+    const href = html.match(/href="([^"]+archimeduv[^"]+)"/)[1];
+    assert.ok(existsSync(new URL(href, new URL('concepts/cs/density.html', ROOT))), href);
 });
 
 // --- „Procvič si“ -------------------------------------------------------------
