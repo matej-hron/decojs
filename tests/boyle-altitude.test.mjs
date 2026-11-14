@@ -22,13 +22,24 @@ const at = (altitude, extra = {}) => ({ pressureMode: 'school', water: 'salt', .
 
 // ---------------------------------------------------------------- jedno místo pro tabulku slidu 17
 
-test('SLIDE_ALTITUDE_KPA je přesně tabulka slidu 17 v p1/tlak.html', () => {
+test('SLIDE_ALTITUDE_KPA jsou přesně čísla výškové stupnice slidu 17 v p1/tlak.html (popisky i aria-label)', () => {
     const doc = new JSDOM(read('p1/tlak.html')).window.document;
-    const cells = [...doc.querySelectorAll('.course-slide[data-slide-number="17"] table.course-table tbody td')]
-        .map((td) => td.textContent.replace(/\s| /g, '').replace(',', '.'));
-    const fromSlide = {};
-    for (let i = 0; i < cells.length; i += 2) if (cells[i] !== '') fromSlide[Number(cells[i])] = Number(cells[i + 1]);
-    assert.deepEqual({ ...SLIDE_ALTITUDE_KPA }, fromSlide);
+    const slide = doc.querySelector('.course-slide[data-slide-number="17"]');
+    const num = (t) => Number(t.replace(/\s| /g, '').replace(',', '.'));
+    // popisky stupnice: výška vpravo zarovnaná na x = 160, tlak na x = 276, dvojice na stejném y
+    const texts = [...slide.querySelectorAll('svg text')];
+    const at = (x) => new Map(texts.filter((t) => t.getAttribute('x') === x && /^[\d\s ,]+$/.test(t.textContent))
+        .map((t) => [t.getAttribute('y'), num(t.textContent)]));
+    const heights = at('160');
+    const pressures = at('276');
+    const fromLabels = {};
+    for (const [y, h] of heights) fromLabels[h] = pressures.get(y);
+    assert.deepEqual({ ...SLIDE_ALTITUDE_KPA }, fromLabels);
+    // aria-label stupnice: „0 m 100 kPa, 100 m 98,8 kPa, …“
+    const aria = slide.querySelector('svg[role="img"]').getAttribute('aria-label');
+    const fromAria = {};
+    for (const [, h, kPa] of aria.matchAll(/([\d  ]+) m ([\d,]+) kPa/g)) fromAria[num(h)] = num(kPa);
+    assert.deepEqual({ ...SLIDE_ALTITUDE_KPA }, fromAria);
     assert.ok(Object.isFrozen(SLIDE_ALTITUDE_KPA));
 });
 

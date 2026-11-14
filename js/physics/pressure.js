@@ -16,9 +16,10 @@ import { getPressureAtAltitude, getPressurePerMeter } from '../deco/environment.
 import { SURFACE_PRESSURE, WATER_TYPES } from '../deco/constants.js';
 
 /**
- * Tabulka slidu 17 (p1/tlak.html, „Atmosférický tlak“): výška (m n. m.) → tlak vzduchu (kPa). Jediné místo, odkud
- * ji berou modely (B1 „Balónek a zvon“: předvolby výšky). Slide je statické HTML; test hlídá, že se s touto
- * tabulkou shoduje, a jiný test, že tabulka odpovídá standardní atmosféře přepočtené na 100 kPa u moře.
+ * Tabulka slidu 17 (p1/tlak.html, „Atmosférický tlak“, výšková stupnice): výška (m n. m.) → tlak vzduchu (kPa).
+ * Jediné místo, odkud ji berou modely (B1 „Balónek a zvon“: předvolby výšky). Stupnice na slidu je statické SVG;
+ * tests/boyle-altitude.test.mjs hlídá, že se její popisky i aria-label s touto tabulkou shodují, a
+ * tests/pressure.test.mjs, že tabulka odpovídá standardní atmosféře přepočtené na 100 kPa u moře.
  */
 export const SLIDE_ALTITUDE_KPA = Object.freeze({
     0: 100, 100: 98.8, 200: 97.6, 500: 94.2, 1000: 88.6, 2000: 78.4, 3000: 69.1, 4000: 60.8,

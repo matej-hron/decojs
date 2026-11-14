@@ -84,7 +84,7 @@ test('neplatné vstupy hlásí chybu', () => {
 // ---------------------------------------------------------------- slide 17
 
 test('tabulka výšek ze slidu 17 = ISA přepočtená na 100 kPa u moře (±0,15 kPa)', () => {
-    // Že je SLIDE_ALTITUDE_KPA přesně tabulka ze slidu, hlídá tests/boyle-altitude.test.mjs.
+    // Že jsou SLIDE_ALTITUDE_KPA přesně čísla ze slidu, hlídá tests/boyle-altitude.test.mjs.
     assert.equal(Object.keys(SLIDE_ALTITUDE_KPA).length, 15);
     for (const [h, kPa] of Object.entries(SLIDE_ALTITUDE_KPA)) {
         close(normalizedAtmosphere(Number(h)) * 100, kPa, 0.15, `${h} m:`);
