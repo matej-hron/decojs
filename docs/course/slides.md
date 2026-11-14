@@ -18,7 +18,8 @@ Rozložení odpovídá originálu přednášky (`resources/FyzikaP12_2025.pdf`, 
   první potomek je nadpis (`h1` na prvním slidu kapitoly, jinak `h2`), za ním tělo `<div class="course-core">`.
   Pod slidem může být jedno `<details class="course-more">` (Více).
 - **Číslo slidu z přednášky:** `data-slide-number="12"`. Titulní slide a Procvič si ho nemají. Patičku doplní
-  `js/course/slideNav.js` sám.
+  `js/course/slideNav.js` sám, s celkovým počtem slidů přednášky („8 / 60“). Počet je na jednom místě,
+  `P1_LECTURE_SLIDES` v `js/course/p1Course.js`.
 - **Stejné místo na všech zastávkách (desktop):** stejný rámeček, nadpis v 10 % výšky slidu, začátek těla v 28 %,
   okraje textu kolem 8 % šířky. Titulní slide má vlastní pevnou polohu (nadpis ve spodní třetině).
   Po skoku na zastávku není vidět další slide.

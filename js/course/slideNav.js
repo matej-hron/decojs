@@ -9,10 +9,11 @@
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
  * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v patičce
- * každého slidu, vedle jména přednášky a čísla slidu (`data-slide-number` na slidu).
+ * každého slidu, vedle jména přednášky a čísla slidu (`data-slide-number` na slidu) z celkového počtu
+ * slidů přednášky (`P1_LECTURE_SLIDES`).
  */
 
-import { P1_CHAPTERS } from './p1Course.js';
+import { P1_CHAPTERS, P1_LECTURE_SLIDES } from './p1Course.js';
 
 /** Kotva poslední zastávky každé kapitoly (hlídá test). */
 const LAST_STOP_HASH = '#procvic';
@@ -123,15 +124,17 @@ function step(slug, dir, from = null) {
 }
 
 /**
- * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu a ‹ ›.
+ * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu z celkového počtu („8 / 60“) a ‹ ›.
  * @param {string|null} number číslo slidu z přednášky; titulní slide a „Procvič si“ ho nemají
+ * @param {number} [total] počet slidů přednášky (jedno místo: `P1_LECTURE_SLIDES`)
  * @returns {string} HTML
  */
-export function slideFootHtml(number) {
-    const label = number ? ` aria-label="slide ${number}"` : '';
+export function slideFootHtml(number, total = P1_LECTURE_SLIDES) {
+    const label = number ? ` aria-label="slide ${number} z ${total}"` : '';
+    const text = number ? `${number} / ${total}` : '';
     return `<a class="course-foot-title" href="index.html#kapitoly">P1 – Fyzika</a>
         <span class="course-foot-right">
-            <span class="course-foot-number"${label}>${number ?? ''}</span>
+            <span class="course-foot-number"${label}>${text}</span>
             <span class="course-slide-nav" role="group" aria-label="Přepínání slidů">
                 <button type="button" data-step="-1" title="Předchozí slide" aria-label="Předchozí slide">‹</button>
                 <button type="button" data-step="1" title="Další slide" aria-label="Další slide">›</button>
