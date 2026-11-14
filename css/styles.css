@@ -5881,6 +5881,10 @@ textarea.form-input {
     text-overflow: ellipsis;
 }
 
+/* Popisek je velkými písmeny, ale značka veličiny a index ne: tlak je malé p, ne P (ČSN EN ISO 80000). */
+.tsim-tile-label var,
+.tsim-tile-label sub { text-transform: none; }
+
 .tsim-tile-value {
     font-size: 1rem;
     font-weight: 600;
