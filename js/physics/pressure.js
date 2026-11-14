@@ -15,6 +15,16 @@
 import { getPressureAtAltitude, getPressurePerMeter } from '../deco/environment.js';
 import { SURFACE_PRESSURE, WATER_TYPES } from '../deco/constants.js';
 
+/**
+ * Tabulka slidu 17 (p1/tlak.html, „Atmosférický tlak“): výška (m n. m.) → tlak vzduchu (kPa). Jediné místo, odkud
+ * ji berou modely (B1 „Balónek a zvon“: předvolby výšky). Slide je statické HTML; test hlídá, že se s touto
+ * tabulkou shoduje, a jiný test, že tabulka odpovídá standardní atmosféře přepočtené na 100 kPa u moře.
+ */
+export const SLIDE_ALTITUDE_KPA = Object.freeze({
+    0: 100, 100: 98.8, 200: 97.6, 500: 94.2, 1000: 88.6, 2000: 78.4, 3000: 69.1, 4000: 60.8,
+    5000: 53.3, 5500: 49.8, 6000: 46.5, 7000: 40.5, 8000: 35.1, 9000: 30.3, 10000: 26,
+});
+
 /** Režimy výpočtu. */
 export const PRESSURE_MODES = Object.freeze({ SCHOOL: 'school', EXACT: 'exact' });
 
@@ -73,11 +83,16 @@ export function hydrostaticPressure(depth, { mode = PRESSURE_MODES.SCHOOL, water
 /**
  * Celkový tlak v hloubce a jeho dvě složky.
  * @param {number} depth m
- * @param {{mode?: 'school'|'exact', altitude?: number, water?: 'fresh'|'salt'}} [options]
+ * @param {{mode?: 'school'|'exact', altitude?: number, water?: 'fresh'|'salt', atm?: number}} [options]
+ *   `atm` (bar): atmosférický tlak na hladině, když ho určuje stránka (model B1 podle tabulky slidu 17);
+ *   bez něj se počítá z `altitude` a režimu.
  * @returns {{atm: number, hydro: number, total: number}} bar
  */
-export function pressureAt(depth, { mode = PRESSURE_MODES.SCHOOL, altitude = 0, water = 'fresh' } = {}) {
-    const atm = atmosphericPressure(altitude, { mode });
+export function pressureAt(depth, { mode = PRESSURE_MODES.SCHOOL, altitude = 0, water = 'fresh', atm: given } = {}) {
+    if (given !== undefined && !(given > 0 && Number.isFinite(given))) {
+        throw new RangeError(`Atmosférický tlak musí být kladné číslo: ${given}`);
+    }
+    const atm = given ?? atmosphericPressure(altitude, { mode });
     const hydro = hydrostaticPressure(depth, { mode, water });
     return { atm, hydro, total: atm + hydro };
 }

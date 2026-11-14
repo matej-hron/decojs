@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     PRESSURE_MODES, SCHOOL_ALTITUDE_STEP_BAR, atmosphericPressure, hydrostaticPressure, pressureAt,
-    normalizedAtmosphere,
+    normalizedAtmosphere, SLIDE_ALTITUDE_KPA,
 } from '../js/physics/pressure.js';
 
 const close = (actual, expected, tol, msg) =>
@@ -84,11 +84,9 @@ test('neplatné vstupy hlásí chybu', () => {
 // ---------------------------------------------------------------- slide 17
 
 test('tabulka výšek ze slidu 17 = ISA přepočtená na 100 kPa u moře (±0,15 kPa)', () => {
-    const slide17 = {
-        10000: 26, 9000: 30.3, 8000: 35.1, 7000: 40.5, 6000: 46.5, 5500: 49.8, 5000: 53.3,
-        4000: 60.8, 3000: 69.1, 2000: 78.4, 1000: 88.6, 500: 94.2, 200: 97.6, 100: 98.8, 0: 100,
-    };
-    for (const [h, kPa] of Object.entries(slide17)) {
+    // Že je SLIDE_ALTITUDE_KPA přesně tabulka ze slidu, hlídá tests/boyle-altitude.test.mjs.
+    assert.equal(Object.keys(SLIDE_ALTITUDE_KPA).length, 15);
+    for (const [h, kPa] of Object.entries(SLIDE_ALTITUDE_KPA)) {
         close(normalizedAtmosphere(Number(h)) * 100, kPa, 0.15, `${h} m:`);
     }
 });

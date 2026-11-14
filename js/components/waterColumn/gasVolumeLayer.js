@@ -8,7 +8,7 @@
  *
  * Stav (docs/course/water-column.md §4):
  * - soukromý klíč vrstvy: `gasObject` (klíč předmětu v `objects`);
- * - čte `pressureMode` (vrstva tlaku) a scénářové `altitude`, `water`.
+ * - čte `pressureMode` (vrstva tlaku) a scénářové `altitude`, `water`, `atm`.
  * Předměty (objem v hloubce, řádky tabulky) dává stránka v options továrny. Výpočet: js/physics/boyle.js.
  * Barvy dat: CSS `--wc-gas` (balónek, křivka), `--wc-gas-air` (vzduch ve zvonu), `--wc-gas-water` (voda ve zvonu),
  * `--wc-gas-ink` (text na pruhu objemu).
@@ -91,6 +91,7 @@ export function objectVolume(depth, obj, state = {}) {
         mode: state.pressureMode ?? 'school',
         altitude: state.altitude ?? 0,
         water: state.water ?? 'salt',
+        atm: state.atm,
     });
 }
 
@@ -99,14 +100,26 @@ const totalPressure = (depth, state = {}) => pressureAt(depth, {
     mode: state.pressureMode ?? 'school',
     altitude: state.altitude ?? 0,
     water: state.water ?? 'salt',
+    atm: state.atm,
 }).total;
 
 /** Tlak do odečtu: na setiny bez koncových nul (2; 2,2; 1,01). */
 const formatPressure = (bar) => fmtGroup(Math.round(bar * 100) / 100, 2, 'cs');
 
 /**
+ * Součin p · V do odečtu: na setiny bez koncových nul, s mezerou v tisících (29,34; 890; 1 000). Tlak má nejvýš
+ * dvě desetinná místa a objem předmětu je celý, takže součin je přesný a podíl v odečtu jde přepočítat z hlavy.
+ * @param {number} barLitres
+ * @returns {string}
+ */
+export function formatProduct(barLitres) {
+    return fmtGroup(Math.round(barLitres * 100) / 100, 2, 'cs');
+}
+
+/**
  * Odečet vrstvy (HTML), druhý řádek pod tlakem: součin p · V z výchozího stavu předmětu je stálý, objem je jeho podíl
  * a tlaku. „<br>p · V = 5 · 6 = 30 → V = 30 / 2 = 15 l“; když objem zaokrouhlujeme, je místo „=“ „≈“ (333 l).
+ * S nadmořskou výškou (U12): „4,89 · 6 = 29,34 → V = 29,34 / 0,89 ≈ 33 l“.
  * @param {number} depth
  * @param {GasObject} obj
  * @param {Object} [state]
@@ -116,7 +129,7 @@ export function gasReadout(depth, obj, state = {}) {
     const html = (s) => s.replaceAll(NBSP, '&nbsp;');
     const p0 = totalPressure(obj.depth, state);
     const p = totalPressure(depth, state);
-    const product = html(formatLitres(p0 * obj.volume));
+    const product = html(formatProduct(p0 * obj.volume));
     const volume = objectVolume(depth, obj, state);
     const shown = formatLitres(volume);
     const exact = Math.abs(Number(shown.replace(/\s/g, '').replace(',', '.')) - volume) < 1e-9;
@@ -146,13 +159,17 @@ export function bellWaterFraction(volume, bellVolume) {
 }
 
 /**
- * Konec osy objemu: největší objem ve sloupci, tedy na hladině.
+ * Konec osy objemu: největší objem ve sloupci (na hladině) zaokrouhlený nahoru na pěkné číslo, do 100 l na násobek
+ * 5 l, výš na stovky. U moře je to přesně objem na hladině (30 l, 1 000 l); s nadmořskou výškou (U12) třeba 33 l → 35 l,
+ * aby osa měla pěkné dílky.
  * @param {GasObject} obj
  * @param {Object} [state]
  * @returns {number} l
  */
 export function volumeScaleMax(obj, state = {}) {
-    return objectVolume(0, obj, state);
+    const v = objectVolume(0, obj, state);
+    const step = v < 100 ? 5 : 100;
+    return Math.ceil(v / step - 1e-9) * step;
 }
 
 /**
@@ -187,7 +204,8 @@ function labelsFit(ticks, vMax, width, fontSize) {
 
 /**
  * Popisky osy objemu, které se vejdou vedle sebe. Pěkné dílky (krok 1, 2 nebo 5 × 10ⁿ), když jich je aspoň
- * čtyři a končí na maximu; jinak 0, polovina a maximum, a když se nevejde ani to, jen 0 a maximum (review R4-04).
+ * čtyři a končí na maximu; jinak 0, polovina (celá, jinak dolů na násobek 5 l) a maximum, a když se nevejde ani to,
+ * jen 0 a maximum (review R4-04).
  * @param {number} vMax l
  * @param {number} width px panelu
  * @param {number} fontSize px
@@ -201,8 +219,10 @@ export function volumeTicks(vMax, width, fontSize) {
             return ticks;
         }
     }
-    const half = [0, vMax / 2, vMax];
-    return labelsFit(half, vMax, width, fontSize) ? half : [0, vMax];
+    // prostřední dílek celý (30 → 15), jinak dolů na násobek 5 (55 → 25, ne 27,5)
+    const middle = Number.isInteger(vMax / 2) ? vMax / 2 : Math.floor(vMax / 10) * 5;
+    const half = [0, middle, vMax];
+    return middle > 0 && labelsFit(half, vMax, width, fontSize) ? half : [0, vMax];
 }
 
 /**

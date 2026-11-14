@@ -848,6 +848,25 @@ details.course-more > summary .course-summary-hint {
     max-width: 36rem;
 }
 
+/* Výběr v ovládání modelu (B1: nadmořská výška); předvoleb je víc, než by se vešlo do segmentového přepínače. */
+.course-select {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.course-select select {
+    font: inherit;
+    font-size: var(--course-model-ui);
+    font-weight: 400;
+    color: var(--text);
+    background: var(--surface, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md, 6px);
+    padding: 0.35em 0.6em;
+    min-height: 44px;
+    max-width: 100%;
+}
+
 .course-segmented {
     display: inline-flex;
     border: 1px solid var(--border-strong);

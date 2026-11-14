@@ -6,7 +6,7 @@
  * Pruh v hloubce ukazatele je celkový tlak p = p_atm + p_h, odečet píše rovnici jako slide 19.
  *
  * Stav (docs/course/water-column.md §4):
- * - scénářové klíče stránky: `altitude` (m n. m.), `water` ('fresh' | 'salt');
+ * - scénářové klíče stránky: `altitude` (m n. m.), `water` ('fresh' | 'salt'), `atm` (bar, p_atm určený stránkou);
  * - soukromý klíč vrstvy: `pressureMode` ('school' | 'exact').
  * Ve sloupci je voda nad ukazatelem obarvená jako klín p_h, pod ním tlumená: tlak dělá voda nad potápěčem.
  * Výpočet: js/physics/pressure.js. Barvy dat: CSS `--wc-pressure-atm`, `--wc-pressure-h`, `--wc-pressure-ink`, `--wc-pressure-shade`.
@@ -42,6 +42,7 @@ export function layerPressure(state, depth = state.depth) {
         mode: state.pressureMode ?? PRESSURE_MODES.SCHOOL,
         altitude: state.altitude ?? 0,
         water: state.water ?? 'salt',
+        atm: state.atm,
     });
 }
 
