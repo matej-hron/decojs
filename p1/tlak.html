@@ -520,26 +520,75 @@
 
         <!-- Slide 17 -->
         <section id="vyska" class="course-section">
-            <div class="course-slide" data-slide-number="17" data-slide-type="content" data-slide-fit="compact">
+            <div class="course-slide" data-slide-number="17" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Atmosférický tlak</h2>
-                <div class="course-core course-core-cols">
-                    <div>
-                        <table class="course-table">
-                            <thead>
-                                <tr><th scope="col">výška [m]</th><th scope="col">tlak vzduchu [kPa]</th><th scope="col">výška [m]</th><th scope="col">tlak vzduchu [kPa]</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="num">10&nbsp;000</td><td class="num">26</td><td class="num">4&nbsp;000</td><td class="num">60,8</td></tr>
-                                <tr><td class="num">9&nbsp;000</td><td class="num">30,3</td><td class="num">3&nbsp;000</td><td class="num">69,1</td></tr>
-                                <tr><td class="num">8&nbsp;000</td><td class="num">35,1</td><td class="num">2&nbsp;000</td><td class="num">78,4</td></tr>
-                                <tr><td class="num">7&nbsp;000</td><td class="num">40,5</td><td class="num">1&nbsp;000</td><td class="num">88,6</td></tr>
-                                <tr><td class="num">6&nbsp;000</td><td class="num">46,5</td><td class="num">500</td><td class="num">94,2</td></tr>
-                                <tr><td class="num">5&nbsp;500</td><td class="num">49,8</td><td class="num">200</td><td class="num">97,6</td></tr>
-                                <tr><td class="num">5&nbsp;000</td><td class="num">53,3</td><td class="num">100</td><td class="num">98,8</td></tr>
-                                <tr><td></td><td></td><td class="num">0</td><td class="num">100</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- T26: jeden sloupec jako v originále (strana 17), výška roste nahoru. Řádky mají stejný rozestup,
+                     nejde o graf s lineární osou. Vpravo orientační body, pozadí hory a letadlo. -->
+                <div class="course-core course-core-figure-wide course-core-figure-tall">
+                    <figure class="course-figure course-illustration course-illustration-scale">
+                            <svg viewBox="0 0 600 700" role="img" aria-label="Výšková stupnice od 0 m dole po 10 000 m nahoře, u každé výšky tlak vzduchu: 0 m 100 kPa, 100 m 98,8 kPa, 200 m 97,6 kPa, 500 m 94,2 kPa, 1 000 m 88,6 kPa, 2 000 m 78,4 kPa, 3 000 m 69,1 kPa, 4 000 m 60,8 kPa, 5 000 m 53,3 kPa, 5 500 m 49,8 kPa, 6 000 m 46,5 kPa, 7 000 m 40,5 kPa, 8 000 m 35,1 kPa, 9 000 m 30,3 kPa, 10 000 m 26 kPa. Vyznačeno: nad 300 m jiný dekompresní postup, asi 2 200 m tlak v kabině letadla, 5 500 m asi polovina tlaku u moře, 10 000 m letadlo.">
+                                <rect class="fig-sky" width="600" height="700" rx="16"/>
+                                <path class="fig-rock" d="M296 700V610L372 470L414 512L470 384L520 452L556 420L600 470V684A16 16 0 0 1 584 700Z"/>
+                                <polygon class="fig-snow" points="470,384 452,412 464,408 472,420 482,408 494,412"/>
+                                <rect class="fig-paper" x="16" y="652" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="572" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="492" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="412" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="332" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="252" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="172" width="272" height="40" rx="6"/>
+                                <rect class="fig-paper" x="16" y="92" width="272" height="40" rx="6"/>
+                                <text x="160" y="36" text-anchor="end" class="fig-label-xl">výška</text>
+                                <text x="276" y="36" text-anchor="end" class="fig-label-xl">tlak</text>
+                                <text x="160" y="72" text-anchor="end" class="fig-label-xl">[m]</text>
+                                <text x="276" y="72" text-anchor="end" class="fig-label-xl">[kPa]</text>
+                                <text x="160" y="685" text-anchor="end" class="fig-label-xl">0</text>
+                                <text x="276" y="685" text-anchor="end" class="fig-label-xl">100</text>
+                                <text x="160" y="645" text-anchor="end" class="fig-label-xl">100</text>
+                                <text x="276" y="645" text-anchor="end" class="fig-label-xl">98,8</text>
+                                <text x="160" y="605" text-anchor="end" class="fig-label-xl">200</text>
+                                <text x="276" y="605" text-anchor="end" class="fig-label-xl">97,6</text>
+                                <text x="160" y="565" text-anchor="end" class="fig-label-xl">500</text>
+                                <text x="276" y="565" text-anchor="end" class="fig-label-xl">94,2</text>
+                                <text x="160" y="525" text-anchor="end" class="fig-label-xl">1&#160;000</text>
+                                <text x="276" y="525" text-anchor="end" class="fig-label-xl">88,6</text>
+                                <text x="160" y="485" text-anchor="end" class="fig-label-xl">2&#160;000</text>
+                                <text x="276" y="485" text-anchor="end" class="fig-label-xl">78,4</text>
+                                <text x="160" y="445" text-anchor="end" class="fig-label-xl">3&#160;000</text>
+                                <text x="276" y="445" text-anchor="end" class="fig-label-xl">69,1</text>
+                                <text x="160" y="405" text-anchor="end" class="fig-label-xl">4&#160;000</text>
+                                <text x="276" y="405" text-anchor="end" class="fig-label-xl">60,8</text>
+                                <text x="160" y="365" text-anchor="end" class="fig-label-xl">5&#160;000</text>
+                                <text x="276" y="365" text-anchor="end" class="fig-label-xl">53,3</text>
+                                <text x="160" y="325" text-anchor="end" class="fig-label-xl">5&#160;500</text>
+                                <text x="276" y="325" text-anchor="end" class="fig-label-xl">49,8</text>
+                                <text x="160" y="285" text-anchor="end" class="fig-label-xl">6&#160;000</text>
+                                <text x="276" y="285" text-anchor="end" class="fig-label-xl">46,5</text>
+                                <text x="160" y="245" text-anchor="end" class="fig-label-xl">7&#160;000</text>
+                                <text x="276" y="245" text-anchor="end" class="fig-label-xl">40,5</text>
+                                <text x="160" y="205" text-anchor="end" class="fig-label-xl">8&#160;000</text>
+                                <text x="276" y="205" text-anchor="end" class="fig-label-xl">35,1</text>
+                                <text x="160" y="165" text-anchor="end" class="fig-label-xl">9&#160;000</text>
+                                <text x="276" y="165" text-anchor="end" class="fig-label-xl">30,3</text>
+                                <text x="160" y="125" text-anchor="end" class="fig-label-xl">10&#160;000</text>
+                                <text x="276" y="125" text-anchor="end" class="fig-label-xl">26</text>
+                                <polygon class="fig-ink" points="294,578.7 308,569.7 308,587.7"/>
+                                <rect class="fig-tag-light" x="312" y="540.7" width="282" height="76" rx="10"/>
+                                <text x="322" y="572.7" class="fig-label-xl">nad 300&#160;m:</text>
+                                <text x="322" y="608.7" class="fig-label-xl">jiný postup</text>
+                                <polygon class="fig-ink" points="294,464.0 308,455.0 308,473.0"/>
+                                <rect class="fig-tag-light" x="312" y="426.0" width="282" height="76" rx="10"/>
+                                <text x="322" y="458.0" class="fig-label-xl">≈&#160;2&#160;200&#160;m:</text>
+                                <text x="322" y="494.0" class="fig-label-xl">kabina letadla</text>
+                                <polygon class="fig-ink" points="294,312.0 308,303.0 308,321.0"/>
+                                <rect class="fig-tag-light" x="312" y="274.0" width="282" height="76" rx="10"/>
+                                <text x="322" y="306.0" class="fig-label-xl">asi polovina</text>
+                                <text x="322" y="342.0" class="fig-label-xl">tlaku u&#160;moře</text>
+                                <polygon class="fig-ink" points="294,112.0 308,103.0 308,121.0"/>
+                                <text x="318" y="125.0" class="fig-label-xl">letadlo</text>
+                                <path class="fig-plane" transform="translate(456 90) scale(0.72) translate(-402 -4)" d="M420 30H560C574 30 582 36 582 42S574 54 560 54H420L402 42ZM488 30L456 4H474L520 30ZM488 54L456 82H474L520 54ZM428 30L418 14H430L446 30Z"/>
+                            </svg>
+                    </figure>
                     <div>
                         <p><span class="course-highlight">Proč je pro potápěče důležitý</span></p>
                         <ul>
@@ -548,19 +597,6 @@
                             <li>Odlet letadlem po potápění.</li>
                             <li>Tlak v&nbsp;přetlakové kabině letadla jako ve výšce asi 2&nbsp;200&nbsp;m.</li>
                         </ul>
-                        <figure class="course-figure course-illustration course-illustration-band">
-                        <svg viewBox="0 0 600 200" role="img" aria-label="Silnice přes horské sedlo a letadlo nad horami">
-                            <rect class="fig-sky" width="600" height="200" rx="16"/>
-                            <path class="fig-rock" d="M0 200V150L120 52L230 118L330 40L470 160L600 120V184A16 16 0 0 1 584 200H16A16 16 0 0 1 0 184Z"/>
-                            <polygon class="fig-snow" points="120,52 98,70 112,68 122,80 134,68 146,72"/>
-                            <polygon class="fig-snow" points="330,40 306,58 320,56 330,70 342,58 356,62"/>
-                            <path class="fig-road" d="M20 200C90 176 170 140 230 120S380 170 440 200"/>
-                            <path class="fig-road-line" d="M20 200C90 176 170 140 230 120S380 170 440 200"/>
-                            <path class="fig-plane" d="M420 30H560C574 30 582 36 582 42S574 54 560 54H420L402 42ZM488 30L456 4H474L520 30ZM488 54L456 82H474L520 54ZM428 30L418 14H430L446 30Z"/>
-                            <rect class="fig-tag-light" x="106" y="142" width="248" height="46" rx="10"/>
-                            <text x="230" y="176" text-anchor="middle" class="fig-label-xl">horské sedlo</text>
-                        </svg>
-                        </figure>
                     </div>
                 </div>
             </div>
@@ -569,6 +605,8 @@
                 <div class="course-more-body">
                     <p>Tabulka odpovídá standardní atmosféře (ISO 2533) přepočtené tak, aby u&nbsp;hladiny moře vyšlo přesně 100&nbsp;kPa.
                         Od takto přepočtené standardní atmosféry se liší nejvýš o&nbsp;0,1&nbsp;kPa.</p>
+                    <p>Výšky na stupnici mají stejné rozestupy, i&nbsp;když se liší o&nbsp;100&nbsp;m i&nbsp;o&nbsp;1&nbsp;000&nbsp;m: je to tabulka
+                        seřazená zdola nahoru, ne graf. Dva orientační body leží mezi řádky.</p>
                     <p>Proč na výšce záleží: při výstupu klesne tlak u&nbsp;horského jezera ve větším poměru než u&nbsp;moře. Z&nbsp;20&nbsp;m na hladinu
                         je to u&nbsp;moře 3&nbsp;bar → 1&nbsp;bar (třikrát méně), u&nbsp;jezera v&nbsp;5&nbsp;500&nbsp;m 2,5&nbsp;bar → 0,5&nbsp;bar (pětkrát
                         méně). Proto se pro potápění ve výšce dekomprese počítá jinak.</p>

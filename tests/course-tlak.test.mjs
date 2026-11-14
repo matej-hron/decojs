@@ -363,7 +363,9 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
         13: ['F'],
         14: ['nízký tlak', 'vysoký tlak'],
         16: ['vzduchu ubývá, tlak klesá k 0', 'Mount Everest 8 850 m', '31 kPa', 'hladina moře', '101 kPa'],
-        17: ['horské sedlo'],
+        17: ['výška', 'tlak', '[m]', '[kPa]', '10 000', '26', '9 000', '30,3', '8 000', '35,1', '7 000', '40,5', '6 000', '46,5', '5 500', '49,8',
+            '5 000', '53,3', '4 000', '60,8', '3 000', '69,1', '2 000', '78,4', '1 000', '88,6', '500', '94,2', '200', '97,6', '100', '98,8', '0', '100',
+            'letadlo', 'asi polovina', 'tlaku u moře', '≈ 2 200 m:', 'kabina letadla', 'nad 300 m:', 'jiný postup'],
         18: ['F', 'F', 'F', 'S', 'S', 'S', 'h', 'h', 'pár litrů v trubici', 'sud praskl'],
         21: ['obličejové dutiny', 'střední ucho', 'dýchací cesty', 'plíce', 'trávicí systém'],
     };
@@ -588,4 +590,36 @@ test('T25: slidy 13 a 14 mají řady text + jeho kresba jako originál, stejné 
     assert.match(css, /\.course-slide\[data-slide-type="figure"\] \.course-core:has\(> \.course-row\)/);
     assert.match(read('docs/course/slides.md'), /\*\*Řady text \+ jeho ilustrace\*\*/);
     assert.ok(read('docs/course/vzornik-slidu.html').includes('id="ilustrace-rady"'));
+});
+
+// ---------------------------------------------------------------- T26: výšková stupnice na slidu 17
+
+test('T26: slide 17 je svislá výšková stupnice zdola nahoru se všemi hodnotami originálu a orientačními body', () => {
+    const s = slide(17);
+    assert.equal(s.dataset.slideType, 'figure');
+    assert.equal(s.dataset.slideFit, slide(16).dataset.slideFit, 'stejné písmo jako slide 16 se stejným nadpisem (T22)');
+    assert.equal(s.querySelectorAll('table').length, 0, 'už ne tabulka ve dvou párech sloupců');
+    const svg = s.querySelector('figure.course-illustration-scale svg');
+    const core = s.querySelector('.course-core');
+    assert.ok(core.firstElementChild.contains(svg), 'stupnice vlevo (na telefonu nad odrážkami)');
+    assert.equal(text(core.lastElementChild.querySelector('.course-highlight')), 'Proč je pro potápěče důležitý');
+    const want = [[10000, '26'], [9000, '30,3'], [8000, '35,1'], [7000, '40,5'], [6000, '46,5'], [5500, '49,8'], [5000, '53,3'],
+        [4000, '60,8'], [3000, '69,1'], [2000, '78,4'], [1000, '88,6'], [500, '94,2'], [200, '97,6'], [100, '98,8'], [0, '100']];
+    const texts = [...svg.querySelectorAll('text')];
+    const heights = texts.filter(t => t.getAttribute('x') === '160' && /^[\d\s\u00a0]+$/.test(t.textContent))
+        .map(t => ({ h: Number(t.textContent.replace(/\D/g, '')), y: Number(t.getAttribute('y')) }));
+    assert.deepEqual(heights.map(r => r.h), want.map(r => r[0]).reverse(), 'všech 15 výšek');
+    // Výška roste nahoru, rozestupy stejné (tabulka, ne graf s lineární osou).
+    const ys = heights.map(r => r.y);
+    assert.ok(ys.every((y, i) => i === 0 || y < ys[i - 1]), '0 dole, 10 000 nahoře');
+    assert.equal(new Set(ys.slice(1).map((y, i) => ys[i] - y)).size, 1, 'stejné rozestupy');
+    for (const { h, y } of heights) {
+        const p = texts.find(t => t.getAttribute('x') === '276' && Number(t.getAttribute('y')) === y);
+        assert.equal(p?.textContent, want.find(r => r[0] === h)[1], `tlak u ${h} m`);
+    }
+    const label = svg.textContent.replace(/\s+/g, ' ');
+    for (const m of ['nad 300 m:', '≈ 2 200 m:', 'kabina letadla', 'asi polovina', 'letadlo']) assert.ok(label.includes(m), m);
+    assert.ok(svg.querySelector('.fig-plane') && svg.querySelector('.fig-rock'), 'hory a letadlo z původní kresby');
+    assert.match(svg.getAttribute('aria-label'), /0 m 100 kPa.*10 000 m 26 kPa/);
+    assert.match(text(s.closest('section').querySelector('details.course-more')), /stejné rozestupy/);
 });

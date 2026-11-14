@@ -171,8 +171,8 @@ schémata; nové obrázky je nepoužívají.
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
 Varianty těla:
-- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slide 17): ilustrace na konci sloupce,
-  výška nejvýš 22 % slidu. Nízký pás (viewBox 600 × 200, slide 17) má navíc `course-illustration-band` a nejvýš 20 %.
+- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, dnes žádný slide, dřív 13 a 17): ilustrace na konci
+  sloupce, výška nejvýš 22 % slidu. Nízký pás (viewBox 600 × 200) má navíc `course-illustration-band` a nejvýš 20 %.
   Ilustrace ze dvou částí má popisek pod každou částí: `<figcaption class="course-figure-pair">` se dvěma `<span>`.
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
@@ -192,6 +192,11 @@ Varianty těla:
   rozložení i `data-slide-fit` (T22).
 - **Vysoký obrázek** (slide 21: celá postava z profilu): navíc `course-core-figure-tall`, obrázek smí mít 62 % výšky
   slidu místo poloviny.
+- **Výšková stupnice** (slide 17, T26, jako tabulka strany 17 originálu): `course-core-figure-wide course-core-figure-tall`,
+  stupnice jako první (vlevo, na telefonu nad odrážkami) `<figure class="course-figure course-illustration
+  course-illustration-scale">` s jedním SVG (viewBox 600 × 700): jeden sloupec výšek a tlaků zdola nahoru, řádky se stejným
+  rozestupem a pruhy jako tabulka (ne graf s lineární osou), napravo orientační body s ukazatelem na přesné místo (i mezi
+  řádky), v pozadí hory a letadlo. Stupnice smí zabrat 64,5 % výšky slidu, čísla jsou pak na 1280×720 asi 20 px.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
   na telefonu 120 px) a popiskem vedle: jméno a roky, za nimi odkaz `course-source` „zdroj“.
   Jen když se vejde a je k němu volný zdroj.
@@ -379,7 +384,7 @@ Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-typ
 | Typ | Co obsahuje | Slidy přednášky |
 |---|---|---|
 | velký obrázek | fotka nebo schéma přes většinu slidu s jednou větou pod ním | 50, 51, 52 |
-| tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`, slide 17) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
+| tabulka nebo graf s textem | datová tabulka či graf vedle výkladu (tabulka bez grafu stačí `content` s `course-core-cols`) | 38 (koláč složení vzduchu), 46 (saturace v čase), 47 |
 | upozornění | výrazné varování se značkou nebezpečí přes celý slide; slide 26 (typ `models`) vystačil s částí `.course-warning` (popsaná v §3 u typu `content`) | 34, 44 |
 | velká věta | jedna až dvě krátké věty přes celý slide | 56 („Rychlejší… Není jasné, odkud zvuk přichází“) |
 | konec | závěrečný slide s fotkou a jednou větou | 60 („Konec … A hurá do vody“) |
