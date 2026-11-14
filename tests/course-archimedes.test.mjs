@@ -267,3 +267,23 @@ test('Archimédův zákon: stránka, modul, model a pojmy jsou offline (sw.js)',
     assert.match(html, /<script type="module" src="\.\.\/js\/course\/archimedesPage\.js"><\/script>/);
     assert.match(html, /<meta name="robots" content="noindex">/);
 });
+
+test('Archimédův zákon: Více u slidu 37 srovnává hliníkovou a ocelovou lahev, slide beze změny (A8)', () => {
+    const section = slide(37).closest('section');
+    assert.equal(slide(37).querySelectorAll('#hlinik-ocel').length, 0, 'jen ve Více, ne na slidu');
+    const ex = section.querySelector('details.course-more .course-example#hlinik-ocel');
+    assert.ok(ex);
+    assert.equal(text(ex.querySelector('h3')), 'Hliníková, nebo ocelová lahev?');
+    const t = text(ex);
+    // Čísla ze zadání a výpočet z hustot (voda 1 kg/l).
+    for (const s of ['11,1 l', '207 bar', '14,3 kg', '232 bar', '13,3 až 14,1 kg', '2 700 proti 7 850 kg/m³',
+        '≈ 5,3 l kovu', '≈ 16,4 l vody', 'asi o 2 kg', '≈ 1,7 l kovu', '13,7 l vody', 'bez ventilu']) {
+        assert.ok(ex.textContent.replace(/\s+/g, m => (m.includes(' ') ? ' ' : ' ')).includes(s), s);
+    }
+    assert.ok(Math.abs(14.3 / 2.7 - 5.3) < 0.05 && Math.abs(14.3 / 2.7 + 11.1 - 16.4) < 0.05 && Math.abs(16.4 - 14.3 - 2) < 0.15);
+    assert.ok(Math.abs(13.3 / 7.85 - 1.7) < 0.05 && Math.abs(13.3 / 7.85 + 12 - 13.7) < 0.05);
+    assert.match(t, /odhad z hustot materiálu/);
+    assert.deepEqual([...ex.querySelectorAll('var')].map(v => v.textContent), ['V', 'm', 'ρ', 'V']);
+    assert.ok(ex.querySelector('a[href="hustota.html#definice"]'), 'odkaz na Hustotu');
+    assert.doesNotMatch(ex.innerHTML, /\d \d{3}&nbsp;|\d\.\d/, 'nezalomitelné mezery a desetinná čárka');
+});
