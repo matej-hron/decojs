@@ -68,7 +68,11 @@ describe('nextTarget: přes hranice stránek', () => {
         assert.deepEqual(nextTarget({ slug: 'dalton', index: 0, count: 6, dir: -1 }), { href: 'archimeduv-zakon.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'dalton', index: 5, count: 6, dir: 1 }), { href: 'henry.html' });
         assert.deepEqual(nextTarget({ slug: 'henry', index: 0, count: 8, dir: -1 }), { href: 'dalton.html#procvic' });
-        assert.deepEqual(nextTarget({ slug: 'henry', index: 7, count: 8, dir: 1 }), { href: 'index.html#kapitoly' });
+        assert.deepEqual(nextTarget({ slug: 'henry', index: 7, count: 8, dir: 1 }), { href: 'slyseni.html' });
+        assert.deepEqual(nextTarget({ slug: 'slyseni', index: 0, count: 2, dir: -1 }), { href: 'henry.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'slyseni', index: 1, count: 2, dir: 1 }), { href: 'teplo.html' });
+        assert.deepEqual(nextTarget({ slug: 'teplo', index: 0, count: 6, dir: -1 }), { href: 'slyseni.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'teplo', index: 5, count: 6, dir: 1 }), { href: 'index.html#kapitoly' });
     });
 });
 
