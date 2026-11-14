@@ -13,11 +13,15 @@
  * to řeší CSS). Zavírá se Esc, křížkem a klikem mimo a vrací na slide. Adresa `#model-lom` otevře
  * stránku se slidem a simulátorem. Model se staví až při prvním otevření, kdy má skutečnou velikost.
  *
+ * Do hlavičky překryvu (`.course-sim-actions`) se doplní odkaz „☰ Obsah“ na obsah kurzu, stránky ho v HTML nemají.
+ * Na celé obrazovce se schová jako ostatní tlačítka hlavičky, obsah je tam na klávesu O.
+ *
  * Náhled může nést předvolbu `data-model-params="zvon=1"`: před otevřením se zapíše do adresy, takže ji model
  * načte stejně jako předvolbu z odkazu (po zavření ji model z adresy smaže).
  */
 
 import { withPreset } from './modelParams.js';
+import { TOC_HREF } from './slideNav.js';
 
 const DESKTOP = '(min-width: 769px)';
 
@@ -26,6 +30,22 @@ const DESKTOP = '(min-width: 769px)';
  * @property {() => void} [onOpen]  při každém otevření (první až po postavení)
  * @property {() => void} [onClose]
  */
+
+/**
+ * Odkaz na obsah kurzu do hlavičky překryvu, před „Celá obrazovka“. Na telefonu zbude jen ☰.
+ * @param {Element} dialog
+ */
+export function addTocLink(dialog) {
+    const actions = dialog.querySelector('.course-sim-actions');
+    if (!actions || actions.querySelector('.course-sim-toc')) return;
+    const a = dialog.ownerDocument.createElement('a');
+    a.className = 'btn btn-small btn-icon course-sim-toc';
+    a.href = TOC_HREF;
+    a.title = 'Obsah kurzu (klávesa O)';
+    a.setAttribute('aria-label', 'Obsah kurzu');
+    a.innerHTML = '<span aria-hidden="true">☰</span><span class="course-toc-word">Obsah</span>';
+    actions.prepend(a);
+}
 
 /**
  * @param {Object<string, () => ModelController>} factories id modelu → funkce, která model postaví
@@ -84,6 +104,7 @@ export function initModelOverlays(factories) {
     for (const id of Object.keys(factories)) {
         const dialog = dialogOf(id);
         if (!dialog) continue;
+        addTocLink(dialog);
         dialog.addEventListener('close', () => {
             controllers.get(id)?.onClose?.();
             openId = null;

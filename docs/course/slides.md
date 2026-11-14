@@ -31,6 +31,14 @@ Rozložení odpovídá originálu přednášky (`resources/FyzikaP12_2025.pdf`, 
   vzduchu</a>)“, v jiné kapitole `tlak.html#plyn`. Název je krátké jméno slidu podle jeho nadpisu nebo zvýrazněného
   podnadpisu. Platí pro `p1/*.html` i `concepts/cs/*.html`, včetně popisků v obrázcích a `aria-label`; komentáře
   v HTML čísla přednášky mít smí. Hlídá to test.
+- **Na obsah kurzu se dá jít vždycky** (`index.html#kapitoly`):
+  - v patičce každého slidu je vlevo odkaz „☰ Obsah“ (orámovaný jako ‹ ›), kromě slidu Obsah samotného; na telefonu
+    zbude jen ☰ s `aria-label="Obsah kurzu"`, patička se nezalomí;
+  - v hlavičce překryvu modelu je „☰ Obsah“ před „Celá obrazovka“ (doplní ho `js/course/modelOverlay.js`, stránka
+    ho v HTML nemá); na celé obrazovce se schová jako ostatní tlačítka hlavičky;
+  - **klávesa O** (bez Ctrl, Alt a Cmd) odkudkoli v kurzu, i z překryvu a celé obrazovky; na rozcestníku skočí na
+    slide Obsah. Nekoliduje se šipkami, mezerníkem ani Esc v simulátorech; v textovém poli se O normálně píše;
+  - stránka Použité materiály (`zdroje.html`) má nahoře „← Obsah kurzu P1 – Fyzika“ a klávesu O taky.
 - **Stejné místo na všech zastávkách (desktop):** stejný rámeček, nadpis v 10 % výšky slidu, začátek těla v 28 %,
   okraje textu kolem 8 % šířky. Titulní slide má vlastní pevnou polohu (nadpis ve spodní třetině).
   Po skoku na zastávku není vidět další slide.
