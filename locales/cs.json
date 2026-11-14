@@ -975,11 +975,11 @@
     },
     "gasLaw": {
         "disclaimer": {
-            "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro potápěčské lahve (konstantní objem)."
+            "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Charlesův zákon pro potápěčské lahve (konstantní objem)."
         },
         "header": {
             "title": "Tlak v lahvi při změně teploty",
-            "subtitle": "Jak změna teploty ovlivňuje tlak v potápěčské lahvi (Gay-Lussacův zákon)"
+            "subtitle": "Jak změna teploty ovlivňuje tlak v potápěčské lahvi (Charlesův zákon)"
         },
         "setup": "Nastavení",
         "scenario": "Scénář",
@@ -1022,13 +1022,13 @@
         "whyText1": "Molekuly plynu se při vyšší teplotě pohybují rychleji a narážejí na stěny lahve s větší silou, čímž zvyšují tlak. Protože lahev je tuhá (konstantní objem), veškerá kinetická energie se přímo přemění na vyšší tlak.",
         "whyText2": "<strong>Praktický tip:</strong> Kompresory při plnění generují značné teplo — plyn v čerstvě naplněné lahvi může mít o 40–50 °C více než okolí. Pokud naplníte lahev na 200 bar v teplé plnírně a ponoříte se do studeného jezera, nedivte se, že na manometru uvidíte jen asi 180 bar. To není únik — to je fyzika.",
         "whyRuleOfThumb": "<strong>Orientační pravidlo:</strong> ~0,6 bar změna na 1 °C při pracovním tlaku 200 bar.",
-        "formulaTitle": "Gay-Lussacův zákon (izochorický děj)",
-        "formulaNote": "poměr tlaku a teploty je při konstantním objemu stálý (<var>T</var> v kelvinech)",
+        "formulaTitle": "Charlesův zákon (izochorický děj)",
+        "formulaNote": "poměr tlaku a teploty je při konstantním objemu stálý (<var>T</var> v kelvinech); v anglické literatuře se mu obvykle říká Gay-Lussacův zákon",
         "formulaRearranged": "Přeuspořádáno:",
         "modelLimitations": {
             "summary": "Poznámka k přesnosti a omezením modelu",
             "intro": "Toto pískoviště záměrně používá jednoduchý model ideálního plynu, aby názorně ukázalo vliv teploty na tlak.",
-            "pressureReference": "<strong>Vztažný tlak:</strong> Gay-Lussacův zákon přesně používá absolutní tlak, zatímco manometr lahve ukazuje přetlak vůči atmosféře. Přímé použití údaje manometru je při vysokém tlaku malou aproximací.",
+            "pressureReference": "<strong>Vztažný tlak:</strong> Charlesův zákon přesně používá absolutní tlak, zatímco manometr lahve ukazuje přetlak vůči atmosféře. Přímé použití údaje manometru je při vysokém tlaku malou aproximací.",
             "realGas": "<strong>Reálný plyn:</strong> Při vysokých tlacích v lahvi se vzduch ani nitrox nechovají jako ideální plyn. Jejich stlačitelnost závisí na tlaku, teplotě a složení a může výsledek ovlivnit více než aproximace vztažného tlaku.",
             "thermalState": "<strong>Teplota:</strong> Výpočet předpokládá stejnou teplotu v celém objemu plynu a tepelnou rovnováhu. Čerstvě naplněná nebo rychle ohřívaná lahev může mít výrazné teplotní gradienty.",
             "cylinderAndGauge": "<strong>Lahev a manometr:</strong> Vnitřní objem lahve se s tlakem a teplotou nepatrně mění a samotný manometr má omezenou přesnost.",

@@ -312,7 +312,7 @@
         { "key": "d", "text": "p₁ · T₁ = p₀ · T₀, e indica que cuántas veces aumenta la temperatura del gas, otras tantas disminuye su presión" }
       ],
       "correct": "c",
-      "explanation": "Ley de Gay-Lussac: V₁/T₁ = V₂/T₂ a presión constante (proceso isobárico). El volumen del gas es directamente proporcional a su temperatura absoluta."
+      "explanation": "Ley de Gay-Lussac (en la mayoría de los libros de texto en español se llama ley de Charles): V₁/T₁ = V₂/T₂ a presión constante (proceso isobárico). El volumen del gas es directamente proporcional a su temperatura absoluta."
     },
     {
       "id": 25,
