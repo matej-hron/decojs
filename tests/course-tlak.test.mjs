@@ -546,3 +546,10 @@ test('T14, T19: pod nádobami „stejný tlak na dno“, obrázek ani „Více�
     assert.ok(more.querySelector('[data-concept="hydrostatic-pressure"]'));
     assert.doesNotMatch(text(more), /Síla na dno|Slovo „pouze“/);
 });
+
+test('T24: slide 12 píše „normální atmosférický tlak“, ne nezákonnou jednotku atm; pojem ji dál zmiňuje', () => {
+    const lines = [...slide(12).querySelectorAll('.course-core-row p')].map(text);
+    assert.ok(lines.includes('normální atmosférický tlak = 101,325 kPa ≈ 1 bar'), lines.join(' | '));
+    assert.doesNotMatch(text(slide(12)), /\batm\b/);
+    assert.match(read('concepts/cs/pressure.html'), /Starší jednotka fyzikální atmosféra je 1&nbsp;atm = 101&nbsp;325&nbsp;Pa/);
+});
