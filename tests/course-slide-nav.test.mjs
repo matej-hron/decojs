@@ -5,7 +5,8 @@ import { JSDOM } from 'jsdom';
 import {
     collectStops, isSliderTarget, mostVisibleIndex, nextTarget, slideFootHtml, slideKeyDirection, stopAnchor,
 } from '../js/course/slideNav.js';
-import { P1_CHAPTERS } from '../js/course/p1Course.js';
+import { execFileSync } from 'node:child_process';
+import { P1_CHAPTERS, P1_LECTURE_SLIDES } from '../js/course/p1Course.js';
 
 const ROOT = new URL('../', import.meta.url);
 const pageDom = (path) => new JSDOM(readFileSync(new URL(path, ROOT), 'utf8')).window.document;
@@ -175,15 +176,43 @@ describe('patička slidu', () => {
     it('vlevo jméno přednášky jako odkaz na Obsah, vpravo číslo a tlačítka', () => {
         const html = slideFootHtml('9');
         assert.match(html, /<a[^>]*href="index\.html#kapitoly"[^>]*>P1 – Fyzika<\/a>/);
-        assert.match(html, /class="course-foot-number"[^>]*>9</);
+        assert.match(html, /class="course-foot-number"[^>]*>9 \/ 60</);
         assert.match(html, /data-step="-1"/);
         assert.match(html, /data-step="1"/);
-        assert.ok(html.indexOf('P1 – Fyzika') < html.indexOf('>9<'), 'jméno vlevo, číslo vpravo');
+        assert.ok(html.indexOf('P1 – Fyzika') < html.indexOf('>9 / 60<'), 'jméno vlevo, číslo vpravo');
+    });
+
+    it('číslo slidu je z celkového počtu slidů přednášky, i pro čtečky', () => {
+        const html = slideFootHtml('8');
+        assert.match(html, /<span class="course-foot-number" aria-label="slide 8 z 60">8 \/ 60<\/span>/);
+        assert.match(slideFootHtml('8', 12), /aria-label="slide 8 z 12">8 \/ 12</);
+    });
+
+    it('celkový počet slidů odpovídá přednášce (pptx) a v kapitolách není natvrdo', () => {
+        const pptx = new URL('resources/FyzikaP12_2025.pptx', ROOT);
+        const list = execFileSync('unzip', ['-l', pptx.pathname], { encoding: 'utf8' });
+        const slides = list.match(/ppt\/slides\/slide\d+\.xml$/gm) ?? [];
+        assert.equal(slides.length, P1_LECTURE_SLIDES);
+        assert.equal(P1_LECTURE_SLIDES, 60);
+        const pages = ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`)];
+        for (const page of pages) {
+            const html = readFileSync(new URL(page, ROOT), 'utf8');
+            assert.doesNotMatch(html, /course-foot|data-slide-total|slide \d+ z \d+/, `${page}: patičku a počet doplní slideNav.js`);
+        }
+    });
+
+    it('patička se nezalomí: číslo i jméno na jednom řádku, pravá část se nesmrští', () => {
+        const css = readFileSync(new URL('css/course.css', ROOT), 'utf8');
+        const rule = (sel) => css.match(new RegExp(`\\${sel}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+        assert.match(rule('.course-foot-number'), /white-space:\s*nowrap/);
+        assert.match(rule('.course-foot-title'), /white-space:\s*nowrap/);
+        assert.match(rule('.course-foot-right'), /flex:\s*none/);
     });
 
     it('slide bez čísla má stejnou stavbu, jen číslo chybí', () => {
         const html = slideFootHtml(null);
         assert.doesNotMatch(html, /course-foot-number[^>]*>\d/);
+        assert.doesNotMatch(html, /aria-label="slide|\/ 60/);
         assert.match(html, /P1 – Fyzika/);
         assert.match(html, /data-step="1"/);
     });

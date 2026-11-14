@@ -20,6 +20,12 @@
  * @property {ChapterStatus} status
  */
 
+/**
+ * Počet slidů přednášky FyzikaP12_2025 (`resources/FyzikaP12_2025.pptx`, ppt/slides/slide1–60.xml).
+ * Číslování v kurzu je číslování přednášky, proto patička slidu ukazuje „8 / 60“ i v kapitole Hustota.
+ */
+export const P1_LECTURE_SLIDES = 60;
+
 /** @type {Chapter[]} */
 export const P1_CHAPTERS = [
     { slug: 'hustota', title: 'Hustota', slides: '8–9', level: 'P★', status: 'ready' },

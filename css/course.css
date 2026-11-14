@@ -637,7 +637,7 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     dialog.course-sim > .course-model.chart-container { height: auto; min-height: 100%; border-radius: 0; }
 }
 
-/* --- patička slidu: jméno přednášky, číslo slidu, ‹ › ---------------------
+/* --- patička slidu: jméno přednášky, číslo slidu / počet slidů, ‹ › -------
    Stejné místo a velikost na všech zastávkách i stránkách, mění se jen číslo. */
 
 .course-foot {
@@ -652,9 +652,17 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     font-size: var(--text-sm);
     color: var(--slide-subtle);
 }
-.course-foot-title { color: var(--slide-subtle); text-decoration-thickness: 1px; }
-.course-foot-right { display: flex; align-items: center; gap: var(--space-3); }
-.course-foot-number { font-variant-numeric: tabular-nums; }
+.course-foot-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--slide-subtle);
+    text-decoration-thickness: 1px;
+}
+.course-foot-right { display: flex; flex: none; align-items: center; gap: var(--space-3); }
+/* „8 / 60“ se nesmí zalomit (telefon, 1280×720) */
+.course-foot-number { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .course-slide-nav { display: flex; flex: none; gap: var(--space-1); }
 .course-slide-nav button {
     width: 2rem;
