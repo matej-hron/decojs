@@ -23,9 +23,9 @@ const borrowed = chapters.flatMap(page => [...doc(page).querySelectorAll('img, s
     .filter(img => isBorrowed(srcOf(img)))
     .map(img => ({ page, img })));
 
-test('v kurzu je šest převzatých obrázků (manometr, Pascal, částice, ucho, Dalton, Henry) a všechny jsou v SOURCES.md', () => {
+test('v kurzu je sedm převzatých obrázků (manometr, Pascal, částice, ucho, Dalton, Henry, Silfra) a všechny jsou v SOURCES.md', () => {
     assert.deepEqual(borrowed.map(b => srcOf(b.img).split('/').pop()).sort(),
-        ['dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg', 'ucho-anatomie.svg']);
+        ['dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg', 'silfra.jpg', 'ucho-anatomie.svg']);
     for (const { img } of borrowed) assert.ok(SOURCED.has(srcOf(img)), srcOf(img));
 });
 
@@ -51,7 +51,7 @@ for (const { page, img } of borrowed) {
 
 test('zdroje.html: každá položka má použití s odkazem zpět, autora, licenci, zdroj a úpravy', () => {
     const d = doc(SOURCES_PAGE);
-    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn', ucho: 'stlacovani-plynu.html#dutiny', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon' };
+    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn', ucho: 'stlacovani-plynu.html#dutiny', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon', silfra: 'teplo.html#procvic' };
     for (const [id, href] of Object.entries(back)) {
         const entry = d.getElementById(id);
         assert.ok(entry, id);

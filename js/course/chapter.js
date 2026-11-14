@@ -10,7 +10,7 @@
  * nadpis je jediné `h1`, úvod kapitoly patří do „Více“ pod ním.
  */
 
-import { chapterBySlug, chapterNeighbours } from './p1Course.js';
+import { P1_CHAPTERS, chapterBySlug, chapterNeighbours } from './p1Course.js';
 import { loadConcepts } from './concepts.js';
 import { initPractice } from './practice.js';
 import { initSlideNav } from './slideNav.js';
@@ -43,6 +43,17 @@ export function initExpandAll() {
     sync();
 }
 
+/**
+ * Text odkazu za poslední hotovou kapitolou: dokud některá kapitola chybí, „připravujeme“, jinak konec kurzu.
+ * @param {{status: string}[]} [chapters]
+ * @returns {string}
+ */
+export function endOfChaptersLabel(chapters = P1_CHAPTERS) {
+    return chapters.some(c => c.status !== 'ready')
+        ? 'Další kapitoly připravujeme — zpět na přehled kurzu →'
+        : 'Konec kurzu — zpět na přehled kurzu →';
+}
+
 function renderPrevNext(slug) {
     const host = document.querySelector('.course-prevnext');
     if (!host) return;
@@ -51,7 +62,7 @@ function renderPrevNext(slug) {
         ? `<a class="course-prevnext-${dir}" href="${c.slug}.html">${dir === 'prev' ? '← ' : ''}${c.title}${dir === 'next' ? ' →' : ''}</a>`
         : '';
     const nextOrHub = next ? link(next, 'next')
-        : '<a class="course-prevnext-next" href="index.html">Další kapitoly připravujeme — zpět na přehled kurzu →</a>';
+        : `<a class="course-prevnext-next" href="index.html">${endOfChaptersLabel()}</a>`;
     host.innerHTML = `${prev ? link(prev, 'prev') : '<a class="course-prevnext-prev" href="index.html">← Přehled kurzu</a>'}${nextOrHub}`;
 }
 
