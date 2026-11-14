@@ -265,7 +265,7 @@ test('R3: Pascalův zákon, počasí, pojmy bez hranatých závorek, citace stla
     for (const id of ['pressure', 'pascal-law', 'atmospheric-pressure', 'hydrostatic-pressure', 'total-pressure', 'gas-pressure']) {
         assert.doesNotMatch(read(`concepts/cs/${id}.html`), /\[(bar|Pa|m|kPa)\]/, `${id}: bez hranatých závorek`);
     }
-    assert.match(text(slide(13).querySelector('figure')), /kapalina: tlak se šíří všude stejně/);
+    assert.match(text(slide(13)), /tlak se šíří všude stejně/);
     const [boots, needle] = slide(12).querySelectorAll('figure svg');
     const vb = (svg) => svg.getAttribute('viewBox').split(/\s+/).map(Number);
     assert.deepEqual(vb(boots), vb(needle), 'stejně velké obrázky, popisky stejně velké');
@@ -377,9 +377,8 @@ test('T7: fyzika beze změny: stejné popisky, šipky sil a čísla', () => {
     assert.equal(forces(18), 3, 'šipka síly na každé ze tří den');
     assert.equal(forces(14) + forces(16) + forces(17) + forces(21), 0, 'bez nových sil');
     assert.equal(slide(14).querySelectorAll('.fig-air').length, 20, 'stejné množství plynu v obou válcích');
-    const fig13 = text(slide(13).querySelector('figure figcaption'));
-    assert.match(fig13, /pevná látka: krystalická mřížka/);
-    assert.match(fig13, /kapalina: tlak se šíří všude stejně/);
+    const fig13 = [...slide(13).querySelectorAll('figure figcaption')].map(text);
+    assert.deepEqual(fig13, ['krystalická mřížka', 'hladina, tvar podle nádoby tlak se šíří všude stejně']);
 });
 
 // ---------------------------------------------------------------- T8: jednotka pascal u vzorce na slidu 11
@@ -552,4 +551,41 @@ test('T24: slide 12 píše „normální atmosférický tlak“, ne nezákonnou 
     assert.ok(lines.includes('normální atmosférický tlak = 101,325 kPa ≈ 1 bar'), lines.join(' | '));
     assert.doesNotMatch(text(slide(12)), /\batm\b/);
     assert.match(read('concepts/cs/pressure.html'), /Starší jednotka fyzikální atmosféra je 1&nbsp;atm = 101&nbsp;325&nbsp;Pa/);
+});
+
+// ---------------------------------------------------------------- T25: slidy 13 a 14 jako řady text + jeho kresba
+
+test('T25: slidy 13 a 14 mají řady text + jeho kresba jako originál, stejné rozložení i data-slide-fit', () => {
+    const rows = (n) => [...slide(n).querySelectorAll('.course-core > .course-row')];
+    for (const n of [13, 14]) {
+        assert.equal(slide(n).dataset.slideType, 'figure', `slide ${n}`);
+        assert.equal(slide(n).dataset.slideFit, 'compact', `slide ${n}`);
+        assert.equal(slide(n).querySelector('.course-core').children.length, rows(n).length, `slide ${n}: tělo jsou jen řady`);
+        for (const r of rows(n)) {
+            const [txt, fig] = r.children;
+            assert.equal(r.children.length, 2);
+            assert.equal(txt.tagName, 'DIV', 'text vlevo (na telefonu nahoře)');
+            assert.ok(fig.matches('figure.course-illustration') && fig.querySelector('svg[role="img"][aria-label]'), 'kresba vpravo');
+            assert.ok(text(fig.querySelector('figcaption')).length <= 60, 'krátký popisek');
+        }
+    }
+    assert.deepEqual(rows(13).map(r => text(r.querySelector('.course-highlight'))), ['Pevné látky', 'Kapaliny']);
+    assert.deepEqual(rows(14).map(r => text(r.querySelector('.course-highlight'))), ['Plyny']);
+    // Kresba stojí u textu, který ilustruje.
+    const [solid, liquid] = rows(13).map(r => r.querySelector('figure svg'));
+    assert.ok(solid.querySelector('.fig-bond') && !solid.querySelector('.fig-force'), 'mřížka u pevných látek');
+    assert.equal(liquid.querySelectorAll('.fig-force').length, 9, 'Pascalova baňka u kapalin');
+    assert.ok(liquid.querySelector('.fig-liquid') && liquid.querySelector('path.fig-wall[d^="M70 40V236H250V40"]'), 'kapalina v otevřené nádobě s hladinou');
+    // Pevná látka: částice těsně u sebe, kapalina dál od sebe (stejně velké částice).
+    const pts = (svg, filter) => [...svg.querySelectorAll('circle.fig-atom')].filter(filter).map(c => [+c.getAttribute('cx'), +c.getAttribute('cy'), +c.getAttribute('r')]);
+    const gap = (ps) => Math.min(...ps.flatMap((a, i) => ps.slice(i + 1).map(b => Math.hypot(a[0] - b[0], a[1] - b[1]) - a[2] - b[2])));
+    const solidPts = pts(solid, () => true), liquidPts = pts(liquid, () => true);
+    assert.ok(liquidPts.every(([x, y]) => x > 70 && x < 250 && y > 130), 'částice kapaliny dole v nádobě, pod hladinou');
+    assert.equal(new Set([...solidPts, ...liquidPts].map(p => p[2])).size, 1, 'stejně velké částice');
+    assert.ok(gap(liquidPts) > gap(solidPts), 'v kapalině jsou částice dál od sebe než v mřížce');
+    assert.equal(slide(14).querySelectorAll('.fig-air').length, 20);
+    const css = read('css/course.css');
+    assert.match(css, /\.course-slide\[data-slide-type="figure"\] \.course-core:has\(> \.course-row\)/);
+    assert.match(read('docs/course/slides.md'), /\*\*Řady text \+ jeho ilustrace\*\*/);
+    assert.ok(read('docs/course/vzornik-slidu.html').includes('id="ilustrace-rady"'));
 });

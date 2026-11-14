@@ -159,7 +159,7 @@ se kliklo. Popisek „Otevřít model“ dej nahoru (`course-thumb-hint-top`), k
 
 ### `figure`: text a obrázek nebo schéma
 
-Text vlevo, obrázek vpravo (od 900 px vedle sebe, na telefonu pod sebou), jako slidy 11, 14, 16, 18 a 22.
+Text vlevo, obrázek vpravo (od 900 px vedle sebe, na telefonu pod sebou), jako slidy 11, 16, 18 a 22.
 Obrázek je `<figure class="course-figure course-illustration">` s jedním `<svg>` (styl ilustrací níže) nebo
 `<figure class="course-figure">` s `<img>`, oboje s nepovinným `<figcaption>` (popisek, u převzatého obrázku zdroj a licence).
 Výška obrázku je nejvýš polovina slidu (`--course-slide-height`), takže se slide vždy vejde.
@@ -171,9 +171,9 @@ schémata; nové obrázky je nepoužívají.
 Značka veličiny v SVG: `<tspan font-style="italic">F</tspan>`.
 
 Varianty těla:
-- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slidy 13 a 17): ilustrace na konci sloupce,
+- **Obrázek pod textem v jednom sloupci** (`content` s `course-core-cols`, slide 17): ilustrace na konci sloupce,
   výška nejvýš 22 % slidu. Nízký pás (viewBox 600 × 200, slide 17) má navíc `course-illustration-band` a nejvýš 20 %.
-  Ilustrace ze dvou částí (slide 13) má popisek pod každou částí: `<figcaption class="course-figure-pair">` se dvěma `<span>`.
+  Ilustrace ze dvou částí má popisek pod každou částí: `<figcaption class="course-figure-pair">` se dvěma `<span>`.
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
@@ -182,7 +182,14 @@ Varianty těla:
   stránka souboru, úpravy) je v `p1/zdroje.html` pod vlastní kotvou, záznam v `images/course/p1/SOURCES.md`
   (licence ověřená na stránce souboru). Test `tests/course-zdroje.test.mjs` hlídá, že každý převzatý obrázek odkaz má.
 - **Obrázek nese víc než text** (slide 18: nádoby a Pascalův sud v jedné ilustraci): `course-core course-core-figure-wide`
-  prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` jako slide 13.
+  prohodí šířky sloupců, obrázek dostane 1,35 dílu a text 1 díl. Ilustrace ze dvou částí má `course-figure-pair` (slide 13).
+- **Řady text + jeho ilustrace** (slidy 13 a 14, T25, jako strana 13 originálu): tělo má jednu nebo víc řad
+  `<div class="course-row">` (stejné řady jako text + náhled u `models`), v každé `<div>` s textem a za ním
+  `<figure class="course-figure course-illustration">` s krátkým popiskem. Obrázek tak stojí u textu, který ilustruje,
+  ve stejné výšce. Text dostane 1,9 dílu, obrázek 1 díl; text řad je drobnější (0,85 em, jako řádek pod obrázky
+  na slidu 12), aby se dvě řady vešly. Výška ilustrace je při jedné řadě nejvýš polovina slidu, při víc řadách 30 %.
+  Na telefonu jsou řady pod sebou: text a pod ním jeho kresba. Pokračování se stejným nadpisem (slide 14 po 13) má stejné
+  rozložení i `data-slide-fit` (T22).
 - **Vysoký obrázek** (slide 21: celá postava z profilu): navíc `course-core-figure-tall`, obrázek smí mít 62 % výšky
   slidu místo poloviny.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,
@@ -200,6 +207,27 @@ Varianty těla:
         <figure class="course-figure course-illustration">
             <svg viewBox="0 0 600 420" role="img" aria-label="Tlaková síla F působí kolmo na plochu S">…</svg>
         </figure>
+    </div>
+</div>
+```
+
+Řady text + ilustrace (slide 13):
+
+```html
+<div class="course-slide" data-slide-number="13" data-slide-type="figure" data-slide-fit="compact">
+    <h2>Tlak a&nbsp;skupenství</h2>
+    <div class="course-core">
+        <div class="course-row">
+            <div>
+                <p><span class="course-highlight">Pevné látky</span></p>
+                <ul><li>…</li></ul>
+            </div>
+            <figure class="course-figure course-illustration">
+                <svg viewBox="0 0 600 200" role="img" aria-label="Pevná látka: částice v krystalické mřížce">…</svg>
+                <figcaption>krystalická mřížka</figcaption>
+            </figure>
+        </div>
+        <div class="course-row">…kapaliny…</div>
     </div>
 </div>
 ```
