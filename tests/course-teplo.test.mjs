@@ -157,3 +157,13 @@ test('Teplo: za poslední kapitolou „připravujeme“ jen dokud některá kapi
     assert.equal(endOfChaptersLabel(), P1_CHAPTERS.every(c => c.status === 'ready')
         ? 'Konec kurzu — zpět na přehled kurzu →' : 'Další kapitoly připravujeme — zpět na přehled kurzu →');
 });
+
+test('Teplo a Slyšení: texty neodkazují čísly slidů, ale názvem s proklikem (D16)', () => {
+    for (const page of ['p1/teplo.html', 'p1/slyseni.html']) {
+        const d = new JSDOM(read(page)).window.document;
+        const prose = [...d.querySelectorAll('main details, main figcaption, main .course-core')].map(text).join(' ');
+        assert.doesNotMatch(prose, /\bslid(e|u|em|y)\s+\d/i, page);
+    }
+    assert.ok(doc.querySelector('details a[href="#neopren"]'));
+    assert.ok(doc.querySelector('details a[href="#neopren-hloubka"]'));
+});
