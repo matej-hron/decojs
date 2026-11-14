@@ -361,6 +361,9 @@ test('U8: řešené příklady u lomu jsou tři otázky na fakta, odkazy do mode
     assert.match(plain(answers[2]), /Ve 20 m\. Pod ledem má voda kolem 0 °C, hlouběji kolem 4 °C\. Studenější voda je lehčí a zůstává nahoře\./);
     // bez čísel z modelu kromě 0 a 4 °C
     for (const d of answers) assert.deepEqual([...plain(d).matchAll(/(\d+) °C/g)].map(m => m[1]).filter(t => t !== '0' && t !== '4'), []);
+    // U9: proč je hladina v létě teplejší než průměrný vzduch (vysvětlení teploty vzduchu v modelu)
+    assert.match(readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8').replace(/\s+/g, ' '),
+        /Hladina je v&nbsp;létě teplejší než průměrný vzduch: ohřívá ji hlavně slunce a&nbsp;voda teplo drží i&nbsp;přes noc\.<\/p>/);
     // termoklina je i ve výkladu u léta
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8').replace(/\s+/g, ' ');
     assert.match(concept, /<strong>Léto:<\/strong>[^<]*(<[^/][^>]*>[^<]*)*termoklina \(skočná vrstva\)\.<\/p>/);
