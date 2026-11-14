@@ -232,8 +232,12 @@ Stlačování a Hustota se projdou zvlášť.
   (deska v perspektivě), `fig-atom`, `fig-bond`, `fig-road`, `fig-road-line`, `fig-plane`, `fig-body`, `fig-cavity`,
   `fig-leader` s `fig-halo` (odkazová čára čitelná na tmavém i světlém).
 - **Další třídy (S7, Stlačování plynů):** `fig-molecule` (částice plynu ve válci), `fig-weight` (závaží), `fig-axis`,
-  `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-cavity-light` (vzduch na světlé tkáni, střední ucho), `fig-tissue`
+  `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-tissue`
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
+- **Převzatá kresba ve schématu (U1, slide 27 vpravo):** anatomický řez uchem z Commons (`images/course/p1/ucho-anatomie.svg`,
+  ořez přímo ve `viewBox` souboru) se vkládá `<image href="…">` do SVG slidu, popisky a šipky jsou vlastní nad ním:
+  `fig-water-push` (modrá šipka tlaku vody, žlutá patří plynu) a `fig-air-arrow` (žlutá šipka vzduchu v Eustachově trubici).
+  Rohy obrázku ořezává `clipPath` se zaoblením slidu. Atribuce jako u fotek: odkaz „zdroj“ v popisku, položka v `p1/zdroje.html`.
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
 - **Tělo potápěče (T16, T17; slidy 21 a 27):** kresba je jediná definice, symbol `#telo` v `images/course/p1/telo-profil.svg`

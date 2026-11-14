@@ -373,24 +373,30 @@
                     <div>
                         <h3 class="course-figure-title"><span class="course-highlight">Aktivní vyrovnání tlaku</span></h3>
                         <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 270" role="img" aria-label="Řez uchem: voda tlačí zvukovodem na bubínek, za ním je střední ucho se vzduchem, které se aktivně vyrovnává Eustachovou trubicí">
-                            <rect class="fig-paper" width="600" height="270" rx="16"/>
-                            <path class="fig-tissue" d="M100 0H584A16 16 0 0 1 600 16V254A16 16 0 0 1 584 270H100Z"/>
-                            <path class="fig-liquid" d="M16 0H100V270H16A16 16 0 0 1 0 254V16A16 16 0 0 1 16 0Z"/>
-                            <rect class="fig-liquid" x="100" y="104" width="200" height="62"/>
-                            <path class="fig-tube-wall" d="M362 156Q364 214 386 270"/>
-                            <path class="fig-tube" d="M362 156Q364 214 386 270"/>
-                            <rect class="fig-cavity-light" x="310" y="90" width="88" height="66" rx="26"/>
-                            <rect class="fig-ink" x="298" y="94" width="12" height="82" rx="4"/>
-                            <polygon class="fig-force" points="112,124 250,124 250,110 288,135 250,160 250,146 112,146"/>
-                            <path class="fig-pointer" d="M426 64L390 98M292 196L302 178M452 222L390 236"/>
-                            <text x="110" y="88" class="fig-label-xl">zvukovod</text>
-                            <text x="590" y="56" text-anchor="end" class="fig-label-xl">střední ucho</text>
-                            <text x="290" y="222" text-anchor="end" class="fig-label-xl">bubínek</text>
-                            <text x="590" y="196" text-anchor="end" class="fig-label-xl">Eustachova</text>
-                            <text x="590" y="234" text-anchor="end" class="fig-label-xl">trubice</text>
-                        </svg>
-                            <figcaption>střední ucho (Eustachova trubice), prostor uvnitř masky</figcaption>
+                                        <svg viewBox="0 0 600 270" role="img" aria-label="Anatomický řez uchem (Wikimedia Commons, upraveno): voda tlačí zvukovodem na bubínek. Za bubínkem je střední ucho se vzduchem, žlutě jako plyn na slidu 21. Při vyrovnání do něj jde vzduch z nosohltanu Eustachovou trubicí, žlutá šipka">
+                                <defs><clipPath id="ucho-orez"><rect width="600" height="270" rx="16"/></clipPath></defs>
+                                <rect class="fig-sky" width="600" height="270" rx="16"/>
+                                <g clip-path="url(#ucho-orez)">
+                                    <rect class="fig-paper" x="257" width="343" height="270"/>
+                                    <image href="../images/course/p1/ucho-anatomie.svg" x="257" width="343" height="270"/>
+                                </g>
+                                <polygon class="fig-water-push" points="16,90 312,90 312,76 360,100 312,124 312,110 16,110"/>
+                                <g transform="translate(569 256) rotate(-133.5)"><polygon class="fig-air-arrow" points="0,-7 126.7,-7 126.7,-15 162.7,0 126.7,15 126.7,7 0,7"/></g>
+                                <path class="fig-halo" d="M234 24H436V116"/>
+                                <path class="fig-leader" d="M234 24H436V116"/>
+                                <circle class="fig-leader-dot" cx="436" cy="116" r="3"/>
+                                <path class="fig-halo" d="M150 192L395 130"/>
+                                <path class="fig-leader" d="M150 192L395 130"/>
+                                <circle class="fig-leader-dot" cx="395" cy="130" r="3"/>
+                                <path class="fig-halo" d="M352 244L530 224"/>
+                                <path class="fig-leader" d="M352 244L530 224"/>
+                                <circle class="fig-leader-dot" cx="530" cy="224" r="3"/>
+                                <text x="16" y="36" class="fig-label-xl">střední ucho</text>
+                                <text x="16" y="154" class="fig-label-xl">tlak vody</text>
+                                <text x="16" y="204" class="fig-label-xl">bubínek</text>
+                                <text x="16" y="254" class="fig-label-xl">Eustachova trubice</text>
+                            </svg>
+                            <figcaption>střední ucho (Eustachova trubice), prostor uvnitř masky <a class="course-source" href="zdroje.html#ucho">zdroj</a></figcaption>
                         </figure>
                     </div>
                     <div class="course-core-row">

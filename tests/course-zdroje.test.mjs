@@ -1,5 +1,5 @@
 /**
- * Kurz P1 (T18): převzaté obrázky mají na slidu jen drobný odkaz „zdroj“,
+ * Kurz P1 (T18, U1): převzaté obrázky mají na slidu jen drobný odkaz „zdroj“,
  * plná atribuce je na stránce p1/zdroje.html (kotva na každou položku).
  */
 import { test } from 'node:test';
@@ -13,20 +13,24 @@ const doc = (rel) => new JSDOM(read(rel)).window.document;
 
 const SOURCES_PAGE = 'p1/zdroje.html';
 const chapters = readdirSync(new URL('p1/', ROOT)).filter(f => f.endsWith('.html') && f !== 'zdroje.html').map(f => `p1/${f}`);
-/** Převzatý obrázek: soubor z images/course/p1/ (bez vlastních SVG) nebo animace částic. */
-const isBorrowed = (src) => /^\.\.\/images\/course\/p1\/[^/]+\.(jpe?g|png|gif|webp)$/.test(src) || src === '../images/gas-particles.gif';
+/** Soubory z tabulky v SOURCES.md (vlastní SVG jako telo-profil.svg v ní nejsou). */
+const SOURCED = new Set([...read('images/course/p1/SOURCES.md').matchAll(/^\| `images\/([^`]+)`/gm)].map(m => `../images/${m[1]}`));
+/** Převzatý obrázek: fotka z images/course/p1/, animace částic nebo cokoli ze SOURCES.md (i SVG vložené přes <image>, U1). */
+const isBorrowed = (src) => /^\.\.\/images\/course\/p1\/[^/]+\.(jpe?g|png|gif|webp)$/.test(src) || src === '../images/gas-particles.gif' || SOURCED.has(src);
+const srcOf = (el) => el.getAttribute('src') ?? el.getAttribute('href');
 
-const borrowed = chapters.flatMap(page => [...doc(page).querySelectorAll('img')]
-    .filter(img => isBorrowed(img.getAttribute('src')))
+const borrowed = chapters.flatMap(page => [...doc(page).querySelectorAll('img, svg image')]
+    .filter(img => isBorrowed(srcOf(img)))
     .map(img => ({ page, img })));
 
-test('v kurzu je pět převzatých obrázků (manometr, Pascal, částice, Dalton, Henry)', () => {
-    assert.deepEqual(borrowed.map(b => b.img.getAttribute('src').split('/').pop()).sort(),
-        ['dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg']);
+test('v kurzu je šest převzatých obrázků (manometr, Pascal, částice, ucho, Dalton, Henry) a všechny jsou v SOURCES.md', () => {
+    assert.deepEqual(borrowed.map(b => srcOf(b.img).split('/').pop()).sort(),
+        ['dalton.jpg', 'gas-particles.gif', 'henry.jpg', 'manometr.jpg', 'pascal.jpg', 'ucho-anatomie.svg']);
+    for (const { img } of borrowed) assert.ok(SOURCED.has(srcOf(img)), srcOf(img));
 });
 
 for (const { page, img } of borrowed) {
-    const file = img.getAttribute('src').split('/').pop();
+    const file = srcOf(img).split('/').pop();
     test(`${page} ${file}: pod obrázkem je jen odkaz „zdroj“ na kotvu v zdroje.html`, () => {
         const figure = img.closest('figure');
         assert.ok(figure, 'obrázek je ve figure');
@@ -39,7 +43,7 @@ for (const { page, img } of borrowed) {
         assert.ok(m, a.getAttribute('href'));
         const entry = doc(SOURCES_PAGE).getElementById(m[1]);
         assert.ok(entry, `kotva #${m[1]} v zdroje.html`);
-        assert.equal(entry.querySelector('img').getAttribute('src'), img.getAttribute('src'), 'náhled je týž soubor');
+        assert.equal(entry.querySelector('img').getAttribute('src'), srcOf(img), 'náhled je týž soubor');
         // Atribuce už na slidu není.
         assert.doesNotMatch(figure.querySelector('figcaption').innerHTML, /commons\.wikimedia|creativecommons|volné dílo|Foto:|Animace:/);
     });
@@ -47,7 +51,7 @@ for (const { page, img } of borrowed) {
 
 test('zdroje.html: každá položka má použití s odkazem zpět, autora, licenci, zdroj a úpravy', () => {
     const d = doc(SOURCES_PAGE);
-    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon' };
+    const back = { manometr: 'tlak.html#jednotky', pascal: 'tlak.html#hydrostaticky', castice: 'tlak.html#plyn', ucho: 'stlacovani-plynu.html#dutiny', dalton: 'dalton.html#zakon', henry: 'henry.html#zakon' };
     for (const [id, href] of Object.entries(back)) {
         const entry = d.getElementById(id);
         assert.ok(entry, id);
@@ -60,6 +64,12 @@ test('zdroje.html: každá položka má použití s odkazem zpět, autora, licen
     const manometr = d.getElementById('manometr');
     assert.match(manometr.textContent, /oříznuto/);
     assert.ok(manometr.querySelector('a[href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs"]'), 'text licence CC BY-SA 4.0');
+    // U1: CC BY 2.5 vyžaduje všechny autory, licenci a vyznačení úprav.
+    const ucho = d.getElementById('ucho');
+    for (const name of ['Chittka', 'Brockmann', 'Komorniczak']) assert.match(ucho.textContent, new RegExp(name));
+    assert.ok(ucho.querySelector('a[href="https://creativecommons.org/licenses/by/2.5/deed.cs"]'), 'text licence CC BY 2.5');
+    assert.ok(ucho.querySelector('a[href="https://commons.wikimedia.org/wiki/File:Anatomy_of_the_Human_Ear_blank.svg"]'));
+    for (const word of ['oříznuto', 'přebarveno', 'vlastní popisky']) assert.match(ucho.textContent, new RegExp(word));
 });
 
 test('zdroje.html projde šifrováním jako ostatní stránky kurzu a je offline', () => {
@@ -67,7 +77,7 @@ test('zdroje.html projde šifrováním jako ostatní stránky kurzu a je offline
     assert.match(html, /<meta name="robots" content="noindex">/);
     assert.match(html, /<script type="module" src="\.\.\/js\/course\/zdrojePage\.js"><\/script>/);
     const sw = read('sw.js');
-    for (const f of ['./p1/zdroje.html', './js/course/zdrojePage.js']) assert.ok(sw.includes(`'${f}'`), f);
+    for (const f of ['./p1/zdroje.html', './js/course/zdrojePage.js', './images/course/p1/ucho-anatomie.svg']) assert.ok(sw.includes(`'${f}'`), f);
 });
 
 test('obsah kurzu odkazuje na zdroje.html', () => {
