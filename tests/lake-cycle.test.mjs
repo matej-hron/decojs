@@ -328,11 +328,17 @@ test('stránka a výklad: ovládání po krocích, poznámka a srpen podle nové
     assert.match(html, /další krok/);
     assert.match(html, new RegExp(`id="krok-slider" min="1" max="${N}"`));
     assert.match(html, /id="lom-mesice"/);
-    assert.match(html, /Modelový lom hluboký 30&nbsp;m, zjednodušeno na 5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z&nbsp;lomů Srní, Horní Cerekev a&nbsp;Šífr\. Zbytek roku dopočítaný z&nbsp;pravidel modelu\. Vzduch: průměr měsíce v&nbsp;ČR \(ČHMÚ\)\./);
+    // U7: pod modelem jen krátká poznámka, podrobnosti drobně na konci výkladu „Více“
+    assert.match(html, /<p class="course-simplification">Modelový lom, ne měření\. Takhle to v&nbsp;lomu vypadat může\.<\/p>/);
+    assert.doesNotMatch(html, /Srní|Horní Cerekev|Šífr/, 'pod modelem bez výčtu lomů');
     assert.match(html, /<a href="\?mesic=8#model-lom" data-preset-link>/, 'řešený příklad vede na srpen');
     assert.doesNotMatch(html, /jezero během roku/, 'model se jmenuje lom během roku');
     const concept = readFileSync(new URL('../concepts/cs/lake-stratification.html', import.meta.url), 'utf8');
     assert.match(concept, /Proč hladina nevychladne na teplotu vzduchu\?/);
+    assert.match(concept, /<p>Čísla níže jsou z&nbsp;modelového lomu hlubokého 30&nbsp;m\. Nejsou to měření, ale takhle to v&nbsp;našich lomech vypadat může\.<\/p>/);
+    const footnote = new JSDOM(concept).window.document.querySelector('p:last-of-type');
+    assert.equal(footnote.className, 'course-simplification', 'podrobnosti modelu drobně na konci bloku');
+    assert.match(footnote.innerHTML.replace(/\s+/g, ' '), /5 stejných vrstev\. Letní teploty vody: odhad podle hlášení potápěčů z&nbsp;lomů Srní, Horní Cerekev a&nbsp;Šífr\. Zbytek roku dopočítaný z&nbsp;pravidel modelu\. Vzduch: průměr měsíce v&nbsp;ČR \(ČHMÚ\)\./);
     assert.match(concept, /horní vrstva kolem 23&nbsp;°C, vrstva v&nbsp;hloubce 6 až 12&nbsp;m kolem 10&nbsp;°C a&nbsp;u&nbsp;dna jsou 4&nbsp;°C/);
 });
 
