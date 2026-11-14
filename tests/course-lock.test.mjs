@@ -17,7 +17,7 @@ const cipherOf = (html) => JSON.parse(html.match(/<script type="application\/jso
 
 /** Věty ze slidů a výkladu, které bez kódu nesmí být vidět. */
 const SECRET = {
-    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'V&nbsp;srpnu se v&nbsp;lomu zanoříš', 'Modelový lom, ne měření'],
+    'p1/hustota.html': ['„Těžká“ voda vlivem gravitace klesá dolů', 'Led je lehčí než voda, plave na hladině', 'Proč při sestupu v&nbsp;létě najednou ucítíš chlad?', 'Modelový lom, ne měření'],
     'p1/index.html': ['Fyzika – plán', 'Deco for Divers', 'Základy potápěčské fyziky', 'Přednáška fyziky pro kurz'],
     'p1/stlacovani-plynu.html': ['V&nbsp;potápěčském zvonu je na hladině', 'Nikdy nezadržujte dech', 'Pan Eustach', 'Stanovte jeho hladinovou spotřebu'],
     'p1/zdroje.html': ['Peter Southwood (Pbsouthwood)', 'Translational motion.gif', 'Charles Turner (mezzotinta, 1834)'],
