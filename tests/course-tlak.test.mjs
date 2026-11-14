@@ -282,7 +282,15 @@ test('T6: slide 12 nesou dvě ilustrace s krátkým nadpisem nad a popiskem pod'
     assert.ok(figs.every(f => f?.querySelector('svg[role="img"][aria-label]')), 'ilustrace jsou SVG s popisem');
     const caps = figs.map(f => text(f.querySelector('figcaption')));
     assert.match(caps[0], /^Stejná síla, různě velká plocha$/);
-    assert.match(caps[1], /^5\sN na hrotu jehly 0,1\smm² = 50\sMPa = 500\sbar 5\sN ≈ tíha půllitru vody$/);
+    assert.match(caps[1], /^5\sN na hrotu jehly 0,1\smm² = \? ?50\sMPa = 500\sbar 5\sN ≈ tíha půllitru vody$/);
+    // T23: výsledek si studenti spočítají, ukáže ho až klik na „?“ (stejný prvek jako skryté buňky tabulek).
+    const cell = figs[1].querySelector('figcaption > details.course-cell');
+    assert.ok(cell && !cell.open, 'výsledek je skrytý');
+    assert.equal(cell.querySelector('summary').textContent, '?');
+    assert.equal(cell.querySelector('summary').getAttribute('aria-label'), 'Ukázat výsledek');
+    assert.equal(text(cell).replace(/^\?\s*/, ''), '50 MPa = 500 bar');
+    assert.match(cell.innerHTML, /50&nbsp;MPa = 500&nbsp;bar|50\u00a0MPa = 500\u00a0bar/, 'nezlomitelné mezery');
+    assert.ok(!cell.contains(figs[1].querySelector('.course-figure-note')), 'nápověda o půllitru zůstává vidět');
     assert.ok(figs[1].querySelector('figcaption .course-figure-note'), 'kratší řádek o půllitru je doplněk');
     for (const h of halves) assert.equal(h.querySelectorAll('p').length, 0, 'žádný odstavec, jen nadpis a popisek');
 });
