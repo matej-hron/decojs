@@ -57,7 +57,7 @@ describe('nextTarget: přes hranice stránek', () => {
 
     it('výchozí pořadí bere ze skutečného kurzu', () => {
         assert.deepEqual(nextTarget({ slug: null, index: 2, count: 3, dir: 1 }), { href: 'hustota.html' });
-        // Hustota → Tlak → Stlačování plynů → Archimédův zákon → Dalton → Henry a zpět; za Henrym zatím rozcestník.
+        // Hustota → Tlak → Stlačování plynů → Archimédův zákon → Dalton → Henry → Vidění a zpět; za Viděním zatím rozcestník.
         assert.deepEqual(nextTarget({ slug: 'hustota', index: 5, count: 6, dir: 1 }), { href: 'tlak.html' });
         assert.deepEqual(nextTarget({ slug: 'tlak', index: 0, count: 14, dir: -1 }), { href: 'hustota.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'tlak', index: 13, count: 14, dir: 1 }), { href: 'stlacovani-plynu.html' });
@@ -68,8 +68,10 @@ describe('nextTarget: přes hranice stránek', () => {
         assert.deepEqual(nextTarget({ slug: 'dalton', index: 0, count: 6, dir: -1 }), { href: 'archimeduv-zakon.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'dalton', index: 5, count: 6, dir: 1 }), { href: 'henry.html' });
         assert.deepEqual(nextTarget({ slug: 'henry', index: 0, count: 8, dir: -1 }), { href: 'dalton.html#procvic' });
-        assert.deepEqual(nextTarget({ slug: 'henry', index: 7, count: 8, dir: 1 }), { href: 'slyseni.html' });
-        assert.deepEqual(nextTarget({ slug: 'slyseni', index: 0, count: 2, dir: -1 }), { href: 'henry.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'henry', index: 7, count: 8, dir: 1 }), { href: 'videni.html' });
+        assert.deepEqual(nextTarget({ slug: 'videni', index: 0, count: 8, dir: -1 }), { href: 'henry.html#procvic' });
+        assert.deepEqual(nextTarget({ slug: 'videni', index: 7, count: 8, dir: 1 }), { href: 'slyseni.html' });
+        assert.deepEqual(nextTarget({ slug: 'slyseni', index: 0, count: 2, dir: -1 }), { href: 'videni.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'slyseni', index: 1, count: 2, dir: 1 }), { href: 'teplo.html' });
         assert.deepEqual(nextTarget({ slug: 'teplo', index: 0, count: 6, dir: -1 }), { href: 'slyseni.html#procvic' });
         assert.deepEqual(nextTarget({ slug: 'teplo', index: 5, count: 6, dir: 1 }), { href: 'index.html#kapitoly' });

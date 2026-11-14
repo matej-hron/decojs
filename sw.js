@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.295';
+const CACHE_NAME = 'deco-theory-0.6.296';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -38,6 +38,7 @@ const STATIC_ASSETS = [
   './p1/archimeduv-zakon.html',
   './p1/dalton.html',
   './p1/henry.html',
+  './p1/videni.html',
   './p1/slyseni.html',
   './p1/teplo.html',
   './p1/zdroje.html',
@@ -59,6 +60,7 @@ const STATIC_ASSETS = [
   './concepts/cs/breathing-gas-limits.html',
   './concepts/cs/gas-dissolution.html',
   './concepts/cs/tissue-saturation.html',
+  './concepts/cs/underwater-vision.html',
   './concepts/cs/lake-stratification.html',
   './js/course/p1Course.js',
   './js/course/chapter.js',
@@ -76,6 +78,7 @@ const STATIC_ASSETS = [
   './js/course/daltonPage.js',
   './js/course/gasParticles.js',
   './js/course/henryPage.js',
+  './js/course/videniPage.js',
   './js/course/slyseniPage.js',
   './js/course/teploPage.js',
   './js/course/zdrojePage.js',
@@ -228,6 +231,7 @@ const STATIC_ASSETS = [
   './images/course/p1/pascal.jpg',
   './images/course/p1/dalton.jpg',
   './images/course/p1/henry.jpg',
+  './images/course/p1/tuzka-ve-vode.jpg',
   './images/course/p1/silfra.jpg',
   './images/cmas-table-2018.png',
   './js/urlParams.js',
