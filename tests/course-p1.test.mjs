@@ -135,6 +135,15 @@ test('blok hustota: olovo na zátěž, lahve z oceli, hliníku nebo kompozitu, h
     assert.match(table, /<td>Ocel<\/td><td class="num">7&nbsp;850<\/td>/);
 });
 
+test('slide Hustota: tabulka příkladů látek, zlato za olovem, hliník zatím ne (U6)', () => {
+    const doc = new JSDOM(read('p1/hustota.html')).window.document;
+    const table = doc.querySelector('.course-slide[data-slide-number="8"] table.course-table');
+    const rows = [...table.querySelectorAll('tbody tr')].map(tr => [...tr.querySelectorAll('td')].map(td => td.firstChild.textContent.trim()));
+    assert.deepEqual(rows.map(r => r[0]), ['Voda sladká', 'Voda slaná', 'Led', 'Vzduch', 'Olovo', 'Zlato', 'Ocel']);
+    assert.deepEqual(rows.find(r => r[0] === 'Zlato'), ['Zlato', '19\u00a0300']);
+    assert.match(read('p1/hustota.html'), /<td>Zlato<\/td><td class="num">19&nbsp;300<\/td>/);
+});
+
 // --- „Procvič si“ -------------------------------------------------------------
 
 import { parseQuestionIds, pickQuestions } from '../js/course/practice.js';
