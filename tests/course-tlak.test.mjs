@@ -239,7 +239,7 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.match(more(22), /Izobarický a izochorický děj řadí osnova až do P★★ \(slide 4\), tady jsou pro úplnost\./);
     assert.doesNotMatch(text(doc.body), /Boyleův|Mariotteův/, 'jedno jméno zákona: Boyle-Mariottův');
     assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
-    assert.match(more(22), /V Pískovišti se izochorický děj jmenuje Gay-Lussacův zákon/);
+    assert.match(more(22), /Pozor, anglické materiály jména obvykle prohazují: izobarický děj tam bývá Charlesův zákon a izochorický\s+Gay-Lussacův\./);
     assert.match(more(22), /V testech SPČR platí Gay-Lussac = stálý tlak, Charles = stálý objem\./);
     for (const href of ['../sandbox/gas-law.html', '../sandbox/transfilling.html', '../sandbox/cascade-filling.html']) {
         assert.ok(slide(22).closest('section').querySelector(`details.course-more a[href="${href}"]`), href);

@@ -312,7 +312,7 @@
         { "key": "d", "text": "p₁ · T₁ = p₀ · T₀, stating that the gas pressure decreases in proportion to the increase in its temperature" }
       ],
       "correct": "c",
-      "explanation": "Gay-Lussac law: V₁/T₁ = V₂/T₂ at constant pressure (isobaric process). The volume of a gas is directly proportional to its absolute temperature."
+      "explanation": "Gay-Lussac law (called Charles's law in most English textbooks): V₁/T₁ = V₂/T₂ at constant pressure (isobaric process). The volume of a gas is directly proportional to its absolute temperature."
     },
     {
       "id": 25,
