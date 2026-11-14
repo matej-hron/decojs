@@ -542,8 +542,26 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
     /* Obrázek nese víc než text (slide 18: nádoby a Pascalův sud vedle sebe): širší je sloupec s obrázkem. */
     .course-slide[data-slide-type="figure"] .course-core-figure-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
 }
+/* figure s řadami text + jeho ilustrace (slidy 13 a 14, T25, jako řady text + náhled u models): každý blok je řada,
+   text vlevo a kresba vpravo ve stejné výšce, takže obrázek stojí u textu, který ilustruje. Na telefonu pod sebou:
+   text, pod ním jeho kresba. Výšku kresby dělí řady mezi sebe, aby se slide vešel. */
+.course-slide[data-slide-type="figure"] .course-core:has(> .course-row) { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-4); }
+.course-slide[data-slide-type="figure"] .course-row > .course-figure { margin-top: var(--space-2); }
+.course-slide[data-slide-type="figure"] .course-row:only-child .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.5); }
+.course-slide[data-slide-type="figure"] .course-row:not(:only-child) .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.3); }
+@media (min-width: 900px) {
+    .course-slide[data-slide-type="figure"] .course-core:has(> .course-row) { gap: var(--space-3); }
+    /* Text dvou řad pod sebou se vejde jen drobnějším písmem (jako řádek pod obrázky na slidu 12); stejné písmo
+       mají všechny řady, aby pokračování se stejným nadpisem (13 a 14) vypadalo stejně (T22). */
+    .course-slide[data-slide-type="figure"] .course-row { align-items: center; font-size: 0.85em; }
+    .course-slide[data-slide-type="figure"] .course-row > .course-figure { margin-top: 0; }
+}
 /* Vysoký obrázek, který nese slide (slide 21: celá postava z profilu): víc výšky než polovina slidu. */
 .course-core-figure-tall .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.62); }
+/* Výšková stupnice (slide 17, T26): jeden sloupec výšek a tlaků zdola nahoru vyplní celou výšku těla, aby čísla
+   byla co největší (na 1280×720 asi jako v originále přednášky). Na telefonu nad odrážkami, nejvýš na výšku okna. */
+.course-core-figure-tall .course-illustration-scale > svg { max-height: calc(var(--course-slide-height) * 0.645); }
+@media (max-width: 899px) { .course-illustration-scale { margin-bottom: var(--space-4); } .course-illustration-scale > svg { max-height: 80vh; } }
 /* Dva obrázky vedle sebe a pod nimi řádek přes celou šířku (slide 12): obrázky menší, řádek drobnějším písmem. */
 .course-core-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-8); font-size: 0.8em; line-height: 1.3; }
 @media (max-width: 768px) { .course-core-row { font-size: 1em; } } /* telefon: písmo těla (R3-02) */
