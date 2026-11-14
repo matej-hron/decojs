@@ -117,6 +117,15 @@ test('blok hustota: mořská voda víc nadnáší, odkaz na Archimédův zákon 
     assert.ok(existsSync(new URL(href, new URL('concepts/cs/density.html', ROOT))), href);
 });
 
+test('blok hustota: prázdná lahev je lehčí, čísla jako na slidu 37 (12 l · 150 bar · 1,25 kg/m³ ≈ 2,3 kg), odkaz na kotvu slidu (U4)', () => {
+    const html = read('concepts/cs/density.html').replace(/\s+/g, ' ');
+    assert.match(html, /10&nbsp;°C\. Proto je prázdná lahev lehčí než plná: 12l lahev vydýchaná z&nbsp;200 na 50&nbsp;bar zlehčí asi o&nbsp;2,3&nbsp;kg\. Zátěž, která stačí na začátku ponoru, tak na konci nemusí stačit \(<a href="\.\.\/\.\.\/p1\/archimeduv-zakon\.html#ubytek-vzduchu">kapitola Archimédův zákon, slide&nbsp;37<\/a>\)\.<\/p>/);
+    assert.equal(Math.round(12 * (200 - 50) / 1000 * 1.25 * 10) / 10, 2.3);
+    const chapter = read('p1/archimeduv-zakon.html');
+    assert.match(chapter, /<section id="ubytek-vzduchu" class="course-section">\s*<div class="course-slide" data-slide-number="37"/);
+    assert.match(chapter, /2,25&nbsp;kg, asi 2,3&nbsp;kg/);
+});
+
 // --- „Procvič si“ -------------------------------------------------------------
 
 import { parseQuestionIds, pickQuestions } from '../js/course/practice.js';
