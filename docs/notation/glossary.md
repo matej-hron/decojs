@@ -50,6 +50,8 @@ Past: *p*<sub>t</sub> (tkáňový tlak, „t" = tissue → stojatě) vs. *c*<sub
 | *g* | tíhové zrychlení | gravitational acceleration | m/s² | — | — | — | — | ISO 80000-3 |
 | *v* | rychlost | velocity | m/min | SI: m/s | — | — | — | ISO 80000-3 |
 | *n* | látkové množství | amount of substance | mol | — | — | — | — | ISO 80000-9 |
+| *n* | index lomu | refractive index | — (bezrozměrný) | **stejná značka jako látkové množství** (obojí ISO); význam určuje kontext. V kurzu P1 (Vidění pod vodou) hlavně slovy „index lomu vody 1,33“, značka jen ve slidu 53 | — | — | — | ISO 80000-7 |
+| *α*, *β* | úhel dopadu, úhel lomu (od kolmice) | angle of incidence, angle of refraction | ° | rovinný úhel; stupeň bez mezery (`48,6°`), ISO výjimka. Kurz P1, slide 48 | — | — | — | ISO 80000-3 |
 | *R* | molární plynová konstanta | gas constant | — | SI: J/(mol·K); *R* má i jiný význam, viz §5 | — | — | — | ISO 80000-9 |
 | *c* | koncentrace | concentration | — | SI: mol/m³ | — | — | — | ISO 80000-9 |
 | *γ* | povrchové napětí | surface tension | N/m | v modelu mechaniky bublin | — | — | — | Laplaceův tlak |

@@ -33,9 +33,9 @@ export const P1_CHAPTERS = [
     { slug: 'archimeduv-zakon', title: 'Archimédův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'ready', courseSlides: 9 },
     { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'ready', courseSlides: 6 },
     { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready', courseSlides: 8 },
-    { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'planned' },
-    { slug: 'slyseni', title: 'Slyšení pod vodou', slides: '55–56', level: 'P★★', status: 'planned' },
-    { slug: 'teplo', title: 'Přenos tepla', slides: '57–59', level: 'P★★', status: 'planned' },
+    { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'ready', courseSlides: 8 },
+    { slug: 'slyseni', title: 'Slyšení pod vodou', slides: '55–56', level: 'P★★', status: 'ready', courseSlides: 2 },
+    { slug: 'teplo', title: 'Přenos tepla', slides: '57–60', level: 'P★★', status: 'ready', courseSlides: 7 },
 ];
 
 /**

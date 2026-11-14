@@ -9,7 +9,7 @@
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
  * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v patičce
- * každého slidu, vedle čísla slidu v kurzu z celkového počtu („12 / 57“, viz `courseSlideNumbering`).
+ * každého slidu, vedle čísla slidu v kurzu z celkového počtu („12 / 74“, viz `courseSlideNumbering`).
  * Číslo slidu z přednášky (`data-slide-number`) zůstává skryté, slouží k dohledání.
  *
  * Na obsah kurzu se dá jít vždycky: odkaz „☰ Obsah“ vlevo v patičce (kromě slidu Obsah samotného),
@@ -161,7 +161,7 @@ export const TOC_LINK_HTML = `<a class="course-toc-link" href="${TOC_HREF}" aria
     + '<span aria-hidden="true">☰</span><span class="course-toc-word"> Obsah</span></a>';
 
 /**
- * Patička slidu: vlevo „☰ Obsah“ a jméno přednášky, vpravo číslo slidu z celkového počtu („12 / 57“) a ‹ ›.
+ * Patička slidu: vlevo „☰ Obsah“ a jméno přednášky, vpravo číslo slidu z celkového počtu („12 / 74“) a ‹ ›.
  * @param {number|null} number pořadí slidu v kurzu; `null` = bez čísla (stránka, která se nečísluje)
  * @param {number|null} total počet slidů kurzu
  * @param {{toc?: boolean}} [opts] `toc: false` na slidu Obsah samotném
