@@ -69,7 +69,7 @@ test('Henry: slide 44 má nulový čas v Matejově znění (rozhodnutí 6), bez 
         'Ponorům v nulovém čase se někdy říká „bezdekompresní“. Ten název je zavádějící: dekomprese probíhá při každém ponoru, u ponoru v nulovém čase na ni stačí výstup předepsanou rychlostí (tabulky SPČR: 10 m/min, nebo podle počítače) a bezpečnostní zastávka (tabulky SPČR: 5 m, 3 min).',
         'Nulový čas je doba, po kterou smíš v dané hloubce zůstat a vynořit se bez dekompresních zastávek; určují ho tabulky nebo počítač.',
         'Dekompresní nemoc hrozí hlavně tehdy, když dekompresní postup nedodržíš, třeba stoupáš moc rychle. Výjimečně může přijít i při dodržení, riziko zvyšuje třeba námaha nebo prochlazení.',
-        'U hladiny se tlak mění poměrně nejvíc (slide 26), proto poslední metry stoupej pomalu.',
+        'U hladiny se tlak mění poměrně nejvíc (viz Nebezpečí malých hloubek), proto poslední metry stoupej pomalu.',
     ]) assert.ok(m.includes(sentence), sentence.slice(0, 60));
     assert.ok(slide(44).closest('section').querySelector('a[href="stlacovani-plynu.html#male-hloubky"]'));
 });

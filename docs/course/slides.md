@@ -17,9 +17,20 @@ Rozložení odpovídá originálu přednášky (`resources/FyzikaP12_2025.pdf`, 
 - **Kostra zastávky:** `<section id="…" class="course-section">`, v ní `<div class="course-slide" data-slide-type="…">`,
   první potomek je nadpis (`h1` na prvním slidu kapitoly, jinak `h2`), za ním tělo `<div class="course-core">`.
   Pod slidem může být jedno `<details class="course-more">` (Více).
-- **Číslo slidu z přednášky:** `data-slide-number="12"`. Titulní slide a Procvič si ho nemají. Patičku doplní
-  `js/course/slideNav.js` sám, s celkovým počtem slidů přednášky („8 / 60“). Počet je na jednom místě,
-  `P1_LECTURE_SLIDES` v `js/course/p1Course.js`.
+- **Číslo slidu v patičce je pořadí v kurzu** („12 / 57“): všechny slidy za sebou, rozcestník a pak hotové kapitoly
+  v pořadí obsahu, včetně titulních slidů a Procvič si. Překryvy modelů se nečíslují (nejsou to zastávky). Patičku
+  doplní `js/course/slideNav.js` sám podle `courseSlideNumbering` v `js/course/p1Course.js`; celkový počet se sečte
+  z dat kurzu, nikde není natvrdo.
+- **Počet slidů kapitoly je v datech kurzu:** `courseSlides` u každé hotové kapitoly v `P1_CHAPTERS` (rozcestník
+  `P1_INDEX_SLIDES`). Přidáš nebo ubereš slide, uprav číslo; nová kapitola ho dostane, když přejde na `ready`.
+  Test v `tests/course-slide-nav.test.mjs` ho porovná se stránkou. Data jsou nutná, protože stránka zná jen svoje
+  slidy (a na webu jsou ostatní kapitoly šifrované).
+- **Číslo slidu z přednášky zůstává skryté:** `data-slide-number="12"` slouží k dohledání slidu v PowerPointu,
+  nezobrazuje se. Titulní slide a Procvič si ho nemají.
+- **V textech se na slidy neodkazuje číslem,** ale názvem s proklikem na kotvu: „(viz <a href="#ubytek-vzduchu">Úbytek
+  vzduchu</a>)“, v jiné kapitole `tlak.html#plyn`. Název je krátké jméno slidu podle jeho nadpisu nebo zvýrazněného
+  podnadpisu. Platí pro `p1/*.html` i `concepts/cs/*.html`, včetně popisků v obrázcích a `aria-label`; komentáře
+  v HTML čísla přednášky mít smí. Hlídá to test.
 - **Stejné místo na všech zastávkách (desktop):** stejný rámeček, nadpis v 10 % výšky slidu, začátek těla v 28 %,
   okraje textu kolem 8 % šířky. Titulní slide má vlastní pevnou polohu (nadpis ve spodní třetině).
   Po skoku na zastávku není vidět další slide.

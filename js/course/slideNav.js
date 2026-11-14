@@ -9,11 +9,11 @@
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
  * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v patičce
- * každého slidu, vedle jména přednášky a čísla slidu (`data-slide-number` na slidu) z celkového počtu
- * slidů přednášky (`P1_LECTURE_SLIDES`).
+ * každého slidu, vedle jména přednášky a čísla slidu v kurzu z celkového počtu („12 / 57“, viz
+ * `courseSlideNumbering`). Číslo slidu z přednášky (`data-slide-number`) zůstává skryté, slouží k dohledání.
  */
 
-import { P1_CHAPTERS, P1_LECTURE_SLIDES } from './p1Course.js';
+import { P1_CHAPTERS, courseSlideNumbering } from './p1Course.js';
 
 /** Kotva poslední zastávky každé kapitoly (hlídá test). */
 const LAST_STOP_HASH = '#procvic';
@@ -124,12 +124,12 @@ function step(slug, dir, from = null) {
 }
 
 /**
- * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu z celkového počtu („8 / 60“) a ‹ ›.
- * @param {string|null} number číslo slidu z přednášky; titulní slide a „Procvič si“ ho nemají
- * @param {number} [total] počet slidů přednášky (jedno místo: `P1_LECTURE_SLIDES`)
+ * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu z celkového počtu („12 / 57“) a ‹ ›.
+ * @param {number|null} number pořadí slidu v kurzu; `null` = bez čísla (stránka, která se nečísluje)
+ * @param {number|null} total počet slidů kurzu
  * @returns {string} HTML
  */
-export function slideFootHtml(number, total = P1_LECTURE_SLIDES) {
+export function slideFootHtml(number, total) {
     const label = number ? ` aria-label="slide ${number} z ${total}"` : '';
     const text = number ? `${number} / ${total}` : '';
     return `<a class="course-foot-title" href="index.html#kapitoly">P1 – Fyzika</a>
@@ -143,15 +143,16 @@ export function slideFootHtml(number, total = P1_LECTURE_SLIDES) {
 }
 
 function renderFeet(slug) {
-    for (const stop of collectStops(document)) {
+    const numbering = courseSlideNumbering(slug);
+    collectStops(document).forEach((stop, i) => {
         const foot = document.createElement('div');
         foot.className = 'course-foot';
-        foot.innerHTML = slideFootHtml(stop.dataset.slideNumber ?? null);
+        foot.innerHTML = numbering ? slideFootHtml(numbering.first + i, numbering.total) : slideFootHtml(null, null);
         foot.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
             step(slug, Number(btn.dataset.step), stop);
         }));
         stop.appendChild(foot);
-    }
+    });
 }
 
 /**
