@@ -56,9 +56,10 @@ test('Archimédův zákon: nadpisy a typy slidů podle přednášky a rozhodnut�
     });
 });
 
-test('Archimédův zákon: slide 32, nejdřív vztlak z F2 − F1, pak F_G a jeden řádek porovnání (A10)', () => {
+test('Archimédův zákon: slide 32, nejdřív vztlak z F2 − F1 přes h a V, pak F_G a jeden řádek porovnání (A10, A11)', () => {
     const t = text(slide(32).querySelector('.course-core > div'));
-    const order = ['F1 = h1', 'F2 = h2', 'Fvz = F2 − F1', 'Fvz = (h2 − h1)', 'Fvz = V · ρv · g = mv · g', 'FG = mt · g', 'porovnáme Fvz s FG'];
+    const order = ['F1 = h1', 'F2 = h2', 'Fvz = F2 − F1 = (h2 − h1) · ρv · g · S', 'h2 − h1 = h, S · h = V', 'výška a objem kvádru',
+        'Fvz = V · ρv · g = mv · g', 'tíha vytlačené vody', 'FG = mt · g', 'porovnáme Fvz s FG'];
     const at = order.map(s => t.indexOf(s));
     assert.ok(at.every(i => i >= 0), JSON.stringify(at));
     assert.deepEqual([...at].sort((a, b) => a - b), at, 'pořadí vzorců');
@@ -76,8 +77,10 @@ test('Archimédův zákon: opravy z rozhodnutí 8 a překlepy', () => {
     assert.doesNotMatch(s32, /<sub>g<\/sub>|<sub><var>/);
     assert.match(s32, /\(<var>h<\/var><sub>2<\/sub> − <var>h<\/var><sub>1<\/sub>\) · <var>ρ<\/var><sub>v<\/sub>/);
     assert.match(s32, /<var>F<\/var><sub>vz<\/sub> = <var>V<\/var> · <var>ρ<\/var><sub>v<\/sub> · <var>g<\/var> = <var>m<\/var><sub>v<\/sub> · <var>g<\/var>/);
-    assert.doesNotMatch(text(slide(32)), /S · h|= h\b/, 'h = h2 − h1 a V = S · h jen ve Více');
-    assert.match(more(32), /S · h = V/);
+    // A11: kroky h2 − h1 = h a S · h = V jsou na slidu, Více je vysvětluje, nepíše, co chybí
+    assert.match(more(32), /h2 − h1 = h\. Plocha podstavy krát výška je objem kvádru, S · h = V/);
+    assert.match(more(32), /V · ρv = mv/);
+    assert.doesNotMatch(more(32), /chybí/);
     // rozhodnutí 8 (6): „kompenzátor vztlaku (BCD)“ při prvním výskytu, dál BCD
     const first = core.indexOf('BCD');
     assert.equal(core.slice(first - 'kompenzátoru vztlaku ('.length, first), 'kompenzátoru vztlaku (');
@@ -186,7 +189,11 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     const fvz = len(forces32[4].getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
     const fg = len(gravity32[0].getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
     assert.ok(fvz !== fg, 'nestejně dlouhé, obrázek netvrdí, že se těleso vznáší');
-    for (const label of ['Fvz=F2−F1', 'FG', 'vyrušíse']) assert.ok(t32.includes(label), label);
+    for (const label of ['Fvz=F2−F1', 'FG', 'vyrušíse', 'tlakvodynastěny', 'výsledek']) assert.ok(t32.includes(label), label);
+    // A11: kóta výšky kvádru h u kvádru, od horní ke spodní stěně
+    const dimH = s32.querySelector('.fig-dim-h');
+    assert.ok(dimH, 'kóta h');
+    assert.ok([...s32.querySelectorAll('text')].some(t => t.textContent.trim() === 'h'), 'popisek h');
     // 35: kompenzátor a opasek, bez značek výrobce
     const t35 = slide(35).querySelector('svg').textContent;
     assert.ok(t35.includes('kompenzátor') && t35.includes('(BCD)') && t35.includes('zátěžový opasek'));

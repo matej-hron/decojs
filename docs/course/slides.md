@@ -124,6 +124,8 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 
 Části těla, které typ zná: `.course-highlight` (zvýraznění jako v přednášce), `.course-formula` (vzorec na řádku),
 `.course-unit`, `.course-table` (tabulka, čísla ve sloupci `class="num"`), `.course-note` (drobná poznámka).
+Ve vzorci smí být `.course-formula-aside` (krátký slovní popisek řádku menším písmem, slide 32: „tíha vytlačené vody“)
+a `.course-eq` kolem každé rovnosti delšího řádku, aby ho telefon zalomil jen mezi rovnostmi.
 Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): malá ilustrace ve stylu kurzu (výstražná
 značka `warn-sign` a `warn-mark` a potápěč, který při výstupu dýchá, výška 15 % slidu) a vedle ní `<p class="course-alert">`
 (na telefonu pod ní). Smí být pod textem kteréhokoli typu, slide 26 ji má
