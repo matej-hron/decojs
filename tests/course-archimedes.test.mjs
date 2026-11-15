@@ -90,7 +90,7 @@ test('Archimédův zákon: slide 35, vyvážení s vypuštěným BCD a téměř 
 });
 
 test('Archimédův zákon: bezpečnostní věty přesně ve znění rozhodnutí 6 (2), 7 a 7b', () => {
-    assert.ok(more(35).includes('Kontrolu zátěže děláme s téměř prázdnou lahví, protože vzduch v lahvi něco váží a během ponoru ubývá: 12l lahev z 200 na 50 bar zlehčí asi o 2,3 kg (slide 37). Kdo kontroluje s plnou lahví, přidá zátěž za vzduch, který vydýchá. Jinak se na konci ponoru na bezpečnostní zastávce neudrží.'));
+    assert.ok(more(35).includes('Kontrolu zátěže děláme s téměř prázdnou lahví, protože vzduch v lahvi něco váží a během ponoru ubývá: 12l lahev z 200 na 50 bar zlehčí asi o 2,3 kg (viz Úbytek vzduchu). Kdo kontroluje s plnou lahví, přidá zátěž za vzduch, který vydýchá. Jinak se na konci ponoru na bezpečnostní zastávce neudrží.'));
     assert.ok(more(35).includes('Odhozená zátěž pod vodou znamená prudký výstup, který potápěč neubrzdí, s rizikem přetlakového poranění plic a dekompresní nemoci. Proto jen v nejvyšší nouzi.'));
     assert.ok(more(36).includes('Přifukuj a upouštěj průběžně a po malých dávkách. Nejvíc se vztlak mění těsně pod hladinou, tam upouštěj nejčastěji.'));
     assert.ok(more(34).includes('Když se náklad na vlastním kompenzátoru utrhne nebo vyklouzne, potápěč s nafouknutým BCD vyletí nekontrolovaně k hladině. ‚Nic‘ znamená předměty: vynést partnera v nesnázích kompenzátorem je dovednost, kterou výcvik učí.'));
@@ -185,7 +185,7 @@ test('Archimédův zákon: A1 z náhledu slidu 36 (krok 2), odkazy na kroky, vě
     assert.match(more(36), /z 5 m na hladinu, tedy na polovičním úseku, přebývá zase 4,4 kg \(krok 10 →\)/, 'R8-01');
     assert.ok(slide(36).closest('section').querySelector('details.course-more a[href="?krok=10#model-vztlak"]'));
     assert.match(more(32), /Proto je ve vzorci jen hydrostatický tlak\./, 'R8-08');
-    assert.match(more(35), /Příklad na slidu 33 ukazuje princip\. Kolik zátěže potřebuje konkrétní potápěč, se nepočítá/, 'R8-07');
+    assert.match(more(35), /Příklad na slidu Oblek a zátěž ukazuje princip\. Kolik zátěže potřebuje konkrétní potápěč, se nepočítá/, 'R8-07');
     assert.match(more(36), /Po každém vyvážení mají oblek a vzduch v BCD dohromady 12 l, .*\(7,6 \+ 4,4 = 6,2 \+ 5,8 = 9,1 \+ 2,9 = 12 l\)/, 'R7-07');
     for (const i of [2, 4, 8]) {
         const st = diverState(A1_SCENARIO[i].depth, A1_SCENARIO[i].amount);

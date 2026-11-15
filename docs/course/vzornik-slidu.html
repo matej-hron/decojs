@@ -457,13 +457,14 @@
         import { createDensityCurve } from '../../js/components/DensityCurve.js';
         import { createLakeCycle } from '../../js/components/LakeCycle.js';
 
-        // Patička jako na stránkách kurzu (tam ji doplní initSlideNav).
-        for (const slide of document.querySelectorAll('main > section > .course-slide')) {
+        // Patička jako na stránkách kurzu (tam ji doplní initSlideNav, číslo je pořadí v kurzu); tady pořadí ve vzorníku.
+        const vzory = [...document.querySelectorAll('main > section > .course-slide')];
+        vzory.forEach((slide, i) => {
             const foot = document.createElement('div');
             foot.className = 'course-foot';
-            foot.innerHTML = slideFootHtml(slide.dataset.slideNumber ?? null);
+            foot.innerHTML = slideFootHtml(i + 1, vzory.length);
             slide.appendChild(foot);
-        }
+        });
         createDensityCurve(document.getElementById('nahled-hustota'), { range: [0, 10], temperature: 4, compact: true });
         createLakeCycle(document.getElementById('nahled-jezero'), { compact: true });
         initPractice(document);

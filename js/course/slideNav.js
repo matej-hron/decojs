@@ -9,14 +9,24 @@
  * kapitola končí sekcí `#procvic`, proto krok zpět z další kapitoly vede obyčejnou kotvou
  * a slide je po načtení rovnou na místě. Pozici scény určuje `scroll-margin-top` v CSS.
  * Pořadí kapitol je z `js/course/p1Course.js`, nehotové se přeskakují. Tlačítka jsou v patičce
- * každého slidu, vedle jména přednášky a čísla slidu (`data-slide-number` na slidu) z celkového počtu
- * slidů přednášky (`P1_LECTURE_SLIDES`).
+ * každého slidu, vedle čísla slidu v kurzu z celkového počtu („12 / 74“, viz `courseSlideNumbering`).
+ * Číslo slidu z přednášky (`data-slide-number`) zůstává skryté, slouží k dohledání.
+ *
+ * Na obsah kurzu se dá jít vždycky: odkaz „☰ Obsah“ vlevo v patičce (kromě slidu Obsah samotného),
+ * v hlavičce překryvu modelu (`modelOverlay.js`) a klávesa O (i z překryvu a celé obrazovky).
  */
 
-import { P1_CHAPTERS, P1_LECTURE_SLIDES } from './p1Course.js';
+import { P1_CHAPTERS, courseSlideNumbering } from './p1Course.js';
 
 /** Kotva poslední zastávky každé kapitoly (hlídá test). */
 const LAST_STOP_HASH = '#procvic';
+/** Kotva slidu Obsah na rozcestníku. */
+export const TOC_ANCHOR = 'kapitoly';
+/** Obsah kurzu z libovolné stránky v `p1/`. */
+export const TOC_HREF = `index.html#${TOC_ANCHOR}`;
+/** Prvky, kam se píše text: tam O patří psaní. Posuvník, zaškrtávátko ani tlačítko text neberou. */
+const TEXT_ENTRY = 'input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]), '
+    + 'select, textarea, [contenteditable]:not([contenteditable="false"])';
 /** Prvky, kterým šipky patří. */
 const OWN_ARROWS = 'input, select, textarea, [contenteditable]:not([contenteditable="false"]), [role="slider"]';
 const SLIDER = 'input[type="range"], [role="slider"]';
@@ -95,6 +105,29 @@ export function slideKeyDirection(e, { modelOpen = false } = {}) {
 }
 
 /**
+ * Klávesa O = obsah kurzu. Nekoliduje se šipkami, mezerníkem ani Esc v simulátorech.
+ * @param {{key: string, altKey: boolean, ctrlKey: boolean, metaKey: boolean,
+ *   defaultPrevented: boolean, target: EventTarget|null}} e
+ * @returns {boolean}
+ */
+export function isTocKey(e) {
+    if (e.key !== 'o' && e.key !== 'O') return false;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return false;
+    return !e.target?.closest?.(TEXT_ENTRY);
+}
+
+/**
+ * Klávesa O mimo slidy (stránka Použité materiály). Na stránkách se slidy ji obsluhuje `initSlideNav`.
+ */
+export function initTocKey() {
+    document.addEventListener('keydown', (e) => {
+        if (!isTocKey(e)) return;
+        e.preventDefault();
+        window.location.assign(TOC_HREF);
+    });
+}
+
+/**
  * @param {EventTarget|null} target
  * @returns {boolean} prvek je posuvník (Esc z něj uvolní fokus, aby šipky zase přepínaly slidy)
  */
@@ -123,16 +156,21 @@ function step(slug, dir, from = null) {
     else window.location.replace(target.href); // skoky nezaplňují historii prohlížeče
 }
 
+/** Odkaz na obsah kurzu; slovo „Obsah“ na telefonu mizí a zbude ☰ (jméno pro čtečky nese aria-label). */
+export const TOC_LINK_HTML = `<a class="course-toc-link" href="${TOC_HREF}" aria-label="Obsah kurzu" title="Obsah kurzu (klávesa O)">`
+    + '<span aria-hidden="true">☰</span><span class="course-toc-word"> Obsah</span></a>';
+
 /**
- * Patička slidu: vlevo jméno přednášky (odkaz na Obsah), vpravo číslo slidu z celkového počtu („8 / 60“) a ‹ ›.
- * @param {string|null} number číslo slidu z přednášky; titulní slide a „Procvič si“ ho nemají
- * @param {number} [total] počet slidů přednášky (jedno místo: `P1_LECTURE_SLIDES`)
+ * Patička slidu: vlevo „☰ Obsah“ a jméno přednášky, vpravo číslo slidu z celkového počtu („12 / 74“) a ‹ ›.
+ * @param {number|null} number pořadí slidu v kurzu; `null` = bez čísla (stránka, která se nečísluje)
+ * @param {number|null} total počet slidů kurzu
+ * @param {{toc?: boolean}} [opts] `toc: false` na slidu Obsah samotném
  * @returns {string} HTML
  */
-export function slideFootHtml(number, total = P1_LECTURE_SLIDES) {
+export function slideFootHtml(number, total, { toc = true } = {}) {
     const label = number ? ` aria-label="slide ${number} z ${total}"` : '';
     const text = number ? `${number} / ${total}` : '';
-    return `<a class="course-foot-title" href="index.html#kapitoly">P1 – Fyzika</a>
+    return `<span class="course-foot-left">${toc ? TOC_LINK_HTML : ''}<span class="course-foot-title">P1 – Fyzika</span></span>
         <span class="course-foot-right">
             <span class="course-foot-number"${label}>${text}</span>
             <span class="course-slide-nav" role="group" aria-label="Přepínání slidů">
@@ -142,16 +180,26 @@ export function slideFootHtml(number, total = P1_LECTURE_SLIDES) {
         </span>`;
 }
 
+/** Obsah kurzu: na rozcestníku skok na slide Obsah, jinak přechod na rozcestník (Zpět vrátí na slide). */
+function goToToc(slug) {
+    const stops = collectStops(document);
+    const index = slug === null ? stops.findIndex(s => stopAnchor(s) === TOC_ANCHOR) : -1;
+    if (index >= 0 && !document.querySelector('dialog.course-sim[open]')) jumpTo(stops, index);
+    else window.location.assign(TOC_HREF);
+}
+
 function renderFeet(slug) {
-    for (const stop of collectStops(document)) {
+    const numbering = courseSlideNumbering(slug);
+    collectStops(document).forEach((stop, i) => {
         const foot = document.createElement('div');
         foot.className = 'course-foot';
-        foot.innerHTML = slideFootHtml(stop.dataset.slideNumber ?? null);
+        const toc = !(slug === null && stopAnchor(stop) === TOC_ANCHOR);
+        foot.innerHTML = numbering ? slideFootHtml(numbering.first + i, numbering.total, { toc }) : slideFootHtml(null, null, { toc });
         foot.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
             step(slug, Number(btn.dataset.step), stop);
         }));
         stop.appendChild(foot);
-    }
+    });
 }
 
 /**
@@ -163,6 +211,7 @@ export function initSlideNav(slug) {
     document.addEventListener('keydown', (e) => {
         const modelOpen = Boolean(document.querySelector('dialog.course-sim[open], .course-model.fullscreen'));
         if (e.key === 'Escape' && isSliderTarget(e.target) && !modelOpen) { e.target.blur(); return; }
+        if (isTocKey(e)) { e.preventDefault(); goToToc(slug); return; }
         const dir = slideKeyDirection(e, { modelOpen });
         if (!dir) return;
         e.preventDefault();

@@ -528,6 +528,33 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-curve { fill: none; stroke: var(--slide-water); stroke-width: 5; stroke-linecap: round; } /* křivka grafu */
 .course-figure svg .fig-dot { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 3; } /* bod na křivce */
 .course-figure svg .fig-tissue { fill: var(--slide-accent); }
+/* Vidění pod vodou (O1, slidy 48–54): paprsek světla je žlutý pruh s tmavým lemem (dvě čáry přes sebe: lem pod,
+   paprsek nad), slabší paprsek (odraz) je užší. Barvy spektra na slidu 49 jsou barvy světla, ne barvy scény. */
+.course-figure svg .fig-ray { fill: none; stroke: var(--slide-highlight); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-ray-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; }
+.course-figure svg .fig-ray.fig-mid { stroke-width: 5; }
+.course-figure svg .fig-ray-edge.fig-mid { stroke-width: 10; }
+.course-figure svg .fig-ray.fig-weak { stroke-width: 2.5; }
+.course-figure svg .fig-ray-edge.fig-weak { stroke-width: 7; }
+.course-figure svg .fig-ray-head { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 2; stroke-linejoin: round; }
+.course-figure svg .fig-sun { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 3; }
+.course-figure svg .fig-angle { fill: none; stroke: var(--slide-on-accent); stroke-width: 3.5; }
+.course-figure svg .fig-angle-light { fill: none; stroke: var(--slide-card-bg); stroke-width: 3.5; }
+.course-figure svg .fig-window { fill: var(--slide-accent); fill-opacity: 0.4; }
+.course-figure svg .fig-depth-top { stop-color: var(--slide-accent); }
+.course-figure svg .fig-depth-mid { stop-color: var(--slide-water); }
+.course-figure svg .fig-depth-bottom { stop-color: var(--slide-bg-end); }
+.course-figure svg [class^="fig-spec-"] { stroke: var(--slide-card-bg); stroke-width: 2.5; stroke-linejoin: round; }
+.course-figure svg .fig-spec-red { fill: #e53935; }
+.course-figure svg .fig-spec-orange { fill: #fb8c00; }
+.course-figure svg .fig-spec-yellow { fill: #fdd835; }
+.course-figure svg .fig-spec-green { fill: #43a047; }
+.course-figure svg .fig-spec-blue { fill: #1e5fd6; }
+.course-figure svg .fig-eye { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3.5; }
+.course-figure svg .fig-lens { fill: var(--slide-accent); stroke: var(--slide-on-accent); stroke-width: 2.5; }
+.course-figure svg .fig-retina { fill: none; stroke: var(--slide-wind-warm); stroke-width: 8; stroke-linecap: round; }
+.course-figure svg .fig-fish { fill: var(--slide-on-accent); }
+.course-figure svg .fig-fish-ghost { fill: var(--slide-highlight); fill-opacity: 0.55; stroke: var(--slide-on-accent); stroke-width: 3; stroke-dasharray: 10 7; }
 .course-figure svg .fig-tube-wall { fill: none; stroke: var(--slide-on-accent); stroke-width: 30; }
 .course-figure svg .fig-tube { fill: none; stroke: var(--slide-card-bg); stroke-width: 24; }
 /* Slyšení (Z1, slide 55): hlava shora s ušima, zvon a lahev, vlny zvuku na vzduchu (tmavé) a ve vodě (světlé). */
@@ -667,7 +694,7 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     dialog.course-sim > .course-model.chart-container { height: auto; min-height: 100%; border-radius: 0; }
 }
 
-/* --- patička slidu: jméno přednášky, číslo slidu / počet slidů, ‹ › -------
+/* --- patička slidu: ☰ Obsah, jméno přednášky, číslo slidu / počet slidů, ‹ › -------
    Stejné místo a velikost na všech zastávkách i stránkách, mění se jen číslo. */
 
 .course-foot {
@@ -682,6 +709,23 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     font-size: var(--text-sm);
     color: var(--slide-subtle);
 }
+.course-foot-left { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+/* Obsah kurzu (D17): orámovaný jako ‹ ›, ať je vidět, že se na něj dá kliknout. */
+.course-toc-link {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.4em;
+    height: 2rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--slide-line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--slide-fg);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.course-toc-link:hover,
+.course-toc-link:focus-visible { border-color: var(--slide-accent); color: var(--slide-accent); }
 .course-foot-title {
     min-width: 0;
     overflow: hidden;
@@ -710,6 +754,9 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 .course-slide-nav button:focus-visible { border-color: var(--slide-accent); color: var(--slide-accent); }
 @media (max-width: 768px) {
     .course-slide-nav { display: none; }
+    /* Telefon: z „☰ Obsah“ zbude ☰, patička se nezalomí (jméno pro čtečky nese aria-label). */
+    .course-toc-link { justify-content: center; width: 1.75rem; height: 1.75rem; padding: 0; }
+    .course-toc-word { display: none; }
 }
 
 /* „Rozbalit všechny výklady“ v řádku „Více“, vpravo. */
@@ -832,6 +879,7 @@ details.course-more > summary .course-summary-hint {
 
 .course-model.chart-container { height: auto; margin: 0; } /* základ .chart-container má pevných 700 px */
 .course-sim-actions { display: flex; gap: var(--space-2); flex: none; }
+a.course-sim-toc { text-decoration: none; }
 .course-model .chart-header .btn {
     background: transparent;
     color: var(--slide-fg);
@@ -1242,7 +1290,7 @@ details.course-more > summary .course-summary-hint {
 
 @media print {
     .course-slide, .course-slide.course-model { min-height: 0; margin-bottom: var(--course-gap); break-inside: avoid; border: 1px solid #888; }
-    .course-slide-nav, .course-expand-all { display: none; }
+    .course-slide-nav, .course-expand-all, .course-toc-link { display: none; }
     .main-nav:has(~ .course-page) { display: none; }
     /* Textové slidy se tisknou černě na bílé. */
     .course-slide:not(.course-model) {

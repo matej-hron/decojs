@@ -19,13 +19,13 @@ const more = (n) => text(slide(n).closest('section').querySelector('details.cour
 /** Rychlost zvuku ve vzduchu podle teploty ve °C (běžná lineární aproximace). */
 const soundInAir = (celsius) => 331.3 + 0.606 * celsius;
 
-test('Slyšení: kapitola je hotová, slidy 55–56, P★★, za Henrym a před Teplem', () => {
+test('Slyšení: kapitola je hotová, slidy 55–56, P★★, za Viděním a před Teplem', () => {
     const c = chapterBySlug('slyseni');
     assert.equal(c.status, 'ready');
     assert.equal(c.slides, '55–56');
     assert.equal(c.level, 'P★★');
     assert.equal(doc.body.dataset.courseChapter, 'slyseni');
-    assert.equal(chapterNeighbours('slyseni').prev?.slug, 'henry');
+    assert.equal(chapterNeighbours('slyseni').prev?.slug, 'videni');
     assert.equal(chapterNeighbours('slyseni').next?.slug, 'teplo');
 });
 

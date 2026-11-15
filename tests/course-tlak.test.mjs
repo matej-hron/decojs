@@ -236,7 +236,7 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     assert.doesNotMatch(more(22), /Nad rámec P★|Osnova je řadí/);
     assert.match(more(22), /Když jedna z veličin zůstává stejná, zjednoduší se stavová rovnice na jednodušší zákon:/);
     assert.match(more(22), /Boyle-Mariottův zákon, pV = konst\. Ten je jádrem P★, podrobně v kapitole Stlačování plynů/);
-    assert.match(more(22), /Izobarický a izochorický děj řadí osnova až do P★★ \(slide 4\), tady jsou pro úplnost\./);
+    assert.match(more(22), /Izobarický a izochorický děj řadí osnova až do P★★ \(viz osnova P★★\), tady jsou pro úplnost\./);
     assert.doesNotMatch(text(doc.body), /Boyleův|Mariotteův/, 'jedno jméno zákona: Boyle-Mariottův');
     assert.doesNotMatch(more(22), /anglicky/, 'Pískoviště je česky (R3-01)');
     assert.match(more(22), /Pozor, anglické materiály jména obvykle prohazují: izobarický děj tam bývá Charlesův zákon a izochorický\s+Gay-Lussacův\./);
