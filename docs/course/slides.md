@@ -128,6 +128,12 @@ zajistí `course-core-cols` na těle: každý sloupec je jeden `<div>`, od 900 p
 „=“, pravá strana), pokračovací řádek má levou stranu prázdnou, takže „=“ jsou pod sebou. Hlavní sdělení uprostřed řetězu
 je `<p class="course-formula-chain-key"><span class="course-highlight">…</span></p>` přes celou šířku.
 Kolem každé rovnosti delší pravé strany `<span class="course-eq">`, aby ji telefon zalomil jen mezi rovnostmi.
+Zlomek jako v přednášce (T28, slidy Tlak v plynu): `<span class="course-frac"><span>čitatel</span><span
+class="course-frac-slash">/</span><span>jmenovatel</span></span>` uvnitř `.course-formula`. Čitatel stojí nad čarou,
+jmenovatel pod ní, čára je ve výšce „=“. Lomítko je skryté, čtečka a kopírování dostanou „nRT/V“. Bez LaTeXu a bez obrázku.
+Implikace „příčina ⇒ důsledek“ (T28) jsou `<ul class="course-implications">`: v každém `<li>` dva `<span>`, příčina
+a `<span class="course-highlight">⇒ důsledek</span>`. Důsledky stojí ve sloupci pod sebou, užší sloupec příčin se na
+telefonu zalomí a důsledek se šipkou zůstane vedle něj. Odrážky nemá, strukturu nese šipka.
 Část `.course-warning` je varování jako „Nikdy nezadržujte dech!“ (slide 26): malá ilustrace ve stylu kurzu (výstražná
 značka `warn-sign` a `warn-mark` a potápěč, který při výstupu dýchá, výška 15 % slidu) a vedle ní `<p class="course-alert">`
 (na telefonu pod ní). Smí být pod textem kteréhokoli typu, slide 26 ji má
@@ -298,6 +304,10 @@ Stlačování a Hustota se projdou zvlášť.
   (čárkovaná vodorovná pomocná čára), `fig-dim` (kóta), `fig-rock` (hora), `fig-sea`, `fig-solid-top`/`-front`/`-side`
   (deska v perspektivě), `fig-atom`, `fig-bond`, `fig-road`, `fig-road-line`, `fig-plane`, `fig-body`, `fig-cavity`,
   `fig-leader` s `fig-halo` (odkazová čára čitelná na tmavém i světlém).
+- **Animace částic plynu (slidy Tlak v plynu 22 a 40, T28):** `<g data-gas-particles data-oxygen-every="…"
+  data-box="23 83 554 314">` v SVG 600 × 420 s nádobou `fig-wall`, kreslí a pohybuje `js/course/gasParticles.js`
+  (stránka ho mountuje, `prefers-reduced-motion` a pauza mimo obrazovku jsou v modulu). Na slidu 22 jsou všechny částice
+  `fig-n2` s popiskem „částice plynu“, na slidu 40 je každá pátá `fig-o2` s legendou kyslík a dusík.
 - **Další třídy (S7, Stlačování plynů):** `fig-molecule` (částice plynu ve válci), `fig-weight` (závaží), `fig-axis`,
   `fig-curve` a `fig-dot` (křivka a bod grafu), `fig-tissue`
   (tkáň), `fig-tube-wall` s `fig-tube` (trubice). `fig-gas`, `fig-guide` a `fig-cavity` jsou společné s T7.
