@@ -155,7 +155,10 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     }
     // 31: dvě stejná tělesa, stejný vztlak (stejný tvar šipky), tíha lehkého menší, těžkého větší
     const s31 = slide(31).querySelector('svg');
-    const arrows = [...s31.querySelectorAll('.fig-force')].map(p => p.getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
+    // A10: vztlak žlutě jako síly vody, tíha F_G jako na slidu 32 (fig-force-g)
+    assert.equal(s31.querySelectorAll('.fig-force').length, 2);
+    assert.equal(s31.querySelectorAll('.fig-force-g').length, 2);
+    const arrows = [...s31.querySelectorAll('.fig-force, .fig-force-g')].map(p => p.getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
     const len = (pts) => Math.max(...pts.map(p => p[1])) - Math.min(...pts.map(p => p[1]));
     assert.equal(arrows.length, 4);
     const [upLight, upHeavy, downLight, downHeavy] = arrows.map(len);
