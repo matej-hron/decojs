@@ -20,6 +20,7 @@ import { pressureAt } from './pressure.js';
  * @property {'school'|'exact'} [mode='school']
  * @property {number} [altitude=0] m n. m.
  * @property {'fresh'|'salt'} [water='salt']
+ * @property {number} [atm] bar, atmosférický tlak na hladině, když ho určuje stránka (jinak z `altitude`)
  */
 
 const positive = (value, name) => {
@@ -30,8 +31,8 @@ const nonNegative = (value, name) => {
 };
 
 /** Celkový tlak v hloubce (bar); výchozí je mořská voda u hladiny moře jako u modelu M1. */
-const totalPressure = (depth, { mode = 'school', altitude = 0, water = 'salt' } = {}) =>
-    pressureAt(depth, { mode, altitude, water }).total;
+const totalPressure = (depth, { mode = 'school', altitude = 0, water = 'salt', atm } = {}) =>
+    pressureAt(depth, { mode, altitude, water, atm }).total;
 
 /**
  * p₁ · V₁ = p₂ · V₂ → V₂.
