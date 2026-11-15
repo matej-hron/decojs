@@ -246,6 +246,28 @@ test('Tlak: „Více“ má texty a sdílené pojmy, žádné „Připravujeme�
     }
 });
 
+test('Tlak: Více slidu 22 má zajímavost lahev z plnírny (T27)', () => {
+    const box = slide(22).closest('section').querySelector('details.course-more .course-example#zajimavost-lahev');
+    assert.ok(box, 'zajímavost je ve Více, ne na slidu');
+    assert.ok(!slide(22).querySelector('.course-example'), 'na slidu nic nového');
+    assert.equal(box.previousElementSibling.tagName, 'UL', 'hned za seznamem tří dějů');
+    assert.equal(text(box.querySelector('h3')), 'Zajímavost: lahev z plnírny');
+    const t = text(box);
+    assert.match(t, /Lahev naplněná na 200 bar při 40 °C ukáže po vychladnutí na 10 °C jen asi 181 bar\./);
+    assert.equal(text(box.querySelector('.course-formula')), 'p2 = p1 · T2/T1 = 200 bar · 283 K / 313 K ≈ 181 bar');
+    assert.equal(Math.round(200 * 283 / 313), 181);
+    assert.equal(Math.round(3 * 283 / 313 * 10) / 10, 2.7);
+    assert.match(t, /Teplá lahev na 200 bar tedy obsahuje méně vzduchu než studená na 200 bar\./);
+    assert.match(t, /asi 3 kg vzduchu \(viz Změna vztlaku během ponoru\), při 40 °C jen asi 2,7 kg\./);
+    const link = box.querySelector('a');
+    assert.equal(link.getAttribute('href'), 'archimeduv-zakon.html#ubytek-vzduchu');
+    const arch = new JSDOM(read('p1/archimeduv-zakon.html')).window.document;
+    assert.equal(text(arch.querySelector('#ubytek-vzduchu h2')), text(link), 'odkaz názvem slidu (D16)');
+    assert.match(t, /Proto plnírny lahve při plnění chladí ve vodní lázni nebo je po vychladnutí dotlakují\./);
+    assert.equal(slide(22).closest('section').querySelectorAll('a[href="../sandbox/gas-law.html"]').length, 1, 'Pískoviště neduplikovat');
+    assert.equal(box.innerHTML.match(/\d (bar|K|kg|°C)/g), null, 'mezi číslem a jednotkou je nbsp');
+});
+
 test('pojmy Tlaku: první odstavec obstojí sám, se vzorcem nebo definicí a jednotkou', () => {
     const first = (id) => new JSDOM(read(`concepts/cs/${id}.html`)).window.document.querySelector('p');
     const cases = {
