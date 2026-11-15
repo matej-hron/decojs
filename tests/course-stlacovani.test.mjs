@@ -302,14 +302,16 @@ test('Stlačování plynů: B1 se otevírá z náhledů na slidech 24, 25 a 26 s
 });
 
 test('Stlačování plynů: Procvič si má otázky z analýzy a odkazy na kategorie', () => {
-    // Na slide Procvič si patří tři otázky (slides.md §4): 23, 39, 33 a 61, 62, 66; otázka 35 (bublina) je pod slidem 25.
+    // Na slide Procvič si patří tři otázky (slides.md §4): 23, 39, 43 a 61, 62, 66; otázka 35 (bublina) je pod slidem 25.
+    // U16: otázka 33 (nádech na zbytkový objem plic) je sporná kvůli freediverům, nahradila ji 43 (kompenzátor a přetlakový ventil).
     const ids = [...doc.querySelectorAll('main > section > .course-slide .course-practice')].map(p => p.dataset.questionIds);
-    assert.deepEqual(ids, ['23,39,33', '61,62,66']);
+    assert.deepEqual(ids, ['23,39,43', '61,62,66']);
+    assert.doesNotMatch(html, /data-question-ids="[^"]*\b33\b/, 'otázka 33 nikde v kapitole');
     assert.equal(slide(25).closest('section').querySelector('details.course-more .course-practice')?.dataset.questionIds, '35');
     assert.ok(doc.querySelector('a[href="../quiz-physics.html?kategorie=fyzika-plynu"]'));
     assert.ok(doc.querySelector('a[href="../quiz-physics.html?kategorie=spotreba-planovani"]'));
     const quiz = new Set(JSON.parse(read('data/quiz-physics.json')).questions.map(q => q.id));
-    for (const id of [23, 39, 35, 33, 61, 62, 66]) assert.ok(quiz.has(id), `otázka ${id}`);
+    for (const id of [23, 39, 35, 43, 61, 62, 66]) assert.ok(quiz.has(id), `otázka ${id}`);
 });
 
 test('Stlačování plynů: „Více“ má pojmy a texty, odkazy na model míří na existující předvolby', () => {
