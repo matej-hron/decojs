@@ -342,7 +342,9 @@
         <section id="dutiny" class="course-section">
             <div class="course-slide" data-slide-number="27" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Stlačování plynů, tělní dutiny</h2>
-                <div class="course-core">
+                <!-- U15: šipka sestupu je osa slidu mezi obrázky („jdeme dolů, roste tlak, co se děje s dutinami?“),
+                     pod každým obrázkem odpověď. -->
+                <div class="course-core course-core-descent">
                     <div>
                         <h3 class="course-figure-title"><span class="course-highlight">Automatické vyrovnání tlaku</span></h3>
                         <figure class="course-figure course-illustration">
@@ -372,8 +374,22 @@
                             <text x="274" y="160" class="fig-label-xl">dutiny s&nbsp;plynem</text>
                             <a href="tlak.html#dusledky"><text x="274" y="200" class="fig-label-xl">(Důsledky tlaku)</text></a>
                         </svg>
-                            <figcaption>plíce, trávicí systém, obličejové dutiny, dýchací cesty</figcaption>
+                            <figcaption><span class="course-figure-answer">Vyrovná se samo: dýcháš z&nbsp;automatiky vzduch o&nbsp;tlaku okolí.</span>
+                                <span class="course-figure-note">plíce, trávicí systém, obličejové dutiny, dýchací cesty</span></figcaption>
                         </figure>
+                    </div>
+                    <div class="course-descent-axis" role="img" aria-label="Velká šipka dolů mezi obrázky: při sestupu tlak roste">
+                        <svg viewBox="0 0 100 400" preserveAspectRatio="none" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="sestup-hloubka" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" class="fig-depth-top"/>
+                                    <stop offset="0.45" class="fig-depth-mid"/>
+                                    <stop offset="1" class="fig-depth-bottom"/>
+                                </linearGradient>
+                            </defs>
+                            <polygon class="fig-descent" points="16,2 84,2 84,318 98,318 50,398 2,318 16,318"/>
+                        </svg>
+                        <p class="course-descent-label"><span>sestup:</span> <span>tlak</span> <span>roste</span></p>
                     </div>
                     <div>
                         <h3 class="course-figure-title"><span class="course-highlight">Aktivní vyrovnání tlaku</span></h3>
@@ -401,19 +417,10 @@
                                 <text x="16" y="204" class="fig-label-xl">bubínek</text>
                                 <text x="16" y="254" class="fig-label-xl">Eustachova trubice</text>
                             </svg>
-                            <figcaption>střední ucho (Eustachova trubice), prostor uvnitř masky <a class="course-source" href="zdroje.html#ucho">zdroj</a></figcaption>
+                            <figcaption><span class="course-figure-answer">Musíš vyrovnat ty: vyrovnej uši a&nbsp;vydechni nosem do masky.</span>
+                                <span class="course-figure-note">střední ucho (Eustachova trubice), prostor uvnitř masky <a class="course-source" href="zdroje.html#ucho">zdroj</a></span>
+                                <span class="course-figure-note"><a href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290">Strany potápěčské: Pan Eustach</a></span></figcaption>
                         </figure>
-                    </div>
-                    <div class="course-core-row">
-                        <figure class="course-figure course-descent">
-                            <svg viewBox="0 0 48 100" role="img" aria-label="Šipka dolů: sestup">
-                                <polygon class="fig-force" points="15,4 33,4 33,62 45,62 24,96 3,62 15,62"/>
-                            </svg>
-                        </figure>
-                        <div>
-                            <p><span class="course-highlight">Sestup: tlak roste.</span>
-                                Viz <a href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290">Strany potápěčské: Pan Eustach</a>.</p>
-                        </div>
                     </div>
                 </div>
             </div>

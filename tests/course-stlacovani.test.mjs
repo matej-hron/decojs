@@ -170,11 +170,11 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
     const s = slide(27);
     assert.equal(s.dataset.slideType, 'figure');
     // S7: dvě ilustrace ve stylu slidu 12 Tlaku, nadpis nad každou a výčet dutin v popisku pod ní
-    const [auto, active] = [...s.querySelectorAll('.course-core > div:not(.course-core-row)')];
+    const [auto, active] = [...s.querySelectorAll('.course-core > div:not(.course-descent-axis)')];
     assert.equal(text(auto.querySelector('.course-figure-title')), 'Automatické vyrovnání tlaku');
-    assert.equal(text(auto.querySelector('figcaption')), 'plíce, trávicí systém, obličejové dutiny, dýchací cesty');
+    assert.equal(text(auto.querySelector('.course-figure-note')), 'plíce, trávicí systém, obličejové dutiny, dýchací cesty');
     assert.equal(text(active.querySelector('.course-figure-title')), 'Aktivní vyrovnání tlaku');
-    assert.equal(text(active.querySelector('figcaption')), 'střední ucho (Eustachova trubice), prostor uvnitř masky zdroj', 'popisek a odkaz zdroj (U1)');
+    assert.equal(text(active.querySelector('.course-figure-note')), 'střední ucho (Eustachova trubice), prostor uvnitř masky zdroj', 'výčet a odkaz zdroj (U1)');
     assert.doesNotMatch(text(s), /násiln/i);
     const [body, ear] = [auto, active].map(div => div.querySelector('figure.course-illustration svg'));
     for (const svg of [body, ear]) {
@@ -186,10 +186,37 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
     for (const label of ['maska', '(aktivně)', `dutiny s${N}plynem`, '(Důsledky tlaku)']) assert.ok(body.textContent.includes(label), label);
     for (const label of ['tlak vody', 'bubínek', 'střední ucho', 'Eustachova trubice']) assert.ok(ear.textContent.includes(label), label);
     assert.ok(ear.querySelector('.fig-water-push'), 'voda tlačí zvukovodem na bubínek');
-    const row = s.querySelector('.course-core-row');
-    assert.match(text(row), /Sestup: tlak roste\./);
-    assert.ok(row.querySelector('svg[role="img"][aria-label] .fig-force'), 'šipka sestupu');
-    assert.ok(s.querySelector('a[href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290"]'));
+    assert.ok(active.querySelector('figcaption a[href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290"]'), 'Pan Eustach pod uchem (U15)');
+});
+
+test('U15: slide 27 má šipku sestupu jako osu mezi obrázky a pod každým obrázkem odpověď, co se s dutinami děje', () => {
+    const s = slide(27);
+    const core = s.querySelector('.course-core');
+    assert.ok(core.classList.contains('course-core-descent'), 'varianta rozložení se šipkou mezi obrázky');
+    const kids = [...core.children];
+    assert.deepEqual(kids.map(el => el.className), ['', 'course-descent-axis', ''], 'obrázek, šipka, obrázek');
+    assert.equal(s.querySelector('.course-core-row'), null, 'řádek „Sestup: tlak roste“ pod obrázky zmizel');
+    const axis = kids[1];
+    assert.equal(axis.getAttribute('role'), 'img');
+    assert.match(axis.getAttribute('aria-label'), /sestup.*tlak roste/i);
+    assert.equal(text(axis.querySelector('.course-descent-label')), 'sestup: tlak roste');
+    const grad = axis.querySelector('svg linearGradient');
+    assert.ok(grad && grad.querySelectorAll('stop').length >= 2, 'gradient světlá nahoře → tmavá dole');
+    assert.ok(axis.querySelector('svg polygon.fig-descent'), 'šipka dolů');
+    const [auto, active] = [kids[0], kids[2]];
+    const answer = (div) => text(div.querySelector('figcaption .course-figure-answer'));
+    assert.equal(answer(auto), 'Vyrovná se samo: dýcháš z automatiky vzduch o tlaku okolí.');
+    assert.equal(answer(active), 'Musíš vyrovnat ty: vyrovnej uši a vydechni nosem do masky.');
+    for (const div of [auto, active]) {
+        const cap = div.querySelector('figcaption');
+        assert.equal(cap.firstElementChild.className, 'course-figure-answer', 'odpověď hned pod obrázkem, ne po kliknutí');
+        assert.equal(cap.closest('details'), null);
+    }
+    assert.match(html, /Vyrovná se samo: dýcháš z&nbsp;automatiky vzduch o&nbsp;tlaku okolí\./);
+    assert.match(html, /vyrovnej uši a&nbsp;vydechni nosem do masky\./);
+    // šablona a vzorník znají novou variantu
+    assert.match(read('docs/course/slides.md'), /course-core-descent/);
+    assert.match(read('docs/course/vzornik-slidu.html'), /course-core-descent/);
 });
 
 /** Odkrytý výsledek příkladu a jeho postup. */
