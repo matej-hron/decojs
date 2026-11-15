@@ -58,6 +58,57 @@ test('Henry: opravy z rozhodnutí 7 a překlepy', () => {
     assert.deepEqual([...t47.querySelectorAll('td')].map(text), ['12,3', '8,6', '23,9', '66,1', '15,7', '110,5']);
 });
 
+// Body tvarů v SVG (kruhy, obdélníky, cesty s M/L/H/V/Z), otočené podle `rotate(a cx cy)` skupiny potápěče.
+function shapePoints(el) {
+    const n = (a) => Number(el.getAttribute(a));
+    if (el.tagName === 'circle') return [[n('cx') - n('r'), n('cy') - n('r')], [n('cx') + n('r'), n('cy') + n('r')]];
+    if (el.tagName === 'rect') return [[n('x'), n('y')], [n('x') + n('width'), n('y') + n('height')]];
+    const pts = []; let x = 0, y = 0;
+    for (const [, cmd, args] of el.getAttribute('d').matchAll(/([MLHVZ])([^MLHVZ]*)/g)) {
+        const v = args.trim() ? args.trim().split(/[\s,]+/).map(Number) : [];
+        if (cmd === 'Z') continue;
+        if (cmd === 'M' || cmd === 'L') for (let i = 0; i < v.length; i += 2) { x = v[i]; y = v[i + 1]; pts.push([x, y]); }
+        else if (cmd === 'H') { x = v.at(-1); pts.push([x, y]); }
+        else if (cmd === 'V') { y = v.at(-1); pts.push([x, y]); }
+    }
+    return pts;
+}
+const rotated = ([x, y], [deg, cx, cy]) => {
+    const a = deg * Math.PI / 180;
+    return [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)];
+};
+const bbox = (pts) => {
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+};
+
+test('Henry: slide 44 (Bubliny), potápěč ve varování je ve vodě v trimu, ne vestoje (H-trim)', () => {
+    const svg = slide(44).querySelector('.course-warning svg');
+    assert.equal(svg.getAttribute('viewBox'), '0 0 300 150', 'stejný rámeček');
+    assert.match(svg.getAttribute('aria-label'), /potápěč vodorovně v\u00a0trimu/);
+    assert.match(svg.getAttribute('aria-label'), /pomalu stoupá a normálně dýchá/);
+    assert.ok(svg.querySelector('.warn-sign') && svg.querySelector('.warn-mark'), 'výstražná značka zůstává');
+    const trim = svg.querySelector('g.fig-trim');
+    const rot = trim.getAttribute('transform').match(/^rotate\((-?[\d.]+) ([\d.]+) ([\d.]+)\)$/)?.slice(1).map(Number);
+    assert.ok(rot, 'natočení jen rotate(úhel cx cy)');
+    assert.ok(rot[0] < 0 && rot[0] >= -10, `mírně hlavou nahoru, pořád v trimu: ${rot[0]}°`);
+    const body = [...trim.querySelectorAll('.fig-silhouette > *')];
+    const b = bbox(body.flatMap(shapePoints).map(p => rotated(p, rot)));
+    assert.ok(b.x1 - b.x0 > 2.5 * (b.y1 - b.y0), `tělo vodorovně: ${JSON.stringify(b)}`);
+    assert.ok(b.x0 > bbox(shapePoints(svg.querySelector('.warn-sign'))).x1, 'ploutve nezasahují do značky');
+    assert.ok(b.x1 <= 300 && b.y0 >= 30 && b.y1 <= 150, 'pod hladinou a v rámečku');
+    const head = trim.querySelector('.fig-silhouette > circle[data-part="hlava"]');
+    const r = Number(head.getAttribute('r'));
+    const [hx, hy] = rotated([Number(head.getAttribute('cx')), Number(head.getAttribute('cy'))], rot);
+    assert.ok(hx > (b.x0 + b.x1) / 2 && hy < (b.y0 + b.y1) / 2, 'hlava vpředu a výš');
+    const bubbles = [...svg.querySelectorAll('.fig-flake')];
+    assert.ok(bubbles.length >= 3 && bubbles.every(c => !trim.contains(c)), 'bubliny se s potápěčem netočí');
+    const bx = bubbles.map(c => Number(c.getAttribute('cx')));
+    assert.ok(Math.max(...bx) - Math.min(...bx) <= 6, 'bubliny stoupají svisle');
+    assert.ok(Math.min(...bx) > hx && Math.max(...bx) < hx + r + 12, 'od hlavy (od automatiky)');
+    assert.ok(bubbles.every(c => Number(c.getAttribute('cy')) + Number(c.getAttribute('r')) < hy - r), 'nad hlavou');
+});
+
 test('Henry: slide 44 má nulový čas v Matejově znění (rozhodnutí 6), bez „zajištěna“', () => {
     const s = text(slide(44));
     assert.doesNotMatch(s, /zajištěna/);
