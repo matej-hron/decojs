@@ -116,7 +116,8 @@ test('Dalton: slide 40 je animace s každou pátou částicí jako kyslík (rozh
     assert.equal(text(slide(40).querySelector('figcaption')),
         'Asi pětina částic je kyslík. Dělá asi pětinu nárazů do stěn, a tedy asi pětinu tlaku.');
     assert.ok(!slide(40).querySelector('img'), 'žádný GIF: obarvit ho nejde');
-    assert.match(more(40), /slide 22 v kapitole Tlak/);
+    assert.match(more(40), /slide Tlak v plynu v kapitole Tlak/);
+    assert.ok(slide(40).closest('section').querySelector('details.course-more a[href="tlak.html#plyn"]'), 'D16: proklik podle názvu');
 });
 
 test('Animace částic: pětina kyslíku, částice zůstávají v nádobě, kyslík dělá asi pětinu nárazů', () => {
