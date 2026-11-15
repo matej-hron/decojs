@@ -572,6 +572,30 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-heat-head { fill: var(--slide-wind-warm); }
 .course-core-row:has(> .course-descent) { flex-wrap: nowrap; gap: var(--space-4); } /* šipka sestupu zůstane vedle textu i na telefonu */
 .course-core-row > .course-descent > svg { display: block; height: 2.6em; width: auto; }
+/* Šipka sestupu jako osa slidu mezi dvěma obrázky (slide 27, U15, jako v originále): „jdeme dolů, roste tlak, co se
+   děje s dutinami na obrázcích?“. Velká šipka dolů přes výšku obou sloupců, nahoře světlá, dole tmavá (hloubka),
+   nápis v horní světlé části. Pod každým obrázkem odpověď (.course-figure-answer) a menším písmem výčet dutin.
+   Na telefonu jsou obrázky pod sebou a mezi nimi menší svislá šipka s nápisem vedle. */
+.course-descent-axis svg .fig-depth-top { stop-color: var(--slide-card-bg); }
+.course-descent-axis svg .fig-depth-mid { stop-color: var(--slide-accent); }
+.course-descent-axis svg .fig-depth-bottom { stop-color: var(--slide-on-accent); }
+.course-descent-axis svg .fig-descent { fill: url(#sestup-hloubka); stroke: var(--slide-card-bg); stroke-width: 3; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.course-descent-label { margin: 0; font-weight: 700; line-height: 1.15; text-align: center; }
+.course-descent-label > span { display: block; }
+.course-figure-answer { display: block; font-weight: 600; }
+.course-core-descent .course-figure-note + .course-figure-note { margin-top: var(--space-1); }
+.course-core-descent .course-illustration > svg { max-height: calc(var(--course-slide-height) * 0.36); }
+.course-descent-axis { display: flex; align-items: center; gap: var(--space-3); margin: var(--space-4) 0; }
+.course-descent-axis > svg { flex: 0 0 auto; width: 2.6em; height: 5em; }
+.course-descent-axis > .course-descent-label { text-align: left; }
+.course-descent-axis > .course-descent-label > span { display: inline; }
+@media (min-width: 900px) {
+    .course-slide[data-slide-type="figure"] .course-core.course-core-descent { grid-template-columns: minmax(0, 1fr) 7em minmax(0, 1fr); gap: var(--space-4); }
+    .course-descent-axis { position: relative; display: block; align-self: stretch; margin: 0; min-height: 12em; }
+    .course-descent-axis > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .course-descent-axis > .course-descent-label { position: absolute; top: 12%; left: 0; right: 0; text-align: center; color: var(--slide-on-accent); font-size: 1.05em; }
+    .course-descent-axis > .course-descent-label > span { display: block; }
+}
 @media (min-width: 900px) {
     .course-slide[data-slide-type="figure"] .course-core {
         display: grid;
@@ -925,6 +949,25 @@ a.course-sim-toc { text-decoration: none; }
     gap: var(--space-1);
     flex: 1 1 18rem;
     max-width: 36rem;
+}
+
+/* Výběr v ovládání modelu (B1: nadmořská výška); předvoleb je víc, než by se vešlo do segmentového přepínače. */
+.course-select {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.course-select select {
+    font: inherit;
+    font-size: var(--course-model-ui);
+    font-weight: 400;
+    color: var(--text);
+    background: var(--surface, transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md, 6px);
+    padding: 0.35em 0.6em;
+    min-height: 44px;
+    max-width: 100%;
 }
 
 .course-segmented {
