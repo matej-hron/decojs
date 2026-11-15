@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Vzorník titulních slidů – Kurz P1</title>
+    <!-- T29 krok 1: tři varianty titulního slidu (A atmosféra, B obsah kapitoly, C motiv kapitoly), každá jako titulní
+         slide kurzu a kapitoly Tlak. Matej vybere, krok 2 ji zavede do typu title (css/course.css, data kurzu, slides.md).
+         Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5591 v kořeni repa,
+         pak http://127.0.0.1:5591/docs/course/vzornik-titulni.html. Typy slidů: docs/course/slides.md. -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/course.css">
+    <style>
+        /* Jen vzorník: popisek varianty v řádku pod slidem, kde je jinak „Více“. */
+        .vzornik-type {
+            min-height: var(--course-more-row);
+            margin: 0;
+            padding: var(--space-3) 0;
+            font-size: var(--text-sm);
+            color: var(--text-subtle);
+        }
+        .vzornik-notes { max-width: 60rem; margin: var(--space-6) auto; padding: 0 var(--space-4); }
+        .vzornik-notes table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
+        .vzornik-notes th, .vzornik-notes td { border-bottom: 1px solid var(--border); padding: var(--space-2); text-align: left; vertical-align: top; }
+
+        /* ---------------------------------------------------------------------------------------------
+           Návrh pro css/course.css (krok 2). Nic z toho nemění polohu ani velikost nadpisu (P22).
+           --------------------------------------------------------------------------------------------- */
+
+        /* A, atmosféra: světlo od hladiny (kaustiky a paprsky, mizí do 60 % výšky, ve spodní třetině s nadpisem nic)
+           a sloupec bublin vpravo. Jen pozadí slidu, statické, stejné pro všechny titulní slidy, bez úprav HTML. */
+        [data-vzornik] .course-slide[data-slide-type="title"] {
+            background:
+                var(--slide-wave) top / 100% 0.7rem no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 44'%3E%3Cg fill='none' stroke='%23e6f7fb' stroke-width='1.1' stroke-linecap='round'%3E%3Cpath stroke-opacity='.2' d='M-21 2Q0 -2 13 2M13 2Q27 2 37 2M37 2Q52 3 76 -0M76 -0Q84 3 91 4M91 4Q113 2 120 5M120 5Q133 2 164 3M164 3Q174 -1 177 2M177 2Q184 5 203 0M203 0Q219 0 230 2M230 2Q253 1 263 3M263 3Q281 -1 293 2M293 2Q307 6 324 5M324 5Q345 7 351 1M351 1Q358 1 369 -1M369 -1Q382 -2 402 4M-21 2Q-4 12 1 15M-21 2Q3 7 11 15M13 2Q11 7 11 15M13 2Q5 10 1 15M37 2Q41 11 51 12M76 -0Q65 2 69 15M91 4Q92 9 85 12M91 4Q85 4 69 15M120 5Q124 3 129 11M164 3Q164 3 177 13M164 3Q153 8 144 10M177 2Q183 12 177 13M177 2Q185 8 204 14M203 0Q195 7 204 14M203 0Q184 5 177 13M230 2Q236 6 235 11M230 2Q222 7 204 14M263 3Q266 3 255 12M293 2Q289 6 298 12M293 2Q315 6 321 12M324 5Q329 12 321 12M351 1Q359 3 361 11M351 1Q342 8 321 12M369 -1Q360 9 361 11M402 4Q417 6 421 12'/%3E%3Cpath stroke-opacity='.14' d='M1 15Q14 19 11 15M11 15Q29 10 51 12M51 12Q59 14 69 15M69 15Q82 13 85 12M85 12Q99 14 129 11M129 11Q129 14 144 10M144 10Q154 10 177 13M177 13Q196 10 204 14M204 14Q213 13 235 11M235 11Q249 15 255 12M255 12Q280 16 298 12M298 12Q310 17 321 12M321 12Q334 9 361 11M361 11Q375 9 388 12M388 12Q408 13 421 12M1 15Q10 20 7 24M1 15Q-15 24 -27 25M11 15Q32 25 40 25M51 12Q47 16 40 25M51 12Q59 19 67 23M69 15Q76 19 67 23M69 15Q86 21 92 27M85 12Q92 15 92 27M85 12Q75 22 67 23M129 11Q117 15 105 26M144 10Q147 23 139 28M144 10Q157 14 178 25M177 13Q185 15 178 25M177 13Q176 18 192 28M204 14Q201 19 192 28M204 14Q218 15 227 24M235 11Q224 17 227 24M235 11Q241 18 257 24M255 12Q254 17 257 24M255 12Q235 15 227 24M298 12Q305 20 306 27M321 12Q332 17 331 28M321 12Q319 24 306 27M361 11Q352 21 351 24M361 11Q379 21 379 23M388 12Q379 20 379 23M388 12Q393 20 414 23M421 12Q422 14 414 23M421 12Q403 13 379 23'/%3E%3Cpath stroke-opacity='.08' d='M-27 25Q-15 27 7 24M7 24Q31 29 40 25M40 25Q46 24 67 23M67 23Q84 25 92 27M92 27Q102 24 105 26M105 26Q114 23 139 28M139 28Q150 27 178 25M178 25Q185 27 192 28M192 28Q203 23 227 24M227 24Q237 27 257 24M257 24Q279 27 284 22M284 22Q287 20 306 27M306 27Q326 27 331 28M331 28Q346 24 351 24M351 24Q364 23 379 23M379 23Q395 24 414 23M-27 25Q-10 36 0 40M-27 25Q-1 34 27 38M7 24Q-2 29 0 40M7 24Q8 35 27 38M40 25Q40 32 27 38M67 23Q77 31 84 40M92 27Q106 34 105 37M105 26Q111 31 105 37M139 28Q153 36 157 38M178 25Q189 27 193 38M178 25Q167 27 157 38M192 28Q195 34 193 38M192 28Q182 35 157 38M227 24Q230 31 227 36M227 24Q240 36 257 39M257 24Q261 34 257 39M284 22Q285 33 283 39M284 22Q294 25 309 36M306 27Q305 28 309 36M306 27Q301 34 283 39M331 28Q343 32 338 34M351 24Q350 25 338 34M351 24Q367 27 373 39M379 23Q386 27 394 38M414 23Q421 26 424 39'/%3E%3Cpath stroke-opacity='.04' d='M0 40Q12 39 27 38M27 38Q35 34 40 34M40 34Q58 38 84 40M84 40Q95 36 105 37M105 37Q122 36 131 40M131 40Q135 37 157 38M157 38Q167 35 193 38M193 38Q215 36 227 36M227 36Q250 40 257 39M257 39Q262 44 283 39M283 39Q304 33 309 36M309 36Q331 35 338 34M338 34Q355 42 373 39M373 39Q379 39 394 38M394 38Q417 41 424 39'/%3E%3C/g%3E%3C/svg%3E") 0 0.5rem / 100% auto no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e6f7fb' stop-opacity='.17'/%3E%3Cstop offset='.6' stop-color='%23e6f7fb' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23g)'%3E%3Cpolygon points='6,0 13,0 31,100 17,100'/%3E%3Cpolygon points='23,0 26,0 41,100 35,100'/%3E%3Cpolygon points='40,0 48,0 64,100 50,100'/%3E%3Cpolygon points='59,0 62,0 75,100 70,100'/%3E%3Cpolygon points='73,0 81,0 97,100 85,100'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 240'%3E%3Cg fill='%23e6f7fb' fill-opacity='.08' stroke='%23e6f7fb' stroke-opacity='.5' stroke-width='1.6'%3E%3Ccircle cx='30' cy='224' r='7'/%3E%3Ccircle cx='21' cy='186' r='5'/%3E%3Ccircle cx='37' cy='150' r='5.5'/%3E%3Ccircle cx='26' cy='112' r='4'/%3E%3Ccircle cx='35' cy='78' r='4.5'/%3E%3Ccircle cx='27' cy='47' r='3'/%3E%3Ccircle cx='33' cy='20' r='2.4'/%3E%3C/g%3E%3C/svg%3E") right 9% top 16% / auto 44% no-repeat,
+                var(--slide-gradient);
+        }
+        /* C má bubliny ve vlastní kresbě. */
+        [data-vzornik="c"] .course-slide[data-slide-type="title"] {
+            background:
+                var(--slide-wave) top / 100% 0.7rem no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 44'%3E%3Cg fill='none' stroke='%23e6f7fb' stroke-width='1.1' stroke-linecap='round'%3E%3Cpath stroke-opacity='.2' d='M-21 2Q0 -2 13 2M13 2Q27 2 37 2M37 2Q52 3 76 -0M76 -0Q84 3 91 4M91 4Q113 2 120 5M120 5Q133 2 164 3M164 3Q174 -1 177 2M177 2Q184 5 203 0M203 0Q219 0 230 2M230 2Q253 1 263 3M263 3Q281 -1 293 2M293 2Q307 6 324 5M324 5Q345 7 351 1M351 1Q358 1 369 -1M369 -1Q382 -2 402 4M-21 2Q-4 12 1 15M-21 2Q3 7 11 15M13 2Q11 7 11 15M13 2Q5 10 1 15M37 2Q41 11 51 12M76 -0Q65 2 69 15M91 4Q92 9 85 12M91 4Q85 4 69 15M120 5Q124 3 129 11M164 3Q164 3 177 13M164 3Q153 8 144 10M177 2Q183 12 177 13M177 2Q185 8 204 14M203 0Q195 7 204 14M203 0Q184 5 177 13M230 2Q236 6 235 11M230 2Q222 7 204 14M263 3Q266 3 255 12M293 2Q289 6 298 12M293 2Q315 6 321 12M324 5Q329 12 321 12M351 1Q359 3 361 11M351 1Q342 8 321 12M369 -1Q360 9 361 11M402 4Q417 6 421 12'/%3E%3Cpath stroke-opacity='.14' d='M1 15Q14 19 11 15M11 15Q29 10 51 12M51 12Q59 14 69 15M69 15Q82 13 85 12M85 12Q99 14 129 11M129 11Q129 14 144 10M144 10Q154 10 177 13M177 13Q196 10 204 14M204 14Q213 13 235 11M235 11Q249 15 255 12M255 12Q280 16 298 12M298 12Q310 17 321 12M321 12Q334 9 361 11M361 11Q375 9 388 12M388 12Q408 13 421 12M1 15Q10 20 7 24M1 15Q-15 24 -27 25M11 15Q32 25 40 25M51 12Q47 16 40 25M51 12Q59 19 67 23M69 15Q76 19 67 23M69 15Q86 21 92 27M85 12Q92 15 92 27M85 12Q75 22 67 23M129 11Q117 15 105 26M144 10Q147 23 139 28M144 10Q157 14 178 25M177 13Q185 15 178 25M177 13Q176 18 192 28M204 14Q201 19 192 28M204 14Q218 15 227 24M235 11Q224 17 227 24M235 11Q241 18 257 24M255 12Q254 17 257 24M255 12Q235 15 227 24M298 12Q305 20 306 27M321 12Q332 17 331 28M321 12Q319 24 306 27M361 11Q352 21 351 24M361 11Q379 21 379 23M388 12Q379 20 379 23M388 12Q393 20 414 23M421 12Q422 14 414 23M421 12Q403 13 379 23'/%3E%3Cpath stroke-opacity='.08' d='M-27 25Q-15 27 7 24M7 24Q31 29 40 25M40 25Q46 24 67 23M67 23Q84 25 92 27M92 27Q102 24 105 26M105 26Q114 23 139 28M139 28Q150 27 178 25M178 25Q185 27 192 28M192 28Q203 23 227 24M227 24Q237 27 257 24M257 24Q279 27 284 22M284 22Q287 20 306 27M306 27Q326 27 331 28M331 28Q346 24 351 24M351 24Q364 23 379 23M379 23Q395 24 414 23M-27 25Q-10 36 0 40M-27 25Q-1 34 27 38M7 24Q-2 29 0 40M7 24Q8 35 27 38M40 25Q40 32 27 38M67 23Q77 31 84 40M92 27Q106 34 105 37M105 26Q111 31 105 37M139 28Q153 36 157 38M178 25Q189 27 193 38M178 25Q167 27 157 38M192 28Q195 34 193 38M192 28Q182 35 157 38M227 24Q230 31 227 36M227 24Q240 36 257 39M257 24Q261 34 257 39M284 22Q285 33 283 39M284 22Q294 25 309 36M306 27Q305 28 309 36M306 27Q301 34 283 39M331 28Q343 32 338 34M351 24Q350 25 338 34M351 24Q367 27 373 39M379 23Q386 27 394 38M414 23Q421 26 424 39'/%3E%3Cpath stroke-opacity='.04' d='M0 40Q12 39 27 38M27 38Q35 34 40 34M40 34Q58 38 84 40M84 40Q95 36 105 37M105 37Q122 36 131 40M131 40Q135 37 157 38M157 38Q167 35 193 38M193 38Q215 36 227 36M227 36Q250 40 257 39M257 39Q262 44 283 39M283 39Q304 33 309 36M309 36Q331 35 338 34M338 34Q355 42 373 39M373 39Q379 39 394 38M394 38Q417 41 424 39'/%3E%3C/g%3E%3C/svg%3E") 0 0.5rem / 100% auto no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e6f7fb' stop-opacity='.17'/%3E%3Cstop offset='.6' stop-color='%23e6f7fb' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23g)'%3E%3Cpolygon points='6,0 13,0 31,100 17,100'/%3E%3Cpolygon points='23,0 26,0 41,100 35,100'/%3E%3Cpolygon points='40,0 48,0 64,100 50,100'/%3E%3Cpolygon points='59,0 62,0 75,100 70,100'/%3E%3Cpolygon points='73,0 81,0 97,100 85,100'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+                var(--slide-gradient);
+        }
+
+        /* Autor na titulním slidu kurzu (všechny varianty): vpravo dole nad patičkou, na telefonu pod nadpisem. */
+        .course-title-byline { margin-top: var(--space-4); }
+        .course-title-author { margin: 0; font-size: calc(var(--course-slide-text) * 0.85); font-weight: 600; color: var(--slide-fg); }
+        .course-title-org { margin: var(--space-1) 0 0; font-size: calc(var(--course-slide-text) * 0.55); color: var(--slide-subtle); }
+
+        /* B, obsah kapitoly: drobně nad nadpisem „Kapitola 2 z 9“, pod ním témata kapitoly z dat kurzu. */
+        .course-title-kicker {
+            order: -1;
+            margin: 0 0 var(--space-2);
+            font-size: calc(var(--course-slide-text) * 0.6);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--slide-highlight);
+        }
+        .course-title-topics { margin: var(--space-2) 0 0; font-size: calc(var(--course-slide-text) * 0.75); color: var(--slide-subtle); }
+        .course-title-topics .sep { color: var(--slide-line-strong); }
+
+        /* C, motiv kapitoly: velká linková kresba vpravo nahoře (nad autorem), na telefonu nad nadpisem. */
+        .course-title-art { order: -2; display: block; width: min(100%, 22rem); margin: 0 auto var(--space-4); }
+        .course-title-art .art-line { fill: var(--slide-bg); stroke: var(--slide-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+        .course-title-art .art-stroke { fill: none; stroke: var(--slide-accent); stroke-linecap: round; stroke-linejoin: round; }
+        .course-title-art .art-stroke-in { fill: none; stroke: var(--slide-bg); stroke-linecap: round; stroke-linejoin: round; }
+        .course-title-art .art-faint { fill: none; stroke: var(--slide-line-strong); stroke-width: 3; stroke-linecap: round; opacity: 0.85; }
+        .course-title-art .art-bubble { fill: var(--slide-accent); fill-opacity: 0.08; stroke: var(--slide-accent); stroke-width: 2; }
+        .course-title-art .art-label { fill: var(--slide-subtle); font: 600 22px var(--font-body, system-ui), sans-serif; }
+
+        @media (min-width: 769px) {
+            .course-title-byline {
+                position: absolute;
+                right: var(--course-slide-pad);
+                bottom: calc(var(--course-foot-height) + var(--space-4));
+                margin: 0;
+                text-align: right;
+            }
+            .course-title-kicker {
+                position: absolute;
+                left: var(--course-slide-pad);
+                top: calc(var(--course-title-slide-top) - 2.2em);
+                margin: 0;
+            }
+            .course-title-art {
+                position: absolute;
+                right: var(--course-slide-pad);
+                top: calc(var(--course-slide-height) * 0.08);
+                width: 46%;
+                height: calc(var(--course-slide-height) * 0.55);
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <span class="nav-logo">Vzorník titulních slidů kurzu P1</span>
+        </div>
+    </nav>
+
+    <main class="course-page" lang="cs">
+        <!-- Dnešní stav pro srovnání -->
+        <section id="dnes-kurz" class="course-section">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-slide-sub">P★</p>
+            </div>
+            <p class="vzornik-type">Dnes: titulní slide kurzu</p>
+        </section>
+
+        <!-- A, atmosféra -->
+        <section id="a-kurz" class="course-section" data-vzornik="a">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-slide-sub">P★</p>
+                <div class="course-title-byline">
+                    <p class="course-title-author">Matej Hron</p>
+                    <p class="course-title-org">Svaz potápěčů České republiky · přednáška P★</p>
+                </div>
+            </div>
+            <p class="vzornik-type"><strong>A, atmosféra</strong>: kurz. Světlo od hladiny a&nbsp;bubliny jsou jen pozadí typu title, HTML se nemění</p>
+        </section>
+        <section id="a-tlak" class="course-section" data-vzornik="a">
+            <div class="course-slide" data-slide-number="10" data-slide-type="title">
+                <h1>Tlak</h1>
+            </div>
+            <p class="vzornik-type"><strong>A, atmosféra</strong>: kapitola Tlak</p>
+        </section>
+
+        <!-- B, obsah kapitoly -->
+        <section id="b-kurz" class="course-section" data-vzornik="b">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-title-kicker" data-title-kicker></p>
+                <p class="course-slide-sub">P★</p>
+                <div class="course-title-byline">
+                    <p class="course-title-author">Matej Hron</p>
+                    <p class="course-title-org">Svaz potápěčů České republiky · přednáška P★</p>
+                </div>
+            </div>
+            <p class="vzornik-type"><strong>B, obsah kapitoly</strong>: kurz. Počet kapitol a&nbsp;slidů z&nbsp;<code>js/course/p1Course.js</code></p>
+        </section>
+        <section id="b-tlak" class="course-section" data-vzornik="b">
+            <div class="course-slide" data-slide-number="10" data-slide-type="title">
+                <h1>Tlak</h1>
+                <p class="course-title-kicker" data-title-kicker="tlak"></p>
+                <p class="course-title-topics" data-title-topics="tlak"></p>
+            </div>
+            <p class="vzornik-type"><strong>B, obsah kapitoly</strong>: Tlak. „Kapitola 2 z&nbsp;9“ a&nbsp;témata z&nbsp;dat kurzu</p>
+        </section>
+
+        <!-- C, motiv kapitoly -->
+        <section id="c-kurz" class="course-section" data-vzornik="c">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-slide-sub">P★</p>
+                <svg class="course-title-art" viewBox="0 0 600 400" aria-hidden="true" focusable="false">
+                    <!-- hladina, potápěč těsně pod ní, bubliny a dno -->
+                    <path class="art-faint" d="M10 96C60 82 100 110 150 96S240 82 290 96 380 110 430 96 520 82 590 96"/>
+                    <path class="art-faint" d="M70 120C110 112 140 126 180 118M330 122C370 114 400 128 440 120" opacity="0.45"/>
+                    <circle class="art-bubble" cx="474" cy="196" r="7"/>
+                    <circle class="art-bubble" cx="486" cy="164" r="5"/>
+                    <circle class="art-bubble" cx="478" cy="134" r="4"/>
+                    <circle class="art-bubble" cx="488" cy="110" r="3"/>
+                    <g transform="translate(-282 -64) scale(2.8)">
+                        <g data-diver></g>
+                    </g>
+                    <path class="art-faint" d="M10 372C80 352 150 366 230 356S380 340 450 352 560 368 590 360"/>
+                    <path class="art-faint" d="M120 360C114 336 126 320 118 300M132 357C140 338 132 326 142 312M470 352C464 330 476 318 468 300" opacity="0.6"/>
+                </svg>
+                <div class="course-title-byline">
+                    <p class="course-title-author">Matej Hron</p>
+                    <p class="course-title-org">Svaz potápěčů České republiky · přednáška P★</p>
+                </div>
+            </div>
+            <p class="vzornik-type"><strong>C, motiv kapitoly</strong>: kurz, potápěč u&nbsp;hladiny</p>
+        </section>
+        <section id="c-tlak" class="course-section" data-vzornik="c">
+            <div class="course-slide" data-slide-number="10" data-slide-type="title">
+                <h1>Tlak</h1>
+                <svg class="course-title-art" viewBox="0 0 600 400" aria-hidden="true" focusable="false">
+                    <!-- hladina, potápěč v trimu ve 20 m, hloubková stupnice s tlakem -->
+                    <path class="art-faint" d="M10 40C50 30 80 50 120 40S200 30 240 40 320 50 360 40 410 32 430 38"/>
+                    <circle class="art-bubble" cx="352" cy="170" r="6"/>
+                    <circle class="art-bubble" cx="361" cy="134" r="5"/>
+                    <circle class="art-bubble" cx="353" cy="100" r="4"/>
+                    <circle class="art-bubble" cx="361" cy="72" r="3"/>
+                    <circle class="art-bubble" cx="355" cy="52" r="2.5"/>
+                    <g transform="translate(-285 -18) scale(2.3)">
+                        <g data-diver></g>
+                    </g>
+                    <g>
+                        <path class="art-stroke" stroke-width="3" d="M470 40V380"/>
+                        <path class="art-stroke" stroke-width="3" d="M460 40H480M460 125H480M460 210H480M460 295H480M460 380H480"/>
+                        <text class="art-label" x="452" y="48" text-anchor="end">0 m</text>
+                        <text class="art-label" x="452" y="133" text-anchor="end">10 m</text>
+                        <text class="art-label" x="452" y="218" text-anchor="end">20 m</text>
+                        <text class="art-label" x="452" y="303" text-anchor="end">30 m</text>
+                        <text class="art-label" x="452" y="388" text-anchor="end">40 m</text>
+                        <text class="art-label" x="490" y="48">1&nbsp;bar</text>
+                        <text class="art-label" x="490" y="133">2&nbsp;bar</text>
+                        <text class="art-label" x="490" y="218">3&nbsp;bar</text>
+                        <text class="art-label" x="490" y="303">4&nbsp;bar</text>
+                        <text class="art-label" x="490" y="388">5&nbsp;bar</text>
+                    </g>
+                </svg>
+            </div>
+            <p class="vzornik-type"><strong>C, motiv kapitoly</strong>: Tlak, potápěč v&nbsp;trimu a&nbsp;hloubková stupnice</p>
+        </section>
+
+        <section class="vzornik-notes" aria-labelledby="temata">
+            <h2 id="temata">Návrh témat pro variantu B (krok 2 je přesune do <code>P1_CHAPTERS</code> jako <code>topics</code>)</h2>
+            <table>
+                <thead><tr><th>Kapitola</th><th>Řádek pod nadpisem</th></tr></thead>
+                <tbody data-topics-table></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script type="module">
+        import { slideFootHtml } from '../../js/course/slideNav.js';
+        import { P1_CHAPTERS, courseSlideNumbering } from '../../js/course/p1Course.js';
+
+        // Návrh pro data kurzu (krok 2: pole topics u kapitol v P1_CHAPTERS). Témata z nadpisů slidů kapitoly, 3–4.
+        const TOPICS = {
+            hustota: ['hustota látek', 'závislost hustoty na teplotě', 'anomálie vody'],
+            tlak: ['jednotky', 'atmosférický a hydrostatický tlak', 'celkový tlak', 'tlak v plynu'],
+            'stlacovani-plynu': ['Boyle-Mariottův zákon', 'tělní dutiny', 'výpočet spotřeby'],
+            'archimeduv-zakon': ['Archimédův zákon', 'kontrola vztlaku', 'změna vztlaku během ponoru'],
+            dalton: ['složení vzduchu', 'Daltonův zákon', 'meze dýchaných plynů'],
+            henry: ['Henryho zákon', 'sycení a saturace tkání', 'rozpouštění plynu v kapalině'],
+            videni: ['lom světla', 'barvy pod vodou', 'Snellovo okno', 'vidění bez masky'],
+            slyseni: ['rychlost zvuku ve vodě', 'odkud zvuk přichází'],
+            teplo: ['vedení, proudění a záření', 'neoprenový oblek', 'oblek v hloubce'],
+        };
+        /** Jednopísmenné předložky a spojky s nedělitelnou mezerou, jako v textech kurzu. */
+        const nbsp = (s) => s.replace(/(^|\s)([ksvzouaiKSVZOUAI]) /g, '$1$2 ');
+
+        const ready = P1_CHAPTERS.filter(c => c.status === 'ready');
+        const { total } = courseSlideNumbering(ready[0].slug);
+        for (const el of document.querySelectorAll('[data-title-kicker]')) {
+            const slug = el.dataset.titleKicker;
+            el.textContent = slug ? `Kapitola ${ready.findIndex(c => c.slug === slug) + 1} z ${ready.length}`
+                : `${ready.length} kapitol · ${total} slidů`;
+        }
+        for (const el of document.querySelectorAll('[data-title-topics]')) {
+            // Oddělovač je text (čtečka i kopírování dostanou „jednotky · …“), jen obarvený.
+            el.innerHTML = TOPICS[el.dataset.titleTopics].map(nbsp).join('<span class="sep"> · </span>');
+        }
+        document.querySelector('[data-topics-table]').innerHTML = ready.map((c, i) =>
+            `<tr><td>${i + 1}. ${c.title}</td><td>${(TOPICS[c.slug] ?? []).map(nbsp).join(' · ')}</td></tr>`).join('');
+
+        // Potápěč v trimu (kresba z varování U13, slide Nebezpečí malých hloubek) jako linková kresba:
+        // obrys = světlá čára pod tmavou výplní, končetiny dvojitým tahem (široký světlý, užší tmavý).
+        const DIVER = `
+            <path class="art-line" d="M162 94L130 92L130 101L162 102ZM164 102L134 104L134 113L164 110Z"/>
+            <path class="art-stroke" stroke-width="10" d="M200 102L176 106L160 98M202 108L178 113L162 106"/>
+            <path class="art-stroke-in" stroke-width="7.6" d="M200 102L176 106L160 98M202 108L178 113L162 106"/>
+            <path class="art-stroke" stroke-width="20" d="M200 104L252 94"/>
+            <path class="art-stroke-in" stroke-width="17.6" d="M200 104L252 94"/>
+            <path class="art-line" d="M201 90L201 85L205 82L243 74L247 76L249 82L249 89L205 98Z"/>
+            <path class="art-line" d="M246 76L252 75L254 82L248 83Z"/>
+            <path class="art-stroke" stroke-width="10" d="M244 101L254 111L268 108"/>
+            <path class="art-stroke-in" stroke-width="7.6" d="M244 101L254 111L268 108"/>
+            <circle class="art-line" cx="264" cy="84" r="12"/>
+            <circle class="art-line" cx="277" cy="94" r="4"/>
+            <rect class="art-line" x="266" y="77" width="14" height="11" rx="4"/>`;
+        document.querySelectorAll('[data-diver]').forEach(g => { g.innerHTML = DIVER; });
+
+        const vzory = [...document.querySelectorAll('main > section > .course-slide')];
+        vzory.forEach((slide, i) => {
+            const foot = document.createElement('div');
+            foot.className = 'course-foot';
+            foot.innerHTML = slideFootHtml(i + 1, vzory.length);
+            slide.appendChild(foot);
+        });
+    </script>
+</body>
+</html>
