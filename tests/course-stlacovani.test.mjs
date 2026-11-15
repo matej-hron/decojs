@@ -339,6 +339,9 @@ test('R5-01, R5-02: bezpečnostní věty v pojmu dutin a pod slidem 26', () => {
     assert.match(spaces, /František Novomeský, Pan Eustach, Strany potápěčské/);
     assert.match(more(26), /Zadržený dech při výstupu může plíce roztrhnout, a to i při výstupu z malé hloubky/);
     assert.match(more(26), /vydechuj plynule celou cestu nahoru/);
+    // U14: schválené znění (Matej); text() mění nezalomitelné mezery na obyčejné, nbsp hlídá course-nbsp
+    assert.ok(more(26).includes('Stejně jako balónek se při výstupu rozpíná i vzduch v plicích. Když dýcháš, přebytečný vzduch prostě vydechneš. Když zadržíš dech, nemá kudy uniknout a plíce se roztahují dál. Proto dýchej normálně.'));
+    assert.doesNotMatch(more(26), /nemá ho kudy vypustit/);
 });
 
 test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spodního okraje zvonu', () => {
