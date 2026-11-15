@@ -163,6 +163,6 @@ test('stránka: poznámka pod modelem platí i s výškou, věta o horském jeze
     const doc = new JSDOM(html).window.document;
     const note = doc.querySelector('#model-boyle .course-simplification').innerHTML.replace(/\s+/g, ' ');
     assert.doesNotMatch(note, /u&nbsp;hladiny 1&nbsp;bar/);
-    assert.match(note, /Tlak u&nbsp;hladiny podle nadmořské výšky \(tabulka na slidu <a href="tlak\.html#vyska">Atmosférický tlak<\/a>\), 1&nbsp;bar na každých 10&nbsp;m vody, teplota se nemění\./);
+    assert.match(note, /Tlak u&nbsp;hladiny podle nadmořské výšky \(viz <a href="tlak\.html#vyska">Atmosférický tlak<\/a>\), 1&nbsp;bar na každých 10&nbsp;m vody, teplota se nemění\./);
     assert.ok(html.includes('Na horském jezeře je u&nbsp;hladiny menší tlak, a&nbsp;proto se plyn při výstupu rozepne víc než u&nbsp;moře.'));
 });
