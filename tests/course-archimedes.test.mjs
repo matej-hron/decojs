@@ -56,14 +56,24 @@ test('Archimédův zákon: nadpisy a typy slidů podle přednášky a rozhodnut�
     });
 });
 
-test('Archimédův zákon: slide 32, nejdřív vztlak z F2 − F1 přes h a V, pak F_G a jeden řádek porovnání (A10, A11)', () => {
+test('Archimédův zákon: slide 32, řetěz od F2 − F1 přes h a V, zvýrazněný zákon, pak F_G a porovnání (A10, A11, A12)', () => {
     const t = text(slide(32).querySelector('.course-core > div'));
-    const order = ['F1 = h1', 'F2 = h2', 'Fvz = F2 − F1 = (h2 − h1) · ρv · g · S', 'h2 − h1 = h, S · h = V', 'výška a objem kvádru',
-        'Fvz = V · ρv · g = mv · g', 'tíha vytlačené vody', 'FG = mt · g', 'porovnáme Fvz s FG'];
+    const order = ['F1 = h1 · ρv · g · S', 'F2 = h2 · ρv · g · S', 'Fvz = F2 − F1 = (h2 − h1) · ρv · g · S', '= h · S · ρv · g',
+        '= V · ρv · g = mv · g', 'vztlak = tíha vytlačené vody', 'FG = mt · g = V · ρt · g', 'porovnáme Fvz s FG'];
     const at = order.map(s => t.indexOf(s));
     assert.ok(at.every(i => i >= 0), JSON.stringify(at));
     assert.deepEqual([...at].sort((a, b) => a - b), at, 'pořadí vzorců');
     assert.doesNotMatch(t, /stoupá|vznáší|klesá/, 'důsledky jsou na slidu 31');
+    // A12: jeden řetěz, „=“ pod sebou (prostřední sloupec), pokračovací řádky bez levé strany, zákon zvýrazněný
+    const chain = slide(32).querySelector('.course-formula-chain');
+    const rows = [...chain.children].filter(el => el.tagName === 'SPAN');
+    assert.equal(rows.length % 3, 0);
+    const eqs = rows.filter((_, i) => i % 3 === 1).map(text);
+    assert.deepEqual(eqs, ['=', '=', '=', '=', '=', '='], 'rovnítka ve vlastním sloupci');
+    assert.deepEqual(rows.filter((_, i) => i % 3 === 0).map(text), ['F1', 'F2', 'Fvz', '', '', 'FG']);
+    assert.equal(text(chain.querySelector('.course-formula-chain-key .course-highlight')), 'vztlak = tíha vytlačené vody');
+    assert.equal(slide(32).querySelector('.course-formula-aside'), null, 'popisky za řádky zrušené');
+    assert.match(read('css/course.css'), /\.course-formula-chain \{[^}]*display: grid/);
 });
 
 test('Archimédův zákon: opravy z rozhodnutí 8 a překlepy', () => {
@@ -73,10 +83,13 @@ test('Archimédův zákon: opravy z rozhodnutí 8 a překlepy', () => {
     }
     // slide 32: F_G podle slovníčku, indexy t a v stojatě, opravená závorka
     const s32 = slide(32).innerHTML;
-    assert.match(s32, /<var>F<\/var><sub>G<\/sub> = <var>m<\/var><sub>t<\/sub> · <var>g<\/var> = <var>V<\/var> · <var>ρ<\/var><sub>t<\/sub> · <var>g<\/var>/);
+    assert.match(text(slide(32)), /FG = mt · g = V · ρt · g/);
+    assert.match(s32, /<var>F<\/var><sub>G<\/sub>/);
+    assert.match(s32, /<var>m<\/var><sub>t<\/sub> · <var>g<\/var>/);
+    assert.match(s32, /<var>V<\/var> · <var>ρ<\/var><sub>t<\/sub> · <var>g<\/var>/);
     assert.doesNotMatch(s32, /<sub>g<\/sub>|<sub><var>/);
     assert.match(s32, /\(<var>h<\/var><sub>2<\/sub> − <var>h<\/var><sub>1<\/sub>\) · <var>ρ<\/var><sub>v<\/sub>/);
-    assert.match(s32, /<var>F<\/var><sub>vz<\/sub> = <var>V<\/var> · <var>ρ<\/var><sub>v<\/sub> · <var>g<\/var> = <var>m<\/var><sub>v<\/sub> · <var>g<\/var>/);
+    assert.match(s32, /<var>V<\/var> · <var>ρ<\/var><sub>v<\/sub> · <var>g<\/var><\/span> <span class="course-eq">= <var>m<\/var><sub>v<\/sub> · <var>g<\/var>/);
     // A11: kroky h2 − h1 = h a S · h = V jsou na slidu, Více je vysvětluje, nepíše, co chybí
     assert.match(more(32), /h2 − h1 = h\. Plocha podstavy krát výška je objem kvádru, S · h = V/);
     assert.match(more(32), /V · ρv = mv/);
