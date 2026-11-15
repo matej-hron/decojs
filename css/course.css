@@ -852,7 +852,23 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 }
 .course-formula var { font-family: var(--font-display); }
 .course-formula .course-unit { font-size: 0.8em; margin-left: 0.3em; white-space: nowrap; }
-.course-formula .course-formula-aside { font-size: 0.6em; margin-left: 0.4em; color: var(--slide-subtle); white-space: nowrap; } /* krátký slovní popisek řádku (A11, slide 32) */
+/* Řetěz rovností (A12, slide 32): levá strana, „=“ a pravá strana ve sloupcích, takže „=“ jsou pod sebou;
+   pokračovací řádek má prázdnou levou stranu. Blok je na střed, uvnitř zarovnaný doleva. */
+.course-formula-chain {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, max-content);
+    justify-content: start;
+    column-gap: 0.25em;
+    line-height: 1.3;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    text-align: left;
+}
+.course-formula-chain > span:nth-child(3n+1 of span) { justify-self: end; }
+.course-formula-chain > span:nth-child(3n+2 of span) { text-align: center; }
+.course-formula-chain sub { line-height: 0; } /* indexy nezvětšují řádek, řetěz se vejde */
+.course-formula-chain-key { grid-column: 1 / -1; margin: var(--space-2) 0; font-size: 0.75em; }
 /* Řádek pod vzorcem: co jednotka znamená (slide 11). */
 .course-formula-note { margin: calc(-1 * var(--space-2)) 0 var(--space-4); text-align: center; font-size: 0.85em; color: var(--slide-subtle); }
 
