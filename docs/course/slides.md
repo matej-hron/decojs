@@ -196,6 +196,14 @@ Varianty těla:
 - **Dvě ilustrace vedle sebe a pod nimi řádek přes celou šířku** (slide 12, vzor stylu ilustrací níže): tělo má dva `<div>`
   (krátký nadpis `<h3 class="course-figure-title">`, ilustrace `course-illustration` s popiskem) a za nimi
   `<div class="course-core-row">` s drobnějším textem a fotkou. Ilustrace jsou nejvýš 25 % slidu, fotka 16 %.
+- **Šipka sestupu jako osa mezi dvěma obrázky** (slide 27, U15, jako v originále): `course-core course-core-descent`
+  se třemi dětmi: `<div>` s nadpisem a ilustrací, `<div class="course-descent-axis" role="img" aria-label="…">` a druhý
+  `<div>`. Šipka je SVG (`viewBox="0 0 100 400"`, `preserveAspectRatio="none"`, polygon `fig-descent`) roztažené přes
+  výšku obou sloupců, s gradientem nahoře světlá, dole tmavá (hloubka; zastávky `fig-depth-top`, `-mid`, `-bottom`)
+  a nápisem `<p class="course-descent-label">` v horní světlé části. Pod každou ilustrací je v `<figcaption>` nejdřív
+  odpověď `<span class="course-figure-answer">` (nejvýš dva řádky, vidět hned, ne po kliknutí), za ní výčet a odkazy
+  menším písmem v `course-figure-note`. Na telefonu jsou obrázky pod sebou a mezi nimi menší svislá šipka s nápisem
+  vedle. Ilustrace mají nejvýš 36 % výšky slidu.
 - **Převzatá fotka:** `<img>` z `images/course/p1/`, pod ní `<figcaption>` jen s drobným odkazem
   `<a class="course-source" href="zdroje.html#kotva">zdroj</a>` (T18). Plná atribuce (autor, licence s odkazem na text,
   stránka souboru, úpravy) je v `p1/zdroje.html` pod vlastní kotvou, záznam v `images/course/p1/SOURCES.md`
@@ -395,7 +403,7 @@ výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičk
 
 Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27, 31, 32, 35;
 použijí ho i 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30, 33, 34, 37; použije ho i 41).
-Slide 36 (`models`) má v textu vedle náhledu dvě řady se šipkou `.course-core-row` + `.course-descent` jako slide 27.
+Slide 36 (`models`) má v textu vedle náhledu dvě řady se šipkou `.course-core-row` + `.course-descent` (slide 27 ji měl do U15).
 
 Prošel jsem všech 60 slidů přednášky (`resources/FyzikaP12_2025.pdf` a `.txt`). Tyhle slidy budou chtít další typy.
 Postav je, až na ně dojde kapitola, ve stejném duchu (atribut `data-slide-type`, rozměry jen z proměnných scény):

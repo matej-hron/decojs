@@ -181,6 +181,7 @@ Registrované scénářové klíče:
 |---|---|---|---|
 | `water` | `'fresh'` \| `'salt'` | stránka kapitoly (Tlak: model M1 podle hladiny; Archimedes) | sladká / slaná voda (hustota pro tlak i vztlak) |
 | `altitude` | m n. m. | stránka kapitoly (Tlak: model M1, moře 0 / horské jezero 5 500) | nadmořská výška hladiny (atmosférický tlak) |
+| `atm` | bar (nepovinný) | stránka kapitoly (Stlačování plynů: model B1, předvolby výšky) | atmosférický tlak na hladině, když ho určuje stránka (B1: tabulka slidu 17 na setiny baru); chybí-li, počítá se z `altitude` a režimu. Zapisuje se vždy spolu s `altitude`. |
 
 ## 5. Hloubka, ovládání, přístupnost
 

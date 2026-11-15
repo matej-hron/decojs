@@ -121,18 +121,18 @@ test('startDepth: balónek začíná ve 40 m, zvon na hladině', () => {
 
 test('předvolby: bez parametrů balónek ve 40 m, ?zvon=1 zvon na hladině, hloubka se dá zadat', () => {
     const read = (q) => initialStateFromParams(readParams(q, BOYLE_PARAMS), new URLSearchParams(q));
-    assert.deepEqual(read(''), { depth: 40, gasObject: 'balloon' });
-    assert.deepEqual(read('?zvon=1'), { depth: 0, gasObject: 'bell' });
-    assert.deepEqual(read('?zvon=1&hloubka=20'), { depth: 20, gasObject: 'bell' });
-    assert.deepEqual(read('?hloubka=10'), { depth: 10, gasObject: 'balloon' });
-    assert.deepEqual(read('?hloubka=99'), { depth: 40, gasObject: 'balloon' });
+    assert.deepEqual(read(''), { depth: 40, gasObject: 'balloon', altitude: 0 });
+    assert.deepEqual(read('?zvon=1'), { depth: 0, gasObject: 'bell', altitude: 0 });
+    assert.deepEqual(read('?zvon=1&hloubka=20'), { depth: 20, gasObject: 'bell', altitude: 0 });
+    assert.deepEqual(read('?hloubka=10'), { depth: 10, gasObject: 'balloon', altitude: 0 });
+    assert.deepEqual(read('?hloubka=99'), { depth: 40, gasObject: 'balloon', altitude: 0 });
 });
 
 test('paramsFromState: do adresy jen to, co se liší od výchozího stavu předmětu', () => {
-    assert.deepEqual(paramsFromState({ depth: 40, gasObject: 'balloon' }), { zvon: null, hloubka: null });
-    assert.deepEqual(paramsFromState({ depth: 10, gasObject: 'balloon' }), { zvon: null, hloubka: 10 });
-    assert.deepEqual(paramsFromState({ depth: 0, gasObject: 'bell' }), { zvon: 1, hloubka: null });
-    assert.deepEqual(paramsFromState({ depth: 20, gasObject: 'bell' }), { zvon: 1, hloubka: 20 });
+    assert.deepEqual(paramsFromState({ depth: 40, gasObject: 'balloon' }), { zvon: null, hloubka: null, vyska: null });
+    assert.deepEqual(paramsFromState({ depth: 10, gasObject: 'balloon' }), { zvon: null, hloubka: 10, vyska: null });
+    assert.deepEqual(paramsFromState({ depth: 0, gasObject: 'bell' }), { zvon: 1, hloubka: null, vyska: null });
+    assert.deepEqual(paramsFromState({ depth: 20, gasObject: 'bell' }), { zvon: 1, hloubka: 20, vyska: null });
 });
 
 test('withPreset: předvolba náhledu se sloučí do adresy, ostatní parametry zůstanou', async () => {

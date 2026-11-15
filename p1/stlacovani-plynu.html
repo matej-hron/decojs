@@ -209,8 +209,8 @@
                     </div>
                     <div class="course-model-controls" id="boyle-ovladani"></div>
                     <div class="course-plot course-column-host" id="boyle-sloupec"></div>
-                    <p class="course-simplification">Balónek a&nbsp;zvon nejsou v&nbsp;měřítku. Školní čísla jako v&nbsp;přednášce
-                        (u&nbsp;hladiny 1&nbsp;bar, 1&nbsp;bar na každých 10&nbsp;m), teplota se nemění.</p>
+                    <p class="course-simplification">Balónek a&nbsp;zvon nejsou v&nbsp;měřítku. Tlak u&nbsp;hladiny podle nadmořské výšky
+                        (viz <a href="tlak.html#vyska">Atmosférický tlak</a>), 1&nbsp;bar na každých 10&nbsp;m vody, teplota se nemění.</p>
                     <button type="button" class="btn btn-fullscreen-close" title="Zavřít celou obrazovku">✕</button>
                 </div>
             </dialog>
@@ -264,6 +264,7 @@
                     <p>Model i&nbsp;příklad počítají se školními čísly. Přesně (mořská voda, na hladině 1,013&nbsp;bar) má balónek na hladině
                         29,8&nbsp;l místo 30&nbsp;l, rozdíl je pod 1&nbsp;%. Pružnou stěnu skutečného balónku a&nbsp;změnu teploty příklad
                         zanedbává.</p>
+                    <p>Na horském jezeře je u&nbsp;hladiny menší tlak, a&nbsp;proto se plyn při výstupu rozepne víc než u&nbsp;moře.</p>
                     <p>Zkus si otázku z&nbsp;testu SPČR na stejný výpočet:</p>
                     <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="35"></div>
                 </div>
@@ -292,23 +293,27 @@
                         </button>
                     </div>
                     <div class="course-warning">
-                        <svg viewBox="0 0 300 150" role="img" aria-label="Výstražná značka a potápěč, který při výstupu normálně dýchá a vydechuje bubliny">
+                        <!-- U13: potápěč ve vodě je v trimu (vodorovně, hlava mírně výš, lahev na zádech, kolena mírně
+                             pokrčená, ploutve rovně dozadu), bubliny z automatiky stoupají svisle. -->
+                        <svg viewBox="0 0 300 150" role="img" aria-label="Výstražná značka a potápěč vodorovně v&nbsp;trimu, který při výstupu normálně dýchá a vydechuje bubliny">
                             <rect class="fig-sky" width="300" height="150" rx="14"/>
                             <path class="fig-paper" d="M14 0H286A14 14 0 0 1 300 14V26C270 32 240 20 210 26S150 32 120 26 60 20 30 26 0 28 0 26V14A14 14 0 0 1 14 0Z"/>
                             <path class="warn-sign" d="M70 38L128 138H12Z"/>
                             <path class="warn-mark" d="M64 66h12l-2 40h-8zM63 114h14v13H63z"/>
-                            <circle class="fig-flake" cx="238" cy="50" r="4"/>
-                            <circle class="fig-flake" cx="233" cy="39" r="5"/>
-                            <circle class="fig-flake" cx="240" cy="30" r="3"/>
+                            <circle class="fig-flake" cx="279" cy="66" r="3"/>
+                            <circle class="fig-flake" cx="281" cy="55" r="4"/>
+                            <circle class="fig-flake" cx="278" cy="43" r="5"/>
                             <g class="fig-silhouette">
-                                <circle cx="214" cy="56" r="13"/>
-                                <circle cx="229" cy="65" r="4"/>
-                                <rect x="196" y="72" width="12" height="38" rx="5"/>
-                                <path class="fig-limb-thick" d="M214 76V108"/>
-                                <path class="fig-limb" d="M209 80L203 104M219 80L226 102M210 112L207 134M218 112L222 134"/>
-                                <path d="M200 132H214L210 146H197ZM216 132H230L234 146H220Z"/>
+                                <circle data-part="hlava" cx="264" cy="84" r="12"/>
+                                <circle cx="277" cy="94" r="4"/>
+                                <path class="fig-limb-thick" d="M200 104L252 94"/>
+                                <path d="M201 90L201 85L205 82L243 74L247 76L249 82L249 89L205 98Z"/>
+                                <path d="M246 76L252 75L254 82L248 83Z"/>
+                                <path class="fig-limb" d="M244 101L254 111L268 108"/>
+                                <path class="fig-limb" d="M200 102L176 106L160 98M202 108L178 113L162 106"/>
+                                <path d="M162 94L130 92L130 101L162 102ZM164 102L134 104L134 113L164 110Z"/>
                             </g>
-                            <rect class="fig-glass" x="214" y="49" width="16" height="11" rx="4"/>
+                            <rect class="fig-glass" x="266" y="77" width="14" height="11" rx="4"/>
                         </svg>
                         <p class="course-alert">Nikdy nezadržujte dech!<br>Dýchejte normálně!</p>
                     </div>
@@ -324,8 +329,8 @@
                         s&nbsp;objemem v&nbsp;10&nbsp;m a&nbsp;na hladině (15 a&nbsp;30&nbsp;l):
                         <a href="?zvon=0&amp;hloubka=30#model-boyle" data-preset-link>balónek ve 30&nbsp;m →</a>,
                         <a href="?zvon=0&amp;hloubka=0#model-boyle" data-preset-link>balónek na hladině →</a></p>
-                    <p>Stejně jako balónek se při výstupu rozpíná vzduch v&nbsp;plicích. Kdo zadrží dech, nemá ho kudy vypustit, a&nbsp;proto
-                        platí: dýchej normálně.</p>
+                    <p>Stejně jako balónek se při výstupu rozpíná i&nbsp;vzduch v&nbsp;plicích. Když dýcháš, přebytečný vzduch prostě vydechneš.
+                        Když zadržíš dech, nemá kudy uniknout a&nbsp;plíce se roztahují dál. Proto dýchej normálně.</p>
                     <p>Zadržený dech při výstupu může plíce roztrhnout, a&nbsp;to i&nbsp;při výstupu z&nbsp;malé hloubky, protože u&nbsp;hladiny se objem
                         mění nejvíc. Je to život ohrožující zranění. Když při výstupu nemůžeš dýchat (například ti došel vzduch),
                         vydechuj plynule celou cestu nahoru. Podrobnosti probere přednáška <a href="index.html#plan">Fyziologie</a>.</p>
@@ -337,7 +342,9 @@
         <section id="dutiny" class="course-section">
             <div class="course-slide" data-slide-number="27" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Stlačování plynů, tělní dutiny</h2>
-                <div class="course-core">
+                <!-- U15: šipka sestupu je osa slidu mezi obrázky („jdeme dolů, roste tlak, co se děje s dutinami?“),
+                     pod každým obrázkem odpověď. -->
+                <div class="course-core course-core-descent">
                     <div>
                         <h3 class="course-figure-title"><span class="course-highlight">Automatické vyrovnání tlaku</span></h3>
                         <figure class="course-figure course-illustration">
@@ -367,8 +374,22 @@
                             <text x="274" y="160" class="fig-label-xl">dutiny s&nbsp;plynem</text>
                             <a href="tlak.html#dusledky"><text x="274" y="200" class="fig-label-xl">(Důsledky tlaku)</text></a>
                         </svg>
-                            <figcaption>plíce, trávicí systém, obličejové dutiny, dýchací cesty</figcaption>
+                            <figcaption><span class="course-figure-answer">Vyrovná se samo: dýcháš z&nbsp;automatiky vzduch o&nbsp;tlaku okolí.</span>
+                                <span class="course-figure-note">plíce, trávicí systém, obličejové dutiny, dýchací cesty</span></figcaption>
                         </figure>
+                    </div>
+                    <div class="course-descent-axis" role="img" aria-label="Velká šipka dolů mezi obrázky: při sestupu tlak roste">
+                        <svg viewBox="0 0 100 400" preserveAspectRatio="none" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="sestup-hloubka" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" class="fig-depth-top"/>
+                                    <stop offset="0.45" class="fig-depth-mid"/>
+                                    <stop offset="1" class="fig-depth-bottom"/>
+                                </linearGradient>
+                            </defs>
+                            <polygon class="fig-descent" points="16,2 84,2 84,318 98,318 50,398 2,318 16,318"/>
+                        </svg>
+                        <p class="course-descent-label"><span>sestup:</span> <span>tlak</span> <span>roste</span></p>
                     </div>
                     <div>
                         <h3 class="course-figure-title"><span class="course-highlight">Aktivní vyrovnání tlaku</span></h3>
@@ -396,19 +417,10 @@
                                 <text x="16" y="204" class="fig-label-xl">bubínek</text>
                                 <text x="16" y="254" class="fig-label-xl">Eustachova trubice</text>
                             </svg>
-                            <figcaption>střední ucho (Eustachova trubice), prostor uvnitř masky <a class="course-source" href="zdroje.html#ucho">zdroj</a></figcaption>
+                            <figcaption><span class="course-figure-answer">Musíš vyrovnat ty: vyrovnej uši a&nbsp;vydechni nosem do masky.</span>
+                                <span class="course-figure-note">střední ucho (Eustachova trubice), prostor uvnitř masky <a class="course-source" href="zdroje.html#ucho">zdroj</a></span>
+                                <span class="course-figure-note"><a href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290">Strany potápěčské: Pan Eustach</a></span></figcaption>
                         </figure>
-                    </div>
-                    <div class="course-core-row">
-                        <figure class="course-figure course-descent">
-                            <svg viewBox="0 0 48 100" role="img" aria-label="Šipka dolů: sestup">
-                                <polygon class="fig-force" points="15,4 33,4 33,62 45,62 24,96 3,62 15,62"/>
-                            </svg>
-                        </figure>
-                        <div>
-                            <p><span class="course-highlight">Sestup: tlak roste.</span>
-                                Viz <a href="https://www.stranypotapecske.cz/teorie/eustach.asp?str=200408241518290">Strany potápěčské: Pan Eustach</a>.</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -511,7 +523,7 @@
                 <h2>Procvič si: stlačování plynů</h2>
                 <div class="course-core">
                     <p class="course-note">Otázky z&nbsp;testů SPČR/CMAS. Klikni na odpověď.</p>
-                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="23,39,33"></div>
+                    <div class="course-practice" data-quiz-source="data/quiz-physics.json" data-question-ids="23,39,43"></div>
                     <p><a href="../quiz-physics.html?kategorie=fyzika-plynu">Všechny otázky z&nbsp;testu fyziky na fyziku plynů →</a></p>
                 </div>
             </div>
