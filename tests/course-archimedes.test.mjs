@@ -56,6 +56,15 @@ test('Archimédův zákon: nadpisy a typy slidů podle přednášky a rozhodnut�
     });
 });
 
+test('Archimédův zákon: slide 32, nejdřív vztlak z F2 − F1, pak F_G a jeden řádek porovnání (A10)', () => {
+    const t = text(slide(32).querySelector('.course-core > div'));
+    const order = ['F1 = h1', 'F2 = h2', 'Fvz = F2 − F1', 'Fvz = (h2 − h1)', 'Fvz = V · ρv · g = mv · g', 'FG = mt · g', 'porovnáme Fvz s FG'];
+    const at = order.map(s => t.indexOf(s));
+    assert.ok(at.every(i => i >= 0), JSON.stringify(at));
+    assert.deepEqual([...at].sort((a, b) => a - b), at, 'pořadí vzorců');
+    assert.doesNotMatch(t, /stoupá|vznáší|klesá/, 'důsledky jsou na slidu 31');
+});
+
 test('Archimédův zákon: opravy z rozhodnutí 8 a překlepy', () => {
     const core = [...doc.querySelectorAll('main .course-slide')].map(text).join(' ');
     for (const wrong of [/Archimedův/, /hustotoa/, /tíha těles\b/, /abchom/, /provézt/, /neopré/i, /\d(kg|l|m)\b/, /\s!/, /\*/, /\bBC\b/, /=>/]) {
@@ -160,12 +169,21 @@ test('Archimédův zákon: slidy 31, 32 a 35 mají české SVG ve stylu ilustrac
     for (const label of ['F1', 'F2', 'F0', 'h1', 'h2', 'V', 'S']) assert.ok(t32.includes(label), label);
     const [f1, f2] = [...s32.querySelectorAll('.fig-force')].slice(0, 2).map(p => len(p.getAttribute('points').split(' ').map(xy => xy.split(',').map(Number))));
     assert.ok(f2 > f1, 'zespodu tlačí voda víc');
-    const widths = [...s32.querySelectorAll('.fig-force')].slice(2).map(p => {
+    const widths = [...s32.querySelectorAll('.fig-force')].slice(2, 4).map(p => {
         const xs = p.getAttribute('points').split(' ').map(xy => Number(xy.split(',')[0]));
         return Math.max(...xs) - Math.min(...xs);
     });
     assert.equal(widths.length, 2);
     assert.equal(widths[0], widths[1], 'R8-04: boční síly F0 stejně velké');
+    // A10: vpravo výsledek, F_vz = F2 − F1 nahoru (žlutá jako síly vody) a F_G dolů jinou barvou, různě dlouhé
+    const forces32 = [...s32.querySelectorAll('.fig-force')];
+    assert.equal(forces32.length, 5, 'F1, F2, dvě F0 a F_vz');
+    const gravity32 = [...s32.querySelectorAll('.fig-force-g')];
+    assert.equal(gravity32.length, 1, 'F_G jako jediná síla jinou barvou');
+    const fvz = len(forces32[4].getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
+    const fg = len(gravity32[0].getAttribute('points').split(' ').map(xy => xy.split(',').map(Number)));
+    assert.ok(fvz !== fg, 'nestejně dlouhé, obrázek netvrdí, že se těleso vznáší');
+    for (const label of ['Fvz=F2−F1', 'FG', 'vyrušíse']) assert.ok(t32.includes(label), label);
     // 35: kompenzátor a opasek, bez značek výrobce
     const t35 = slide(35).querySelector('svg').textContent;
     assert.ok(t35.includes('kompenzátor') && t35.includes('(BCD)') && t35.includes('zátěžový opasek'));

@@ -95,37 +95,52 @@
                 <h2>Archimédův zákon</h2>
                 <div class="course-core">
                     <div>
-                        <p class="course-formula" aria-label="tíhová síla tělesa rovná se hmotnost tělesa krát g, rovná se objem krát hustota tělesa krát g">
-                            <var>F</var><sub>G</sub> = <var>m</var><sub>t</sub> · <var>g</var> = <var>V</var> · <var>ρ</var><sub>t</sub> · <var>g</var></p>
                         <p class="course-formula">
                             <var>F</var><sub>1</sub> = <var>h</var><sub>1</sub> · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
                             <var>F</var><sub>2</sub> = <var>h</var><sub>2</sub> · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
                             <var>F</var><sub>vz</sub> = <var>F</var><sub>2</sub> − <var>F</var><sub>1</sub><br>
                             <var>F</var><sub>vz</sub> = (<var>h</var><sub>2</sub> − <var>h</var><sub>1</sub>) · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
                             <var>F</var><sub>vz</sub> = <var>V</var> · <var>ρ</var><sub>v</sub> · <var>g</var> = <var>m</var><sub>v</sub> · <var>g</var></p>
+                        <p class="course-formula" aria-label="tíhová síla tělesa rovná se hmotnost tělesa krát g, rovná se objem krát hustota tělesa krát g">
+                            <var>F</var><sub>G</sub> = <var>m</var><sub>t</sub> · <var>g</var> = <var>V</var> · <var>ρ</var><sub>t</sub> · <var>g</var></p>
+                        <p>porovnáme <var>F</var><sub>vz</sub> s&nbsp;<var>F</var><sub>G</sub></p>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 420" role="img" aria-label="Kvádr o objemu V pod vodou. Horní stěna o ploše S je v hloubce h1, voda na ni tlačí silou F1 dolů. Spodní stěna je v hloubce h2, voda na ni tlačí větší silou F2 nahoru. Síly F0 na boky jsou stejné a ruší se">
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Dva kroky. 1: kvádr o objemu V pod vodou. Horní stěna o ploše S je v hloubce h1, voda na ni tlačí silou F1 dolů. Spodní stěna je v hloubce h2, voda na ni tlačí větší silou F2 nahoru. Síly F0 na boky jsou stejné a vyruší se. 2: výsledek na stejný kvádr: vztlaková síla Fvz = F2 − F1 nahoru a tíhová síla tělesa FG dolů, jinou barvou, protože to není síla vody">
                             <rect class="fig-paper" width="600" height="420" rx="16"/>
                             <path class="fig-liquid" d="M0 60H600V404A16 16 0 0 1 584 420H16A16 16 0 0 1 0 404Z"/>
-                            <path class="fig-guide" d="M404 190H440M500 190H592M404 290H592"/>
-                            <path class="fig-dim" d="M540 60V190M580 60V290M530 60H550M570 60H590"/>
-                            <polygon class="fig-solid-front" points="220,190 370,190 370,290 220,290"/>
-                            <polygon class="fig-solid-top" points="220,190 250,168 400,168 370,190"/>
-                            <polygon class="fig-solid-side" points="370,190 400,168 400,268 370,290"/>
-                            <polygon class="fig-force" points="296,100 296,144 278,144 310,178 342,144 324,144 324,100"/>
-                            <polygon class="fig-force" points="281,412 281,330 263,330 295,294 327,330 309,330 309,412"/>
-                            <polygon class="fig-force" points="104,226 176,226 176,208 214,240 176,272 176,254 104,254"/>
-                            <polygon class="fig-force" points="516,216 444,216 444,198 406,230 444,262 444,244 516,244"/>
-                            <path class="fig-pointer" d="M168 150L232 182"/>
-                            <text x="295" y="252" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">V</tspan></text>
-                            <text x="140" y="150" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
-                            <text x="350" y="132" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">1</tspan></text>
-                            <text x="336" y="386" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">2</tspan></text>
-                            <text x="108" y="200" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
-                            <text x="452" y="186" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
-                            <text x="530" y="140" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">1</tspan></text>
-                            <text x="570" y="276" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">2</tspan></text>
+                            <!-- 1: tlak vody na stěny -->
+                            <path class="fig-guide" d="M308 190H328M244 270H356"/>
+                            <path class="fig-dim" d="M322 60V190M350 60V270M312 60H332M340 60H360"/>
+                            <polygon class="fig-solid-front" points="120,190 220,190 220,270 120,270"/>
+                            <polygon class="fig-solid-top" points="120,190 140,174 240,174 220,190"/>
+                            <polygon class="fig-solid-side" points="220,190 240,174 240,254 220,270"/>
+                            <polygon class="fig-force" points="166,92 166,134 150,134 180,168 210,134 194,134 194,92"/>
+                            <polygon class="fig-force" points="165,404 165,310 149,310 180,276 211,310 195,310 195,404"/>
+                            <polygon class="fig-force" points="40,218 82,218 82,202 116,230 82,258 82,242 40,242"/>
+                            <polygon class="fig-force" points="320,218 278,218 278,202 244,230 278,258 278,242 320,242"/>
+                            <path class="fig-pointer" d="M86 150L146 182"/>
+                            <text x="170" y="246" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">V</tspan></text>
+                            <text x="80" y="160" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
+                            <text x="214" y="130" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">1</tspan></text>
+                            <text x="216" y="384" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">2</tspan></text>
+                            <text x="40" y="206" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
+                            <text x="262" y="196" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
+                            <text x="12" y="294" class="fig-label-xl"><tspan font-size="30">vyruší se</tspan></text>
+                            <text x="316" y="140" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">1</tspan></text>
+                            <text x="344" y="316" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">2</tspan></text>
+                            <!-- přechod ke kroku 2 -->
+                            <path class="fig-flow" d="M368 230H388"/>
+                            <polygon class="fig-flow-head" points="386,218 406,230 386,242"/>
+                            <!-- 2: výsledek, vztlak proti tíze -->
+                            <polygon class="fig-solid-front" points="440,190 540,190 540,270 440,270"/>
+                            <polygon class="fig-solid-top" points="440,190 460,174 560,174 540,190"/>
+                            <polygon class="fig-solid-side" points="540,190 560,174 560,254 540,270"/>
+                            <polygon class="fig-force" points="485,182 485,112 469,112 500,76 531,112 515,112 515,182"/>
+                            <polygon class="fig-force-g" points="485,262 485,318 469,318 500,350 531,318 515,318 515,262"/>
+                            <text x="490" y="246" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">V</tspan></text>
+                            <text x="590" y="44" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">vz</tspan><tspan dy="-8"> = </tspan><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">2</tspan><tspan dy="-8"> − </tspan><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">1</tspan></text>
+                            <text x="538" y="330" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">G</tspan></text>
                         </svg>
                         <figcaption>Zespodu tlačí voda víc než shora.</figcaption>
                     </figure>
