@@ -291,6 +291,13 @@ Stlačování a Hustota se projdou zvlášť.
   ořez přímo ve `viewBox` souboru) se vkládá `<image href="…">` do SVG slidu, popisky a šipky jsou vlastní nad ním:
   `fig-water-push` (modrá šipka tlaku vody, žlutá patří plynu) a `fig-air-arrow` (žlutá šipka vzduchu v Eustachově trubici).
   Rohy obrázku ořezává `clipPath` se zaoblením slidu. Atribuce jako u fotek: odkaz „zdroj“ v popisku, položka v `p1/zdroje.html`.
+- **Další třídy (A9, BCD na slidu 35):** vlastní kresba křídla s deskou zezadu, varianty jsou ve
+  `docs/course/vzornik-bcd.html` (A jacket zepředu, B křídlo, vybraná, C potápěč z profilu jako záloha).
+  `fig-bcd` (vak, tmavý), `fig-bcd-seam` (čárkovaný šev), `fig-bcd-edge` (záhyb), `fig-bcd-inner` (vnitřek vesty, jen varianta A),
+  popruh jako dvojice `fig-webbing-edge` + `fig-webbing` (tmavý se světlým okrajem), `fig-buckle` (plastová přezka, inflátor),
+  `fig-steel` (deska, kovová přezka, ventil), `fig-tank` (lahev) s odleskem `fig-shine`, vlnitá hadice jako trojice
+  `fig-hose-edge` + `fig-hose` + `fig-hose-rib`, opasek `fig-belt` a olovo `fig-weight fig-lead` (šedé, žlutá `fig-weight`
+  patří závaží na pístu). Varianta C má navíc ve vzorníku `fig-suit` (neopren) a `fig-reg-hose` (hadice automatiky).
 - **Další třídy (T9, Pascalův sud):** `fig-barrel` (dřevo), `fig-stave` (spáry mezi dužinami), `fig-hoop` (obruč, ucho
   konvičky), `fig-jet` (tryskající nebo tekoucí voda), `fig-drop` (kapka), `fig-can` (konvička).
 - **Tělo potápěče (T16, T17; slidy 21 a 27):** kresba je jediná definice, symbol `#telo` v `images/course/p1/telo-profil.svg`

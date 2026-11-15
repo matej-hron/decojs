@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
     <title>Vzorník BCD – slide 35</title>
-    <!-- A9: tři varianty kresby BCD a zátěžového opasku pro slide 35 „Kontrola vztlaku“ (Archimédův zákon).
+    <!-- A9: Matej vybral B (je na slidu 35), C zůstává jako záloha. Tři varianty kresby BCD a zátěžového opasku pro slide 35 „Kontrola vztlaku“ (Archimédův zákon).
          Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5591 v kořeni repa,
          pak http://127.0.0.1:5591/docs/course/vzornik-bcd.html. Styl ilustrací: docs/course/slides.md. -->
     <link rel="stylesheet" href="../../css/styles.css">
@@ -22,22 +22,7 @@
             color: var(--text-subtle);
         }
 
-        /* Nové třídy kresby BCD. Po výběru varianty se přesunou do css/course.css (barvy jen z proměnných scény Hladina). */
-        .course-figure svg .fig-bcd { fill: var(--slide-on-accent); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
-        .course-figure svg .fig-bcd-inner { fill: var(--slide-bg); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
-        .course-figure svg .fig-bcd-seam { fill: none; stroke: var(--slide-line-strong); stroke-width: 3; stroke-dasharray: 8 7; stroke-linecap: round; }
-        .course-figure svg .fig-bcd-edge { fill: none; stroke: var(--slide-line-strong); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
-        .course-figure svg .fig-webbing-edge { fill: none; stroke: var(--slide-line-strong); stroke-width: 22; }
-        .course-figure svg .fig-webbing { fill: none; stroke: var(--slide-on-accent); stroke-width: 16; }
-        .course-figure svg .fig-buckle { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
-        .course-figure svg .fig-steel { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
-        .course-figure svg .fig-tank { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
-        .course-figure svg .fig-shine { fill: var(--slide-card-bg); fill-opacity: 0.5; }
-        .course-figure svg .fig-hose-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 28; stroke-linecap: round; }
-        .course-figure svg .fig-hose { fill: none; stroke: var(--slide-line-strong); stroke-width: 21; stroke-linecap: round; }
-        .course-figure svg .fig-hose-rib { fill: none; stroke: var(--slide-on-accent); stroke-width: 21; stroke-dasharray: 3.5 6; }
-        .course-figure svg .fig-belt { fill: none; stroke: var(--slide-on-accent); stroke-width: 20; }
-        .course-figure svg .fig-weight.fig-lead { fill: color-mix(in srgb, var(--slide-on-accent) 50%, var(--slide-card-bg)); stroke: var(--slide-on-accent); stroke-width: 3; }
+        /* Třídy kresby BCD jsou v css/course.css (A9, slide 35). Tady jen třídy, které má záložní varianta C navíc. */
         .course-figure svg .fig-reg-hose { fill: none; stroke: var(--slide-on-accent); stroke-width: 11; stroke-linecap: round; }
         .course-figure svg .fig-suit { fill: var(--slide-water); }
 
