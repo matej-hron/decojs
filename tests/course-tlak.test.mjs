@@ -1,7 +1,7 @@
 // Kurz P1 – kapitola Tlak (slidy 10–22): obsah slidů, opravy přednášky, tabulky slidu 20, modely, navigace.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 
 import { pressureAt } from '../js/physics/pressure.js';
@@ -15,6 +15,9 @@ const doc = new JSDOM(html).window.document;
 const slides = [...doc.querySelectorAll('main > section > .course-slide')];
 const slide = (n) => doc.querySelector(`.course-slide[data-slide-number="${n}"]`);
 const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
+/** T28: odkazuje některá stránka kurzu (p1/*.html), pojem (concepts/) nebo modul kurzu na GIF částic? */
+const courseUsesGif = () => ['p1', 'concepts/cs', 'js/course'].some(dir => readdirSync(new URL(`${dir}/`, ROOT), { recursive: true })
+    .filter(f => /\.(html|js)$/.test(f)).some(f => read(`${dir}/${f}`).includes('gas-particles.gif')));
 
 test('Tlak: kapitola je hotová, slidy 10–22', () => {
     const c = chapterBySlug('tlak');
@@ -117,15 +120,73 @@ test('Tlak: slide 20, meze 30, 40 a 56 m jsou zvýrazněné (T10), 28 m je cvič
     assert.equal(text(last.querySelector('details')).replace(/^\?/, ''), '6,6', '56 m: 6,6 bar');
 });
 
-test('Tlak: slide 22 má GIF částic s odkazem na zdroj (T18)', () => {
-    const img = slide(22).querySelector('figure img');
-    assert.match(img.getAttribute('src'), /\.\.\/images\/gas-particles\.gif$/);
-    assert.ok(img.getAttribute('alt').length > 10);
-    assert.equal(slide(22).querySelector('figure figcaption a.course-source').getAttribute('href'), 'zdroje.html#castice');
-    assert.match(slide(22).innerHTML, /<var>p<\/var><var>V<\/var> = <var>n<\/var><var>R<\/var><var>T<\/var>/);
-    assert.match(text(slide(22)), /Víc částic plynu \(větší látkové množství n\) → větší tlak\./);
-    assert.match(text(slide(22)), /Vyšší teplota T \(částice mají větší energii\) → větší tlak\./);
-    assert.doesNotMatch(text(slide(22)), /počet částic plynu \(n\)|energie částic \(T\)/);
+test('Tlak: slide 22 má animaci částic jako slide 40, bez kyslíku a bez GIFu (T28)', () => {
+    assert.ok(!slide(22).querySelector('img'), 'žádný GIF');
+    const g = slide(22).querySelector('figure svg[role="img"] g[data-gas-particles]');
+    assert.ok(g);
+    assert.equal(g.dataset.oxygenEvery, '0', 'všechny částice stejné');
+    const svg = g.closest('svg');
+    assert.doesNotMatch(text(svg), /kyslík|dusík/, 'bez legendy kyslík/dusík');
+    assert.equal(svg.querySelectorAll('.fig-o2').length, 0);
+    assert.ok(!slide(22).querySelector('a.course-source'), 'vlastní kresba, bez odkazu zdroj');
+    // Stejná nádoba jako na slidu 40.
+    const dalton = new JSDOM(read('p1/dalton.html')).window.document.querySelector('#castice .course-slide');
+    const dg = dalton.querySelector('g[data-gas-particles]');
+    assert.equal(g.dataset.box, dg.dataset.box);
+    assert.equal(svg.getAttribute('viewBox'), dg.closest('svg').getAttribute('viewBox'));
+    assert.equal(svg.querySelector('.fig-wall').outerHTML, dg.closest('svg').querySelector('.fig-wall').outerHTML);
+    assert.equal(slide(22).dataset.slideType, dalton.dataset.slideType);
+    assert.equal(slide(22).dataset.slideFit, dalton.dataset.slideFit);
+    // Stejný text na obou slidech (liší se jen obarvení a popisek).
+    const body = (s) => s.querySelector('.course-core > div').innerHTML.replace(/\s+/g, ' ');
+    assert.equal(body(slide(22)), body(dalton));
+    assert.match(read('js/course/tlakPage.js'), /import \{ mountGasParticles \} from '\.\/gasParticles\.js';/);
+    assert.match(read('js/course/tlakPage.js'), /querySelectorAll\('\[data-gas-particles\]'\)\.forEach\(g => mountGasParticles\(g\)\)/);
+});
+
+test('Tlak: animace částic stojí při prefers-reduced-motion (T28)', async () => {
+    const { mountGasParticles } = await import('../js/course/gasParticles.js');
+    const dom = new JSDOM(html);
+    const win = dom.window;
+    let frames = 0;
+    win.requestAnimationFrame = () => { frames++; return 1; };
+    win.matchMedia = (q) => ({ matches: q.includes('reduce'), media: q });
+    const g = win.document.getElementById('castice-tlak');
+    const { particles } = mountGasParticles(g);
+    assert.equal(frames, 0, 'žádný snímek animace');
+    assert.equal(g.querySelectorAll('circle.fig-n2').length, particles.length, 'částice jsou nakreslené, jen stojí');
+    assert.equal(g.querySelectorAll('circle.fig-o2').length, 0);
+});
+
+test('Tlak a Dalton: slide Tlak v plynu má zlomek nRT/V a implikace ve dvou sloupcích (T28)', () => {
+    const d40 = new JSDOM(read('p1/dalton.html')).window.document.querySelector('#castice .course-slide');
+    for (const s of [slide(22), d40]) {
+        const frac = s.querySelector('.course-formula .course-frac');
+        assert.ok(frac, 'zlomek');
+        const parts = [...frac.children];
+        assert.deepEqual(parts.map(text), ['nRT', '/', 'V'], 'čitatel, skryté lomítko, jmenovatel');
+        assert.ok(parts[1].classList.contains('course-frac-slash'));
+        assert.equal(text(s.querySelector('.course-formula')), 'p = nRT/V, pV = nRT');
+        const rows = [...s.querySelectorAll('ul.course-implications > li')].map(li => [...li.children].map(text));
+        assert.deepEqual(rows, [
+            ['Víc částic (látkové množství n)', '⇒ větší tlak'],
+            ['Vyšší teplota T', '⇒ větší tlak'],
+            ['Větší objem V', '⇒ menší tlak'],
+        ]);
+        for (const li of s.querySelectorAll('ul.course-implications > li')) assert.ok(li.children[1].classList.contains('course-highlight'));
+        assert.doesNotMatch(text(s), /částice mají větší energii|→ větší tlak/);
+    }
+    // Závorka o energii částic je ve Více (pojem gas-pressure): rychlejší částice a silnější nárazy.
+    assert.ok(slide(22).closest('section').querySelector('details.course-more [data-concept="gas-pressure"]'));
+    assert.match(read('concepts/cs/gas-pressure.html'), /vyšší teplota rychlejší částice a&nbsp;silnější nárazy/);
+    const css = read('css/course.css');
+    assert.match(css, /\.course-frac \{[^}]*display: inline-flex;[^}]*flex-direction: column;/);
+    assert.match(css, /\.course-implications > li \{[^}]*grid-template-columns: subgrid;/);
+    assert.match(read('docs/course/slides.md'), /course-frac/);
+    assert.match(read('docs/course/slides.md'), /course-implications/);
+    const vzornik = new JSDOM(read('docs/course/vzornik-slidu.html')).window.document;
+    assert.ok(vzornik.querySelector('.course-frac'));
+    assert.ok(vzornik.querySelector('.course-implications'));
 });
 
 test('Tlak: schémata jsou česká SVG (síla na plochu, píst, sloupec vzduchu, tři nádoby)', () => {
@@ -154,9 +215,9 @@ test('Tlak: Procvič si má otázky z analýzy a odkaz na kategorii tlak-jednotk
     assert.ok(doc.querySelector('#procvic a[href="../quiz-physics.html?kategorie=tlak-jednotky"]'));
 });
 
-test('Tlak: stránka, její modul a GIF jsou offline (sw.js)', () => {
+test('Tlak: stránka, její moduly a animace částic jsou offline (sw.js)', () => {
     const sw = read('sw.js');
-    for (const f of ['./p1/tlak.html', './js/course/tlakPage.js', './images/gas-particles.gif']) assert.ok(sw.includes(`'${f}'`), f);
+    for (const f of ['./p1/tlak.html', './js/course/tlakPage.js', './js/course/gasParticles.js']) assert.ok(sw.includes(`'${f}'`), f);
     assert.match(html, /<script type="module" src="\.\.\/js\/course\/tlakPage\.js"><\/script>/);
 });
 
@@ -183,7 +244,10 @@ test('Tlak: fotka manometru má odkaz na zdroj (autor a licence v zdroje.html, T
     assert.match(img.getAttribute('src'), /\.\.\/images\/course\/p1\/manometr\.jpg$/);
     assert.equal(img.closest('figure').querySelector('figcaption a.course-source').getAttribute('href'), 'zdroje.html#manometr');
     const sources = read('images/course/p1/SOURCES.md');
-    for (const f of ['images/course/p1/manometr.jpg', 'images/gas-particles.gif']) assert.ok(sources.includes(f), f);
+    assert.ok(sources.includes('images/course/p1/manometr.jpg'));
+    // T28: GIF částic kurz nepoužívá (zůstal jen pressure.html mimo kurz).
+    assert.match(sources, /`images\/gas-particles\.gif` \| jen `pressure\.html` mimo kurz/);
+    assert.ok(!courseUsesGif(), 'žádná stránka kurzu ani pojem neodkazuje na GIF');
     assert.match(sources, /\[CC BY-SA 4\.0\]\(https:\/\/creativecommons\.org\/licenses\/by-sa\/4\.0\/deed\.cs\)/);
     assert.ok(read('sw.js').includes("'./images/course/p1/manometr.jpg'"));
 });

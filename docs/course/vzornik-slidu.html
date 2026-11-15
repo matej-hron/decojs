@@ -353,6 +353,36 @@
             <p class="vzornik-type"><code>data-slide-type="figure"</code> + <code>course-core-descent</code>: šipka sestupu jako osa mezi dvěma obrázky (U15, slide 27)</p>
         </section>
 
+        <section id="zlomek-implikace" class="course-section">
+            <div class="course-slide" data-slide-number="22" data-slide-type="figure" data-slide-fit="compact">
+                <h2>Tlak v&nbsp;plynu</h2>
+                <div class="course-core">
+                    <div>
+                        <p><span class="course-highlight">Tlak je vyvolán nárazy částic plynu do stěn.</span>
+                            Ale na čem závisí?</p>
+                        <ul class="course-implications">
+                            <li><span>Víc částic (látkové množství <var>n</var>)</span> <span class="course-highlight">⇒ větší tlak</span></li>
+                            <li><span>Vyšší teplota <var>T</var></span> <span class="course-highlight">⇒ větší tlak</span></li>
+                            <li><span>Větší objem <var>V</var></span> <span class="course-highlight">⇒ menší tlak</span></li>
+                        </ul>
+                        <p>Stavová rovnice ideálního plynu:</p>
+                        <p class="course-formula"><var>p</var> = <span class="course-frac"><span><var>n</var><var>R</var><var>T</var></span><span class="course-frac-slash">/</span><span><var>V</var></span></span>,
+                            <var>p</var><var>V</var> = <var>n</var><var>R</var><var>T</var></p>
+                    </div>
+                    <figure class="course-figure course-illustration">
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Animace: částice plynu v nádobě narážejí do stěn a do sebe">
+                            <rect class="fig-paper" width="600" height="420" rx="16"/>
+                            <circle class="fig-n2" cx="44" cy="40" r="13"/>
+                            <text x="68" y="52" class="fig-label-xl">částice plynu</text>
+                            <rect class="fig-wall" x="20" y="80" width="560" height="320" rx="6"/>
+                            <g data-gas-particles data-oxygen-every="0" data-box="23 83 554 314"></g>
+                        </svg>
+                    </figure>
+                </div>
+            </div>
+            <p class="vzornik-type"><code>data-slide-type="figure"</code> se zlomkem <code>course-frac</code>, implikacemi <code>course-implications</code> a&nbsp;animací částic (T28, slide 22)</p>
+        </section>
+
         <section id="ilustrace-rady" class="course-section">
             <div class="course-slide" data-slide-number="13" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Tlak a&nbsp;skupenství</h2>
@@ -500,6 +530,7 @@
         import { initPractice } from '../../js/course/practice.js';
         import { createDensityCurve } from '../../js/components/DensityCurve.js';
         import { createLakeCycle } from '../../js/components/LakeCycle.js';
+        import { mountGasParticles } from '../../js/course/gasParticles.js';
 
         // Patička jako na stránkách kurzu (tam ji doplní initSlideNav, číslo je pořadí v kurzu); tady pořadí ve vzorníku.
         const vzory = [...document.querySelectorAll('main > section > .course-slide')];
@@ -511,6 +542,7 @@
         });
         createDensityCurve(document.getElementById('nahled-hustota'), { range: [0, 10], temperature: 4, compact: true });
         createLakeCycle(document.getElementById('nahled-jezero'), { compact: true });
+        document.querySelectorAll('[data-gas-particles]').forEach(g => mountGasParticles(g));
         initPractice(document);
     </script>
 </body>

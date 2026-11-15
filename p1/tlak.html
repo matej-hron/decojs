@@ -851,7 +851,7 @@
             </details>
         </section>
 
-        <!-- Slide 22 -->
+        <!-- Slide 22: animace částic jako na slidu 40 (T28), všechny částice stejné -->
         <section id="plyn" class="course-section">
             <div class="course-slide" data-slide-number="22" data-slide-type="figure" data-slide-fit="compact">
                 <h2>Tlak v&nbsp;plynu</h2>
@@ -859,19 +859,24 @@
                     <div>
                         <p><span class="course-highlight">Tlak je vyvolán nárazy částic plynu do stěn.</span>
                             Ale na čem závisí?</p>
-                        <ul>
-                            <li>Víc částic plynu (větší látkové množství <var>n</var>) → větší tlak.</li>
-                            <li>Vyšší teplota <var>T</var> (částice mají větší energii) → větší tlak.</li>
-                            <li>Čím větší objem (<var>V</var>) → menší tlak.</li>
+                        <ul class="course-implications">
+                            <li><span>Víc částic (látkové množství <var>n</var>)</span> <span class="course-highlight">⇒ větší tlak</span></li>
+                            <li><span>Vyšší teplota <var>T</var></span> <span class="course-highlight">⇒ větší tlak</span></li>
+                            <li><span>Větší objem <var>V</var></span> <span class="course-highlight">⇒ menší tlak</span></li>
                         </ul>
                         <p>Stavová rovnice ideálního plynu:</p>
-                        <p class="course-formula"><var>p</var> = <var>n</var><var>R</var><var>T</var>/<var>V</var>,
+                        <p class="course-formula"><var>p</var> = <span class="course-frac"><span><var>n</var><var>R</var><var>T</var></span><span class="course-frac-slash">/</span><span><var>V</var></span></span>,
                             <var>p</var><var>V</var> = <var>n</var><var>R</var><var>T</var></p>
                     </div>
-                    <figure class="course-figure">
-                        <img src="../images/gas-particles.gif" width="300" height="263"
-                            alt="Animace: částice plynu v nádobě se volně pohybují a narážejí do stěn i do sebe">
-                        <figcaption><a class="course-source" href="zdroje.html#castice">zdroj</a></figcaption>
+                    <figure class="course-figure course-illustration">
+                        <!-- T28: stejná animace jako na slidu 40 (Dalton), tady bez obarvení na kyslík a dusík -->
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Animace: částice plynu v nádobě narážejí do stěn a do sebe">
+                            <rect class="fig-paper" width="600" height="420" rx="16"/>
+                            <circle class="fig-n2" cx="44" cy="40" r="13"/>
+                            <text x="68" y="52" class="fig-label-xl">částice plynu</text>
+                            <rect class="fig-wall" x="20" y="80" width="560" height="320" rx="6"/>
+                            <g id="castice-tlak" data-gas-particles data-oxygen-every="0" data-box="23 83 554 314"></g>
+                        </svg>
                     </figure>
                 </div>
             </div>

@@ -871,6 +871,42 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 .course-formula-chain-key { grid-column: 1 / -1; margin: var(--space-2) 0; font-size: 0.75em; }
 /* Řádek pod vzorcem: co jednotka znamená (slide 11). */
 .course-formula-note { margin: calc(-1 * var(--space-2)) 0 var(--space-4); text-align: center; font-size: 0.85em; color: var(--slide-subtle); }
+/* Zlomek (T28, slidy 22 a 40): čitatel nad čarou, jmenovatel pod ní, čára ve výšce „=“. Lomítko mezi nimi je skryté,
+   čtečka i kopírování dostanou „nRT/V“. */
+.course-frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1.15;
+    margin: 0 0.1em;
+}
+.course-frac > span:first-child { border-bottom: 0.06em solid currentColor; padding: 0 0.2em 0.04em; }
+.course-frac > span:last-child { padding-top: 0.04em; }
+.course-frac > .course-frac-slash {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+/* Implikace (T28, slidy 22 a 40): příčina vlevo, „⇒ důsledek“ vpravo, důsledky zarovnané pod sebou.
+   Úzký sloupec příčin se zalomí, důsledek se šipkou zůstane pohromadě. */
+.course-core .course-implications {
+    display: grid;
+    grid-template-columns: minmax(0, max-content) max-content;
+    column-gap: 0.9em;
+    list-style: none;
+    padding-left: 0;
+}
+.course-implications > li {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: baseline;
+}
+.course-implications > li > .course-highlight { white-space: nowrap; }
 
 .course-table {
     border-collapse: collapse;

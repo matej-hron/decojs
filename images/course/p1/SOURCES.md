@@ -3,7 +3,7 @@
 Převzaté obrázky kurzu P1 – Fyzika. Jen volné licence (public domain, CC0, CC BY, CC BY-SA), bez log a značek.
 Licence ověřená na stránce souboru na Wikimedia Commons (ne odhadem). Plná atribuce (autor, licence s odkazem na její text,
 stránka souboru, úpravy) je na stránce kurzu `p1/zdroje.html`, každý obrázek má vlastní kotvu (`#manometr`, `#pascal`,
-`#castice`, `#ucho`, `#dalton`, `#henry`, `#tuzka`, `#silfra`). Pod obrázkem na slidu je jen drobný odkaz „zdroj“ na tuto kotvu (T18).
+`#ucho`, `#dalton`, `#henry`, `#tuzka`, `#silfra`). Pod obrázkem na slidu je jen drobný odkaz „zdroj“ na tuto kotvu (T18).
 Schémata kurzu (SVG přímo ve stránkách `p1/*.html`) jsou vlastní a tady nejsou.
 
 | Soubor | Slide | Autor | Licence | Zdroj | Úpravy | Ověřeno |
@@ -15,7 +15,7 @@ Schémata kurzu (SVG přímo ve stránkách `p1/*.html`) jsou vlastní a tady ne
 | `images/course/p1/tuzka-ve-vode.jpg` | Vidění pod vodou, slide 52 | Meganbeckett27 | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.cs) | [File:Pencil in glass of water showing refraction (cropped).JPG](https://commons.wikimedia.org/wiki/File:Pencil_in_glass_of_water_showing_refraction_(cropped).JPG) | oříznuto na sklenici a zmenšeno (484 × 700 px), bez metadat | 2026-11-14 |
 | `images/course/p1/ucho-anatomie.svg` | Stlačování plynů, slide 27 | Lars Chittka a Axel Brockmann (původní Anatomy of the Human Ear.svg); verze bez popisků M. Komorniczak | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5/deed.cs) | [File:Anatomy of the Human Ear blank.svg](https://commons.wikimedia.org/wiki/File:Anatomy_of_the_Human_Ear_blank.svg) | oříznuto na zvukovod, bubínek, střední ucho a Eustachovu trubici (viewBox 320 × 252), střední ucho a trubice přebarvené na žlutou bez průhlednosti (plyn jako na slidu 21), ostatní žluté plochy na béžovou, odstraněna metadata editoru; popisky a šipky (tlak vody, vzduch v trubici) jsou vlastní, ve slidu | 2026-11-09 |
 | `images/course/p1/silfra.jpg` | Přenos tepla, slide 60 (konec přednášky) | Guillaume Baviere (Uppsala, Švédsko), přes Flickr | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/deed.cs) | [File:Iceland 2008-05-29 (2742404664).jpg](https://commons.wikimedia.org/wiki/File:Iceland_2008-05-29_(2742404664).jpg) | zmenšeno z 1 280 × 960 na 800 × 600 px; bez log a značek (ověřeno na plném rozlišení). Dočasně, Matej ji může nahradit vlastní fotkou | 2026-11-14 |
-| `images/gas-particles.gif` | Tlak, slide 22 (a `pressure.html`) | A. Greg (Greg L, anglická Wikipedie) | volné dílo (public domain): „This image of simple geometry is ineligible for copyright“ | [File:Translational motion.gif](https://commons.wikimedia.org/wiki/File:Translational_motion.gif) | beze změny | 2026-11-08 |
+| `images/gas-particles.gif` | jen `pressure.html` mimo kurz; kurz ho od T28 nepoužívá (slide 22 má vlastní animaci jako slide 40), v `p1/zdroje.html` proto není | A. Greg (Greg L, anglická Wikipedie) | volné dílo (public domain): „This image of simple geometry is ineligible for copyright“ | [File:Translational motion.gif](https://commons.wikimedia.org/wiki/File:Translational_motion.gif) | beze změny | 2026-11-08 |
 
 Úprava díla pod CC BY-SA (ořez) se šíří pod stejnou licencí [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.cs). Atribuci uvádíme rozumným způsobem podle média (CC BY-SA 4.0, oddíl 3(a)(2)): odkaz „zdroj“ pod fotkou vede na `p1/zdroje.html#manometr`, kde je autor, odkaz na text licence, stránka souboru a poznámka „oříznuto“.
 

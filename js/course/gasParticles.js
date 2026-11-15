@@ -1,9 +1,9 @@
 /**
  * Animace částic plynu v nádobě: částice letí rovně, odrážejí se od stěn a srážejí se mezi sebou.
  *
- * Vlastní náhrada GIFu z Wikimedia Commons (`images/gas-particles.gif`, Tlak slide 22), protože GIF nejde obarvit.
- * Slide 40 (Dalton, rozhodnutí 3) obarví asi každou pátou částici jako kyslík: pětina částic → pětina nárazů do stěn
- * → pětina tlaku. Bez obarvení (`oxygenEvery: 0`) jde stejný modul použít i na slidu 22.
+ * Vlastní kresba místo převzaté animace (ta nešla obarvit). Stejný obrázek je na obou slidech „Tlak v plynu“:
+ * slide 22 (Tlak, T28) bez obarvení (`oxygenEvery: 0`), všechny částice jsou `fig-n2`; slide 40 (Dalton, rozhodnutí 3)
+ * obarví asi každou pátou částici jako kyslík: pětina částic → pětina nárazů do stěn → pětina tlaku.
  *
  *     <svg viewBox="0 0 600 420">…<g data-gas-particles data-oxygen-every="5"
  *         data-box="30 80 540 320"></g></svg>
