@@ -120,6 +120,52 @@ test('Stlačování plynů: slide 26, změny 1,5 l a 2×, varování červeně s
     assert.equal(v(0) / v(10), 2);
 });
 
+// Body tvarů v SVG: kruhy, obdélníky a cesty jen s absolutními M/L/H/V a relativními h/v/l (víc kresba nepotřebuje).
+function shapePoints(el) {
+    const n = (a) => Number(el.getAttribute(a));
+    if (el.tagName === 'circle') return [[n('cx') - n('r'), n('cy') - n('r')], [n('cx') + n('r'), n('cy') + n('r')]];
+    if (el.tagName === 'rect') return [[n('x'), n('y')], [n('x') + n('width'), n('y') + n('height')]];
+    const pts = []; let x = 0, y = 0;
+    for (const [, cmd, args] of el.getAttribute('d').matchAll(/([MLHVZmlhvz])([^MLHVZmlhvz]*)/g)) {
+        const v = args.trim() ? args.trim().split(/[\s,]+/).map(Number) : [];
+        if (cmd === 'Z' || cmd === 'z') continue;
+        if (cmd === 'M' || cmd === 'L') for (let i = 0; i < v.length; i += 2) { x = v[i]; y = v[i + 1]; pts.push([x, y]); }
+        else if (cmd === 'l') for (let i = 0; i < v.length; i += 2) { x += v[i]; y += v[i + 1]; pts.push([x, y]); }
+        else if (cmd === 'H') { x = v.at(-1); pts.push([x, y]); }
+        else if (cmd === 'h') { x += v.at(-1); pts.push([x, y]); }
+        else if (cmd === 'V') { y = v.at(-1); pts.push([x, y]); }
+        else if (cmd === 'v') { y += v.at(-1); pts.push([x, y]); }
+        else throw new Error(`nečekaný příkaz ${cmd}`);
+    }
+    return pts;
+}
+const bbox = (els) => {
+    const pts = els.flatMap(shapePoints);
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+};
+
+test('Stlačování plynů: slide 26, potápěč ve varování je ve vodě v trimu, ne vestoje (U13)', () => {
+    const svg = slide(26).querySelector('.course-warning svg');
+    assert.equal(svg.getAttribute('viewBox'), '0 0 300 150', 'stejný rámeček');
+    assert.match(svg.getAttribute('aria-label'), /potápěč vodorovně v trimu/);
+    assert.ok(svg.querySelector('.warn-sign') && svg.querySelector('.warn-mark'), 'výstražná značka zůstává');
+    const body = [...svg.querySelectorAll('.fig-silhouette > *')];
+    const b = bbox(body);
+    assert.ok(b.x1 - b.x0 > 2.5 * (b.y1 - b.y0), `tělo vodorovně: ${JSON.stringify(b)}`);
+    assert.ok(b.x0 > bbox([svg.querySelector('.warn-sign')]).x1, 'ploutve nezasahují do značky');
+    assert.ok(b.x1 <= 300 && b.y0 >= 30 && b.y1 <= 150, 'pod hladinou a v rámečku');
+    const head = svg.querySelector('.fig-silhouette > circle[data-part="hlava"]');
+    const r = Number(head.getAttribute('r')), hx = Number(head.getAttribute('cx')), hy = Number(head.getAttribute('cy'));
+    assert.ok(hx > (b.x0 + b.x1) / 2 && hy < (b.y0 + b.y1) / 2, 'hlava vpředu a mírně výš');
+    const bubbles = [...svg.querySelectorAll('.fig-flake')].map(c => [Number(c.getAttribute('cx')), Number(c.getAttribute('cy'))]);
+    assert.ok(bubbles.length >= 3);
+    const bx = bubbles.map(p => p[0]);
+    assert.ok(Math.max(...bx) - Math.min(...bx) <= 6, 'bubliny stoupají svisle');
+    assert.ok(Math.min(...bx) > hx && Math.max(...bx) < hx + r + 12, 'od hlavy (od automatiky)');
+    assert.ok(bubbles.every(p => p[1] < hy), 'nad hlavou');
+});
+
 test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně, maska aktivně)', () => {
     const s = slide(27);
     assert.equal(s.dataset.slideType, 'figure');
