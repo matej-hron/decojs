@@ -386,6 +386,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-silhouette .fig-limb-thick { fill: none; stroke-width: 30; }
 .course-figure svg .fig-silhouette .fig-pole { fill: none; stroke-width: 4; }
 .course-figure svg .fig-force { fill: var(--slide-highlight); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
+.course-figure svg .fig-force-g { fill: var(--slide-ground); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; } /* tíha tělesa (A10): není síla vody ani plyn, proto ne žlutá */
 .course-figure svg .fig-glass { fill: var(--slide-card-bg); fill-opacity: 0.35; stroke: var(--slide-on-accent); stroke-width: 3.5; }
 .course-figure svg .fig-plastic { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; }
 .course-figure svg .fig-liquid { fill: var(--slide-water); fill-opacity: 0.55; }

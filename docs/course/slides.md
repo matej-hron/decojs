@@ -280,6 +280,8 @@ Stlačování a Hustota se projdou zvlášť.
   `fig-plastic`, `fig-liquid`, `fig-ink` (tmavé detaily), `fig-ticks`, `fig-hub`, `fig-needle`, `fig-pointer`.
 - **Síla je výrazná.** `fig-force`: plná bloková šipka v barvě zvýraznění s tmavým obrysem, popisek
   `<tspan font-style="italic">F</tspan>`. Stejná síla = stejný tvar šipky.
+  Tíha tělesa vedle sil vody (A10, slide 32) je `fig-force-g`: stejný tvar v hnědé barvě země (`--slide-ground`),
+  protože žlutá patří síle vody a plynu.
 - **Fotky:** kde je skutečná věc názornější než kresba (manometr, výstroj), fotka z volného zdroje (public domain, CC0,
   CC BY, CC BY-SA) s odkazem „zdroj“ pod obrázkem, položkou v `p1/zdroje.html` a záznamem v `images/course/p1/SOURCES.md`. Žádná loga ani značky
   výrobců, ani vyražené na výrobku. Když volná fotka bez značky není, plná kresba v tomhle stylu.
