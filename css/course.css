@@ -694,7 +694,7 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     dialog.course-sim > .course-model.chart-container { height: auto; min-height: 100%; border-radius: 0; }
 }
 
-/* --- patička slidu: jméno přednášky, číslo slidu / počet slidů, ‹ › -------
+/* --- patička slidu: ☰ Obsah, jméno přednášky, číslo slidu / počet slidů, ‹ › -------
    Stejné místo a velikost na všech zastávkách i stránkách, mění se jen číslo. */
 
 .course-foot {
@@ -709,6 +709,23 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
     font-size: var(--text-sm);
     color: var(--slide-subtle);
 }
+.course-foot-left { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+/* Obsah kurzu (D17): orámovaný jako ‹ ›, ať je vidět, že se na něj dá kliknout. */
+.course-toc-link {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.4em;
+    height: 2rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--slide-line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--slide-fg);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.course-toc-link:hover,
+.course-toc-link:focus-visible { border-color: var(--slide-accent); color: var(--slide-accent); }
 .course-foot-title {
     min-width: 0;
     overflow: hidden;
@@ -737,6 +754,9 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 .course-slide-nav button:focus-visible { border-color: var(--slide-accent); color: var(--slide-accent); }
 @media (max-width: 768px) {
     .course-slide-nav { display: none; }
+    /* Telefon: z „☰ Obsah“ zbude ☰, patička se nezalomí (jméno pro čtečky nese aria-label). */
+    .course-toc-link { justify-content: center; width: 1.75rem; height: 1.75rem; padding: 0; }
+    .course-toc-word { display: none; }
 }
 
 /* „Rozbalit všechny výklady“ v řádku „Více“, vpravo. */
@@ -859,6 +879,7 @@ details.course-more > summary .course-summary-hint {
 
 .course-model.chart-container { height: auto; margin: 0; } /* základ .chart-container má pevných 700 px */
 .course-sim-actions { display: flex; gap: var(--space-2); flex: none; }
+a.course-sim-toc { text-decoration: none; }
 .course-model .chart-header .btn {
     background: transparent;
     color: var(--slide-fg);
@@ -1250,7 +1271,7 @@ details.course-more > summary .course-summary-hint {
 
 @media print {
     .course-slide, .course-slide.course-model { min-height: 0; margin-bottom: var(--course-gap); break-inside: avoid; border: 1px solid #888; }
-    .course-slide-nav, .course-expand-all { display: none; }
+    .course-slide-nav, .course-expand-all, .course-toc-link { display: none; }
     .main-nav:has(~ .course-page) { display: none; }
     /* Textové slidy se tisknou černě na bílé. */
     .course-slide:not(.course-model) {

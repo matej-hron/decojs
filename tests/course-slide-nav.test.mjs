@@ -1,14 +1,16 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import {
-    collectStops, isSliderTarget, mostVisibleIndex, nextTarget, slideFootHtml, slideKeyDirection, stopAnchor,
+    TOC_HREF, collectStops, initSlideNav, isSliderTarget, isTocKey, mostVisibleIndex, nextTarget, slideFootHtml,
+    slideKeyDirection, stopAnchor,
 } from '../js/course/slideNav.js';
-import { execFileSync } from 'node:child_process';
-import { P1_CHAPTERS, P1_LECTURE_SLIDES } from '../js/course/p1Course.js';
+import { addTocLink } from '../js/course/modelOverlay.js';
+import { P1_CHAPTERS, P1_INDEX_SLIDES, courseSlideNumbering } from '../js/course/p1Course.js';
 
 const ROOT = new URL('../', import.meta.url);
+const COURSE_PAGES = ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`)];
 const pageDom = (path) => new JSDOM(readFileSync(new URL(path, ROOT), 'utf8')).window.document;
 
 const ready = (slug) => ({ slug, status: 'ready' });
@@ -179,31 +181,25 @@ describe('zastávky na skutečných stránkách', () => {
 });
 
 describe('patička slidu', () => {
-    it('vlevo jméno přednášky jako odkaz na Obsah, vpravo číslo a tlačítka', () => {
-        const html = slideFootHtml('9');
-        assert.match(html, /<a[^>]*href="index\.html#kapitoly"[^>]*>P1 – Fyzika<\/a>/);
-        assert.match(html, /class="course-foot-number"[^>]*>9 \/ 60</);
+    it('vlevo „☰ Obsah“ a jméno přednášky, vpravo číslo a tlačítka', () => {
+        const html = slideFootHtml(12, 57);
+        assert.match(html, /<a class="course-toc-link" href="index\.html#kapitoly"[^>]*>.*☰.*Obsah<\/span><\/a>/);
+        assert.match(html, /<span class="course-foot-title">P1 – Fyzika<\/span>/);
+        assert.ok(html.indexOf('Obsah') < html.indexOf('P1 – Fyzika'), 'Obsah první');
+        assert.match(html, /class="course-foot-number"[^>]*>12 \/ 57</);
         assert.match(html, /data-step="-1"/);
         assert.match(html, /data-step="1"/);
-        assert.ok(html.indexOf('P1 – Fyzika') < html.indexOf('>9 / 60<'), 'jméno vlevo, číslo vpravo');
+        assert.ok(html.indexOf('P1 – Fyzika') < html.indexOf('>12 / 57<'), 'jméno vlevo, číslo vpravo');
     });
 
-    it('číslo slidu je z celkového počtu slidů přednášky, i pro čtečky', () => {
-        const html = slideFootHtml('8');
-        assert.match(html, /<span class="course-foot-number" aria-label="slide 8 z 60">8 \/ 60<\/span>/);
-        assert.match(slideFootHtml('8', 12), /aria-label="slide 8 z 12">8 \/ 12</);
+    it('číslo slidu z celkového počtu, i pro čtečky', () => {
+        assert.match(slideFootHtml(12, 71), /<span class="course-foot-number" aria-label="slide 12 z 71">12 \/ 71<\/span>/);
     });
 
-    it('celkový počet slidů odpovídá přednášce (pptx) a v kapitolách není natvrdo', () => {
-        const pptx = new URL('resources/FyzikaP12_2025.pptx', ROOT);
-        const list = execFileSync('unzip', ['-l', pptx.pathname], { encoding: 'utf8' });
-        const slides = list.match(/ppt\/slides\/slide\d+\.xml$/gm) ?? [];
-        assert.equal(slides.length, P1_LECTURE_SLIDES);
-        assert.equal(P1_LECTURE_SLIDES, 60);
-        const pages = ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => `p1/${c.slug}.html`)];
-        for (const page of pages) {
+    it('v kapitolách není patička ani počet natvrdo (doplní je slideNav.js)', () => {
+        for (const page of COURSE_PAGES) {
             const html = readFileSync(new URL(page, ROOT), 'utf8');
-            assert.doesNotMatch(html, /course-foot|data-slide-total|slide \d+ z \d+/, `${page}: patičku a počet doplní slideNav.js`);
+            assert.doesNotMatch(html, /course-foot|data-slide-total|slide \d+ z \d+/, page);
         }
     });
 
@@ -216,16 +212,189 @@ describe('patička slidu', () => {
     });
 
     it('slide bez čísla má stejnou stavbu, jen číslo chybí', () => {
-        const html = slideFootHtml(null);
+        const html = slideFootHtml(null, null);
         assert.doesNotMatch(html, /course-foot-number[^>]*>\d/);
-        assert.doesNotMatch(html, /aria-label="slide|\/ 60/);
+        assert.doesNotMatch(html, /aria-label="slide|\d \/ \d/);
         assert.match(html, /P1 – Fyzika/);
         assert.match(html, /data-step="1"/);
     });
 
-    it('čísla slidů odpovídají přednášce, titulní slide a Procvič si číslo nemají', () => {
+    it('číslo z přednášky zůstává skryté v data-slide-number (dohledání v PowerPointu)', () => {
         const numbers = (page) => collectStops(pageDom(page)).map(s => s.dataset.slideNumber ?? null);
         assert.deepEqual(numbers('p1/index.html'), [null, '2', '3', '4', '5', '6', '7']);
         assert.deepEqual(numbers('p1/hustota.html'), ['8', '9', null]);
+    });
+});
+
+describe('cesta na obsah kurzu (D17)', () => {
+    /** Stránka po initSlideNav (patičky hotové). */
+    const rendered = (page, slug) => {
+        const saved = globalThis.document;
+        try {
+            globalThis.document = pageDom(page);
+            initSlideNav(slug);
+            return globalThis.document;
+        } finally {
+            globalThis.document = saved;
+        }
+    };
+
+    it('odkaz „☰ Obsah“ s viditelným slovem, jménem pro čtečky a klávesou v nápovědě', () => {
+        const a = new JSDOM(slideFootHtml(8, 57)).window.document.querySelector('a.course-toc-link');
+        assert.equal(a.getAttribute('href'), TOC_HREF);
+        assert.equal(TOC_HREF, 'index.html#kapitoly');
+        assert.equal(a.getAttribute('aria-label'), 'Obsah kurzu');
+        assert.match(a.getAttribute('title'), /klávesa O/);
+        assert.equal(a.querySelector('.course-toc-word').textContent.trim(), 'Obsah');
+        assert.equal(a.querySelector('[aria-hidden="true"]').textContent, '☰');
+    });
+
+    it('každý slide kapitoly má v patičce odkaz na obsah, i titulní a Procvič si', () => {
+        for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
+            const doc = rendered(`p1/${c.slug}.html`, c.slug);
+            const feet = [...doc.querySelectorAll('.course-foot')];
+            assert.equal(feet.length, c.courseSlides, c.slug);
+            assert.ok(feet.every(f => f.querySelector(`a.course-toc-link[href="${TOC_HREF}"]`)), c.slug);
+        }
+    });
+
+    it('na rozcestníku všude kromě slidu Obsah samotného', () => {
+        const doc = rendered('p1/index.html', null);
+        const withToc = collectStops(doc).map(s => [stopAnchor(s), Boolean(s.querySelector('.course-foot a.course-toc-link'))]);
+        assert.deepEqual(withToc.filter(([, has]) => !has).map(([anchor]) => anchor), ['kapitoly']);
+    });
+
+    it('překryv modelu dostane „☰ Obsah“ v hlavičce před „Celá obrazovka“ (jednou)', () => {
+        const pages = ['hustota', 'tlak', 'stlacovani-plynu', 'archimeduv-zakon', 'henry'];
+        let dialogs = 0;
+        for (const slug of pages) {
+            for (const dialog of pageDom(`p1/${slug}.html`).querySelectorAll('dialog.course-sim')) {
+                addTocLink(dialog);
+                addTocLink(dialog);
+                const actions = dialog.querySelector('.course-sim-actions');
+                const links = actions.querySelectorAll('a.course-sim-toc');
+                assert.equal(links.length, 1, slug);
+                assert.equal(links[0].getAttribute('href'), TOC_HREF);
+                assert.equal(links[0].getAttribute('aria-label'), 'Obsah kurzu');
+                assert.equal(actions.firstElementChild, links[0], `${slug}: před „Celá obrazovka“`);
+                assert.ok(links[0].nextElementSibling.matches('[data-fullscreen-for]'), slug);
+                dialogs += 1;
+            }
+        }
+        assert.ok(dialogs >= 7, `překryvů: ${dialogs}`);
+    });
+
+    it('stránka Použité materiály vede na obsah a zná klávesu O', () => {
+        const doc = pageDom('p1/zdroje.html');
+        assert.ok(doc.querySelector(`main a[href="${TOC_HREF}"]`)?.textContent.includes('Obsah kurzu'));
+        assert.match(readFileSync(new URL('js/course/zdrojePage.js', ROOT), 'utf8'), /initTocKey\(\)/);
+    });
+
+    describe('klávesa O', () => {
+        const dom = new JSDOM(`<input id="range" type="range"><input id="text"><input id="num" type="number">
+            <input id="check" type="checkbox"><select id="sel"></select><textarea id="area"></textarea>
+            <div contenteditable="true" id="edit"></div><button id="btn"></button>`);
+        const el = (id) => dom.window.document.getElementById(id);
+        const key = (k, extra = {}) => ({ key: k, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false,
+            defaultPrevented: false, target: dom.window.document.body, ...extra });
+
+        it('O i Shift+O jde na obsah, jiné klávesy ne (šipky, mezerník, Esc patří simulátorům)', () => {
+            assert.ok(isTocKey(key('o')));
+            assert.ok(isTocKey(key('O', { shiftKey: true })));
+            for (const k of ['ArrowLeft', 'ArrowRight', ' ', 'Escape', 'Enter', 'p']) assert.ok(!isTocKey(key(k)), k);
+        });
+
+        it('Ctrl, Alt ani Cmd ne (Cmd+O otevírá soubor)', () => {
+            for (const m of ['altKey', 'ctrlKey', 'metaKey']) assert.ok(!isTocKey(key('o', { [m]: true })), m);
+            assert.ok(!isTocKey(key('o', { defaultPrevented: true })));
+        });
+
+        it('v textovém poli se O píše, na posuvníku, zaškrtávátku a tlačítku jde na obsah', () => {
+            for (const id of ['text', 'num', 'sel', 'area', 'edit']) assert.ok(!isTocKey(key('o', { target: el(id) })), id);
+            for (const id of ['range', 'check', 'btn']) assert.ok(isTocKey(key('o', { target: el(id) })), id);
+        });
+    });
+
+    it('patička na telefonu: slovo „Obsah“ zmizí a zůstane ☰, nic se nezalomí', () => {
+        const css = readFileSync(new URL('css/course.css', ROOT), 'utf8');
+        const phone = [...css.matchAll(/@media \(max-width: 768px\) \{([\s\S]*?)\n\}/g)].map(m => m[1]).join('\n');
+        assert.match(phone, /\.course-toc-word\s*\{\s*display:\s*none/);
+        const rule = (sel) => css.match(new RegExp(`\\${sel}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+        assert.match(rule('.course-toc-link'), /white-space:\s*nowrap/);
+        assert.match(rule('.course-toc-link'), /flex:\s*none/);
+    });
+});
+
+describe('číslování slidů kurzu (D16)', () => {
+    const COURSE_A = [
+        { slug: 'a', status: 'ready', courseSlides: 3 },
+        { slug: 'b', status: 'planned' },
+        { slug: 'c', status: 'ready', courseSlides: 4 },
+    ];
+
+    it('pořadí v celém kurzu: rozcestník, pak hotové kapitoly; nehotové se nepočítají', () => {
+        const total = P1_INDEX_SLIDES + 7;
+        assert.deepEqual(courseSlideNumbering(null, COURSE_A), { first: 1, total });
+        assert.deepEqual(courseSlideNumbering('a', COURSE_A), { first: P1_INDEX_SLIDES + 1, total });
+        assert.deepEqual(courseSlideNumbering('c', COURSE_A), { first: P1_INDEX_SLIDES + 4, total });
+        assert.equal(courseSlideNumbering('b', COURSE_A), null);
+        assert.equal(courseSlideNumbering('neznama', COURSE_A), null);
+    });
+
+    it('nová hotová kapitola zvýší celkový počet sama', () => {
+        const more = [...COURSE_A.slice(0, 2), { ...COURSE_A[1], status: 'ready', courseSlides: 5 }, COURSE_A[2]];
+        assert.equal(courseSlideNumbering(null, more).total, P1_INDEX_SLIDES + 12);
+        assert.equal(courseSlideNumbering('c', more).first, P1_INDEX_SLIDES + 9);
+    });
+
+    it('počty slidů v datech kurzu sedí se stránkami (přidáš slide → uprav courseSlides)', () => {
+        assert.equal(collectStops(pageDom('p1/index.html')).length, P1_INDEX_SLIDES, 'P1_INDEX_SLIDES');
+        for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
+            assert.ok(Number.isInteger(c.courseSlides), `${c.slug}: chybí courseSlides v js/course/p1Course.js`);
+            assert.equal(collectStops(pageDom(`p1/${c.slug}.html`)).length, c.courseSlides, `${c.slug}: courseSlides`);
+        }
+    });
+
+    it('patičky na všech stránkách: 1, 2, … bez mezer, včetně titulních a Procvič si; číslo přednášky se nezobrazí', () => {
+        const shown = [];
+        const saved = globalThis.document;
+        try {
+            for (const [page, slug] of [['p1/index.html', null], ...P1_CHAPTERS.filter(c => c.status === 'ready').map(c => [`p1/${c.slug}.html`, c.slug])]) {
+                globalThis.document = pageDom(page);
+                initSlideNav(slug);
+                for (const n of document.querySelectorAll('.course-foot-number')) shown.push([page, n.textContent, n.getAttribute('aria-label')]);
+            }
+        } finally {
+            globalThis.document = saved;
+        }
+        const total = courseSlideNumbering(null).total;
+        assert.deepEqual(shown.map(([, text]) => text), Array.from({ length: total }, (_, i) => `${i + 1} / ${total}`));
+        assert.deepEqual(shown.map(([, , label]) => label), Array.from({ length: total }, (_, i) => `slide ${i + 1} z ${total}`));
+        const hustota = shown.filter(([page]) => page === 'p1/hustota.html').map(([, text]) => text);
+        assert.deepEqual(hustota, [`8 / ${total}`, `9 / ${total}`, `10 / ${total}`], 'Hustota: 8, 9 a Procvič si 10');
+    });
+
+    it('stránka mimo kurz (nehotová nebo neznámá kapitola) čísla nemá', () => {
+        const saved = globalThis.document;
+        try {
+            globalThis.document = pageDom('p1/hustota.html');
+            initSlideNav('neznama-kapitola');
+            assert.ok([...document.querySelectorAll('.course-foot-number')].every(n => n.textContent === ''));
+        } finally {
+            globalThis.document = saved;
+        }
+    });
+
+    it('texty neodkazují na slidy číslem, jen názvem s odkazem (p1/*.html, concepts/cs/*.html)', () => {
+        const files = [
+            ...readdirSync(new URL('p1/', ROOT)).filter(f => f.endsWith('.html')).map(f => `p1/${f}`),
+            ...readdirSync(new URL('concepts/cs/', ROOT)).filter(f => f.endsWith('.html')).map(f => `concepts/cs/${f}`),
+        ];
+        const found = [];
+        for (const f of files) {
+            const html = readFileSync(new URL(f, ROOT), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+            for (const m of html.matchAll(/slid(?:e|u|y|ech|ů|em)?(?:&nbsp;| |\s)+\d+/gi)) found.push(`${f}: ${m[0]}`);
+        }
+        assert.deepEqual(found, []);
     });
 });

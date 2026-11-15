@@ -137,7 +137,7 @@ test('Stlačování plynů: slide 27 podle rozhodnutí 5 (automaticky / aktivně
         assert.ok([...svg.querySelectorAll('text')].every(el => el.classList.contains('fig-label-xl')), 'popisky fig-label-xl');
         assert.ok(![...svg.querySelectorAll('*')].some(el => el.hasAttribute('fill') || el.hasAttribute('stroke') || el.hasAttribute('style')), 'barvy jen ze tříd');
     }
-    for (const label of ['maska', '(aktivně)', `dutiny s${N}plynem`, '(slide 21)']) assert.ok(body.textContent.includes(label), label);
+    for (const label of ['maska', '(aktivně)', `dutiny s${N}plynem`, '(Důsledky tlaku)']) assert.ok(body.textContent.includes(label), label);
     for (const label of ['tlak vody', 'bubínek', 'střední ucho', 'Eustachova trubice']) assert.ok(ear.textContent.includes(label), label);
     assert.ok(ear.querySelector('.fig-water-push'), 'voda tlačí zvukovodem na bubínek');
     const row = s.querySelector('.course-core-row');
@@ -302,7 +302,8 @@ test('R5-05: spotřeba rozměrově, plná lahev jako ideální plyn, tlak u spod
     assert.match(more(24), /Tlak počítáme v hloubce spodního okraje zvonu\./);
     assert.doesNotMatch(answer(28), /hladinová spotřeba · p =/);
     assert.match(answer(28), /spotřeba v hloubce = hladinová spotřeba krát tlak v barech: 30\sl\/min · 3,5 = 105\sl\/min/, 'R6-01');
-    assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s\splynem\s*\(slide 21\)/, 'R6-02');
+    assert.match(slide(27).querySelector('figure svg').textContent, /dutiny s\splynem\s*\(Důsledky tlaku\)/, 'R6-02');
+    assert.equal(slide(27).querySelector('figure svg a[href="tlak.html#dusledky"]')?.textContent, '(Důsledky tlaku)', 'D16: proklik na slide podle názvu');
     assert.match(read('docs/course/slides.md'), /slide 26 \(typ `models`\)/);
 });
 
