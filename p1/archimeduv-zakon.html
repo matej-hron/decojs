@@ -98,41 +98,45 @@
                         <p class="course-formula">
                             <var>F</var><sub>1</sub> = <var>h</var><sub>1</sub> · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
                             <var>F</var><sub>2</sub> = <var>h</var><sub>2</sub> · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
-                            <var>F</var><sub>vz</sub> = <var>F</var><sub>2</sub> − <var>F</var><sub>1</sub><br>
-                            <var>F</var><sub>vz</sub> = (<var>h</var><sub>2</sub> − <var>h</var><sub>1</sub>) · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var><br>
-                            <var>F</var><sub>vz</sub> = <var>V</var> · <var>ρ</var><sub>v</sub> · <var>g</var> = <var>m</var><sub>v</sub> · <var>g</var></p>
+                            <span class="course-eq"><var>F</var><sub>vz</sub> = <var>F</var><sub>2</sub> − <var>F</var><sub>1</sub></span> <span class="course-eq">= (<var>h</var><sub>2</sub> − <var>h</var><sub>1</sub>) · <var>ρ</var><sub>v</sub> · <var>g</var> · <var>S</var></span><br>
+                            <var>h</var><sub>2</sub> − <var>h</var><sub>1</sub> = <var>h</var>, <var>S</var> · <var>h</var> = <var>V</var> <span class="course-formula-aside">výška a&nbsp;objem kvádru</span><br>
+                            <var>F</var><sub>vz</sub> = <var>V</var> · <var>ρ</var><sub>v</sub> · <var>g</var> = <var>m</var><sub>v</sub> · <var>g</var> <span class="course-formula-aside">tíha vytlačené vody</span></p>
                         <p class="course-formula" aria-label="tíhová síla tělesa rovná se hmotnost tělesa krát g, rovná se objem krát hustota tělesa krát g">
                             <var>F</var><sub>G</sub> = <var>m</var><sub>t</sub> · <var>g</var> = <var>V</var> · <var>ρ</var><sub>t</sub> · <var>g</var></p>
                         <p>porovnáme <var>F</var><sub>vz</sub> s&nbsp;<var>F</var><sub>G</sub></p>
                     </div>
                     <figure class="course-figure course-illustration">
-                        <svg viewBox="0 0 600 420" role="img" aria-label="Dva kroky. 1: kvádr o objemu V pod vodou. Horní stěna o ploše S je v hloubce h1, voda na ni tlačí silou F1 dolů. Spodní stěna je v hloubce h2, voda na ni tlačí větší silou F2 nahoru. Síly F0 na boky jsou stejné a vyruší se. 2: výsledek na stejný kvádr: vztlaková síla Fvz = F2 − F1 nahoru a tíhová síla tělesa FG dolů, jinou barvou, protože to není síla vody">
+                        <svg viewBox="0 0 600 420" role="img" aria-label="Dva kroky. 1, tlak vody na stěny: kvádr o objemu V a výšce h pod vodou. Horní stěna o ploše S je v hloubce h1, voda na ni tlačí silou F1 dolů. Spodní stěna je v hloubce h2, voda na ni tlačí větší silou F2 nahoru. Síly F0 na boky jsou stejné a vyruší se. 2, výsledek na stejný kvádr: vztlaková síla Fvz = F2 − F1 nahoru a tíhová síla tělesa FG dolů, jinou barvou, protože to není síla vody">
                             <rect class="fig-paper" width="600" height="420" rx="16"/>
                             <path class="fig-liquid" d="M0 60H600V404A16 16 0 0 1 584 420H16A16 16 0 0 1 0 404Z"/>
                             <!-- 1: tlak vody na stěny -->
-                            <path class="fig-guide" d="M308 190H328M244 270H356"/>
-                            <path class="fig-dim" d="M322 60V190M350 60V270M312 60H332M340 60H360"/>
+                            <path class="fig-guide" d="M304 190H314M244 270H350"/>
+                            <path class="fig-dim" d="M314 60V190M350 60V270M304 60H324M340 60H360"/>
+                            <path class="fig-dim fig-dim-h" d="M314 196V270M306 196H322M306 270H322"/>
                             <polygon class="fig-solid-front" points="120,190 220,190 220,270 120,270"/>
                             <polygon class="fig-solid-top" points="120,190 140,174 240,174 220,190"/>
                             <polygon class="fig-solid-side" points="220,190 240,174 240,254 220,270"/>
                             <polygon class="fig-force" points="166,92 166,134 150,134 180,168 210,134 194,134 194,92"/>
                             <polygon class="fig-force" points="165,404 165,310 149,310 180,276 211,310 195,310 195,404"/>
-                            <polygon class="fig-force" points="40,218 82,218 82,202 116,230 82,258 82,242 40,242"/>
-                            <polygon class="fig-force" points="320,218 278,218 278,202 244,230 278,258 278,242 320,242"/>
+                            <polygon class="fig-force" points="54,218 82,218 82,202 116,230 82,258 82,242 54,242"/>
+                            <polygon class="fig-force" points="306,218 278,218 278,202 244,230 278,258 278,242 306,242"/>
                             <path class="fig-pointer" d="M86 150L146 182"/>
                             <text x="170" y="246" text-anchor="middle" class="fig-label-xl"><tspan font-style="italic">V</tspan></text>
                             <text x="80" y="160" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">S</tspan></text>
                             <text x="214" y="130" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">1</tspan></text>
                             <text x="216" y="384" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">2</tspan></text>
-                            <text x="40" y="206" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
+                            <text x="42" y="206" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
                             <text x="262" y="196" class="fig-label-xl"><tspan font-style="italic">F</tspan><tspan font-size="26" dy="8">0</tspan></text>
                             <text x="12" y="294" class="fig-label-xl"><tspan font-size="30">vyruší se</tspan></text>
-                            <text x="316" y="140" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">1</tspan></text>
+                            <text x="308" y="140" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">1</tspan></text>
                             <text x="344" y="316" text-anchor="end" class="fig-label-xl"><tspan font-style="italic">h</tspan><tspan font-size="26" dy="8">2</tspan></text>
+                            <text x="321" y="250" class="fig-label-xl"><tspan font-style="italic">h</tspan></text>
+                            <text x="20" y="42" class="fig-label-xl"><tspan font-size="30">tlak vody na stěny</tspan></text>
                             <!-- přechod ke kroku 2 -->
                             <path class="fig-flow" d="M368 230H388"/>
                             <polygon class="fig-flow-head" points="386,218 406,230 386,242"/>
                             <!-- 2: výsledek, vztlak proti tíze -->
+                            <text x="512" y="42" text-anchor="middle" class="fig-label-xl"><tspan font-size="30">výsledek</tspan></text>
                             <polygon class="fig-solid-front" points="452,190 552,190 552,270 452,270"/>
                             <polygon class="fig-solid-top" points="452,190 472,174 572,174 552,190"/>
                             <polygon class="fig-solid-side" points="552,190 572,174 572,254 552,270"/>
@@ -153,10 +157,11 @@
                         tlak</a>), a&nbsp;proto na spodní stěnu kvádru v&nbsp;hloubce <var>h</var><sub>2</sub> tlačí voda větší silou
                         <var>F</var><sub>2</sub> než na horní stěnu v&nbsp;hloubce <var>h</var><sub>1</sub>. Síly <var>F</var><sub>0</sub>
                         na boky jsou stejně velké a&nbsp;opačné, navzájem se ruší.</p>
-                    <p>V&nbsp;odvození chybí na slidu dva kroky: rozdíl hloubek <var>h</var><sub>2</sub> − <var>h</var><sub>1</sub> je výška
-                        kvádru <var>h</var> a&nbsp;plocha podstavy krát výška je objem kvádru, <var>S</var> · <var>h</var> = <var>V</var>.
-                        Součin <var>V</var> · <var>ρ</var><sub>v</sub> je hmotnost vytlačené vody <var>m</var><sub>v</sub>, takže
-                        vztlaková síla se rovná tíze vytlačené vody. To je Archimédův zákon.</p>
+                    <p>Od rozdílu sil k&nbsp;Archimédovu zákonu vedou tři kroky. Rozdíl hloubek spodní a&nbsp;horní stěny je výška kvádru,
+                        <var>h</var><sub>2</sub> − <var>h</var><sub>1</sub> = <var>h</var>. Plocha podstavy krát výška je objem kvádru,
+                        <var>S</var> · <var>h</var> = <var>V</var>, takže <var>F</var><sub>vz</sub> = <var>V</var> · <var>ρ</var><sub>v</sub> · <var>g</var>.
+                        Objem krát hustota vody je hmotnost vody, kterou kvádr vytlačil, <var>V</var> · <var>ρ</var><sub>v</sub> = <var>m</var><sub>v</sub>,
+                        a&nbsp;<var>m</var><sub>v</sub> · <var>g</var> je její tíha. Vztlaková síla se tedy rovná tíze vytlačené vody. To je Archimédův zákon.</p>
                     <p>Atmosférický tlak tlačí na horní i&nbsp;spodní stěnu stejně, v&nbsp;rozdílu sil se odečte. Proto je ve vzorci jen
                         hydrostatický tlak.</p>
                     <p>Hloubka ve výsledku není: vztlak na těleso, které se nestlačuje, je stejný u&nbsp;hladiny i&nbsp;ve 40&nbsp;m (otázka testu

@@ -441,6 +441,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-hit-n2 { stroke: var(--slide-water); }
 /* Postup příkladu: rovnost (nebo její dlouhý kus) se nezalomí uprostřed, telefon láme jen mezi nimi (R9-04). */
 .course-calc-steps .course-eq { white-space: nowrap; }
+.course-formula .course-eq { white-space: nowrap; } /* telefon láme jen mezi rovnostmi (slide 32 od A11) */
 /* Simulátor sycení tkání z Deco Theory v překryvu (Henry, slide 46): vlastní karty a barvy webu,
    v překryvu jen rozměry. Náhled na slidu kreslí tři tkáně v barvách dlaždic simulátoru. */
 .course-model .course-tsim,
@@ -851,6 +852,7 @@ html:has(dialog.course-sim[open]) { overflow: hidden; }
 }
 .course-formula var { font-family: var(--font-display); }
 .course-formula .course-unit { font-size: 0.8em; margin-left: 0.3em; white-space: nowrap; }
+.course-formula .course-formula-aside { font-size: 0.6em; margin-left: 0.4em; color: var(--slide-subtle); white-space: nowrap; } /* krátký slovní popisek řádku (A11, slide 32) */
 /* Řádek pod vzorcem: co jednotka znamená (slide 11). */
 .course-formula-note { margin: calc(-1 * var(--space-2)) 0 var(--space-4); text-align: center; font-size: 0.85em; color: var(--slide-subtle); }
 
