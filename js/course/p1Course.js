@@ -20,6 +20,8 @@
  * @property {ChapterStatus} status
  * @property {number} [courseSlides] Počet slidů kapitoly v kurzu, včetně titulního a „Procvič si“ (bez překryvů
  *   modelů), tj. počet zastávek `collectStops` na stránce. Povinný u hotové kapitoly, hlídá ho test proti HTML.
+ * @property {string[]} [topics] Témata kapitoly pod nadpisem titulního slidu (2–4, z nadpisů jejích slidů, malým
+ *   písmenem, pokud nejde o jméno). Povinná u hotové kapitoly.
  */
 
 /** Počet slidů rozcestníku `p1/index.html` (titulní slide až Obsah); čísluje se od nich. */
@@ -27,15 +29,24 @@ export const P1_INDEX_SLIDES = 7;
 
 /** @type {Chapter[]} */
 export const P1_CHAPTERS = [
-    { slug: 'hustota', title: 'Hustota', slides: '8–9', level: 'P★', status: 'ready', courseSlides: 3 },
-    { slug: 'tlak', title: 'Tlak', slides: '10–22', level: 'P★', status: 'ready', courseSlides: 14 },
-    { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'ready', courseSlides: 10 },
-    { slug: 'archimeduv-zakon', title: 'Archimédův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'ready', courseSlides: 9 },
-    { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'ready', courseSlides: 6 },
-    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready', courseSlides: 8 },
-    { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'ready', courseSlides: 8 },
-    { slug: 'slyseni', title: 'Slyšení pod vodou', slides: '55–56', level: 'P★★', status: 'ready', courseSlides: 2 },
-    { slug: 'teplo', title: 'Přenos tepla', slides: '57–60', level: 'P★★', status: 'ready', courseSlides: 7 },
+    { slug: 'hustota', title: 'Hustota', slides: '8–9', level: 'P★', status: 'ready', courseSlides: 4,
+        topics: ['hustota látek', 'závislost hustoty na teplotě', 'anomálie vody'] },
+    { slug: 'tlak', title: 'Tlak', slides: '10–22', level: 'P★', status: 'ready', courseSlides: 14,
+        topics: ['jednotky', 'atmosférický a hydrostatický tlak', 'celkový tlak', 'tlak v plynu'] },
+    { slug: 'stlacovani-plynu', title: 'Stlačování plynů', slides: '23–30', level: 'P★', status: 'ready', courseSlides: 11,
+        topics: ['Boyle-Mariottův zákon', 'tělní dutiny', 'výpočet spotřeby'] },
+    { slug: 'archimeduv-zakon', title: 'Archimédův zákon a kontrola vztlaku', slides: '31–37', level: 'P★', status: 'ready', courseSlides: 10,
+        topics: ['Archimédův zákon', 'kontrola vztlaku', 'změna vztlaku během ponoru'] },
+    { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'ready', courseSlides: 7,
+        topics: ['složení vzduchu', 'Daltonův zákon', 'meze dýchaných plynů'] },
+    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready', courseSlides: 9,
+        topics: ['Henryho zákon', 'sycení tkání', 'bubliny při výstupu'] },
+    { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'ready', courseSlides: 9,
+        topics: ['barvy pod vodou', 'Snellovo okno', 'lom světla', 'vidění bez masky'] },
+    { slug: 'slyseni', title: 'Slyšení pod vodou', slides: '55–56', level: 'P★★', status: 'ready', courseSlides: 3,
+        topics: ['rychlost zvuku ve vodě', 'odkud zvuk přichází'] },
+    { slug: 'teplo', title: 'Přenos tepla', slides: '57–60', level: 'P★★', status: 'ready', courseSlides: 8,
+        topics: ['vedení, proudění a záření', 'neoprenový oblek', 'oblek v hloubce'] },
 ];
 
 /**
@@ -87,4 +98,29 @@ export function chapterNeighbours(slug) {
  */
 export function chapterBySlug(slug) {
     return P1_CHAPTERS.find(c => c.slug === slug);
+}
+
+/**
+ * České číslovky: 1 kapitola, 2–4 kapitoly, 5 a víc kapitol.
+ * @param {number} n
+ * @param {[string, string, string]} forms
+ */
+function czCount(n, [one, few, many]) {
+    return `${n} ${n === 1 ? one : n >= 2 && n <= 4 ? few : many}`;
+}
+
+/**
+ * Drobný řádek nad nadpisem titulního slidu: v kapitole „Kapitola 2 z 9“, na rozcestníku „9 kapitol · 82 slidů“.
+ * Počty se počítají z dat kurzu, nic natvrdo.
+ * @param {string|null} slug kapitola, `null` rozcestník
+ * @param {Chapter[]} [chapters]
+ * @returns {string} prázdný pro neznámou kapitolu
+ */
+export function titleKicker(slug, chapters = P1_CHAPTERS) {
+    if (slug === null) {
+        const { total } = courseSlideNumbering(null, chapters);
+        return `${czCount(chapters.length, ['kapitola', 'kapitoly', 'kapitol'])} · ${czCount(total, ['slide', 'slidy', 'slidů'])}`;
+    }
+    const i = chapters.findIndex(c => c.slug === slug);
+    return i < 0 ? '' : `Kapitola ${i + 1} z ${chapters.length}`;
 }

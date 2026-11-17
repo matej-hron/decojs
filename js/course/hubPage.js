@@ -6,7 +6,7 @@
  */
 
 import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug } from './p1Course.js';
-import { initExpandAll } from './chapter.js';
+import { initExpandAll, renderTitleSlide } from './chapter.js';
 import { initSlideNav } from './slideNav.js';
 import { registerServiceWorker } from '../swRegister.js';
 
@@ -48,6 +48,7 @@ export function answersHtml(questions = P1_QUESTIONS) {
 
 if (typeof document !== 'undefined') {
     registerServiceWorker('../sw.js');
+    renderTitleSlide(document.querySelector('main .course-slide[data-slide-type="title"]'), null);
     document.getElementById('course-chapters').innerHTML = chaptersHtml();
     document.getElementById('course-chapter-details').innerHTML = chapterDetailsHtml();
     document.getElementById('course-questions').innerHTML = questionsHtml();

@@ -35,10 +35,11 @@ test('Archimédův zákon: kapitola je hotová, slidy 31–37, za Stlačováním
     assert.ok(P1_QUESTIONS.find(q => q.question === 'Jak předcházet nehodám?').answeredIn.includes('archimeduv-zakon'), 'rozhodnutí 9a');
 });
 
-test('Archimédův zákon: zastávky jsou slidy 31–37 bez titulního slidu, pak dvě Procvič si', () => {
-    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), ['31', '32', '33', '34', '35', '36', '37', null, null]);
-    assert.ok(!slides.some(s => s.dataset.slideType === 'title'));
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Archimédův zákon');
+test('Archimédův zákon: titulní slide, pak slidy 31–37 a dvě Procvič si', () => {
+    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '31', '32', '33', '34', '35', '36', '37', null, null]);
+    assert.equal(slides[0].dataset.slideType, 'title', 'T29: v přednášce není, kurz ho má');
+    assert.equal(text(slides[0].querySelector('h1')), 'Archimédův zákon a kontrola vztlaku');
+    assert.equal(text(slide(31).querySelector('h2')), 'Archimédův zákon');
     assert.equal(doc.querySelectorAll('h1').length, 1);
     assert.deepEqual(slides.slice(-2).map(s => s.dataset.slideType), ['practice', 'practice']);
     assert.equal(slides.at(-1).closest('section').id, 'procvic', 'krok zpět z další kapitoly míří na #procvic');

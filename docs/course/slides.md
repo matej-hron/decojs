@@ -77,21 +77,50 @@ Barvy stylu Hladina jsou proměnné `--slide-*` na `.course-page` (výstřižek 
 
 ### `title`: titulní slide
 
-Velký nadpis ve spodní třetině, pod ním jeden menší řádek, bez odstavce. Úvodní text patří do Více.
-Použij ho pro titulní slide kurzu a pro úvodní slide kapitoly, pokud ho přednáška má (například slide 10 „Tlak“).
+Velký nadpis ve spodní třetině, bez odstavce. Úvodní text patří do Více.
+Má ho kurz (`p1/index.html`) a každá kapitola jako první zastávku (T29). V přednášce je titulní slide jen u Tlaku
+(slide 10), proto `data-slide-number` nese jen ten. Kotva sekce je slug kapitoly, nadpis je název kapitoly
+z `P1_CHAPTERS` a pod ním ve Více úvod kapitoly (`course-chapter-intro`, u kapitol P★★ i věta o osnově).
+
+Pozadí (jen tenhle typ): světlo od hladiny, tedy tlumená síť odlesků a paprsky mizející do 60 % výšky, a sloupec
+bublin vpravo (`--slide-title-caustics`, `--slide-title-rays`, `--slide-title-bubbles`). Ve spodní třetině
+s nadpisem nic není. Statické, bez animace. Bubliny jen od 769 px, na telefonu by do nich narazil dlouhý nadpis.
+
+V HTML je jen nadpis (kurz navíc podnadpis a autora). Zbytek doplní `renderTitleSlide` (`js/course/chapter.js`)
+z dat kurzu, nic se nepíše ručně:
+- `.course-slide-kicker` nad nadpisem drobně „Kapitola 2 z 9“, na kurzu „9 kapitol · 82 slidů“ (`titleKicker`
+  v `p1Course.js`, počty se počítají). Normální písmo, ne verzálky. V HTML je za nadpisem, takže ho čtečka přečte
+  až po něm; nad nadpis ho dá CSS (na projektoru absolutně, nadpis se neposune).
+- `.course-slide-topics` pod nadpisem témata kapitoly (`topics` u kapitoly v `P1_CHAPTERS`, 2–4) oddělená „·“.
 
 ```html
+<!-- kapitola -->
+<section id="hustota" class="course-section">
+    <div class="course-slide" data-slide-type="title">
+        <h1>Hustota</h1>
+    </div>
+    <details class="course-more">
+        <summary>Více <span class="course-summary-hint">o&nbsp;kapitole</span></summary>
+        <div class="course-more-body"><div class="course-chapter-intro">…</div></div>
+    </details>
+</section>
+
+<!-- kurz: podnadpis a autor vpravo dole (na telefonu pod nadpisem) -->
 <section class="course-section">
     <div class="course-slide" data-slide-type="title">
         <h1>Kurz P1 – Fyzika</h1>
         <p class="course-slide-sub">P★</p>
+        <div class="course-slide-byline">
+            <p class="course-slide-author">Matej Hron</p>
+            <p class="course-slide-org">Svaz potápěčů České republiky</p>
+        </div>
     </div>
-    <details class="course-more">
-        <summary>Více <span class="course-summary-hint">o kurzu</span></summary>
-        <div class="course-more-body"><p>…</p></div>
-    </details>
+    …
 </section>
 ```
+
+Novou kapitolu doplň do `P1_CHAPTERS` i s `topics` a `courseSlides` (titulní slide se počítá). Všechny podoby
+ukazuje `docs/course/vzornik-titulni.html`.
 
 ### `content`: obsahový slide
 
@@ -427,7 +456,7 @@ výška slidu se rovná `--course-slide-height`, obsah těla končí nad patičk
 
 ## 5. Typy do budoucna (zatím nestavěné)
 
-Už postavené: `title` jako úvod kapitoly (slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27, 31, 32, 35;
+Už postavené: `title` jako úvod každé kapitoly (v přednášce jen slide 10), `figure` (text a obrázek, slidy 11, 14, 16, 18, 22, 23, 27, 31, 32, 35;
 použijí ho i 40, 42–45, 48, 49, 53–55, 59) a `calc` (příklad, slidy 19, 20, 24, 25, 28–30, 33, 34, 37; použije ho i 41).
 Slide 36 (`models`) má v textu vedle náhledu dvě řady se šipkou `.course-core-row` + `.course-descent` (slide 27 ji měl do U15).
 

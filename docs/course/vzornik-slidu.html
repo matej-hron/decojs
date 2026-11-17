@@ -32,18 +32,22 @@
 
     <main class="course-page" lang="cs">
         <section id="titulni" class="course-section">
-            <div class="course-slide" data-slide-type="title">
+            <div class="course-slide" data-slide-type="title" data-vzornik-title="">
                 <h1>Kurz P1 – Fyzika</h1>
                 <p class="course-slide-sub">P★</p>
+                <div class="course-slide-byline">
+                    <p class="course-slide-author">Matěj Hron</p>
+                    <p class="course-slide-org">Svaz potápěčů České republiky</p>
+                </div>
             </div>
-            <p class="vzornik-type"><code>data-slide-type="title"</code> titulní slide kurzu</p>
+            <p class="vzornik-type"><code>data-slide-type="title"</code> titulní slide kurzu (všechny kapitoly: <a href="vzornik-titulni.html">vzorník titulních slidů</a>)</p>
         </section>
 
         <section id="kapitola" class="course-section">
-            <div class="course-slide" data-slide-number="10" data-slide-type="title">
+            <div class="course-slide" data-slide-number="10" data-slide-type="title" data-vzornik-title="tlak">
                 <h2>Tlak</h2>
             </div>
-            <p class="vzornik-type"><code>data-slide-type="title"</code> úvodní slide kapitoly (slide 10), řádek pod nadpisem je nepovinný</p>
+            <p class="vzornik-type"><code>data-slide-type="title"</code> titulní slide kapitoly, číslo kapitoly a&nbsp;témata doplní <code>renderTitleSlide</code> z&nbsp;dat kurzu</p>
         </section>
 
         <section id="obsahovy" class="course-section">
@@ -531,13 +535,19 @@
         import { createDensityCurve } from '../../js/components/DensityCurve.js';
         import { createLakeCycle } from '../../js/components/LakeCycle.js';
         import { mountGasParticles } from '../../js/course/gasParticles.js';
+        import { renderTitleSlide } from '../../js/course/chapter.js';
 
-        // Patička jako na stránkách kurzu (tam ji doplní initSlideNav, číslo je pořadí v kurzu); tady pořadí ve vzorníku.
+        document.querySelectorAll('[data-vzornik-title]').forEach(s => renderTitleSlide(s, s.dataset.vzornikTitle || null));
+        // Patička jako na stránkách kurzu (tam ji doplní initSlideNav, číslo je pořadí v kurzu); tady pořadí ve vzorníku
+        // a šipky přejdou na sousední vzor.
         const vzory = [...document.querySelectorAll('main > section > .course-slide')];
         vzory.forEach((slide, i) => {
             const foot = document.createElement('div');
             foot.className = 'course-foot';
             foot.innerHTML = slideFootHtml(i + 1, vzory.length);
+            foot.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
+                vzory[i + Number(btn.dataset.step)]?.scrollIntoView({ block: 'start' });
+            }));
             slide.appendChild(foot);
         });
         createDensityCurve(document.getElementById('nahled-hustota'), { range: [0, 10], temperature: 4, compact: true });

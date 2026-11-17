@@ -4,13 +4,14 @@
  *  - předchozí / další kapitola podle `js/course/p1Course.js`,
  *  - vložení sdílených bloků pojmů a otázek „Procvič si“,
  *  - celá obrazovka pro modely (`.chart-container` + tlačítka podle Chart Standards),
- *  - přepínání slidů šipkami a tlačítky (`js/course/slideNav.js`).
+ *  - přepínání slidů šipkami a tlačítky (`js/course/slideNav.js`),
+ *  - kolikátá kapitola a její témata na titulním slidu (z `js/course/p1Course.js`).
  *
- * Stránka nese `<body data-course-chapter="hustota">` a začíná rovnou prvním slidem: jeho
+ * Stránka nese `<body data-course-chapter="hustota">` a začíná titulním slidem kapitoly: jeho
  * nadpis je jediné `h1`, úvod kapitoly patří do „Více“ pod ním.
  */
 
-import { P1_CHAPTERS, chapterBySlug, chapterNeighbours } from './p1Course.js';
+import { P1_CHAPTERS, chapterBySlug, chapterNeighbours, titleKicker } from './p1Course.js';
 import { loadConcepts } from './concepts.js';
 import { initPractice } from './practice.js';
 import { initSlideNav } from './slideNav.js';
@@ -54,6 +55,41 @@ export function endOfChaptersLabel(chapters = P1_CHAPTERS) {
         : 'Konec kurzu — zpět na přehled kurzu →';
 }
 
+/**
+ * Jednopísmenné předložky a spojky s nedělitelnou mezerou, jako v textech kurzu (NB1).
+ * @param {string} text
+ * @returns {string}
+ */
+export function withNbsp(text) {
+    return text.replace(/(?<=^|\s)([ksvzouaiKSVZOUAI]) /g, '$1\u00a0');
+}
+
+/**
+ * Řádek témat pod nadpisem titulního slidu kapitoly. Oddělovač „·“ je text (čtečka i kopírování
+ * dostanou „jednotky · …“), jen obarvený.
+ * @param {string[]} topics
+ * @returns {string} HTML
+ */
+export function titleTopicsHtml(topics) {
+    return topics.map(withNbsp).join('<span class="course-slide-sep"> · </span>');
+}
+
+/**
+ * Titulní slide (T29, varianta B): drobně „Kapitola 2 z 9“ (na rozcestníku „9 kapitol · 82 slidů“)
+ * a pod nadpisem témata kapitoly. Obojí z dat kurzu, v HTML stránky je jen nadpis.
+ * Řádek s číslem kapitoly je v pořadí čtení za nadpisem, nad něj ho dá CSS.
+ * @param {Element|null} slide `.course-slide[data-slide-type="title"]`, jinak nic
+ * @param {string|null} slug kapitola, `null` rozcestník
+ */
+export function renderTitleSlide(slide, slug) {
+    if (slide?.dataset.slideType !== 'title' || slide.querySelector('.course-slide-kicker')) return;
+    const heading = slide.querySelector(':scope > h1, :scope > h2');
+    const topics = slug === null ? [] : chapterBySlug(slug)?.topics ?? [];
+    const kicker = titleKicker(slug);
+    if (topics.length) heading.insertAdjacentHTML('afterend', `<p class="course-slide-topics">${titleTopicsHtml(topics)}</p>`);
+    if (kicker) heading.insertAdjacentHTML('afterend', `<p class="course-slide-kicker">${kicker}</p>`);
+}
+
 function renderPrevNext(slug) {
     const host = document.querySelector('.course-prevnext');
     if (!host) return;
@@ -93,6 +129,7 @@ function initFullscreen() {
 export async function initChapter() {
     const slug = document.body.dataset.courseChapter;
     if (slug && !chapterBySlug(slug)) console.warn(`chapter: neznámá kapitola „${slug}“`);
+    renderTitleSlide(document.querySelector('main .course-slide[data-slide-type="title"]'), slug ?? null);
     initExpandAll();
     initFullscreen();
     renderPrevNext(slug);
