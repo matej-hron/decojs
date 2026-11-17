@@ -287,13 +287,13 @@ test('Vidění bez masky (O7): na vzduchu se paprsek láme hlavně na rohovce a 
         ['na vzduchu', 'obraz na', 'sítnici', 'rohovka', 'čočka', 'sítnice', 've vodě', 'obraz daleko', 'za sítnicí']);
 });
 
-test('Vidění pod vodou, maska (O8): paprsky z ryby se na skle masky lámou od kolmice do oka, zpětná prodloužení končí ve zdánlivé rybě (3/4 vzdálenosti, úhlově 4/3)', () => {
+test('Vidění pod vodou, maska (O8, O8b): paprsky ze svislé šipky se na skle masky výrazně lámou od kolmice do oka, zpětná prodloužení končí ve zdánlivé šipce (3/4 vzdálenosti, pod větším úhlem)', () => {
     const svg = slide(54).querySelector('svg');
     const glass = svg.querySelector('rect.fig-glass');
     const G = Number(glass.getAttribute('x')) + Number(glass.getAttribute('width')) / 2;
     const fishPts = (sel) => points(svg.querySelector(sel).getAttribute('d'));
-    const real = fishPts('path.fig-fish');
-    const ghost = fishPts('path.fig-fish-ghost');
+    const real = fishPts('path.fig-object');
+    const ghost = fishPts('path.fig-object-ghost');
     const ends = (pts) => {
         const ys = pts.map(p => p[1]);
         const xs = pts.map(p => p[0]);
@@ -306,9 +306,10 @@ test('Vidění pod vodou, maska (O8): paprsky z ryby se na skle masky lámou od 
     const pupil = svg.querySelector('circle.fig-pupil');
     const E = [Number(pupil.getAttribute('cx')), Number(pupil.getAttribute('cy'))];
     const inWater = rays.filter(([a, b]) => a[0] < G && b[0] === G);
-    assert.equal(inWater.length, 2, 'paprsek z hlavy a z ocasu');
+    assert.equal(inWater.length, 2, 'paprsek z horního a dolního konce šipky');
     const startYs = inWater.map(([a]) => a[1]).sort((a, b) => a - b);
-    assert.deepEqual(startYs, [R.top, R.bottom], 'paprsky vychází z hlavy a ocasu skutečné ryby');
+    assert.deepEqual(startYs, [R.top, R.bottom], 'paprsky vychází z konců skutečné šipky');
+    for (const [a] of inWater) assert.equal(a[0], R.x);
     const fromHorizontal = (a, b) => deg(Math.atan2(Math.abs(b[1] - a[1]), Math.abs(b[0] - a[0])));
     const back = segs('path.fig-ray-back');
     const ghostEnds = [];
@@ -320,6 +321,8 @@ test('Vidění pod vodou, maska (O8): paprsky z ryby se na skle masky lámou od 
         const ta = fromHorizontal(air[0], air[1]);
         assert.ok(Math.abs(Math.sin(rad(ta)) / Math.sin(rad(tw)) - N_WATER) < 0.01, `voda ${tw}°, vzduch ${ta}°`);
         assert.ok(ta > tw, 'z vody do vzduchu od kolmice');
+        // O8b: zlom je jasně vidět (ve vodě aspoň 25° od kolmice, ve vzduchu 34–42°)
+        assert.ok(tw >= 25 && ta >= 34 && ta <= 42, `voda ${tw}°, vzduch ${ta}°`);
         const ext = back.find(([a]) => a[0] === G && a[1] === hit[1]);
         assert.ok(ext, `čárkované prodloužení z ${hit}`);
         const cross = (air[1][0] - hit[0]) * (ext[1][1] - hit[1]) - (air[1][1] - hit[1]) * (ext[1][0] - hit[0]);
@@ -328,13 +331,16 @@ test('Vidění pod vodou, maska (O8): paprsky z ryby se na skle masky lámou od 
         ghostEnds.push(ext[1]);
     }
     ghostEnds.sort((a, b) => a[1] - b[1]);
-    assert.ok(Math.abs(ghostEnds[0][1] - Gh.top) < 1.5 && Math.abs(ghostEnds[1][1] - Gh.bottom) < 1.5, 'prodloužení končí v hlavě a ocasu zdánlivé ryby');
+    assert.ok(Math.abs(ghostEnds[0][1] - Gh.top) < 1.5 && Math.abs(ghostEnds[1][1] - Gh.bottom) < 1.5, 'prodloužení končí v koncích zdánlivé šipky');
     for (const [x] of ghostEnds) assert.ok(Math.abs(x - Gh.x) < 1.5);
-    // zdánlivá ryba ve 3/4 vzdálenosti od skla, v oku zabírá asi 4/3 úhlu skutečné
+    // zdánlivá šipka ve 3/4 vzdálenosti od skla, zhruba stejně vysoká (při šikmých paprscích o málo vyšší), v oku pod větším úhlem
     assert.ok(Math.abs((G - Gh.x) / (G - R.x) - 0.75) < 0.01, 'blíž o čtvrtinu');
     const angle = (x, top, bottom) => Math.atan2(E[1] - top, E[0] - x) - Math.atan2(E[1] - bottom, E[0] - x);
     const magnification = angle(Gh.x, Gh.top, Gh.bottom) / angle(R.x, R.top, R.bottom);
-    assert.ok(Math.abs(magnification - 4 / 3) < 0.06, `úhlové zvětšení ${magnification}`);
+    const heightRatio = (Gh.bottom - Gh.top) / (R.bottom - R.top);
+    assert.ok(heightRatio > 0.95 && heightRatio < 1.15, `výška zdánlivé šipky ${heightRatio}`);
+    assert.ok(magnification > 1.2 && magnification < 1.4, `úhlové zvětšení ${magnification}`);
+    assert.match(more(54), /větší se jeví, protože ho oko vidí pod větším úhlem/);
     assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['voda', 'skutečně', 'vidíš', 'vzduch', 'v masce']);
     assert.equal(text(slide(54).querySelector('figcaption')), 'Lom na skle masky: blíž a větší');
 });
