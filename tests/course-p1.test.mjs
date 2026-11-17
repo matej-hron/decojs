@@ -378,7 +378,7 @@ test('kurz P1 píše jednotku v hranatých závorkách, jako přednáška (style
 
 test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', () => {
     const dom = new JSDOM(readFileSync(new URL('p1/index.html', ROOT), 'utf8')).window.document;
-    const items = (id) => [...dom.querySelectorAll(`#${id} li`)]
+    const items = (id) => [...dom.querySelectorAll(`#${id} .course-core li`)]
         .map(li => [...li.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').replace(/\s+/g, ' ').trim());
     const title = (id) => dom.querySelector(`#${id} h2`).textContent.trim();
     assert.equal(title('plan'), 'Fyzika – plán');
@@ -413,10 +413,14 @@ test('rozcestník: slidy 2 až 5 mají text ze slidů a žádné „Více“', (
     ]);
     assert.equal(title('literatura'), 'Fyzika – literatura');
     assert.deepEqual(items('literatura'), ['Fyzika (Jahns)',
-        'Potápění s přístrojem (Vrbovský, Jahns, Štětina, Růžička, Nachtigal, Hrdina)', 'Přístrojové potápění', 'Deco for Divers (Powell)']);
-    for (const id of ['plan', 'osnova-p1', 'osnova-p2', 'literatura']) {
+        'Potápění s přístrojem (Vrbovský, Jahns, Štětina, Růžička, Nachtigal, Hrdina)', 'Deco for Divers (Powell)']);
+    for (const id of ['plan', 'osnova-p1', 'osnova-p2']) {
         assert.equal(dom.querySelector(`#${id} details`), null, `${id} bez „Více“`);
     }
+    // Literatura má ve „Více“ plné citace s anotací (Matej, 2026-11-17).
+    const more = dom.querySelector('#literatura details.course-more').textContent;
+    assert.match(more, /Jahns, Jan\.\s+\(2008\)\.\s+Fyzika\./);
+    assert.match(more, /Powell, Mark\.\s+Deco for Divers\./);
 });
 
 
