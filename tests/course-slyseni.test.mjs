@@ -15,6 +15,8 @@ const slides = [...doc.querySelectorAll('main > section > .course-slide')];
 const slide = (n) => doc.querySelector(`.course-slide[data-slide-number="${n}"]`);
 const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
 const more = (n) => text(slide(n).closest('section').querySelector('details.course-more'));
+/** Více pod titulním slidem kapitoly: úvod kapitoly (T29). */
+const intro = () => text(slides[0].closest('section').querySelector('details.course-more'));
 
 /** Rychlost zvuku ve vzduchu podle teploty ve °C (běžná lineární aproximace). */
 const soundInAir = (celsius) => 331.3 + 0.606 * celsius;
@@ -29,14 +31,15 @@ test('Slyšení: kapitola je hotová, slidy 55–56, P★★, za Viděním a př
     assert.equal(chapterNeighbours('slyseni').next?.slug, 'teplo');
 });
 
-test('Slyšení: dvě zastávky, bez Procvič si a bez modelu; poslední nese kotvu #procvic', () => {
-    assert.deepEqual(slides.map(s => [s.dataset.slideNumber, s.dataset.slideType]), [['55', 'figure'], ['56', 'content']]);
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Slyšení pod vodou');
-    assert.equal(text(slides[1].querySelector('h2')), 'Slyšení pod vodou');
+test('Slyšení: titulní slide a dvě zastávky, bez Procvič si a bez modelu; poslední nese kotvu #procvic', () => {
+    assert.deepEqual(slides.map(s => [s.dataset.slideNumber, s.dataset.slideType]), [[undefined, 'title'], ['55', 'figure'], ['56', 'content']]);
+    assert.equal(text(slides[0].querySelector('h1')), 'Slyšení pod vodou');
+    assert.equal(text(slide(55).querySelector('h2')), 'Slyšení pod vodou');
+    assert.equal(text(slide(56).querySelector('h2')), 'Slyšení pod vodou');
     assert.equal(slides.at(-1).closest('section').id, 'procvic', 'krok zpět z Tepla míří na #procvic');
     assert.equal(doc.querySelector('.course-practice'), null);
     assert.equal(doc.querySelector('dialog, .course-thumb'), null);
-    assert.equal(slides[0].dataset.slideFit, slides[1].dataset.slideFit, 'stejný nadpis, stejné písmo (T22)');
+    assert.equal(slide(55).dataset.slideFit, slide(56).dataset.slideFit, 'stejný nadpis, stejné písmo (T22)');
     for (const n of [55, 56]) {
         assert.equal(slide(n).closest('section').querySelectorAll(':scope > details.course-more').length, 1, `Více pod slidem ${n}`);
     }
@@ -63,7 +66,7 @@ test('Slyšení: slide 56 a výklad (330 m/s kolem 0 °C, 343 m/s při 20 °C, v
     const m55 = more(55);
     assert.match(m55, /330 m\/s platí pro vzduch kolem 0 °C, při 20 °C je to 343 m\/s/);
     assert.match(m55, /asi 4,5× rychleji/);
-    assert.match(m55, /do kurzu P★★/);
+    assert.match(intro(), /do kurzu P★★/);
     const m56 = more(56);
     assert.ok(m56.includes('Slyšíš-li loď, nevíš, odkud jede: před výstupem se rozhlédni.'));
     assert.match(m56, /přímo do kostí lebky/);

@@ -36,18 +36,19 @@ test('Teplo: kapitola je hotová, slidy 57–60, P★★, poslední kapitola kur
     assert.deepEqual([chapterNeighbours('teplo').prev?.slug, chapterNeighbours('teplo').next], ['slyseni', null]);
 });
 
-test('Teplo: zastávky 57, 58, 59 (rozdělený na dvě, nevešel se), dvě Procvič si a nakonec slide 60 s kotvou #procvic', () => {
+test('Teplo: titulní slide, zastávky 57, 58, 59 (rozdělený na dvě, nevešel se), dvě Procvič si a nakonec slide 60 s kotvou #procvic', () => {
     assert.deepEqual(slides.map(s => [s.dataset.slideNumber ?? null, s.dataset.slideType]), [
-        ['57', 'content'], ['58', 'content'], ['59', 'figure'], ['59', 'figure'], [null, 'practice'], [null, 'practice'], ['60', 'figure'],
+        [null, 'title'], ['57', 'content'], ['58', 'content'], ['59', 'figure'], ['59', 'figure'], [null, 'practice'], [null, 'practice'], ['60', 'figure'],
     ]);
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Přenos tepla');
+    assert.equal(text(slides[0].querySelector('h1')), 'Přenos tepla');
+    assert.equal(text(slide(57).querySelector('h2')), 'Přenos tepla');
     assert.equal(slides.at(-1).closest('section').id, 'procvic');
     assert.equal(text(slide(60).querySelector('h2')), 'Konec …');
     for (const s of slides.filter(x => x.dataset.slideNumber)) {
         assert.equal(s.closest('section').querySelectorAll(':scope > details.course-more').length, 1, `Více pod slidem ${s.dataset.slideNumber}`);
     }
     // Sousední slidy „Přenos tepla“ mají stejné písmo (T22).
-    assert.deepEqual(slides.slice(0, 4).map(s => s.dataset.slideFit), ['compact', 'compact', 'compact', 'compact']);
+    assert.deepEqual(slides.slice(1, 5).map(s => s.dataset.slideFit), ['compact', 'compact', 'compact', 'compact']);
     assert.deepEqual(doc59.map(s => s.closest('section').id), ['neopren', 'neopren-hloubka']);
     assert.equal(doc.querySelector('dialog, .course-thumb'), null, 'bez modelu (rozhodnutí 9)');
 });

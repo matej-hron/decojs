@@ -219,7 +219,8 @@ test('graf hustoty: osa obsáhne křivku s okrajem, dílky jsou hezké', () => {
 // --- rozcestník --------------------------------------------------------------
 
 import { answersHtml, chapterDetailsHtml, chaptersHtml, questionsHtml } from '../js/course/hubPage.js';
-import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours } from '../js/course/p1Course.js';
+import { P1_CHAPTERS, P1_QUESTIONS, chapterBySlug, chapterNeighbours, titleKicker } from '../js/course/p1Course.js';
+import { renderTitleSlide, titleTopicsHtml, withNbsp } from '../js/course/chapter.js';
 
 test('rozcestník: hotové kapitoly jsou odkazy, ostatní jen tlumené', () => {
     const html = chaptersHtml();
@@ -265,6 +266,14 @@ test('rozcestník: slide 6 a 7 ukazují jen text slidu, zbytek je ve „Více“
 // --- šablona kapitoly: začíná rovnou prvním slidem --------------------------
 
 for (const c of P1_CHAPTERS.filter(ch => ch.status === 'ready')) {
+    test(`kapitola ${c.slug}: titulní slide nese název kapitoly z dat kurzu a témata`, () => {
+        const doc = new JSDOM(readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8')).window.document;
+        const h1 = doc.querySelector('main .course-slide[data-slide-type="title"] > h1');
+        assert.equal(h1.textContent.replace(/\s+/g, ' ').trim(), c.title);
+        assert.ok(Array.isArray(c.topics) && c.topics.length >= 2 && c.topics.length <= 4, `${c.slug}: 2–4 témata`);
+        assert.equal(h1.closest('section').id, c.slug, 'kotva titulního slidu je slug kapitoly');
+    });
+
     test(`kapitola ${c.slug}: hned první je slide s jediným h1`, () => {
         const html = readFileSync(new URL(`p1/${c.slug}.html`, ROOT), 'utf8');
         const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
@@ -304,11 +313,12 @@ for (const page of ['p1/index.html', ...P1_CHAPTERS.filter(c => c.status === 're
             if (fit) assert.equal(fit[1], 'compact');
         }
         assert.doesNotMatch(main, /course-core-(outline|rows|practice)|course-slide-cover/, 'typ místo třídy pro jeden slide');
-        // Titulní typ: nejvýš jeden a jen jako první zastávka (rozcestník; kapitola, pokud ho přednáška má).
+        // Titulní typ: právě jeden, první zastávka, na rozcestníku i v každé kapitole (T29). Číslo z přednášky
+        // jen tam, kde ho přednáška má (Tlak, slide 10).
         const titles = stops.filter(a => a.includes('data-slide-type="title"')).length;
-        assert.ok(titles <= 1, `${page}: ${titles} titulních slidů`);
-        if (titles === 1) assert.ok(stops[0].includes('data-slide-type="title"'), 'titulní slide je první');
-        if (page === 'p1/index.html') assert.equal(titles, 1);
+        assert.equal(titles, 1, `${page}: ${titles} titulních slidů`);
+        assert.ok(stops[0].includes('data-slide-type="title"'), 'titulní slide je první');
+        assert.equal(/data-slide-number=/.test(stops[0]), page === 'p1/tlak.html', 'data-slide-number jen u Tlaku');
         // každý slide má hlavičku jako první potomek, tělo až za ní
         for (const m of main.matchAll(/class="course-(?:model course-)?slide(?: [^"]*)?"[^>]*>\s*(<\w+[^>]*>)/g)) {
             assert.match(m[1], /^<(h1|h2|div class="chart-header")/, m[1]);
@@ -445,4 +455,64 @@ test('T22: sousední slidy se stejným nadpisem (pokračování) mají stejné d
         }
     }
     assert.deepEqual(mismatched, []);
+});
+
+// --- titulní slide (T29, varianta B) -------------------------------------------
+
+test('titulní slide: „Kapitola N z 9“ a na kurzu počet kapitol a slidů, z dat kurzu', () => {
+    assert.equal(titleKicker('hustota'), 'Kapitola 1 z 9');
+    assert.equal(titleKicker('tlak'), 'Kapitola 2 z 9');
+    assert.equal(titleKicker('teplo'), 'Kapitola 9 z 9');
+    assert.equal(titleKicker(null), '9 kapitol · 82 slidů');
+    assert.equal(titleKicker('neznama'), '');
+    const few = [{ slug: 'a', status: 'ready', courseSlides: 1 }, { slug: 'b', status: 'planned' }];
+    assert.equal(titleKicker(null, few), '2 kapitoly · 8 slidů');
+    assert.equal(titleKicker(null, [{ slug: 'a', status: 'planned' }]), '1 kapitola · 7 slidů');
+    assert.equal(titleKicker('b', few), 'Kapitola 2 z 2');
+});
+
+test('titulní slide: témata s nedělitelnou mezerou a oddělovačem jako textem', () => {
+    assert.equal(withNbsp('atmosférický a hydrostatický tlak'), 'atmosférický a\u00a0hydrostatický tlak');
+    assert.equal(withNbsp('a v zimě'), 'a\u00a0v\u00a0zimě');
+    assert.equal(withNbsp('rychlost zvuku ve vodě'), 'rychlost zvuku ve vodě');
+    assert.equal(titleTopicsHtml(['jednotky', 'celkový tlak']), 'jednotky<span class="course-slide-sep"> · </span>celkový tlak');
+    assert.deepEqual(chapterBySlug('henry').topics, ['Henryho zákon', 'sycení tkání', 'bubliny při výstupu'], 'rozhodnutí Mateje');
+    assert.deepEqual(chapterBySlug('videni').topics, ['barvy pod vodou', 'Snellovo okno', 'lom světla', 'vidění bez masky']);
+});
+
+test('titulní slide: renderTitleSlide doplní řádek kapitoly a témata za nadpis, jednou', () => {
+    const doc = new JSDOM(readFileSync(new URL('p1/tlak.html', ROOT), 'utf8')).window.document;
+    const slide = doc.querySelector('main .course-slide[data-slide-type="title"]');
+    renderTitleSlide(slide, 'tlak');
+    renderTitleSlide(slide, 'tlak');
+    assert.deepEqual([...slide.children].map(el => el.tagName + (el.className ? `.${el.className}` : '')),
+        ['H1', 'P.course-slide-kicker', 'P.course-slide-topics']);
+    assert.equal(slide.querySelector('.course-slide-kicker').textContent, 'Kapitola 2 z 9');
+    assert.equal(slide.querySelector('.course-slide-topics').textContent,
+        'jednotky · atmosférický a\u00a0hydrostatický tlak · celkový tlak · tlak v\u00a0plynu');
+    const content = doc.querySelector('main .course-slide[data-slide-type="figure"]');
+    const before = content.innerHTML;
+    renderTitleSlide(content, 'tlak');
+    renderTitleSlide(null, 'tlak');
+    assert.equal(content.innerHTML, before, 'jiný typ slidu se nemění');
+});
+
+test('titulní slide kurzu: řádek s počty, podnadpis a autor bez „přednáška P★“', () => {
+    const doc = new JSDOM(readFileSync(new URL('p1/index.html', ROOT), 'utf8')).window.document;
+    const slide = doc.querySelector('main .course-slide[data-slide-type="title"]');
+    renderTitleSlide(slide, null);
+    assert.equal(slide.querySelector('.course-slide-kicker').textContent, '9 kapitol · 82 slidů');
+    assert.equal(slide.querySelector('.course-slide-topics'), null);
+    assert.equal(slide.querySelector('.course-slide-author').textContent, 'Matej Hron');
+    assert.equal(slide.querySelector('.course-slide-org').textContent, 'Svaz potápěčů České republiky');
+    assert.doesNotMatch(slide.textContent, /přednáška P★/);
+});
+
+test('titulní slide: CSS bez verzálek, poloha nadpisu se nemění', () => {
+    const css = readFileSync(new URL('css/course.css', ROOT), 'utf8');
+    const rule = (sel) => [...css.matchAll(new RegExp(`\\${sel}\\s*\\{([^}]*)\\}`, 'g'))].map(m => m[1]).join(';');
+    assert.doesNotMatch(rule('.course-slide-kicker'), /text-transform|letter-spacing/);
+    assert.match(rule('.course-slide-kicker'), /position:\s*absolute/, 'na projektoru nad nadpisem mimo tok');
+    assert.match(css, /\.course-slide\[data-slide-type="title"\] \{\s*padding-top: var\(--course-title-slide-top\);/);
+    assert.match(css, /--slide-title-caustics:/);
 });

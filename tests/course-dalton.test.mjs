@@ -17,6 +17,8 @@ const slides = [...doc.querySelectorAll('main > section > .course-slide')];
 const slide = (n) => doc.querySelector(`.course-slide[data-slide-number="${n}"]`);
 const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
 const more = (n) => text(slide(n).closest('section').querySelector('details.course-more'));
+/** Více pod titulním slidem kapitoly: úvod kapitoly (T29). */
+const intro = () => text(slides[0].closest('section').querySelector('details.course-more'));
 const answer = (n) => text(slide(n).querySelector('details.course-answer'));
 const concept = (id) => read(`concepts/cs/${id}.html`).replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 
@@ -40,9 +42,10 @@ test('Dalton: kapitola je hotová, slidy 38–41, za Archimédem', () => {
     assert.ok(answered('Co mám dělat, když chci hloub?').includes('dalton'), 'rozhodnutí 9a');
 });
 
-test('Dalton: zastávky jsou slidy 38–41 včetně 40, pak dvě Procvič si', () => {
-    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), ['38', '39', '40', '41', null, null]);
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Složení vzduchu');
+test('Dalton: titulní slide, pak slidy 38–41 včetně 40 a dvě Procvič si', () => {
+    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '38', '39', '40', '41', null, null]);
+    assert.equal(slides[0].dataset.slideType, 'title');
+    assert.equal(text(slides[0].querySelector('h1')), 'Složení vzduchu a Daltonův zákon');
     assert.equal(doc.querySelectorAll('h1').length, 1);
     assert.deepEqual(slides.slice(-2).map(s => s.dataset.slideType), ['practice', 'practice']);
     assert.equal(slides.at(-1).closest('section').id, 'procvic', 'krok zpět z další kapitoly míří na #procvic');
@@ -194,7 +197,7 @@ test('Dalton: opravy z review R9', () => {
     // R9-06, R9-07
     assert.doesNotMatch(more(39), /Příklad pro 30/, 'příklad 30 m má pojem, pod ním jen doplněk');
     assert.match(more(39), /Dusíku je ve 30 m 4 · 0,79 = 3,16 bar, s kyslíkem 0,84 bar dohromady 4 bar\./);
-    assert.match(more(38), /ale při vysokém tlaku škodí/);
+    assert.match(intro(), /ale při vysokém tlaku škodí/);
     // odkaz na helium ve slidu 47
     assert.ok(slide(41).closest('section').querySelector('a[href="henry.html#rozpustnost"]'));
 });

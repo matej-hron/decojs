@@ -45,8 +45,10 @@ test('Vidění: kapitola je hotová, slidy 48–54, P★★, za Henrym', () => {
     assert.ok(P1_QUESTIONS.every(q => !q.answeredIn.includes('videni')));
 });
 
-test('Vidění: zastávky jsou slidy 48–54 a Procvič si, nadpisy a typy', () => {
-    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), ['48', '49', '50', '51', '52', '53', '54', null]);
+test('Vidění: titulní slide, pak slidy 48–54 a Procvič si, nadpisy a typy', () => {
+    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '48', '49', '50', '51', '52', '53', '54', null]);
+    assert.equal(slides[0].dataset.slideType, 'title');
+    assert.equal(text(slides[0].querySelector('h1')), 'Vidění pod vodou');
     assert.equal(doc.querySelectorAll('h1').length, 1);
     assert.equal(slides.at(-1).dataset.slideType, 'practice');
     assert.equal(slides.at(-1).closest('section').id, 'procvic', 'krok zpět z další kapitoly míří na #procvic');

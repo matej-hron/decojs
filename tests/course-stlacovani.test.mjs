@@ -30,11 +30,12 @@ test('Stlačování plynů: kapitola je hotová, slidy 23–30, mezi Tlakem a da
     assert.equal(chapterNeighbours('stlacovani-plynu').prev?.slug, 'tlak');
 });
 
-test('Stlačování plynů: zastávky jsou slidy 23–30 bez titulního slidu, pak dvě Procvič si', () => {
+test('Stlačování plynů: titulní slide, pak slidy 23–30 a dvě Procvič si', () => {
     const numbers = slides.map(s => s.dataset.slideNumber ?? null);
-    assert.deepEqual(numbers, ['23', '24', '25', '26', '27', '28', '29', '30', null, null]);
-    assert.ok(!slides.some(s => s.dataset.slideType === 'title'), 'přednáška nemá titulní slide kapitoly');
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Stlačování plynů');
+    assert.deepEqual(numbers, [null, '23', '24', '25', '26', '27', '28', '29', '30', null, null]);
+    assert.equal(slides[0].dataset.slideType, 'title', 'T29: v přednášce není, kurz ho má');
+    assert.equal(text(slides[0].querySelector('h1')), 'Stlačování plynů');
+    assert.equal(text(slide(23).querySelector('h2')), 'Stlačování plynů');
     assert.deepEqual(slides.slice(-2).map(s => s.dataset.slideType), ['practice', 'practice']);
     assert.equal(slides.at(-1).closest('section').id, 'procvic', 'krok zpět z další kapitoly míří na #procvic');
 });

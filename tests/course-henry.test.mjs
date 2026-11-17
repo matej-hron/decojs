@@ -15,6 +15,8 @@ const slides = [...doc.querySelectorAll('main > section > .course-slide')];
 const slide = (n) => doc.querySelector(`.course-slide[data-slide-number="${n}"]`);
 const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
 const more = (n) => text(slide(n).closest('section').querySelector('details.course-more'));
+/** Více pod titulním slidem kapitoly: úvod kapitoly (T29). */
+const intro = () => text(slides[0].closest('section').querySelector('details.course-more'));
 const concept = (id) => read(`concepts/cs/${id}.html`).replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 
 test('Henry: kapitola je hotová, slidy 42–47, za Daltonem', () => {
@@ -29,9 +31,10 @@ test('Henry: kapitola je hotová, slidy 42–47, za Daltonem', () => {
     assert.ok(answered('Jak předcházet nehodám?').includes('henry'), 'rozhodnutí 9');
 });
 
-test('Henry: zastávky jsou slidy 42–47, pak dvě Procvič si', () => {
-    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), ['42', '43', '44', '45', '46', '47', null, null]);
-    assert.equal(slides[0].querySelector('h1')?.textContent, 'Henryho zákon');
+test('Henry: titulní slide, pak slidy 42–47 a dvě Procvič si', () => {
+    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '42', '43', '44', '45', '46', '47', null, null]);
+    assert.equal(slides[0].dataset.slideType, 'title');
+    assert.equal(text(slides[0].querySelector('h1')), 'Rozpouštění plynů v kapalinách');
     assert.equal(doc.querySelectorAll('h1').length, 1);
     assert.equal(slides.at(-1).closest('section').id, 'procvic');
     for (let n = 42; n <= 47; n++) {
@@ -139,7 +142,7 @@ test('Henry: názvy podle rozhodnutí 8', () => {
 test('Henry: poločas jen jako představa, limity určují tabulky a počítač', () => {
     assert.match(more(46), /Kolik smíš, neurčuješ odhadem ani výpočtem z poločasů, ale tabulkami nebo počítačem\./);
     assert.match(more(46), /otázky testu SPČR č\. 95–99\) jsou látka P★★/);
-    assert.match(more(42), /Osnova výcviku SPČR řadí Henryho zákon a sycení tkání až do kurzu P★★/);
+    assert.match(intro(), /Osnova výcviku SPČR řadí Henryho zákon a sycení tkání až do kurzu P★★/);
     // body grafu: 1 − 2^−n
     for (const [n, pct] of [[1, '50 %'], [2, '75 %'], [6, '98,4 %']]) {
         assert.equal((1 - 2 ** -n) * 100 >= Number(pct.replace(' %', '').replace(',', '.')) - 0.05, true);
