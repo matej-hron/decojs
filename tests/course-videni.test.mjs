@@ -134,6 +134,60 @@ test('Vidění, slide 51: okraj Snellova okna je mezní úhel 48,6°, na slidu �
     assert.match(more(51), /úplný odraz/);
 });
 
+test('Vidění, slide 51 (O5): vějíř paprsků z oblohy se láme podle Snellova zákona a sbíhá do oka v kuželu', () => {
+    const svg = slide(51).querySelector('svg');
+    const SURFACE = 150;
+    const critical = deg(Math.asin(1 / N_WATER));
+    const segments = [...svg.querySelectorAll('path.fig-ray')]
+        .flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points))
+        .map(pts => [pts[0], pts.at(-1)]);
+    const eye = points(svg.querySelector('path.fig-window').getAttribute('d')).find(p => p[1] > SURFACE);
+    // ve vodě: z bodu na hladině do oka
+    const inWater = segments.filter(([a, b]) => a[1] === SURFACE && b[0] === eye[0] && b[1] === eye[1]);
+    // ze vzduchu: shora na hladinu
+    const fromAir = segments.filter(([a, b]) => a[1] < SURFACE && b[1] === SURFACE);
+    const fan = inWater.filter(([hit]) => angleFromVertical(hit, eye) <= critical + 0.1);
+    assert.ok(fan.length >= 5, `paprsků z oblohy: ${fan.length}`);
+    const alphas = [];
+    for (const [hit] of fan) {
+        const air = fromAir.find(([, end]) => end[0] === hit[0]);
+        assert.ok(air, `paprsek ze vzduchu do bodu ${hit}`);
+        const alpha = angleFromVertical(air[0], air[1]);
+        const beta = angleFromVertical(hit, eye);
+        alphas.push(alpha);
+        if (alpha === 0) assert.equal(beta, 0, 'svislý paprsek jde rovně');
+        else assert.ok(Math.abs(Math.sin(rad(alpha)) / Math.sin(rad(beta)) - N_WATER) < 0.01, `α ${alpha}, β ${beta}`);
+    }
+    // od obzoru (skoro vodorovně) z obou stran přesně na okraj kužele, šikmé i svislý
+    const horizon = fan.filter(([hit]) => Math.abs(angleFromVertical(hit, eye) - critical) < 0.1);
+    assert.equal(horizon.length, 2);
+    assert.ok(horizon.some(([hit]) => hit[0] < eye[0]) && horizon.some(([hit]) => hit[0] > eye[0]));
+    assert.ok(alphas.filter(a => a > 85).length === 2 && alphas.includes(0) && alphas.some(a => a > 20 && a < 70));
+    // „odraz dna“: paprsek od kamene se odrazí od spodní strany hladiny mimo okno (úplný odraz) a jde do oka
+    const reflected = inWater.filter(([hit]) => angleFromVertical(hit, eye) > critical + 1);
+    assert.equal(reflected.length, 1);
+    const [[hit]] = reflected;
+    const up = segments.find(([a, b]) => a[1] > SURFACE && b[0] === hit[0] && b[1] === SURFACE);
+    assert.ok(up, 'paprsek od kamene k hladině');
+    assert.ok(Math.abs(angleFromVertical(up[0], up[1]) - angleFromVertical(hit, eye)) < 0.2, 'úhel odrazu = úhel dopadu');
+    assert.ok((up[0][0] - hit[0]) * (eye[0] - hit[0]) < 0, 'kámen a oko na opačných stranách kolmice');
+    const stone = svg.querySelector('.fig-stone');
+    assert.ok(Math.hypot(up[0][0] - Number(stone.getAttribute('cx')), up[0][1] - Number(stone.getAttribute('cy'))) < 25, 'paprsek začíná u kamene');
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['Snellovo okno', 'vzduch', 'voda', 'asi 49°', 'odraz', 'dna']);
+});
+
+test('Vidění, slide 51 (O5): fotka Snellova okna pod textem se zdrojem', () => {
+    const img = slide(51).querySelector('.course-core > div > figure.course-figure-under > img');
+    assert.ok(img);
+    assert.equal(img.getAttribute('src'), '../images/course/p1/snellovo-okno.jpg');
+    assert.ok(existsSync(new URL('images/course/p1/snellovo-okno.jpg', ROOT)));
+    assert.equal(slide(51).querySelector('a.course-source').getAttribute('href'), 'zdroje.html#snellovo-okno');
+    assert.match(read('images/course/p1/SOURCES.md'), /images\/course\/p1\/snellovo-okno\.jpg.*Hellbus.*CC BY-SA 3\.0/);
+    assert.ok(read('sw.js').includes("'./images/course/p1/snellovo-okno.jpg'"));
+    // P★★: na slidu žádná nová čísla ani index lomu, ty jsou ve Více
+    assert.doesNotMatch(text(slide(51)), /1,33|48,|n\s*=/);
+});
+
 test('Vidění: pojem underwater-vision, jeden jev (3/4 vzdálenosti → 4/3 velikosti), procvičování a zdroj fotky', () => {
     assert.deepEqual([...doc.querySelectorAll('[data-concept]')].map(el => el.dataset.concept), ['underwater-vision']);
     const c = concept('underwater-vision');
