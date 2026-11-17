@@ -158,9 +158,9 @@ describe('slideKeyDirection: kdy klávesy patří slidům', () => {
 });
 
 describe('zastávky na skutečných stránkách', () => {
-    it('kapitola: jeden slide přednášky je jedna zastávka, modely zastávky nejsou', () => {
+    it('kapitola: titulní slide, pak jeden slide přednášky je jedna zastávka, modely zastávky nejsou', () => {
         const anchors = collectStops(pageDom('p1/hustota.html')).map(stopAnchor);
-        assert.deepEqual(anchors, ['definice', 'teplota', 'procvic']);
+        assert.deepEqual(anchors, ['hustota', 'definice', 'teplota', 'procvic']);
     });
 
     it('rozcestník: titulní slide, slidy 2 až 5, otázky, Obsah, v pořadí přednášky', () => {
@@ -222,7 +222,7 @@ describe('patička slidu', () => {
     it('číslo z přednášky zůstává skryté v data-slide-number (dohledání v PowerPointu)', () => {
         const numbers = (page) => collectStops(pageDom(page)).map(s => s.dataset.slideNumber ?? null);
         assert.deepEqual(numbers('p1/index.html'), [null, '2', '3', '4', '5', '6', '7']);
-        assert.deepEqual(numbers('p1/hustota.html'), ['8', '9', null]);
+        assert.deepEqual(numbers('p1/hustota.html'), [null, '8', '9', null], 'titulní slide kapitoly v přednášce není');
     });
 });
 
@@ -371,7 +371,8 @@ describe('číslování slidů kurzu (D16)', () => {
         assert.deepEqual(shown.map(([, text]) => text), Array.from({ length: total }, (_, i) => `${i + 1} / ${total}`));
         assert.deepEqual(shown.map(([, , label]) => label), Array.from({ length: total }, (_, i) => `slide ${i + 1} z ${total}`));
         const hustota = shown.filter(([page]) => page === 'p1/hustota.html').map(([, text]) => text);
-        assert.deepEqual(hustota, [`8 / ${total}`, `9 / ${total}`, `10 / ${total}`], 'Hustota: 8, 9 a Procvič si 10');
+        assert.deepEqual(hustota, [`8 / ${total}`, `9 / ${total}`, `10 / ${total}`, `11 / ${total}`], 'Hustota: titulní 8, slidy 9, 10 a Procvič si 11');
+        assert.equal(total, 82, 'T29: 74 slidů a titulní slide u 8 kapitol, které ho v přednášce nemají');
     });
 
     it('stránka mimo kurz (nehotová nebo neznámá kapitola) čísla nemá', () => {

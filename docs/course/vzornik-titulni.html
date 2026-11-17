@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Vzorník titulních slidů – Kurz P1</title>
+    <!-- Typ title (T29, varianta B): titulní slide kurzu a všech 9 kapitol tak, jak je vykreslí kurz.
+         Styl je v css/course.css, řádek „Kapitola N z 9“ a témata doplní renderTitleSlide (js/course/chapter.js)
+         z dat kurzu (js/course/p1Course.js). Popis typu: docs/course/slides.md, § title.
+         Jen lokálně (docs/ se nepublikuje): python3 -m http.server 5591 v kořeni repa,
+         pak http://127.0.0.1:5591/docs/course/vzornik-titulni.html. -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/course.css">
+    <style>
+        /* Jen vzorník: popisek pod slidem, kde je jinak „Více“, a tabulka dat. */
+        .vzornik-type {
+            min-height: var(--course-more-row);
+            margin: 0;
+            padding: var(--space-3) 0;
+            font-size: var(--text-sm);
+            color: var(--text-subtle);
+        }
+        .vzornik-notes { max-width: 60rem; margin: var(--space-6) auto; padding: 0 var(--space-4); }
+        .vzornik-notes table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
+        .vzornik-notes th, .vzornik-notes td { border-bottom: 1px solid var(--border); padding: var(--space-2); text-align: left; vertical-align: top; }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <span class="nav-logo">Vzorník titulních slidů kurzu P1</span>
+        </div>
+    </nav>
+
+    <main class="course-page" lang="cs">
+        <section id="kurz" class="course-section">
+            <div class="course-slide" data-slide-type="title" data-vzornik-title="">
+                <h1>Kurz P1 – Fyzika</h1>
+                <p class="course-slide-sub">P★</p>
+                <div class="course-slide-byline">
+                    <p class="course-slide-author">Matej Hron</p>
+                    <p class="course-slide-org">Svaz potápěčů České republiky</p>
+                </div>
+            </div>
+            <p class="vzornik-type">Kurz (<code>p1/index.html</code>): podnadpis a&nbsp;autor v&nbsp;HTML, počet kapitol a&nbsp;slidů z&nbsp;dat kurzu</p>
+        </section>
+        <!-- Titulní slidy kapitol doplní skript z P1_CHAPTERS (nadpis h2: na stránce kapitoly je to její jediné h1). -->
+        <div data-chapter-titles></div>
+
+        <section class="vzornik-notes" aria-labelledby="data">
+            <h2 id="data">Data titulních slidů (<code>P1_CHAPTERS</code> v&nbsp;<code>js/course/p1Course.js</code>)</h2>
+            <table>
+                <thead><tr><th>Nad nadpisem</th><th>Nadpis (<code>title</code>)</th><th>Pod nadpisem (<code>topics</code>)</th></tr></thead>
+                <tbody data-topics-table></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script type="module">
+        import { slideFootHtml } from '../../js/course/slideNav.js';
+        import { P1_CHAPTERS, titleKicker } from '../../js/course/p1Course.js';
+        import { renderTitleSlide, titleTopicsHtml, withNbsp } from '../../js/course/chapter.js';
+
+        document.querySelector('[data-chapter-titles]').outerHTML = P1_CHAPTERS.map(c => `
+            <section id="${c.slug}" class="course-section">
+                <div class="course-slide" data-slide-type="title" data-vzornik-title="${c.slug}">
+                    <h2>${withNbsp(c.title)}</h2>
+                </div>
+                <p class="vzornik-type">Kapitola <code>p1/${c.slug}.html</code>${c.slug === 'tlak' ? ' (jediná má titulní slide i&nbsp;v&nbsp;přednášce, slide 10)' : ''}</p>
+            </section>`).join('');
+        document.querySelectorAll('[data-vzornik-title]').forEach(s => renderTitleSlide(s, s.dataset.vzornikTitle || null));
+
+        document.querySelector('[data-topics-table]').innerHTML = [
+            `<tr><td>${titleKicker(null)}</td><td>Kurz P1 – Fyzika</td><td>(podnadpis P★ a autor)</td></tr>`,
+            ...P1_CHAPTERS.map(c => `<tr><td>${titleKicker(c.slug)}</td><td>${withNbsp(c.title)}</td><td>${titleTopicsHtml(c.topics ?? [])}</td></tr>`),
+        ].join('');
+
+        // Patička jako na stránkách kurzu, číslo je pořadí ve vzorníku; šipky přejdou na sousední vzor.
+        const vzory = [...document.querySelectorAll('main > section > .course-slide')];
+        vzory.forEach((slide, i) => {
+            const foot = document.createElement('div');
+            foot.className = 'course-foot';
+            foot.innerHTML = slideFootHtml(i + 1, vzory.length);
+            foot.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
+                vzory[i + Number(btn.dataset.step)]?.scrollIntoView({ block: 'start' });
+            }));
+            slide.appendChild(foot);
+        });
+    </script>
+</body>
+</html>

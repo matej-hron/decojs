@@ -33,10 +33,38 @@
     </nav>
 
     <main class="course-page" lang="cs">
-        <!-- Slide 38: kapitola nemá titulní slide (přednáška ho nemá), začíná rovnou složením vzduchu -->
+        <!-- Titulní slide kapitoly (v přednášce není): kolikátá kapitola a témata doplní chapter.js z p1Course.js -->
+        <section id="dalton" class="course-section">
+            <div class="course-slide" data-slide-type="title">
+                <h1>Složení vzduchu a&nbsp;Daltonův zákon</h1>
+            </div>
+            <details class="course-more">
+                <summary>Více <span class="course-summary-hint">o&nbsp;kapitole</span></summary>
+                <div class="course-more-body">
+                    <div class="course-chapter-intro">
+                        <p>Potápěč dýchá v&nbsp;hloubce stejný vzduch jako na hladině, jen pod vyšším tlakem. Každý plyn ve vzduchu přitom
+                            působí na tělo jinak: kyslík potřebujeme k&nbsp;životu, ale při vysokém tlaku škodí, dusík v&nbsp;hloubce omamuje
+                            a&nbsp;rozpouští se v&nbsp;těle. Tahle kapitola ukáže, jak spočítat, kolik kterého plynu v&nbsp;hloubce dýcháme,
+                            a&nbsp;z&nbsp;toho, jak hluboko se vzduchem smíme.</p>
+                        <div class="course-hooks">
+                            <p><strong>Navazuje na:</strong></p>
+                            <ul>
+                                <li><a href="tlak.html#celkovy">celkový tlak v&nbsp;hloubce</a>: z&nbsp;něj se počítají <strong>parciální tlaky</strong>,</li>
+                                <li><a href="tlak.html#plyn">tlak v&nbsp;plynu</a>: tlak dělají nárazy částic do stěn (tady viz <a href="#castice">Tlak v&nbsp;plynu</a>),</li>
+                                <li><a href="tlak.html#tabulka">tabulku hloubek</a>: tady se vysvětlí, odkud jsou meze 40&nbsp;m a&nbsp;56&nbsp;m.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p>Osnova výcviku SPČR řadí parciální tlaky a&nbsp;Henryho zákon až do kurzu P★★. Tady je otevíráme jen v&nbsp;principu,
+                        aby bylo jasné, odkud se berou meze hloubky a&nbsp;proč se tkáně sytí dusíkem (další kapitola).</p>
+                </div>
+            </details>
+        </section>
+
+        <!-- Slide 38: v přednášce první slide kapitoly (titulní slide v ní není, kurz ho má navíc) -->
         <section id="slozeni" class="course-section">
             <div class="course-slide" data-slide-number="38" data-slide-type="figure">
-                <h1>Složení vzduchu</h1>
+                <h2>Složení vzduchu</h2>
                 <div class="course-core">
                     <div>
                         <ul>
@@ -66,22 +94,6 @@
             <details class="course-more">
                 <summary>Více <span class="course-summary-hint">výklad na doma</span></summary>
                 <div class="course-more-body">
-                    <div class="course-chapter-intro">
-                        <p>Potápěč dýchá v&nbsp;hloubce stejný vzduch jako na hladině, jen pod vyšším tlakem. Každý plyn ve vzduchu přitom
-                            působí na tělo jinak: kyslík potřebujeme k&nbsp;životu, ale při vysokém tlaku škodí, dusík v&nbsp;hloubce omamuje
-                            a&nbsp;rozpouští se v&nbsp;těle. Tahle kapitola ukáže, jak spočítat, kolik kterého plynu v&nbsp;hloubce dýcháme,
-                            a&nbsp;z&nbsp;toho, jak hluboko se vzduchem smíme.</p>
-                        <div class="course-hooks">
-                            <p><strong>Navazuje na:</strong></p>
-                            <ul>
-                                <li><a href="tlak.html#celkovy">celkový tlak v&nbsp;hloubce</a>: z&nbsp;něj se počítají <strong>parciální tlaky</strong>,</li>
-                                <li><a href="tlak.html#plyn">tlak v&nbsp;plynu</a>: tlak dělají nárazy částic do stěn (tady viz <a href="#castice">Tlak v&nbsp;plynu</a>),</li>
-                                <li><a href="tlak.html#tabulka">tabulku hloubek</a>: tady se vysvětlí, odkud jsou meze 40&nbsp;m a&nbsp;56&nbsp;m.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <p>Osnova výcviku SPČR řadí parciální tlaky a&nbsp;Henryho zákon až do kurzu P★★. Tady je otevíráme jen v&nbsp;principu,
-                        aby bylo jasné, odkud se berou meze hloubky a&nbsp;proč se tkáně sytí dusíkem (další kapitola).</p>
                     <p>Ve vzduchu je 78&nbsp;% dusíku, 21&nbsp;% kyslíku a&nbsp;asi 1&nbsp;% ostatních plynů: skoro celé je to argon
                         (0,93&nbsp;%), oxidu uhličitého je jen asi 0,04&nbsp;%. Argon a&nbsp;další vzácné plyny se v&nbsp;těle chovají podobně
                         jako dusík: nespotřebujeme je, jen se rozpouštějí. Proto se ve výpočtech počítají s&nbsp;dusíkem a&nbsp;vzduch se bere
