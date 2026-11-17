@@ -503,7 +503,7 @@ test('titulní slide kurzu: řádek s počty, podnadpis a autor bez „předná�
     renderTitleSlide(slide, null);
     assert.equal(slide.querySelector('.course-slide-kicker').textContent, '9 kapitol · 82 slidů');
     assert.equal(slide.querySelector('.course-slide-topics'), null);
-    assert.equal(slide.querySelector('.course-slide-author').textContent, 'Matej Hron');
+    assert.equal(slide.querySelector('.course-slide-author').textContent, 'Matěj Hron');
     assert.equal(slide.querySelector('.course-slide-org').textContent, 'Svaz potápěčů České republiky');
     assert.doesNotMatch(slide.textContent, /přednáška P★/);
 });
