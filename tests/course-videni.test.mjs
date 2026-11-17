@@ -190,6 +190,52 @@ test('Vidění, slide 51 (O5): fotka Snellova okna pod textem se zdrojem', () =>
     assert.doesNotMatch(text(slide(51)), /1,33|48,|n\s*=/);
 });
 
+test('Vidění, Tyč do vody ponořená (O6): paprsky z konce tyče se lámou podle Snellova zákona, zpětná prodloužení se sejdou ve zdánlivém konci', () => {
+    const svg = slide(52).querySelector('svg');
+    const SURFACE = 170;
+    const segments = (sel) => [...svg.querySelectorAll(sel)]
+        .flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points)).map(pts => [pts[0], pts.at(-1)]);
+    const tip = svg.querySelector('circle.fig-tip');
+    const ghost = svg.querySelector('circle.fig-tip-ghost');
+    const X = [Number(tip.getAttribute('cx')), Number(tip.getAttribute('cy'))];
+    const Y = [Number(ghost.getAttribute('cx')), Number(ghost.getAttribute('cy'))];
+    const rays = segments('path.fig-ray');
+    const inWater = rays.filter(([a, b]) => a[0] === X[0] && a[1] === X[1] && b[1] === SURFACE);
+    assert.equal(inWater.length, 2, 'dva paprsky z konce tyče');
+    const back = segments('path.fig-ray-back');
+    for (const [, hit] of inWater) {
+        const air = rays.find(([a, b]) => a[0] === hit[0] && a[1] === SURFACE && b[1] < SURFACE);
+        assert.ok(air, `paprsek ve vzduchu z bodu ${hit}`);
+        const beta = angleFromVertical(X, hit);
+        const alpha = angleFromVertical(air[0], air[1]);
+        assert.ok(Math.abs(Math.sin(rad(alpha)) / Math.sin(rad(beta)) - N_WATER) < 0.01, `α ${alpha}, β ${beta}`);
+        assert.ok(alpha > beta, 'z vody do vzduchu se láme od kolmice');
+        // zpětné prodloužení: z bodu na hladině do zdánlivého konce, ve stejném směru jako paprsek ve vzduchu
+        const ext = back.find(([a]) => a[0] === hit[0] && a[1] === SURFACE);
+        assert.ok(ext, `čárkované prodloužení z ${hit}`);
+        assert.deepEqual(ext[1], Y);
+        const cross = (air[1][0] - hit[0]) * (Y[1] - hit[1]) - (air[1][1] - hit[1]) * (Y[0] - hit[0]);
+        const len = Math.hypot(air[1][0] - hit[0], air[1][1] - hit[1]) * Math.hypot(Y[0] - hit[0], Y[1] - hit[1]);
+        assert.ok(Math.abs(cross / len) < 0.002, 'prodloužení leží na přímce paprsku ve vzduchu');
+    }
+    // zdánlivý konec je výš (zhruba ve 3/4 hloubky, jako ve Více), skoro nad skutečným
+    const ratio = (Y[1] - SURFACE) / (X[1] - SURFACE);
+    assert.ok(ratio > 0.65 && ratio < 0.8, `zdánlivá hloubka ${ratio}`);
+    assert.ok(Math.abs(Y[0] - X[0]) < 10);
+    // skutečná tyč je rovná a končí v X, zdánlivá ponořená část jde z hladiny do Y
+    const [rod] = segments('path.fig-rod');
+    assert.deepEqual(rod[1], X);
+    const [rodGhost] = segments('path.fig-rod-ghost');
+    assert.equal(rodGhost[0][1], SURFACE);
+    assert.deepEqual(rodGhost[1], Y);
+    const onRod = (rod[0][0] - X[0]) * (SURFACE - X[1]) - (rod[0][1] - X[1]) * (rodGhost[0][0] - X[0]);
+    assert.ok(Math.abs(onRod) < 1, 'zdánlivá část začíná tam, kde tyč protíná hladinu');
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['skutečně', 'vidíš', 'voda']);
+    // fotka zůstává pod větou, schéma vedle; Více odkáže na schéma
+    assert.ok(slide(52).querySelector('.course-core > div > figure.course-figure-under > img[src="../images/course/p1/tuzka-ve-vode.jpg"]'));
+    assert.match(more(52), /Ve schématu vedle fotky je to vidět/);
+});
+
 test('Vidění: pojem underwater-vision, jeden jev (3/4 vzdálenosti → 4/3 velikosti), procvičování a zdroj fotky', () => {
     assert.deepEqual([...doc.querySelectorAll('[data-concept]')].map(el => el.dataset.concept), ['underwater-vision']);
     const c = concept('underwater-vision');
