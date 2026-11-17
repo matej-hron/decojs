@@ -238,7 +238,13 @@ test('Vidění, Tyč do vody ponořená (O6, O6b): paprsky z konce tyče se lám
     assert.deepEqual(rodGhost[1], Y);
     const onRod = (rod[0][0] - X[0]) * (SURFACE - X[1]) - (rod[0][1] - X[1]) * (rodGhost[0][0] - X[0]);
     assert.ok(Math.abs(onRod) < 1, 'zdánlivá část začíná tam, kde tyč protíná hladinu');
-    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['skutečně', 'vidíš', 'voda']);
+    // O6c: popisky přímo u teček, „voda“ ne
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['skutečný konec', 'zdánlivý', 'konec']);
+    const [real, ghostLabel] = [...svg.querySelectorAll('text')];
+    assert.ok(Math.hypot(Number(real.getAttribute('x')) - X[0], Number(real.getAttribute('y')) - X[1]) < 110, 'skutečný konec u hnědé tečky');
+    assert.ok(Math.hypot(Number(ghostLabel.getAttribute('x')) - Y[0], Number(ghostLabel.getAttribute('y')) - Y[1]) < 40, 'zdánlivý konec u bílé tečky');
+    assert.match(svg.getAttribute('aria-label'), /skutečný konec/);
+    assert.match(svg.getAttribute('aria-label'), /zdánlivém konci/);
     // fotka zůstává pod větou, schéma vedle; Více odkáže na schéma
     assert.ok(slide(52).querySelector('.course-core > div > figure.course-figure-under > img[src="../images/course/p1/tuzka-ve-vode.jpg"]'));
     assert.match(more(52), /Ve schématu vedle fotky je to vidět/);
