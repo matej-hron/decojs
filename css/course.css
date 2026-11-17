@@ -456,16 +456,16 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-illustration svg .fig-label-light { fill: var(--slide-fg); }
 .course-figure svg .fig-rock { fill: var(--slide-ground); }
 .course-figure svg .fig-stone { fill: var(--slide-ground); stroke: var(--slide-on-accent); stroke-width: 3; } /* kámen na dně, od kterého jde paprsek (Snellovo okno, O5) */
-/* Tyč do vody ponořená (O6): tyč hnědá s tmavým obrysem, zdánlivá poloha ponořené části slabě hnědá, zpětná
-   prodloužení paprsků tenká čárkovaná světlá, oko shora. */
+/* Tyč do vody ponořená (O6): tyč hnědá s tmavým obrysem, zdánlivá poloha ponořené části čárkovaně světle,
+   zpětná prodloužení paprsků čárkovaně žlutě, velké oko šikmo z boku, paprsky končí v zornici (O6b). */
 .course-figure svg .fig-vessel { fill: none; stroke: var(--slide-on-accent); stroke-width: 4; stroke-linejoin: round; }
 .course-figure svg .fig-rod { fill: none; stroke: var(--slide-ground); stroke-width: 12; stroke-linecap: round; }
 .course-figure svg .fig-rod-edge { fill: none; stroke: var(--slide-on-accent); stroke-width: 18; stroke-linecap: round; }
-.course-figure svg .fig-rod-ghost { fill: none; stroke: var(--slide-ground); stroke-width: 12; stroke-linecap: round; opacity: 0.55; }
-.course-figure svg .fig-ray-back { fill: none; stroke: var(--slide-card-bg); stroke-width: 3.5; stroke-dasharray: 8 6; }
+.course-figure svg .fig-rod-ghost { fill: none; stroke: var(--slide-card-bg); stroke-width: 11; stroke-dasharray: 18 10; }
+.course-figure svg .fig-ray-back { fill: none; stroke: var(--slide-highlight); stroke-width: 4; stroke-dasharray: 9 6; }
 .course-figure svg .fig-pupil { fill: var(--slide-on-accent); }
 .course-figure svg .fig-tip { fill: var(--slide-ground); stroke: var(--slide-on-accent); stroke-width: 3; }
-.course-figure svg .fig-tip-ghost { fill: none; stroke: var(--slide-card-bg); stroke-width: 3; stroke-dasharray: 5 4; }
+.course-figure svg .fig-tip-ghost { fill: var(--slide-card-bg); stroke: var(--slide-on-accent); stroke-width: 3; }
 .course-figure svg .fig-sea { fill: var(--slide-water); }
 .course-figure svg .fig-solid-top { fill: var(--slide-accent); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }
 .course-figure svg .fig-solid-front { fill: var(--slide-line-strong); stroke: var(--slide-on-accent); stroke-width: 3; stroke-linejoin: round; }

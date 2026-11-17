@@ -190,7 +190,7 @@ test('Vidění, slide 51 (O5): fotka Snellova okna pod textem se zdrojem', () =>
     assert.doesNotMatch(text(slide(51)), /1,33|48,|n\s*=/);
 });
 
-test('Vidění, Tyč do vody ponořená (O6): paprsky z konce tyče se lámou podle Snellova zákona, zpětná prodloužení se sejdou ve zdánlivém konci', () => {
+test('Vidění, Tyč do vody ponořená (O6, O6b): paprsky z konce tyče se lámou podle Snellova zákona, končí v zornici a zpětná prodloužení se sejdou ve zdánlivém konci', () => {
     const svg = slide(52).querySelector('svg');
     const SURFACE = 170;
     const segments = (sel) => [...svg.querySelectorAll(sel)]
@@ -218,10 +218,18 @@ test('Vidění, Tyč do vody ponořená (O6): paprsky z konce tyče se lámou po
         const len = Math.hypot(air[1][0] - hit[0], air[1][1] - hit[1]) * Math.hypot(Y[0] - hit[0], Y[1] - hit[1]);
         assert.ok(Math.abs(cross / len) < 0.002, 'prodloužení leží na přímce paprsku ve vzduchu');
     }
-    // zdánlivý konec je výš (zhruba ve 3/4 hloubky, jako ve Více), skoro nad skutečným
+    // oba paprsky ve vzduchu končí v zornici oka (O6b: oko šikmo z boku, paprsky do něj skutečně vstoupí)
+    const pupil = svg.querySelector('circle.fig-pupil');
+    const [pcx, pcy, pr] = ['cx', 'cy', 'r'].map(k => Number(pupil.getAttribute(k)));
+    const ends = inWater.map(([, hit]) => rays.find(([a, b]) => a[0] === hit[0] && a[1] === SURFACE && b[1] < SURFACE)[1]);
+    for (const end of ends) assert.ok(Math.hypot(end[0] - pcx, end[1] - pcy) < pr, `paprsek končí v zornici: ${end}`);
+    assert.ok(Math.hypot(ends[0][0] - ends[1][0], ends[0][1] - ends[1][1]) > pr, 'paprsky do zornice vstupují rozevřené');
+    // pohled šikmo z boku: zdánlivý konec je výš (při pohledu shora by to byly asi 3/4 hloubky, z boku méně)
     const ratio = (Y[1] - SURFACE) / (X[1] - SURFACE);
-    assert.ok(ratio > 0.65 && ratio < 0.8, `zdánlivá hloubka ${ratio}`);
-    assert.ok(Math.abs(Y[0] - X[0]) < 10);
+    assert.ok(ratio > 0.35 && ratio < 0.8, `zdánlivá hloubka ${ratio}`);
+    assert.ok(pcx > X[0] && Y[0] > X[0], 'oko z boku, zdánlivý konec posunutý k oku');
+    // čárkovaná prodloužení jsou zřetelně rozevřená: na hladině aspoň 30 px od sebe
+    assert.ok(Math.abs(inWater[0][1][0] - inWater[1][1][0]) > 30);
     // skutečná tyč je rovná a končí v X, zdánlivá ponořená část jde z hladiny do Y
     const [rod] = segments('path.fig-rod');
     assert.deepEqual(rod[1], X);
