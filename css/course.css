@@ -621,6 +621,7 @@ html:has(.course-page) { scrollbar-gutter: stable; } /* posuvník nemění ší�
 .course-figure svg .fig-lens { fill: var(--slide-accent); stroke: var(--slide-on-accent); stroke-width: 2.5; }
 .course-figure svg .fig-retina { fill: none; stroke: var(--slide-wind-warm); stroke-width: 8; stroke-linecap: round; }
 .course-figure svg .fig-fish { fill: var(--slide-on-accent); }
+.course-figure svg .fig-fish.fig-fish-lit { stroke: var(--slide-card-bg); stroke-width: 3; stroke-linejoin: round; } /* ryba na vodě (maska, O8) */
 .course-figure svg .fig-fish-ghost { fill: var(--slide-highlight); fill-opacity: 0.55; stroke: var(--slide-on-accent); stroke-width: 3; stroke-dasharray: 10 7; }
 .course-figure svg .fig-tube-wall { fill: none; stroke: var(--slide-on-accent); stroke-width: 30; }
 .course-figure svg .fig-tube { fill: none; stroke: var(--slide-card-bg); stroke-width: 24; }

@@ -287,6 +287,58 @@ test('Vidění bez masky (O7): na vzduchu se paprsek láme hlavně na rohovce a 
         ['na vzduchu', 'obraz na', 'sítnici', 'rohovka', 'čočka', 'sítnice', 've vodě', 'obraz daleko', 'za sítnicí']);
 });
 
+test('Vidění pod vodou, maska (O8): paprsky z ryby se na skle masky lámou od kolmice do oka, zpětná prodloužení končí ve zdánlivé rybě (3/4 vzdálenosti, úhlově 4/3)', () => {
+    const svg = slide(54).querySelector('svg');
+    const glass = svg.querySelector('rect.fig-glass');
+    const G = Number(glass.getAttribute('x')) + Number(glass.getAttribute('width')) / 2;
+    const fishPts = (sel) => points(svg.querySelector(sel).getAttribute('d'));
+    const real = fishPts('path.fig-fish');
+    const ghost = fishPts('path.fig-fish-ghost');
+    const ends = (pts) => {
+        const ys = pts.map(p => p[1]);
+        const xs = pts.map(p => p[0]);
+        return { top: Math.min(...ys), bottom: Math.max(...ys), x: (Math.min(...xs) + Math.max(...xs)) / 2 };
+    };
+    const R = ends(real);
+    const Gh = ends(ghost);
+    const segs = (sel) => [...svg.querySelectorAll(sel)].flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points)).map(p => [p[0], p.at(-1)]);
+    const rays = segs('path.fig-ray');
+    const pupil = svg.querySelector('circle.fig-pupil');
+    const E = [Number(pupil.getAttribute('cx')), Number(pupil.getAttribute('cy'))];
+    const inWater = rays.filter(([a, b]) => a[0] < G && b[0] === G);
+    assert.equal(inWater.length, 2, 'paprsek z hlavy a z ocasu');
+    const startYs = inWater.map(([a]) => a[1]).sort((a, b) => a - b);
+    assert.deepEqual(startYs, [R.top, R.bottom], 'paprsky vychází z hlavy a ocasu skutečné ryby');
+    const fromHorizontal = (a, b) => deg(Math.atan2(Math.abs(b[1] - a[1]), Math.abs(b[0] - a[0])));
+    const back = segs('path.fig-ray-back');
+    const ghostEnds = [];
+    for (const [start, hit] of inWater) {
+        const air = rays.find(([a, b]) => a[0] === G && a[1] === hit[1] && b[0] > G);
+        assert.ok(air, `paprsek ve vzduchu z ${hit}`);
+        assert.deepEqual(air[1], E, 'paprsek vstoupí do oka');
+        const tw = fromHorizontal(start, hit);
+        const ta = fromHorizontal(air[0], air[1]);
+        assert.ok(Math.abs(Math.sin(rad(ta)) / Math.sin(rad(tw)) - N_WATER) < 0.01, `voda ${tw}°, vzduch ${ta}°`);
+        assert.ok(ta > tw, 'z vody do vzduchu od kolmice');
+        const ext = back.find(([a]) => a[0] === G && a[1] === hit[1]);
+        assert.ok(ext, `čárkované prodloužení z ${hit}`);
+        const cross = (air[1][0] - hit[0]) * (ext[1][1] - hit[1]) - (air[1][1] - hit[1]) * (ext[1][0] - hit[0]);
+        assert.ok(Math.abs(cross) / (Math.hypot(air[1][0] - hit[0], air[1][1] - hit[1]) * Math.hypot(ext[1][0] - hit[0], ext[1][1] - hit[1])) < 0.002,
+            'prodloužení leží na přímce paprsku ve vzduchu');
+        ghostEnds.push(ext[1]);
+    }
+    ghostEnds.sort((a, b) => a[1] - b[1]);
+    assert.ok(Math.abs(ghostEnds[0][1] - Gh.top) < 1.5 && Math.abs(ghostEnds[1][1] - Gh.bottom) < 1.5, 'prodloužení končí v hlavě a ocasu zdánlivé ryby');
+    for (const [x] of ghostEnds) assert.ok(Math.abs(x - Gh.x) < 1.5);
+    // zdánlivá ryba ve 3/4 vzdálenosti od skla, v oku zabírá asi 4/3 úhlu skutečné
+    assert.ok(Math.abs((G - Gh.x) / (G - R.x) - 0.75) < 0.01, 'blíž o čtvrtinu');
+    const angle = (x, top, bottom) => Math.atan2(E[1] - top, E[0] - x) - Math.atan2(E[1] - bottom, E[0] - x);
+    const magnification = angle(Gh.x, Gh.top, Gh.bottom) / angle(R.x, R.top, R.bottom);
+    assert.ok(Math.abs(magnification - 4 / 3) < 0.06, `úhlové zvětšení ${magnification}`);
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['voda', 'skutečně', 'vidíš', 'vzduch', 'v masce']);
+    assert.equal(text(slide(54).querySelector('figcaption')), 'Lom na skle masky: blíž a větší');
+});
+
 test('Vidění: pojem underwater-vision, jeden jev (3/4 vzdálenosti → 4/3 velikosti), procvičování a zdroj fotky', () => {
     assert.deepEqual([...doc.querySelectorAll('[data-concept]')].map(el => el.dataset.concept), ['underwater-vision']);
     const c = concept('underwater-vision');
