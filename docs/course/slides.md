@@ -263,7 +263,7 @@ Varianty těla:
   course-illustration-scale">` s jedním SVG (viewBox 600 × 700): jeden sloupec výšek a tlaků zdola nahoru, řádky se stejným
   rozestupem a pruhy jako tabulka (ne graf s lineární osou), napravo orientační body s ukazatelem na přesné místo (i mezi
   řádky), v pozadí hory a letadlo. Stupnice smí zabrat 64,5 % výšky slidu, čísla jsou pak na 1280×720 asi 20 px.
-- **Fotka pod textem vedle velké kresby** (Snellovo okno, O5): ve sloupci textu za odstavcem
+- **Fotka pod textem vedle velké kresby** (Snellovo okno O5, Tyč do vody ponořená O6: fotka ukazuje jev, schéma proč): ve sloupci textu za odstavcem
   `<figure class="course-figure course-figure-under">` s převzatou fotkou a popiskem se zdrojem. Fotka je menší než kresba
   (nejvýš 34 % výšky slidu, na telefonu 200 px) a doplní prázdné místo pod krátkým textem.
 - **Portrét pod textem** (slide 18: Pascal): `<figure class="course-figure course-portrait">` s `<img>` (výška 17 % slidu,

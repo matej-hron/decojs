@@ -190,6 +190,167 @@ test('Vidění, slide 51 (O5): fotka Snellova okna pod textem se zdrojem', () =>
     assert.doesNotMatch(text(slide(51)), /1,33|48,|n\s*=/);
 });
 
+test('Vidění, Tyč do vody ponořená (O6, O6b): paprsky z konce tyče se lámou podle Snellova zákona, končí v zornici a zpětná prodloužení se sejdou ve zdánlivém konci', () => {
+    const svg = slide(52).querySelector('svg');
+    const SURFACE = 170;
+    const segments = (sel) => [...svg.querySelectorAll(sel)]
+        .flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points)).map(pts => [pts[0], pts.at(-1)]);
+    const tip = svg.querySelector('circle.fig-tip');
+    const ghost = svg.querySelector('circle.fig-tip-ghost');
+    const X = [Number(tip.getAttribute('cx')), Number(tip.getAttribute('cy'))];
+    const Y = [Number(ghost.getAttribute('cx')), Number(ghost.getAttribute('cy'))];
+    const rays = segments('path.fig-ray');
+    const inWater = rays.filter(([a, b]) => a[0] === X[0] && a[1] === X[1] && b[1] === SURFACE);
+    assert.equal(inWater.length, 2, 'dva paprsky z konce tyče');
+    const back = segments('path.fig-ray-back');
+    for (const [, hit] of inWater) {
+        const air = rays.find(([a, b]) => a[0] === hit[0] && a[1] === SURFACE && b[1] < SURFACE);
+        assert.ok(air, `paprsek ve vzduchu z bodu ${hit}`);
+        const beta = angleFromVertical(X, hit);
+        const alpha = angleFromVertical(air[0], air[1]);
+        assert.ok(Math.abs(Math.sin(rad(alpha)) / Math.sin(rad(beta)) - N_WATER) < 0.01, `α ${alpha}, β ${beta}`);
+        assert.ok(alpha > beta, 'z vody do vzduchu se láme od kolmice');
+        // zpětné prodloužení: z bodu na hladině do zdánlivého konce, ve stejném směru jako paprsek ve vzduchu
+        const ext = back.find(([a]) => a[0] === hit[0] && a[1] === SURFACE);
+        assert.ok(ext, `čárkované prodloužení z ${hit}`);
+        assert.deepEqual(ext[1], Y);
+        const cross = (air[1][0] - hit[0]) * (Y[1] - hit[1]) - (air[1][1] - hit[1]) * (Y[0] - hit[0]);
+        const len = Math.hypot(air[1][0] - hit[0], air[1][1] - hit[1]) * Math.hypot(Y[0] - hit[0], Y[1] - hit[1]);
+        assert.ok(Math.abs(cross / len) < 0.002, 'prodloužení leží na přímce paprsku ve vzduchu');
+    }
+    // oba paprsky ve vzduchu končí v zornici oka (O6b: oko šikmo z boku, paprsky do něj skutečně vstoupí)
+    const pupil = svg.querySelector('circle.fig-pupil');
+    const [pcx, pcy, pr] = ['cx', 'cy', 'r'].map(k => Number(pupil.getAttribute(k)));
+    const ends = inWater.map(([, hit]) => rays.find(([a, b]) => a[0] === hit[0] && a[1] === SURFACE && b[1] < SURFACE)[1]);
+    for (const end of ends) assert.ok(Math.hypot(end[0] - pcx, end[1] - pcy) < pr, `paprsek končí v zornici: ${end}`);
+    assert.ok(Math.hypot(ends[0][0] - ends[1][0], ends[0][1] - ends[1][1]) > pr, 'paprsky do zornice vstupují rozevřené');
+    // pohled šikmo z boku: zdánlivý konec je výš (při pohledu shora by to byly asi 3/4 hloubky, z boku méně)
+    const ratio = (Y[1] - SURFACE) / (X[1] - SURFACE);
+    assert.ok(ratio > 0.35 && ratio < 0.8, `zdánlivá hloubka ${ratio}`);
+    assert.ok(pcx > X[0] && Y[0] > X[0], 'oko z boku, zdánlivý konec posunutý k oku');
+    // čárkovaná prodloužení jsou zřetelně rozevřená: na hladině aspoň 30 px od sebe
+    assert.ok(Math.abs(inWater[0][1][0] - inWater[1][1][0]) > 30);
+    // skutečná tyč je rovná a končí v X, zdánlivá ponořená část jde z hladiny do Y
+    const [rod] = segments('path.fig-rod');
+    assert.deepEqual(rod[1], X);
+    const [rodGhost] = segments('path.fig-rod-ghost');
+    assert.equal(rodGhost[0][1], SURFACE);
+    assert.deepEqual(rodGhost[1], Y);
+    const onRod = (rod[0][0] - X[0]) * (SURFACE - X[1]) - (rod[0][1] - X[1]) * (rodGhost[0][0] - X[0]);
+    assert.ok(Math.abs(onRod) < 1, 'zdánlivá část začíná tam, kde tyč protíná hladinu');
+    // O6c: popisky přímo u teček, „voda“ ne
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['skutečný konec', 'zdánlivý', 'konec']);
+    const [real, ghostLabel] = [...svg.querySelectorAll('text')];
+    assert.ok(Math.hypot(Number(real.getAttribute('x')) - X[0], Number(real.getAttribute('y')) - X[1]) < 110, 'skutečný konec u hnědé tečky');
+    assert.ok(Math.hypot(Number(ghostLabel.getAttribute('x')) - Y[0], Number(ghostLabel.getAttribute('y')) - Y[1]) < 40, 'zdánlivý konec u bílé tečky');
+    assert.match(svg.getAttribute('aria-label'), /skutečný konec/);
+    assert.match(svg.getAttribute('aria-label'), /zdánlivém konci/);
+    // fotka zůstává pod větou, schéma vedle; Více odkáže na schéma
+    assert.ok(slide(52).querySelector('.course-core > div > figure.course-figure-under > img[src="../images/course/p1/tuzka-ve-vode.jpg"]'));
+    assert.match(more(52), /Ve schématu vedle fotky je to vidět/);
+});
+
+test('Vidění bez masky (O7): na vzduchu se paprsek láme hlavně na rohovce a sejde se na sítnici, ve vodě se na rohovce skoro nezlomí a sejde se daleko za okem', () => {
+    const svg = slide(53).querySelector('svg');
+    const eyes = [...svg.querySelectorAll('circle.fig-eye')].map(c => ['cx', 'cy', 'r'].map(k => Number(c.getAttribute(k))));
+    assert.equal(eyes.length, 2, 'stejné oko na vzduchu a ve vodě');
+    assert.deepEqual(eyes[0].filter((_, i) => i !== 1), eyes[1].filter((_, i) => i !== 1));
+    // rohovka je vyklenutý vrchlík před okem, za ní čočka, vzadu sítnice
+    assert.equal(svg.querySelectorAll('path.fig-eye').length, 2);
+    assert.equal(svg.querySelectorAll('ellipse.fig-lens').length, 2);
+    assert.equal(svg.querySelectorAll('path.fig-retina').length, 2);
+    // celé paprsky (obrys): vstup, rohovka, čočka, sítnice …
+    const rays = [...svg.querySelectorAll('path.fig-ray-edge')].flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points));
+    const slope = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]);
+    const bendDeg = (pts, i) => Math.abs(deg(slope(pts[i], pts[i + 1]) - slope(pts[i - 1], pts[i])));
+    const [cx, , r] = eyes[0];
+    const retinaX = cx + r;
+    const panel = (cy) => rays.filter(pts => Math.abs(pts[0][1] - cy) < r);
+    const air = panel(eyes[0][1]);
+    const water = panel(eyes[1][1]);
+    assert.equal(air.length, 2);
+    assert.equal(water.length, 2);
+    const eyeLength = retinaX - air[0][1][0]; // od rohovky k sítnici
+    for (const pts of air) {
+        assert.ok(bendDeg(pts, 1) > 5, `zlom na rohovce na vzduchu ${bendDeg(pts, 1)}`);
+        assert.ok(bendDeg(pts, 1) > bendDeg(pts, 2), 'na vzduchu láme víc rohovka než čočka');
+        assert.deepEqual(pts.at(-1), [retinaX, eyes[0][1]], 'obraz na sítnici');
+    }
+    for (const [k, pts] of water.entries()) {
+        assert.ok(bendDeg(pts, 1) < bendDeg(air[k], 1) / 3, `zlom na rohovce ve vodě ${bendDeg(pts, 1)}`);
+        // za sítnicí paprsky pokračují; ohnisko = průsečík posledního úseku s osou oka
+        const [a, b] = pts.slice(-2);
+        const focusX = a[0] + (eyes[1][1] - a[1]) * (b[0] - a[0]) / (b[1] - a[1]);
+        assert.ok(focusX > retinaX + 2 * eyeLength, `ohnisko ve vodě ${focusX}, sítnice ${retinaX}`);
+        assert.ok(b[0] > retinaX, 'paprsky jdou dál za oko');
+    }
+    // na sítnici jsou paprsky ve vodě ještě skoro tak daleko od sebe jako na vstupu (rozmazaně)
+    const at = (pts, x) => { const i = pts.findIndex(p => p[0] >= x); const [a, b] = [pts[i - 1], pts[i]]; return a[1] + (x - a[0]) * (b[1] - a[1]) / (b[0] - a[0]); };
+    const spreadIn = Math.abs(water[0][0][1] - water[1][0][1]);
+    const spreadRetina = Math.abs(at(water[0], retinaX) - at(water[1], retinaX));
+    assert.ok(spreadRetina > 0.6 * spreadIn, `na sítnici ${spreadRetina} z ${spreadIn}`);
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text),
+        ['na vzduchu', 'obraz na', 'sítnici', 'rohovka', 'čočka', 'sítnice', 've vodě', 'obraz daleko', 'za sítnicí']);
+});
+
+test('Vidění pod vodou, maska (O8, O8b): paprsky ze svislé šipky se na skle masky výrazně lámou od kolmice do oka, zpětná prodloužení končí ve zdánlivé šipce (3/4 vzdálenosti, pod větším úhlem)', () => {
+    const svg = slide(54).querySelector('svg');
+    const glass = svg.querySelector('rect.fig-glass');
+    const G = Number(glass.getAttribute('x')) + Number(glass.getAttribute('width')) / 2;
+    const fishPts = (sel) => points(svg.querySelector(sel).getAttribute('d'));
+    const real = fishPts('path.fig-object');
+    const ghost = fishPts('path.fig-object-ghost');
+    const ends = (pts) => {
+        const ys = pts.map(p => p[1]);
+        const xs = pts.map(p => p[0]);
+        return { top: Math.min(...ys), bottom: Math.max(...ys), x: (Math.min(...xs) + Math.max(...xs)) / 2 };
+    };
+    const R = ends(real);
+    const Gh = ends(ghost);
+    const segs = (sel) => [...svg.querySelectorAll(sel)].flatMap(p => p.getAttribute('d').split(/(?=M)/).map(points)).map(p => [p[0], p.at(-1)]);
+    const rays = segs('path.fig-ray');
+    const pupil = svg.querySelector('circle.fig-pupil');
+    const E = [Number(pupil.getAttribute('cx')), Number(pupil.getAttribute('cy'))];
+    const inWater = rays.filter(([a, b]) => a[0] < G && b[0] === G);
+    assert.equal(inWater.length, 2, 'paprsek z horního a dolního konce šipky');
+    const startYs = inWater.map(([a]) => a[1]).sort((a, b) => a - b);
+    assert.deepEqual(startYs, [R.top, R.bottom], 'paprsky vychází z konců skutečné šipky');
+    for (const [a] of inWater) assert.equal(a[0], R.x);
+    const fromHorizontal = (a, b) => deg(Math.atan2(Math.abs(b[1] - a[1]), Math.abs(b[0] - a[0])));
+    const back = segs('path.fig-ray-back');
+    const ghostEnds = [];
+    for (const [start, hit] of inWater) {
+        const air = rays.find(([a, b]) => a[0] === G && a[1] === hit[1] && b[0] > G);
+        assert.ok(air, `paprsek ve vzduchu z ${hit}`);
+        assert.deepEqual(air[1], E, 'paprsek vstoupí do oka');
+        const tw = fromHorizontal(start, hit);
+        const ta = fromHorizontal(air[0], air[1]);
+        assert.ok(Math.abs(Math.sin(rad(ta)) / Math.sin(rad(tw)) - N_WATER) < 0.01, `voda ${tw}°, vzduch ${ta}°`);
+        assert.ok(ta > tw, 'z vody do vzduchu od kolmice');
+        // O8b: zlom je jasně vidět (ve vodě aspoň 25° od kolmice, ve vzduchu 34–42°)
+        assert.ok(tw >= 25 && ta >= 34 && ta <= 42, `voda ${tw}°, vzduch ${ta}°`);
+        const ext = back.find(([a]) => a[0] === G && a[1] === hit[1]);
+        assert.ok(ext, `čárkované prodloužení z ${hit}`);
+        const cross = (air[1][0] - hit[0]) * (ext[1][1] - hit[1]) - (air[1][1] - hit[1]) * (ext[1][0] - hit[0]);
+        assert.ok(Math.abs(cross) / (Math.hypot(air[1][0] - hit[0], air[1][1] - hit[1]) * Math.hypot(ext[1][0] - hit[0], ext[1][1] - hit[1])) < 0.002,
+            'prodloužení leží na přímce paprsku ve vzduchu');
+        ghostEnds.push(ext[1]);
+    }
+    ghostEnds.sort((a, b) => a[1] - b[1]);
+    assert.ok(Math.abs(ghostEnds[0][1] - Gh.top) < 1.5 && Math.abs(ghostEnds[1][1] - Gh.bottom) < 1.5, 'prodloužení končí v koncích zdánlivé šipky');
+    for (const [x] of ghostEnds) assert.ok(Math.abs(x - Gh.x) < 1.5);
+    // zdánlivá šipka ve 3/4 vzdálenosti od skla, zhruba stejně vysoká (při šikmých paprscích o málo vyšší), v oku pod větším úhlem
+    assert.ok(Math.abs((G - Gh.x) / (G - R.x) - 0.75) < 0.01, 'blíž o čtvrtinu');
+    const angle = (x, top, bottom) => Math.atan2(E[1] - top, E[0] - x) - Math.atan2(E[1] - bottom, E[0] - x);
+    const magnification = angle(Gh.x, Gh.top, Gh.bottom) / angle(R.x, R.top, R.bottom);
+    const heightRatio = (Gh.bottom - Gh.top) / (R.bottom - R.top);
+    assert.ok(heightRatio > 0.95 && heightRatio < 1.15, `výška zdánlivé šipky ${heightRatio}`);
+    assert.ok(magnification > 1.2 && magnification < 1.4, `úhlové zvětšení ${magnification}`);
+    assert.match(more(54), /větší se jeví, protože ho oko vidí pod větším úhlem/);
+    assert.deepEqual([...svg.querySelectorAll('text')].map(text), ['voda', 'skutečně', 'vidíš', 'vzduch', 'v masce']);
+    assert.equal(text(slide(54).querySelector('figcaption')), 'Lom na skle masky: blíž a větší');
+});
+
 test('Vidění: pojem underwater-vision, jeden jev (3/4 vzdálenosti → 4/3 velikosti), procvičování a zdroj fotky', () => {
     assert.deepEqual([...doc.querySelectorAll('[data-concept]')].map(el => el.dataset.concept), ['underwater-vision']);
     const c = concept('underwater-vision');
