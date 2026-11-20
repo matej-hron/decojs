@@ -246,7 +246,7 @@ test('Vidění, Tyč do vody ponořená (O6, O6b): paprsky z konce tyče se lám
     assert.match(svg.getAttribute('aria-label'), /skutečný konec/);
     assert.match(svg.getAttribute('aria-label'), /zdánlivém konci/);
     // fotka zůstává pod větou, schéma vedle; Více odkáže na schéma
-    assert.ok(slide(52).querySelector('.course-core > div > figure.course-figure-under > img[src="../images/course/p1/tuzka-ve-vode.jpg"]'));
+    assert.ok(slide(52).querySelector('.course-core > div > figure.course-figure-under > img[src="../images/course/p1/tuzka-v-mele-vode.jpg"]'));
     assert.match(more(52), /Ve schématu vedle fotky je to vidět/);
 });
 
@@ -363,9 +363,13 @@ test('Vidění: pojem underwater-vision, jeden jev (3/4 vzdálenosti → 4/3 vel
     assert.deepEqual(blocks, [['data/quiz-physics.json', '13,16,11']]);
     assert.ok(doc.querySelector('a[href="../quiz-physics.html?kategorie=optika"]'));
     const img = slide(52).querySelector('img');
-    assert.equal(img.getAttribute('src'), '../images/course/p1/tuzka-ve-vode.jpg');
-    assert.ok(existsSync(new URL('images/course/p1/tuzka-ve-vode.jpg', ROOT)));
-    assert.match(read('images/course/p1/SOURCES.md'), /images\/course\/p1\/tuzka-ve-vode\.jpg.*Meganbeckett27.*CC BY-SA 3\.0/);
+    // O9: fotka šikmo shora přes rovnou hladinu, jako schéma vedle
+    assert.equal(img.getAttribute('src'), '../images/course/p1/tuzka-v-mele-vode.jpg');
+    assert.ok(existsSync(new URL('images/course/p1/tuzka-v-mele-vode.jpg', ROOT)));
+    assert.ok(!existsSync(new URL('images/course/p1/tuzka-ve-vode.jpg', ROOT)), 'stará fotka přes stěnu sklenice je pryč');
+    assert.match(read('images/course/p1/SOURCES.md'), /images\/course\/p1\/tuzka-v-mele-vode\.jpg.*Rubens Vallejos.*CC BY-SA 3\.0/);
+    assert.equal(slide(52).querySelector('a.course-source').getAttribute('href'), 'zdroje.html#tuzka-hladina');
+    assert.match(text(slide(52).querySelector('figcaption')), /pohled šikmo shora/);
     // odkazy na hotové kapitoly a jejich kotvy
     assert.ok(doc.querySelector('a[href="stlacovani-plynu.html#dutiny"]'));
     assert.match(read('p1/stlacovani-plynu.html'), /<section id="dutiny"/);
