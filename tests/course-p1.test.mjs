@@ -159,9 +159,10 @@ test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
     assert.throws(() => bonusIds([6, 7], '9'), /9/);
 });
 
-test('Archimédův zákon: těžká otázka č. 49 (hustota tělesa) je poslední a označená jako bonus', () => {
+test('Archimédův zákon: těžké otázky č. 49 (hustota tělesa) a č. 47 (zvedací vak) jsou poslední a označené jako bonus', () => {
     const html = readFileSync(new URL('../p1/archimeduv-zakon.html', import.meta.url), 'utf8');
     assert.match(html, /data-question-ids="46,34,49" data-bonus-ids="49"/);
+    assert.match(html, /data-question-ids="37,45,47" data-bonus-ids="47"/);
 });
 
 // --- stránky kurzu: odkazy na bloky, otázky a offline ----------------------

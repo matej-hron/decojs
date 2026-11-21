@@ -424,7 +424,7 @@ Zadání je vidět, výsledek se odkrývá (slidy 19 a 20). Dvě podoby, které 
 ### `practice`: Procvič si
 
 Poslední zastávka kapitoly: otázky z testů SPČR/CMAS vedle sebe. Nemá číslo slidu, otázky vybírá `data-question-ids`.
-Těžší otázku navíc dej poslední a označ ji `data-bonus-ids="…"`: dostane štítek „bonus“ (Archimédův zákon, č. 49).
+Těžší otázku navíc dej poslední a označ ji `data-bonus-ids="…"`: dostane štítek „bonus“ (Archimédův zákon, č. 49 a 47).
 
 ```html
 <section id="procvic" class="course-section">
