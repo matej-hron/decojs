@@ -207,14 +207,14 @@ test('U15: slide 27 má šipku sestupu jako osu mezi obrázky a pod každým obr
     const [auto, active] = [kids[0], kids[2]];
     const answer = (div) => text(div.querySelector('figcaption .course-figure-answer'));
     assert.equal(answer(auto), 'Vyrovná se samo: dýcháš z automatiky vzduch o tlaku okolí.');
-    assert.equal(answer(active), 'Musíš vyrovnat ty: vyrovnej uši a vydechni nosem do masky.');
+    assert.equal(answer(active), 'Samo se nevyrovná: vzduch do uší i do masky musíš dostat ty.');
     for (const div of [auto, active]) {
         const cap = div.querySelector('figcaption');
         assert.equal(cap.firstElementChild.className, 'course-figure-answer', 'odpověď hned pod obrázkem, ne po kliknutí');
         assert.equal(cap.closest('details'), null);
     }
     assert.match(html, /Vyrovná se samo: dýcháš z&nbsp;automatiky vzduch o&nbsp;tlaku okolí\./);
-    assert.match(html, /vyrovnej uši a&nbsp;vydechni nosem do masky\./);
+    assert.match(html, /vzduch do uší i&nbsp;do masky musíš dostat ty\./);
     // šablona a vzorník znají novou variantu
     assert.match(read('docs/course/slides.md'), /course-core-descent/);
     assert.match(read('docs/course/vzornik-slidu.html'), /course-core-descent/);
