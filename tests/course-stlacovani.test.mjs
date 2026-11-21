@@ -443,3 +443,11 @@ test('T21: postup ve „Více“ slidů 24 a 25 jde přes p · V = konst., jeden
     assert.doesNotMatch(text(slide(26).closest('section')), /odečet změny/);
 });
 
+
+test('Více u dutin: odkaz na Pana Eustacha jen jednou (citace v pojmu, ne další věta)', () => {
+    const html = read('p1/stlacovani-plynu.html');
+    const sec = html.slice(html.indexOf('<section id="dutiny"'), html.indexOf('<section id="spotreba"'));
+    const more = sec.slice(sec.indexOf('<details class="course-more">'));
+    assert.doesNotMatch(more, /stranypotapecske/, 'Více dutin neopakuje odkaz z pojmu body-air-spaces');
+    assert.match(read('concepts/cs/body-air-spaces.html'), /stranypotapecske\.cz\/teorie\/eustach/);
+});
