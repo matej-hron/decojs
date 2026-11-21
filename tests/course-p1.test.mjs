@@ -146,7 +146,7 @@ test('slide Hustota: tabulka příkladů látek, zlato za olovem, hliník zatím
 
 // --- „Procvič si“ -------------------------------------------------------------
 
-import { parseQuestionIds, pickQuestions } from '../js/course/practice.js';
+import { parseQuestionIds, pickQuestions, bonusIds } from '../js/course/practice.js';
 
 test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
     assert.deepEqual(parseQuestionIds(' 8, 6,7 '), [8, 6, 7]);
@@ -154,6 +154,14 @@ test('Procvič si: ID z atributu a výběr otázek v pořadí', () => {
     const data = { questions: [{ id: 6 }, { id: 7 }, { id: 8 }] };
     assert.deepEqual(pickQuestions(data, [8, 6]).map(q => q.id), [8, 6]);
     assert.throws(() => pickQuestions(data, [99]), /99/);
+    assert.deepEqual([...bonusIds([6, 7, 8], '8')], [8]);
+    assert.equal(bonusIds([6, 7], undefined).size, 0);
+    assert.throws(() => bonusIds([6, 7], '9'), /9/);
+});
+
+test('Archimédův zákon: těžká otázka č. 49 (hustota tělesa) je poslední a označená jako bonus', () => {
+    const html = readFileSync(new URL('../p1/archimeduv-zakon.html', import.meta.url), 'utf8');
+    assert.match(html, /data-question-ids="46,34,49" data-bonus-ids="49"/);
 });
 
 // --- stránky kurzu: odkazy na bloky, otázky a offline ----------------------

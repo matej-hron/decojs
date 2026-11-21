@@ -4,6 +4,8 @@
  *     <div class="course-practice" data-quiz-source="data/quiz-physics.json"
  *          data-question-ids="6,7,8"></div>
  *
+ * Volitelně `data-bonus-ids="49"`: těžší otázka navíc, dostane štítek „bonus“ (musí být i v `data-question-ids`).
+ *
  * Otázky se berou podle ID (kategorie kvízu jsou na kapitoly moc hrubé). Každá je
  * označená zdrojem „SPČR“; vlastní otázky DecoTheory přijdou později s jiným štítkem.
  * Odpověď se ukáže až po kliknutí na možnost (stejně na přednášce i doma).
@@ -26,6 +28,19 @@ export function parseQuestionIds(attr) {
 }
 
 /**
+ * Bonusové otázky (těžší, navíc) z atributu `data-bonus-ids`.
+ * @param {number[]} ids        všechny otázky bloku
+ * @param {string} [attr]       např. "49"
+ * @returns {Set<number>}
+ * @throws {Error} když bonusová otázka v bloku není
+ */
+export function bonusIds(ids, attr) {
+    const bonus = parseQuestionIds(attr);
+    for (const id of bonus) if (!ids.includes(id)) throw new Error(`practice: bonusová otázka ${id} není v data-question-ids`);
+    return new Set(bonus);
+}
+
+/**
  * Vybere otázky v pořadí ID.
  * @param {{questions: {id: number}[]}} data   obsah data/quiz-*.json
  * @param {number[]} ids
@@ -41,15 +56,16 @@ export function pickQuestions(data, ids) {
     });
 }
 
-function questionHtml(q, index) {
+function questionHtml(q, index, bonus = false) {
     const options = q.options.map(o => `
         <button type="button" class="option-btn" data-key="${o.key}">
             <span class="option-key">${o.key})</span>
             <span class="option-text">${o.text}</span>
         </button>`).join('');
     return `
-        <article class="question-card course-question" data-correct="${q.correct}">
-            <h3 class="question-number">Otázka ${index + 1}
+        <article class="question-card course-question${bonus ? ' course-question-bonus' : ''}" data-correct="${q.correct}">
+            <h3 class="question-number">Otázka ${index + 1}${bonus ? `
+                <span class="course-bonus-badge" title="Těžší otázka navíc">bonus</span>` : ''}
                 <span class="course-source-badge" title="Otázka z testů SPČR/CMAS">SPČR</span>
                 <span class="question-id">(č. ${q.id})</span></h3>
             <p class="question-text">${q.question}</p>
@@ -88,8 +104,10 @@ export async function initPractice(root = document, options = {}) {
             const url = new URL(box.dataset.quizSource || 'data/quiz-physics.json', base).href;
             const res = await fetchImpl(url);
             if (!res.ok) throw new Error(`${url} → ${res.status}`);
-            const questions = pickQuestions(await res.json(), parseQuestionIds(box.dataset.questionIds));
-            box.innerHTML = questions.map(questionHtml).join('');
+            const ids = parseQuestionIds(box.dataset.questionIds);
+            const bonus = bonusIds(ids, box.dataset.bonusIds);
+            const questions = pickQuestions(await res.json(), ids);
+            box.innerHTML = questions.map((q, i) => questionHtml(q, i, bonus.has(q.id))).join('');
             box.querySelectorAll('.course-question').forEach((card, i) => wire(card, questions[i]));
         } catch (err) {
             console.warn('practice:', err);
