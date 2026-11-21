@@ -251,7 +251,7 @@ test('Archimédův zákon: A1 z náhledu slidu 36 (krok 2), odkazy na kroky, vě
 
 test('Archimédův zákon: Procvič si podle rozhodnutí 9b, otázka 27 bezpečnostních směrnic pod slidem 34', () => {
     const ids = [...doc.querySelectorAll('main > section > .course-slide .course-practice')].map(p => p.dataset.questionIds);
-    assert.deepEqual(ids, ['46,34,49', '47,37,45']);
+    assert.deepEqual(ids, ['46,34,49', '37,45,47']);
     assert.deepEqual(slides.slice(-2).map(s => text(s.querySelector('h2'))), ['Procvič si: Archimédův zákon', 'Procvič si: kontrola vztlaku']);
     assert.equal(doc.querySelectorAll('a[href="../quiz-physics.html?kategorie=vztlak-vystroj"]').length, 2);
     const safety = slide(34).closest('section').querySelector('details.course-more .course-practice');
