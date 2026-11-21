@@ -2,7 +2,7 @@
 // příklady spotřeby 28–30, model B1, pojmy, navigace.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 
 import { volumeAtDepth, gasUsed, timeToReserve, sacFromPressureDrop } from '../js/physics/boyle.js';
@@ -450,4 +450,14 @@ test('Více u dutin: odkaz na Pana Eustacha jen jednou (citace v pojmu, ne dalš
     const more = sec.slice(sec.indexOf('<details class="course-more">'));
     assert.doesNotMatch(more, /stranypotapecske/, 'Více dutin neopakuje odkaz z pojmu body-air-spaces');
     assert.match(read('concepts/cs/body-air-spaces.html'), /stranypotapecske\.cz\/teorie\/eustach/);
+});
+
+test('zadání příkladů: číslo se značkou jednotky a nedělitelnou mezerou, ne skloňovaný název (slovníček §4.7)', () => {
+    for (const f of readdirSync(new URL('p1/', ROOT)).filter(n => n.endsWith('.html'))) {
+        const src = read(`p1/${f}`);
+        assert.doesNotMatch(src, /\d(?:\s|&nbsp;)(?:litr(?:ů|y)|metr(?:ů|y|ech)|bar(?:ů|y|ech|em)|minut)\b/, f);
+    }
+    const html = read('p1/stlacovani-plynu.html');
+    assert.match(html, /ponoru na 200&nbsp;bar, tak aby se vynořil s&nbsp;rezervou 50&nbsp;bar,/);
+    assert.match(html, /za 20&nbsp;min 100&nbsp;bar/);
 });
