@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 import {
     LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTH_NAMES, LAKE_STEPS, airOf, exchangeRange, firstStepOfMonth,
-    LAKE_MONTH_ABBR, formatAirTemperature, lakeFrame, surfaceArrowLabel, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
+    LAKE_MONTH_ABBR, LAKE_AXIS_MONTHS, axisToStep, stepToAxis, formatAirTemperature, lakeFrame, surfaceArrowLabel, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
     treeOf, unstablePair,
 } from '../js/physics/lakeCycle.js';
 import { waterDensity } from '../js/physics/waterDensity.js';
@@ -326,7 +326,8 @@ test('stránka a výklad: ovládání po krocích, poznámka a srpen podle nové
     const html = readFileSync(new URL('../p1/hustota.html', import.meta.url), 'utf8');
     assert.match(html, /předchozí krok/);
     assert.match(html, /další krok/);
-    assert.match(html, new RegExp(`id="krok-slider" min="1" max="${N}"`));
+    assert.match(html, /id="krok-slider" min="0" max="12" step="any"/, 'posuvník na ose měsíců, ne kroků');
+    assert.match(html, /class="course-slider course-slider-months"/);
     assert.match(html, /id="lom-mesice"/);
     // U7: pod modelem jen krátká poznámka, podrobnosti drobně na konci výkladu „Více“
     assert.match(html, /<p class="course-simplification">Modelový lom, ne měření\. Takhle to v&nbsp;lomu vypadat může\.<\/p>/);
@@ -398,4 +399,28 @@ test('text ve vrstvě má kontrast aspoň 4,5:1 v každé teplotě přechodu', (
         const fg = lakeTextColor(bg);
         assert.ok(contrast(fg, bg) >= 4.5, `${t} °C: ${fg} na ${bg} = ${contrast(fg, bg).toFixed(2)}`);
     }
+});
+
+test('osa posuvníku: měsíce od srpna, krok leží vždy v dílu svého měsíce', () => {
+    assert.equal(LAKE_AXIS_MONTHS.length, 12);
+    assert.equal(LAKE_AXIS_MONTHS[0], 'srpen', 'model začíná srpnem, osa taky');
+    assert.deepEqual([...LAKE_AXIS_MONTHS].sort(), [...LAKE_MONTH_NAMES].sort());
+    let prev = -1;
+    LAKE_STEPS.forEach((s, i) => {
+        const pos = stepToAxis(i);
+        const m = LAKE_AXIS_MONTHS.indexOf(s.month);
+        if (i === LAKE_STEPS.length - 1) {
+            assert.equal(s.month, 'srpen', 'rok se uzavře srpnem');
+            assert.equal(pos, 12, 'srpen po roce na konci osy');
+        } else {
+            assert.ok(pos > m && pos < m + 1, `krok ${i + 1} (${s.month}) na ${pos}`);
+        }
+        assert.ok(pos > prev, 'poloha roste s krokem');
+        prev = pos;
+        assert.equal(axisToStep(pos), i, 'tam a zpět');
+    });
+    assert.equal(axisToStep(0), 0);
+    assert.equal(axisToStep(12), LAKE_STEPS.length - 1);
+    assert.equal(axisToStep(-3), 0);
+    assert.equal(LAKE_STEPS[axisToStep(3.5)].month, LAKE_AXIS_MONTHS[3], 'střed dílu měsíce je v tom měsíci');
 });

@@ -1218,6 +1218,35 @@ a.course-sim-toc { text-decoration: none; }
 }
 .course-plot-clickable { cursor: pointer; }
 .course-months { display: flex; gap: 2px; }
+/* Lom během roku: měsíce a posuvník na jedné ose. Jezdec má pevnou šířku a řada měsíců je odsazená
+   o jeho polovinu, takže díl osy každého měsíce leží přesně pod jeho tlačítkem. */
+.course-slider-months { --course-thumb: 1.25rem; }
+.course-slider-months .course-months { padding-inline: calc(var(--course-thumb) / 2); }
+.course-model-controls .course-slider-months input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    margin: 0;
+}
+.course-slider-months input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 3px; background: var(--slide-line-strong);
+}
+.course-slider-months input[type="range"]::-moz-range-track {
+    height: 6px; border-radius: 3px; background: var(--slide-line-strong);
+}
+.course-slider-months input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--course-thumb); height: var(--course-thumb);
+    margin-top: calc(3px - var(--course-thumb) / 2);
+    border: 0; border-radius: 50%;
+    background: var(--slide-accent);
+}
+.course-slider-months input[type="range"]::-moz-range-thumb {
+    width: var(--course-thumb); height: var(--course-thumb);
+    border: 0; border-radius: 50%;
+    background: var(--slide-accent);
+}
+.course-slider-months input[type="range"]:focus-visible { outline: 2px solid var(--slide-accent); outline-offset: 2px; }
 .course-months button {
     flex: 1 1 0;
     min-width: 0;

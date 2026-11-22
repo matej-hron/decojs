@@ -11,7 +11,7 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { LAKE_MONTH_ABBR, LAKE_MONTH_NAMES, LAKE_STEPS, firstStepOfMonth, modelKeyStep, stepFromParams } from '../physics/lakeCycle.js';
+import { LAKE_AXIS_MONTHS, LAKE_MONTH_ABBR, LAKE_MONTH_NAMES, LAKE_STEPS, axisToStep, firstStepOfMonth, modelKeyStep, stepFromParams, stepToAxis } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
 import { createLakeCycle } from '../components/LakeCycle.js';
 
@@ -107,10 +107,14 @@ function initLakeModel() {
     if (!slider || !host) return {};
 
     const lake = createLakeCycle(host, { step: stepFromParams(readParams(window.location.search, LAKE_PARAMS)) ?? 0 });
-    slider.max = String(LAKE_STEPS.length);
+    // Posuvník i řada měsíců leží na jedné ose (od srpna jako model): každý měsíc stejně široký díl.
+    slider.min = '0';
+    slider.max = String(LAKE_AXIS_MONTHS.length);
+    slider.step = 'any';
 
     // Řada tlačítek s měsíci: skočí na první krok měsíce.
-    const monthButtons = LAKE_MONTH_NAMES.map((name, m) => {
+    const monthButtons = LAKE_AXIS_MONTHS.map((name) => {
+        const m = LAKE_MONTH_NAMES.indexOf(name);
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = LAKE_MONTH_ABBR[m];
@@ -124,8 +128,8 @@ function initLakeModel() {
     const show = () => {
         const index = lake.getStep();
         const r = lakeReadout(index);
-        monthButtons.forEach((btn, m) => btn.setAttribute('aria-pressed', String(LAKE_MONTH_NAMES[m] === LAKE_STEPS[index].month)));
-        slider.value = String(index + 1);
+        monthButtons.forEach((btn, m) => btn.setAttribute('aria-pressed', String(LAKE_AXIS_MONTHS[m] === LAKE_STEPS[index].month)));
+        slider.value = String(stepToAxis(index));
         slider.setAttribute('aria-valuetext', `${index + 1}, ${LAKE_STEPS[index].month}: ${r.label}`);
         readout.innerHTML = `${r.main}<span class="course-readout-sub">${r.sub}</span>`;
         labelEl.textContent = r.label;
@@ -137,8 +141,9 @@ function initLakeModel() {
     document.getElementById('krok-dalsi')?.addEventListener('click', () => step(1));
     host.addEventListener('click', () => step(1)); // klik kamkoli do průřezu = další krok
     slider.addEventListener('input', () => {
-        lake.setStep(Number(slider.value) - 1, { animate: true });
-        show();
+        const target = axisToStep(Number(slider.value));
+        if (target !== lake.getStep()) lake.setStep(target, { animate: true });
+        show(); // přichytí jezdce na střed kroku
     });
     // Šipky a prezentační klikr: jen v otevřeném simulátoru, jinak přepínají slidy.
     document.addEventListener('keydown', (e) => {
