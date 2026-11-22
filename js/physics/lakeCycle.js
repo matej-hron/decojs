@@ -214,6 +214,46 @@ export function firstStepOfMonth(monthNumber) {
 }
 
 /**
+ * Měsíce v pořadí kroků modelu (od srpna). Na nich leží osa posuvníku: každý měsíc má na ose stejný
+ * díl a kroky měsíce se do něj rozdělí rovnoměrně. Posuvník tak stojí vždy pod právě zobrazeným měsícem,
+ * i když má prosinec 20 kroků a únor jeden. Poslední krok je znovu srpen: rok se uzavřel, leží na konci osy.
+ */
+export const LAKE_AXIS_MONTHS = Object.freeze([...new Set(LAKE_STEPS.map(s => s.month))]);
+
+const monthSpan = (month) => {
+    const first = LAKE_STEPS.findIndex(s => s.month === month);
+    let n = 0;
+    while (LAKE_STEPS[first + n]?.month === month) n++;
+    return { first, n };
+};
+
+/**
+ * Poloha kroku na ose měsíců: 0 = začátek prvního měsíce osy, 12 = konec posledního.
+ * @param {number} index  index kroku
+ * @returns {number}
+ */
+export function stepToAxis(index) {
+    const { month } = LAKE_STEPS[index];
+    const { first, n } = monthSpan(month);
+    if (index >= first + n) return LAKE_AXIS_MONTHS.length; // srpen po roce: konec osy
+    return LAKE_AXIS_MONTHS.indexOf(month) + (index - first + 0.5) / n;
+}
+
+/**
+ * Krok pod danou polohou na ose měsíců (opak `stepToAxis`).
+ * @param {number} pos  0–12
+ * @returns {number} index kroku
+ */
+export function axisToStep(pos) {
+    if (pos >= LAKE_AXIS_MONTHS.length) return LAKE_STEPS.length - 1;
+    const last = LAKE_AXIS_MONTHS.length - 1;
+    const m = Math.min(last, Math.max(0, Math.floor(Number(pos) || 0)));
+    const { first, n } = monthSpan(LAKE_AXIS_MONTHS[m]);
+    const k = Math.min(n - 1, Math.max(0, Math.floor((pos - m) * n)));
+    return first + k;
+}
+
+/**
  * Krok z předvolby v adrese; `krok` má přednost před `mesic`.
  * @param {{krok: number|null, mesic: number|null}} params
  * @returns {number|null} index kroku, nebo null bez předvolby
