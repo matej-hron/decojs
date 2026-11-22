@@ -156,7 +156,7 @@ test('Henry: pojmy, portrét, procvičování a odkazy', () => {
     assert.match(concept('gas-dissolution'), /přímo úměrné parciálnímu tlaku toho plynu nad kapalinou/);
     assert.match(concept('tissue-saturation'), /To je dekompresní nemoc\./);
     const blocks = [...doc.querySelectorAll('.course-practice')].map(el => [el.dataset.quizSource, el.dataset.questionIds]);
-    assert.deepEqual(blocks, [['data/quiz-physics.json', '100,94'], ['data/quiz-accidents.json', '81']], 'rozhodnutí 10');
+    assert.deepEqual(blocks, [['data/quiz-physics.json', '100,94'], ['data/quiz-physics.json', '93']], 'Matej 2026-11-22: místo otázky z nehod (č. 81, sporná kožní forma) fyzika č. 93');
     assert.ok(existsSync(new URL('images/course/p1/henry.jpg', ROOT)));
     assert.match(read('images/course/p1/SOURCES.md'), /images\/course\/p1\/henry\.jpg.*PD-old-100-expired/);
     for (const href of ['../tissue-loading.html#gas-exchange', '../sandbox/tissue-saturation.html', '../sandbox/deco-table.html', 'stlacovani-plynu.html#zvon']) {
