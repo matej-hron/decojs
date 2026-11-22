@@ -88,7 +88,7 @@ s nadpisem nic není. Statické, bez animace. Bubliny jen od 769 px, na telefonu
 
 V HTML je jen nadpis (kurz navíc podnadpis a autora). Zbytek doplní `renderTitleSlide` (`js/course/chapter.js`)
 z dat kurzu, nic se nepíše ručně:
-- `.course-slide-kicker` nad nadpisem drobně „Kapitola 2 z 9“, na kurzu „9 kapitol · 82 slidů“ (`titleKicker`
+- `.course-slide-kicker` nad nadpisem drobně „Kapitola 2 z 9“, na kurzu „9 kapitol · 81 slidů“ (`titleKicker`
   v `p1Course.js`, počty se počítají). Normální písmo, ne verzálky. V HTML je za nadpisem, takže ho čtečka přečte
   až po něm; nad nadpis ho dá CSS (na projektoru absolutně, nadpis se neposune).
 - `.course-slide-topics` pod nadpisem témata kapitoly (`topics` u kapitoly v `P1_CHAPTERS`, 2–4) oddělená „·“.

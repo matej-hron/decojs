@@ -39,7 +39,7 @@ export const P1_CHAPTERS = [
         topics: ['Archimédův zákon', 'kontrola vztlaku', 'změna vztlaku během ponoru'] },
     { slug: 'dalton', title: 'Složení vzduchu a Daltonův zákon', slides: '38–41', level: 'P★', status: 'ready', courseSlides: 7,
         topics: ['složení vzduchu', 'Daltonův zákon', 'meze dýchaných plynů'] },
-    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready', courseSlides: 9,
+    { slug: 'henry', title: 'Rozpouštění plynů v kapalinách', slides: '42–47', level: 'P★', status: 'ready', courseSlides: 8,
         topics: ['Henryho zákon', 'sycení tkání', 'bubliny při výstupu'] },
     { slug: 'videni', title: 'Vidění pod vodou', slides: '48–54', level: 'P★★', status: 'ready', courseSlides: 9,
         topics: ['barvy pod vodou', 'Snellovo okno', 'lom světla', 'vidění bez masky'] },
@@ -110,7 +110,7 @@ function czCount(n, [one, few, many]) {
 }
 
 /**
- * Drobný řádek nad nadpisem titulního slidu: v kapitole „Kapitola 2 z 9“, na rozcestníku „9 kapitol · 82 slidů“.
+ * Drobný řádek nad nadpisem titulního slidu: v kapitole „Kapitola 2 z 9“, na rozcestníku „9 kapitol · 81 slidů“.
  * Počty se počítají z dat kurzu, nic natvrdo.
  * @param {string|null} slug kapitola, `null` rozcestník
  * @param {Chapter[]} [chapters]
