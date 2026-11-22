@@ -274,6 +274,7 @@ test('Vidění bez masky (O7): na vzduchu se paprsek láme hlavně na rohovce a 
     for (const pts of air) {
         assert.ok(bendDeg(pts, 1) > 5, `zlom na rohovce na vzduchu ${bendDeg(pts, 1)}`);
         assert.ok(bendDeg(pts, 1) > bendDeg(pts, 2), 'na vzduchu láme víc rohovka než čočka');
+        assert.ok(bendDeg(pts, 2) > 3, `zlom na čočce na vzduchu je vidět ${bendDeg(pts, 2)}`);
         assert.deepEqual(pts.at(-1), [retinaX, eyes[0][1]], 'obraz na sítnici');
     }
     for (const [k, pts] of water.entries()) {
@@ -291,6 +292,17 @@ test('Vidění bez masky (O7): na vzduchu se paprsek láme hlavně na rohovce a 
     assert.ok(spreadRetina > 0.6 * spreadIn, `na sítnici ${spreadRetina} z ${spreadIn}`);
     assert.deepEqual([...svg.querySelectorAll('text')].map(text),
         ['na vzduchu', 'obraz na', 'sítnici', 'rohovka', 'čočka', 'sítnice', 've vodě', 'obraz daleko', 'za sítnicí']);
+    // vodicí čáry: „rohovka“ končí na vrchlíku rohovky, „čočka“ na okraji čočky (Matej 2026-11-22)
+    const dots = [...svg.querySelectorAll('circle.fig-leader-dot')].map(c => [Number(c.getAttribute('cx')), Number(c.getAttribute('cy'))]);
+    assert.equal(dots.length, 2);
+    assert.equal(svg.querySelectorAll('path.fig-leader').length, 2);
+    const [corneaDot, lensDot] = dots;
+    const corneaCenter = [301.1, eyes[0][1]];
+    assert.ok(Math.abs(Math.hypot(corneaDot[0] - corneaCenter[0], corneaDot[1] - corneaCenter[1]) - 49.1) < 1, 'tečka na rohovce');
+    assert.ok(corneaDot[0] < 284.8, 'na vyklenuté části před okem');
+    const lens = svg.querySelector('ellipse.fig-lens');
+    const [lx, ly, rx, ry] = ['cx', 'cy', 'rx', 'ry'].map(k => Number(lens.getAttribute(k)));
+    assert.ok(Math.abs(((lensDot[0] - lx) / rx) ** 2 + ((lensDot[1] - ly) / ry) ** 2 - 1) < 0.05, 'tečka na okraji čočky');
 });
 
 test('Vidění pod vodou, maska (O8, O8b): paprsky ze svislé šipky se na skle masky výrazně lámou od kolmice do oka, zpětná prodloužení končí ve zdánlivé šipce (3/4 vzdálenosti, pod větším úhlem)', () => {
