@@ -476,7 +476,7 @@ test('titulní slide: „Kapitola N z 9“ a na kurzu počet kapitol a slidů, z
     assert.equal(titleKicker('hustota'), 'Kapitola 1 z 9');
     assert.equal(titleKicker('tlak'), 'Kapitola 2 z 9');
     assert.equal(titleKicker('teplo'), 'Kapitola 9 z 9');
-    assert.equal(titleKicker(null), '9 kapitol · 82 slidů');
+    assert.equal(titleKicker(null), '9 kapitol · 81 slidů');
     assert.equal(titleKicker('neznama'), '');
     const few = [{ slug: 'a', status: 'ready', courseSlides: 1 }, { slug: 'b', status: 'planned' }];
     assert.equal(titleKicker(null, few), '2 kapitoly · 8 slidů');
@@ -514,7 +514,7 @@ test('titulní slide kurzu: řádek s počty, podnadpis a autor bez „předná�
     const doc = new JSDOM(readFileSync(new URL('p1/index.html', ROOT), 'utf8')).window.document;
     const slide = doc.querySelector('main .course-slide[data-slide-type="title"]');
     renderTitleSlide(slide, null);
-    assert.equal(slide.querySelector('.course-slide-kicker').textContent, '9 kapitol · 82 slidů');
+    assert.equal(slide.querySelector('.course-slide-kicker').textContent, '9 kapitol · 81 slidů');
     assert.equal(slide.querySelector('.course-slide-topics'), null);
     assert.equal(slide.querySelector('.course-slide-author').textContent, 'Matěj Hron');
     assert.equal(slide.querySelector('.course-slide-org').textContent, 'Svaz potápěčů České republiky');

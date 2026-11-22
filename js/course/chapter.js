@@ -75,7 +75,7 @@ export function titleTopicsHtml(topics) {
 }
 
 /**
- * Titulní slide (T29, varianta B): drobně „Kapitola 2 z 9“ (na rozcestníku „9 kapitol · 82 slidů“)
+ * Titulní slide (T29, varianta B): drobně „Kapitola 2 z 9“ (na rozcestníku „9 kapitol · 81 slidů“)
  * a pod nadpisem témata kapitoly. Obojí z dat kurzu, v HTML stránky je jen nadpis.
  * Řádek s číslem kapitoly je v pořadí čtení za nadpisem, nad něj ho dá CSS.
  * @param {Element|null} slide `.course-slide[data-slide-type="title"]`, jinak nic

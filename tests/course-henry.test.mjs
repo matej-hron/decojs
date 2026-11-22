@@ -31,8 +31,8 @@ test('Henry: kapitola je hotová, slidy 42–47, za Daltonem', () => {
     assert.ok(answered('Jak předcházet nehodám?').includes('henry'), 'rozhodnutí 9');
 });
 
-test('Henry: titulní slide, pak slidy 42–47 a dvě Procvič si', () => {
-    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '42', '43', '44', '45', '46', '47', null, null]);
+test('Henry: titulní slide, pak slidy 42–47 a jedno Procvič si', () => {
+    assert.deepEqual(slides.map(s => s.dataset.slideNumber ?? null), [null, '42', '43', '44', '45', '46', '47', null]);
     assert.equal(slides[0].dataset.slideType, 'title');
     assert.equal(text(slides[0].querySelector('h1')), 'Rozpouštění plynů v kapalinách');
     assert.equal(doc.querySelectorAll('h1').length, 1);
@@ -156,7 +156,7 @@ test('Henry: pojmy, portrét, procvičování a odkazy', () => {
     assert.match(concept('gas-dissolution'), /přímo úměrné parciálnímu tlaku toho plynu nad kapalinou/);
     assert.match(concept('tissue-saturation'), /To je dekompresní nemoc\./);
     const blocks = [...doc.querySelectorAll('.course-practice')].map(el => [el.dataset.quizSource, el.dataset.questionIds]);
-    assert.deepEqual(blocks, [['data/quiz-physics.json', '100,94'], ['data/quiz-accidents.json', '81']], 'rozhodnutí 10');
+    assert.deepEqual(blocks, [['data/quiz-physics.json', '100,94']], 'Matej 2026-11-22: druhý Procvič si (č. 81 z nehod) pryč, je mimo P1');
     assert.ok(existsSync(new URL('images/course/p1/henry.jpg', ROOT)));
     assert.match(read('images/course/p1/SOURCES.md'), /images\/course\/p1\/henry\.jpg.*PD-old-100-expired/);
     for (const href of ['../tissue-loading.html#gas-exchange', '../sandbox/tissue-saturation.html', '../sandbox/deco-table.html', 'stlacovani-plynu.html#zvon']) {

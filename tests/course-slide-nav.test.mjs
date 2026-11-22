@@ -372,7 +372,7 @@ describe('číslování slidů kurzu (D16)', () => {
         assert.deepEqual(shown.map(([, , label]) => label), Array.from({ length: total }, (_, i) => `slide ${i + 1} z ${total}`));
         const hustota = shown.filter(([page]) => page === 'p1/hustota.html').map(([, text]) => text);
         assert.deepEqual(hustota, [`8 / ${total}`, `9 / ${total}`, `10 / ${total}`, `11 / ${total}`], 'Hustota: titulní 8, slidy 9, 10 a Procvič si 11');
-        assert.equal(total, 82, 'T29: 74 slidů a titulní slide u 8 kapitol, které ho v přednášce nemají');
+        assert.equal(total, 81, 'T29: 74 slidů a titulní slide u 8 kapitol, které ho v přednášce nemají; Henry bez druhého Procvič si (Matej 2026-11-22)');
     });
 
     it('stránka mimo kurz (nehotová nebo neznámá kapitola) čísla nemá', () => {
