@@ -254,6 +254,16 @@ export function axisToStep(pos) {
 }
 
 /**
+ * Přehrávání: jak dlouho počkat, než se ukáže krok `index`. Prohození vrstev se animuje déle
+ * (LakeCycle: 1,5 s místo 0,7 s), tak na něj přehrávání počká, ať je vidět celé.
+ * @param {number} index  krok, který se právě ukázal
+ * @returns {number} ms
+ */
+export function playDelay(index) {
+    return typeof LAKE_STEPS[index]?.swap === 'number' ? 1900 : 1000;
+}
+
+/**
  * Krok z předvolby v adrese; `krok` má přednost před `mesic`.
  * @param {{krok: number|null, mesic: number|null}} params
  * @returns {number|null} index kroku, nebo null bez předvolby
