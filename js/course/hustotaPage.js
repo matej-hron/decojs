@@ -11,7 +11,7 @@ import { readParams, syncUrl } from './modelParams.js';
 import { registerServiceWorker } from '../swRegister.js';
 import { fmtNum } from '../format.js';
 import { densityAt, waterDensity, ICE_DENSITY, MAX_DENSITY_TEMPERATURE } from '../physics/waterDensity.js';
-import { LAKE_AXIS_MONTHS, LAKE_MONTH_ABBR, LAKE_MONTH_NAMES, LAKE_STEPS, axisToStep, firstStepOfMonth, modelKeyStep, stepFromParams, stepToAxis } from '../physics/lakeCycle.js';
+import { LAKE_AXIS_MONTHS, LAKE_MONTH_ABBR, LAKE_MONTH_NAMES, LAKE_STEPS, axisToStep, firstStepOfMonth, modelKeyStep, playDelay, stepFromParams, stepToAxis } from '../physics/lakeCycle.js';
 import { createDensityCurve } from '../components/DensityCurve.js';
 import { createLakeCycle } from '../components/LakeCycle.js';
 
@@ -135,12 +135,38 @@ function initLakeModel() {
         labelEl.textContent = r.label;
         syncUrl({ krok: index + 1, mesic: null });
     };
-    const step = (dir) => { lake.step(dir); show(); };
+    // Přehrát: krok za krokem do konce roku. Jakýkoli jiný zásah (krok, posuvník, měsíc, zavření) přehrávání zastaví.
+    const playBtn = document.getElementById('krok-prehrat');
+    let timer = null;
+    const setPlaying = (on) => {
+        clearTimeout(timer);
+        timer = null;
+        if (!playBtn) return;
+        playBtn.setAttribute('aria-pressed', String(on));
+        playBtn.textContent = on ? '❚❚ zastavit' : '▶ přehrát';
+    };
+    const tick = () => {
+        if (lake.getStep() >= LAKE_STEPS.length - 1) { setPlaying(false); return; }
+        lake.step(1);
+        show();
+        timer = setTimeout(tick, playDelay(lake.getStep()));
+    };
+    const stop = () => { if (timer !== null) setPlaying(false); };
+    playBtn?.addEventListener('click', () => {
+        if (timer !== null) { setPlaying(false); return; }
+        setPlaying(true);
+        if (lake.getStep() >= LAKE_STEPS.length - 1) { lake.setStep(0); show(); } // na konci roku znovu od srpna
+        timer = setTimeout(tick, 400);
+    });
+    monthButtons.forEach(btn => btn.addEventListener('click', stop));
+
+    const step = (dir) => { stop(); lake.step(dir); show(); };
 
     document.getElementById('krok-predchozi')?.addEventListener('click', () => step(-1));
     document.getElementById('krok-dalsi')?.addEventListener('click', () => step(1));
     host.addEventListener('click', () => step(1)); // klik kamkoli do průřezu = další krok
     slider.addEventListener('input', () => {
+        stop();
         const target = axisToStep(Number(slider.value));
         if (target !== lake.getStep()) lake.setStep(target, { animate: true });
         show(); // přichytí jezdce na střed kroku
@@ -163,7 +189,7 @@ function initLakeModel() {
             show();
         },
         /** Předvolba po zavření z adresy zmizí, jinak by zůstala při přechodu na další slide. */
-        onClose() { syncUrl({ krok: null, mesic: null }); },
+        onClose() { stop(); syncUrl({ krok: null, mesic: null }); },
     };
 }
 

@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 import {
     LAKE_BANDS, LAKE_DEPTHS, LAKE_MAX_DEPTH, LAKE_MONTH_NAMES, LAKE_STEPS, airOf, exchangeRange, firstStepOfMonth,
-    LAKE_MONTH_ABBR, LAKE_AXIS_MONTHS, axisToStep, stepToAxis, formatAirTemperature, lakeFrame, surfaceArrowLabel, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
+    LAKE_MONTH_ABBR, LAKE_AXIS_MONTHS, axisToStep, stepToAxis, playDelay, formatAirTemperature, lakeFrame, surfaceArrowLabel, windLabelText, lakeTemperatureColor, lakeTextColor, modelKeyStep, stepFromParams, stepIndex, swapLabel,
     treeOf, unstablePair,
 } from '../js/physics/lakeCycle.js';
 import { waterDensity } from '../js/physics/waterDensity.js';
@@ -423,4 +423,14 @@ test('osa posuvníku: měsíce od srpna, krok leží vždy v dílu svého měsí
     assert.equal(axisToStep(12), LAKE_STEPS.length - 1);
     assert.equal(axisToStep(-3), 0);
     assert.equal(LAKE_STEPS[axisToStep(3.5)].month, LAKE_AXIS_MONTHS[3], 'střed dílu měsíce je v tom měsíci');
+});
+
+test('přehrát: tlačítko u kroků, prohození vrstev má delší pauzu', () => {
+    const html = readFileSync(new URL('../p1/hustota.html', import.meta.url), 'utf8');
+    assert.match(html, /id="krok-prehrat" aria-pressed="false">▶ přehrát<\/button>/);
+    const swap = LAKE_STEPS.findIndex(s => typeof s.swap === 'number');
+    const plain = LAKE_STEPS.findIndex(s => s.swap === null);
+    assert.ok(playDelay(swap) > playDelay(plain));
+    assert.ok(playDelay(swap) >= 1500 + 300, 'počká, až prohození doběhne (1,5 s)');
+    assert.ok(playDelay(plain) >= 700 + 200, 'počká, až přechod doběhne (0,7 s)');
 });
