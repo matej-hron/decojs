@@ -435,11 +435,12 @@
                 <line x1="58" y1="164" x2="130" y2="164" stroke="#2980b9" stroke-width="3"/>
                 <line x1="130" y1="164" x2="130" y2="48" stroke="#2980b9" stroke-width="3"/>
                 <line x1="130" y1="48" x2="650" y2="48" stroke="#2980b9" stroke-width="3"/>
-                <path d="M 130 164 C 220 158, 270 92, 365 67 C 455 43, 555 49, 650 48" fill="none" stroke="#e67e22" stroke-width="4"/>
+                <!-- Exponential approach (5 half-times across the width): steepest at t = 0, no inflection. -->
+                <path data-haldane-tissue-curve d="M 130 164.0 L 150 149.5 L 170 136.9 L 190 125.8 L 210 116.1 L 230 107.6 L 250 100.1 L 270 93.6 L 290 87.9 L 310 82.9 L 330 78.6 L 350 74.8 L 370 71.4 L 390 68.5 L 410 65.9 L 430 63.7 L 450 61.7 L 470 60.0 L 490 58.5 L 510 57.2 L 530 56.1 L 550 55.1 L 570 54.2 L 590 53.4 L 610 52.7 L 630 52.1 L 650 51.6" fill="none" stroke="#e67e22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
                 <line x1="130" y1="18" x2="130" y2="195" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="4 4"/>
                 <text x="400" y="39" fill="#2980b9" font-size="14" font-weight="600" data-i18n="sandbox.haldane.mental.newTarget">new constant alveolar target</text>
                 <text x="390" y="94" fill="#c9660d" font-size="14" font-weight="600" data-i18n="sandbox.haldane.mental.tissueLine">tissue pressure catches up</text>
-                <text x="62" y="157" fill="#2980b9" font-size="13" data-i18n="sandbox.haldane.mental.oldTarget">original alveolar pressure</text>
+                <text x="62" y="182" fill="#2980b9" font-size="13" data-i18n="sandbox.haldane.mental.oldTarget">original alveolar pressure</text>
                 <text x="118" y="214" fill="#7f8c8d" font-size="13"><tspan font-style="italic">t</tspan> = 0</text>
                 <text x="590" y="214" fill="currentColor" font-size="13" data-i18n="sandbox.haldane.mental.timeAxis">time</text>
                 <text x="18" y="115" fill="currentColor" font-size="13" transform="rotate(-90 18 115)" data-i18n="sandbox.haldane.mental.pressureAxis">pressure</text>
